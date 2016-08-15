@@ -128,6 +128,7 @@ namespace Logy.MwAgent.DotNetWikiBot
                     var msg = string.Format(
                         Msg("Read/write permissions are " + "required for \"{0}\" directory."),
                         Path.GetFullPath("Cache"));
+                    Console.WriteLine(msg);
                     throw new WikiBotException(msg);
                 }
 
@@ -163,7 +164,7 @@ namespace Logy.MwAgent.DotNetWikiBot
             catch (Exception) {}    // ignore failure silently
             */
 
-            // Download cache files from web if missing
+            Console.WriteLine("Downloading cache files from web if missing");
             string[] cacheFiles =
                 {
                     "CommonData.xml", "xhtml1-transitional.dtd", "xhtml-lat1.ent", "xhtml-special.ent", "xhtml-symbol.ent"
