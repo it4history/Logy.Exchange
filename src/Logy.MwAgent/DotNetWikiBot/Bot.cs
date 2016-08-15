@@ -152,17 +152,7 @@ namespace Logy.MwAgent.DotNetWikiBot
             // Disable 100-continue behaviour, it's not supported on WMF servers (as of 2012)
             ServicePointManager.Expect100Continue = false;
 
-            // Check for updates
-            /*try {
-                string verInfo = GetWebResource(
-                    new Uri("http://dotnetwikibot.sourceforge.net/info.php"), "");
-                Match currentVer = Regex.Match(verInfo, "(?i)stable version: (([^ ]+)[^<]+)");
-                if (new Version(currentVer.Groups[2].Value) > version)
-                    Console.WriteLine("*** " + Msg("New version is available") + ": " +
-                        currentVer.Groups[1].Value + " ***\n");
-            }
-            catch (Exception) {}    // ignore failure silently
-            */
+            CheckUpdates();
 
             Console.WriteLine("Downloading cache files from web if missing");
             string[] cacheFiles =
@@ -173,14 +163,21 @@ namespace Logy.MwAgent.DotNetWikiBot
             {
                 if (!File.Exists(CacheDir + dirSep + cacheFile))
                 {
-                    string src = GetWebResource(
-                        new Uri("http://sourceforge.net/p/dotnetwikibot/" + "svn/HEAD/tree/cache/" + cacheFile + "?format=raw"),
-                        string.Empty);
-                    File.WriteAllText(CacheDir + dirSep + cacheFile, src);
+                    try
+                    {
+                        string src = GetWebResource(
+                            new Uri("http://sourceforge.net/p/dotnetwikibot/" + "svn/HEAD/tree/cache/" + cacheFile + "?format=raw"),
+                            string.Empty);
+                        File.WriteAllText(CacheDir + dirSep + cacheFile, src);
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine(ex.Message); 
+                    }
                 }
             }
 
-            // Load general info cache
+            Console.WriteLine("Loading general info cache");
             using (StreamReader reader = File.OpenText(CacheDir + dirSep + "CommonData.xml"))
                 CommonDataXml = XElement.Load(reader);
         }
@@ -264,8 +261,7 @@ namespace Logy.MwAgent.DotNetWikiBot
         public static void DisableSilenceMode()
         {
             _silenceMode = false;
-            StreamWriter standardOutput = new StreamWriter(Console.OpenStandardOutput());
-            standardOutput.AutoFlush = true;
+            var standardOutput = new StreamWriter(Console.OpenStandardOutput()) { AutoFlush = true };
             Console.SetOut(standardOutput);
         }
 
@@ -810,6 +806,21 @@ namespace Logy.MwAgent.DotNetWikiBot
             }
 
             return webResourceText;
+        }
+
+        private static void CheckUpdates()
+        {
+            // Check for updates
+            /*try {
+                string verInfo = GetWebResource(
+                    new Uri("http://dotnetwikibot.sourceforge.net/info.php"), "");
+                Match currentVer = Regex.Match(verInfo, "(?i)stable version: (([^ ]+)[^<]+)");
+                if (new Version(currentVer.Groups[2].Value) > version)
+                    Console.WriteLine("*** " + Msg("New version is available") + ": " +
+                        currentVer.Groups[1].Value + " ***\n");
+            }
+            catch (Exception) {}    // ignore failure silently
+            */
         }
     }
 }
