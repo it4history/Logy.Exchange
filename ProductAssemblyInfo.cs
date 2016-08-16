@@ -2,8 +2,8 @@ using System.Reflection;
 
 [assembly: AssemblyVersionAttribute(Globe.Version)]
 [assembly: AssemblyFileVersionAttribute(Globe.Version)]
-[assembly: AssemblyCompany("Skills.gq")]
-[assembly: AssemblyCopyright("Copyright © 2016")]
+[assembly: AssemblyCompany("it4history")]
+[assembly: AssemblyCopyright("copyleft")]
 
 public class Globe
 {
