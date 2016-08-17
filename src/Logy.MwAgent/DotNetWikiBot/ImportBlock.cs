@@ -14,13 +14,10 @@ namespace Logy.MwAgent.DotNetWikiBot
             get { return GetShortTitle(Title); }
         }
 
+        public virtual string TitleUnique { get; set; }
+
         /// <summary>Filled during page importing from categories tree. Sorted from parent to child.</summary>
         public List<string> Categories { get; set; }
-
-        public virtual string TitleUnique
-        {
-            get { return Title; }
-        }
 
         public static string GetShortTitle(string pageTitle)
         {

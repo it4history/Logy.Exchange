@@ -13,7 +13,7 @@ namespace Logy.ImportExport.Bible.Tests
     [TestFixture]
     public class DescendantOfAdamAndEveTests
     {
-        private const string S160812 = @"
+        private const string S160817 = @"
 '''[[Adam]]''' ({{lang-he|אָדָם}}, ''ʼĀḏām'', ""dust; man; mankind""; {{lang-ar|آدم}}, {{transl|ar|DIN|''ʼĀdam''}}) and '''[[Eve]]''' ({{lang-he|חַוָּה}}, ''Ḥawwā'', ""living one""; {{lang-ar|حواء}}, {{transl|ar|DIN|''Ḥawwāʼ''}}) were, according to the [[Book of Genesis]] of the [[Bible]], the [[List of first men or women in mythology and religion|first man and woman]] created by [[God]]. The following is an outline of their descendants as presented in the [[Bible]].
 
 ==Legend==
@@ -376,7 +376,7 @@ Genealogy from Adam to Zerubbabel:
 ..................................34. [[Solomon]], King of Judah and Israel<ref name=""2Sa 5:14""/><br>
 ..................................+ m. [[Naamah (wife of Solomon)|Naamah]]<ref name=""1Ki 14:21"">1 Kings 14:21</ref><br>
 ...................................35. [[Rehoboam]], King of Judah<ref name=""1Ki 11:43"" /><br>
-...................................+ m1. [[Mahalath]]<ref name=""2Ch 11:19"" /><br>
+...................................+ m1. [[List_of_minor_biblical_figures,_L–Z#Mahalath|Mahalath]]<ref name=""2Ch 11:19"" /><br>
 ....................................36. [[Jeush]]<ref name=""2Ch 11:19""/><br>
 ....................................36. [[Shemariah]]<ref name=""2Ch 11:19""/><br>
 ....................................36. [[Zaham]]<ref name=""2Ch 11:19""/><br>
@@ -607,7 +607,7 @@ Genealogy from Adam to Zerubbabel:
 .........................?. Unknown<ref name=""1Ch 4:19""/><br>
 ..........................?. [[Keilah]]<ref name=""1Ch 4:19""/><br>
 .........................?. Unknown<ref name=""1Ch 4:19""/><br>
-..........................?. [[Eshtamoa (son of Ishbah)|Eshtemoa]]<ref name=""1Ch 4:19""/><br>
+..........................?. [[Eshtamoa the Maachathite|Eshtemoa]]<ref name=""1Ch 4:19""/><br>
 ........................?. [[Naham]]<ref name=""1Ch 4:19""/><br>
 ........................?. [[List of minor Biblical figures#Shimon|Shimon]]<ref name=""1Ch 4:20""/><br>
 .........................?. [[Amnon]]<ref name=""1Ch 4:20""/><br>
@@ -1211,10 +1211,95 @@ Genealogy from Zerubbabel to Jesus:
 ................................................................64. [[Jesus]]<!-- Jesus is at least the 42nd generation after Abraham (20th generation) according to literal reading of Matthew 1 -->
 ";
 
-        [TestFixtureSetUp]
-        public void SetUp()
+        [Test]
+        public void Parse()
         {
-            /// new Site("https://en.wikipedia.org/wiki/");
+            var des = DescendantOfAdamAndEve.Parse(Best);
+            Assert.AreEqual(33, des[9].GenerationNumber);
+            Assert.AreEqual("Azrikam", des[9].Title);
+            Assert.AreEqual("1Ch 9:14", des[9].RefName);
+            Assert.AreEqual("1 Chronicles 9:14", des[9].RefCaption);
+            Assert.IsNull(des[9].Parent);
+
+            Assert.AreEqual(33, des[10].GenerationNumber);
+            Assert.AreEqual("Nun", des[10].Title);
+            Assert.AreEqual("Nu 13:8", des[10].Ref2Name);
+            Assert.AreEqual("Numbers 13:8", des[10].Ref2Caption);
+            Assert.AreEqual("1Ch 7:27", des[10].RefName);
+            Assert.AreEqual("1 Chronicles 7:27", des[10].RefCaption);
+            Assert.IsNull(des[10].Parent);
+
+            Assert.IsTrue(des[11].GenerationNumberUnknown);
+            Assert.AreEqual("Kenaz", des[11].Title);
+            Assert.AreEqual("1Ch 4:15", des[11].RefName);
+            Assert.IsNull(des[11].Parent);
+
+            Assert.AreEqual(63, des[12].GenerationNumber);
+            Assert.AreEqual("Saint Joseph", des[12].Title);
+            Assert.AreEqual("Joseph", des[12].LinkCaption);
+            Assert.AreEqual("Mat 1:1-17", des[12].RefName);
+            Assert.IsNull(des[12].Parent);
+
+            Assert.AreEqual(63, des[13].GenerationNumber);
+            Assert.AreEqual("Mary (mother of Jesus)", des[13].Title);
+            Assert.AreEqual("Mary", des[13].LinkCaption);
+            Assert.AreEqual(des[12], des[13].Husband);
+            Assert.IsNull(des[13].Parent);
+
+            Assert.AreEqual(64, des[14].GenerationNumber);
+            Assert.AreEqual("Jesus", des[14].Title);
+            Assert.AreEqual(des[12], des[14].Parent);
+
+            Assert.AreEqual(1, des[0].GenerationNumber);
+            Assert.AreEqual("Adam", des[0].Title);
+            Assert.AreEqual("Genesis", des[0].RefCaption);
+            Assert.AreEqual("Ge", des[0].RefName);
+            Assert.IsNull(des[0].Parent);
+
+            Assert.AreEqual(1, des[1].GenerationNumber);
+            Assert.AreEqual("Eve", des[1].Title);
+            Assert.AreEqual(des[0], des[1].Husband);
+            Assert.AreEqual("Genesis 3:20", des[1].RefCaption);
+            Assert.IsNull(des[1].Parent);
+
+            Assert.AreEqual(3, des[2].GenerationNumber);
+            Assert.AreEqual("Enoch (son of Cain)", des[2].Title);
+            Assert.AreEqual("Enoch", des[2].LinkCaption);
+            Assert.AreEqual("Genesis 4:17", des[2].RefCaption);
+            Assert.IsNull(des[2].Parent);
+
+            Assert.AreEqual(4, des[3].GenerationNumber);
+            Assert.AreEqual("Irad", des[3].Title);
+            Assert.AreEqual("Ge 4:18", des[3].RefName);
+            Assert.AreEqual("Genesis 4:18", des[3].RefCaption);
+            Assert.AreEqual(des[2], des[3].Parent);
+
+            Assert.AreEqual(32, des[4].GenerationNumber);
+            Assert.AreEqual("Uzziel", des[4].Title);
+            Assert.AreEqual("1Ch 4:42", des[4].RefName);
+            Assert.IsNull(des[4].Parent);
+
+            Assert.IsTrue(des[5].GenerationNumberUnknown);
+            Assert.AreEqual("Zoheth", des[5].Title);
+            Assert.AreEqual("1Ch 4:20", des[5].RefName);
+            Assert.AreEqual("1 Chronicles 4:20", des[5].RefCaption);
+            Assert.IsNull(des[5].Parent);
+
+            Assert.AreEqual(24, des[6].GenerationNumber);
+            Assert.AreEqual("Teman", des[6].OtherCaption);
+            Assert.AreEqual("Ge 36:11", des[6].RefName);
+            Assert.AreEqual("Genesis 36:11", des[6].RefCaption);
+            Assert.IsNull(des[6].Parent);
+
+            Assert.AreEqual(23, des[7].GenerationNumber);
+            Assert.AreEqual("Reuel", des[7].Title);
+            Assert.AreEqual("Ge 36:4", des[7].RefName);
+            Assert.IsNull(des[7].Parent);
+
+            Assert.AreEqual(26, des[8].GenerationNumber);
+            Assert.AreEqual("Aaron", des[8].Title);
+            Assert.AreEqual("Ex 6:20", des[8].RefName);
+            Assert.IsNull(des[8].Parent);
         }
 
         [Test]
@@ -1224,100 +1309,96 @@ Genealogy from Zerubbabel to Jesus:
         }
 
         [Test]
-        public void Parse()
+        public void ParseM1()
         {
-            var des = DescendantOfAdamAndEve.Parse(Best);
-            Assert.AreEqual(33, des[9].GenerationNumber);
-            Assert.AreEqual("Azrikam", des[9].Title);
-            Assert.AreEqual("1Ch 9:14", des[9].RefName);
-            Assert.AreEqual("1 Chronicles 9:14", des[9].RefCaption);
-
-            Assert.AreEqual(33, des[10].GenerationNumber);
-            Assert.AreEqual("Nun", des[10].Title);
-            Assert.AreEqual("Nu 13:8", des[10].Ref2Name);
-            Assert.AreEqual("Numbers 13:8", des[10].Ref2Caption);
-            Assert.AreEqual("1Ch 7:27", des[10].RefName);
-            Assert.AreEqual("1 Chronicles 7:27", des[10].RefCaption);
-
-            Assert.IsTrue(des[11].GenerationNumberUnknown);
-            Assert.AreEqual("Kenaz", des[11].Title);
-            Assert.AreEqual("1Ch 4:15", des[11].RefName);
-
-            Assert.AreEqual(63, des[12].GenerationNumber);
-            Assert.AreEqual("Saint Joseph", des[12].Title);
-            Assert.AreEqual("Joseph", des[12].LinkCaption);
-            Assert.AreEqual("Mat 1:1-17", des[12].RefName);
-
-            Assert.AreEqual(63, des[13].GenerationNumber);
-            Assert.AreEqual("Mary (mother of Jesus)", des[13].Title);
-            Assert.AreEqual("Mary", des[13].LinkCaption);
-            Assert.AreEqual(des[12], des[13].Husband);
-
-            Assert.AreEqual(64, des[14].GenerationNumber);
-            Assert.AreEqual("Jesus", des[14].Title);
-
-            Assert.AreEqual(1, des[0].GenerationNumber);
-            Assert.AreEqual("Adam", des[0].Title);
-            Assert.AreEqual("Genesis", des[0].RefCaption);
-            Assert.AreEqual("Ge", des[0].RefName);
-
-            Assert.AreEqual(1, des[1].GenerationNumber);
-            Assert.AreEqual("Eve", des[1].Title);
+            var des = DescendantOfAdamAndEve.Parse(@"
+...................................35. [[Rehoboam]], King of Judah<ref name=""1Ki 11:43"" /><br>
+...................................+ m1. [[List_of_minor_biblical_figures,_L–Z#Mahalath|Mahalath]]<ref name=""2Ch 11:19"" /><br>");
+            Assert.AreEqual(35, des[0].GenerationNumber);
             Assert.AreEqual(des[0], des[1].Husband);
-            Assert.AreEqual("Genesis 3:20", des[1].RefCaption);
+            Assert.AreEqual("List_of_minor_biblical_figures,_L–Z#Mahalath", des[1].Title);
+            Assert.AreEqual("Mahalath", des[1].LinkCaption);
+            Assert.AreEqual("2Ch 11:19", des[1].RefName);
+        }
 
-            Assert.AreEqual(3, des[2].GenerationNumber);
-            Assert.AreEqual("Enoch (son of Cain)", des[2].Title);
-            Assert.AreEqual("Enoch", des[2].LinkCaption);
-            Assert.AreEqual("Genesis 4:17", des[2].RefCaption);
+        [Test]
+        public void ParseWives()
+        {
+            var des = DescendantOfAdamAndEve.Parse(@"
+......................22. [[Esau]]<ref name=""Ge 25:25"">Genesis 25:25</ref><br>
+.......................+ m. [[Judith]]<ref name=""Ge 26:34"">Genesis 26:34</ref><br>
+.......................+ m. [[Basemath]]<ref name=""Ge 26:34""/><br>");
+            Assert.AreEqual(22, des[2].GenerationNumber);
+            Assert.AreEqual(des[0], des[2].Husband);
+        }
 
-            Assert.AreEqual(4, des[3].GenerationNumber);
-            Assert.AreEqual("Irad", des[3].Title);
-            Assert.AreEqual("Ge 4:18", des[3].RefName);
-            Assert.AreEqual("Genesis 4:18", des[3].RefCaption);
-
-            Assert.AreEqual(32, des[4].GenerationNumber);
-            Assert.AreEqual("Uzziel", des[4].Title);
-            Assert.AreEqual("1Ch 4:42", des[4].RefName);
-
-            Assert.IsTrue(des[5].GenerationNumberUnknown);
-            Assert.AreEqual("Zoheth", des[5].Title);
-            Assert.AreEqual("1Ch 4:20", des[5].RefName);
-            Assert.AreEqual("1 Chronicles 4:20", des[5].RefCaption);
-
-            Assert.AreEqual(24, des[6].GenerationNumber);
-            Assert.AreEqual("Teman", des[6].OtherCaption);
-            Assert.AreEqual("Ge 36:11", des[6].RefName);
-            Assert.AreEqual("Genesis 36:11", des[6].RefCaption);
-
-            Assert.AreEqual(23, des[7].GenerationNumber);
-            Assert.AreEqual("Reuel", des[7].Title);
-            Assert.AreEqual("Ge 36:4", des[7].RefName);
-
-            Assert.AreEqual(26, des[8].GenerationNumber);
-            Assert.AreEqual("Aaron", des[8].Title);
-            Assert.AreEqual("Ex 6:20", des[8].RefName);
+        [Test]
+        public void ParseUnknown()
+        {
+            var des = DescendantOfAdamAndEve.Parse(@"
+........................?. Hodiah's wife<ref name=""1Ch 4:19"">1 Chronicles 4:19</ref><br>
+.........................?. Unknown<ref name=""1Ch 4:19""/><br>
+..........................?. [[Keilah]]<ref name=""1Ch 4:19""/><br>
+.........................?. Unknown<ref name=""1Ch 4:19""/><br>
+..........................?. [[Eshtamoa the Maachathite]]<ref name=""1Ch 4:19""/><br>
+.......................23. [[Benjamin]]<ref name=""Ge 35:18"">Genesis 35:18</ref><br>
+........................24. [[List of minor Biblical figures#Bela|Bela]]<ref name=""Ge 46:21"">Genesis 46:21</ref><br>
+........................?. [[Gera]]<ref name=""Judges 3:15"">Judges 3:15</ref><br>
+.........................?. [[Ehud]]<ref name=""Judges 3:15""/><br>
+");
+            des[3].SetTitleUnique();
+            Assert.AreEqual("parent of Eshtamoa the Maachathite", des[3].TitleUnique);
+            Assert.IsNull(des[7].Parent);
+            Assert.AreEqual(des[7], des[8].Parent);
         }
 
         [Test]
         public void ParseDescendants()
         {
-            Assert.AreEqual(1150, DescendantOfAdamAndEve.ParseDescendants(new Page { Text = S160812 }).Count);
+            Assert.AreEqual(1150, DescendantOfAdamAndEve.ParseDescendants(new Page { Text = S160817 }).Count);
         }
 
         [Test]
         public void Duplicates()
         {
             var all = new List<DescendantOfAdamAndEve>();
-            var dupli = new Dictionary<string, IList>();
-            foreach (var p in DescendantOfAdamAndEve.ParseDescendants(new Page { Text = S160812 }))
+            var descendants = DescendantOfAdamAndEve.ParseDescendants(new Page { Text = S160817 });
+            foreach (var p in descendants)
             {
                 var descendant = (DescendantOfAdamAndEve)p;
-                if (all.Contains(descendant))
-                    dupli.Merge((descendant.TitleUnique), descendant);
+                var index = all.BinarySearch(descendant);
+                if (index >= 0)
+                {
+                    descendant.SetTitleUnique();
+                }
                 else
+                {
                     all.Add(descendant);
+                    all.Sort();
+                }
             }
+
+            all = new List<DescendantOfAdamAndEve>();
+            var unique = new List<DescendantOfAdamAndEve>();
+            var dupli = new Dictionary<string, IList>();
+            foreach (var p in descendants)
+            {
+                var descendant = (DescendantOfAdamAndEve)p;
+                var index = all.BinarySearch(descendant);
+                if (index >= 0)
+                {
+                    unique.Remove(descendant);
+                    dupli.Merge((descendant.TitleUnique), new List<DescendantOfAdamAndEve> { all[index], descendant });
+                }
+                else
+                {
+                    unique.Add(descendant);
+                    all.Add(descendant);
+                    all.Sort();
+                }
+            }
+
+            Assert.AreEqual(0, dupli.Count);
         }
     }
 }

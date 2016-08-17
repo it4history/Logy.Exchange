@@ -40,10 +40,6 @@ namespace Logy.MwAgent.DotNetWikiBot
         /// failure or some server problems.</summary>
         public const int RetryTimes = 3;
 
-        /// <summary>Number of seconds to pause for between edits on this site.
-        /// Adjust this variable if required, but it may be overriden by the site policy.</summary>
-        public const int ForceSaveDelay = 0;
-
         /// <summary>Number of list items to fetch at a time. This settings concerns special pages
         /// output and API lists output. Default is 500. Bot accounts are allowed to fetch
         /// up to 5000 items at a time. Adjust this number if required.</summary>
@@ -141,6 +137,10 @@ namespace Logy.MwAgent.DotNetWikiBot
 
             Initialize();
         }
+
+        /// <summary>Number of seconds to pause for between edits on this site.
+        /// Adjust this variable if required, but it may be overriden by the site policy.</summary>
+        public static int ForceSaveDelay { get; set; }
 
         /// <summary>If set to false, bot will use MediaWiki's common user interface where
         /// possible, instead of using special API interface for robots (api.php). Default is true.
