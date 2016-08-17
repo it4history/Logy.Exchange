@@ -31,7 +31,7 @@ namespace Logy.ImportExport
                               Wiki = wiki,
                               ImportTemplate = importTemplate,
                               Parent = importTemplate.ParentDoc,
-                              Url = wiki.Url(importTemplate.Url),
+                              Url = Wiki.Url(wiki.BaseUrl, importTemplate.Url),
                               Type = DocType.Import,
                               AddedBy = UserCurrent,
                               Mover = mover,

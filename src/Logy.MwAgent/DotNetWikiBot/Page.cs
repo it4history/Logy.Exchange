@@ -1563,20 +1563,23 @@ namespace Logy.MwAgent.DotNetWikiBot
         ///                          where desc.Attribute("language").Value == "en"
         ///                          select desc.Attribute("value").Value).FirstOrDefault();
         /// </code></example>
-        public XElement GetWikidataItem()
+        public XElement GetWikidataItem(bool all = false)
         {
             string src = Site.GetWebPage(Site.IndexPath + "?title=" + Bot.UrlEncode(Title));
             Match m = Regex.Match(src, "href=\"//www\\.wikidata\\.org/wiki/(Q\\d+)");
             if (!m.Success)    // fallback
                 m = Regex.Match(src, "\"wgWikibaseItemId\"\\:\"(Q\\d+)\"");
-            if (!m.Success) {
+            if (!m.Success)
+            {
                 Console.WriteLine(string.Format(Bot.Msg("No Wikidata item is associated with page \"{0}\"."), Title));
                 return null;
             }
 
             string item = m.Groups[1].Value;
+            if (!all)
+                return new XElement(item);
             string xmlSrc = Site.GetWebPage("http://www.wikidata.org/wiki/Special:EntityData/" +
-                                            Bot.UrlEncode(item) + ".xml");    // raises "404: Not found" if not found
+                                            Bot.UrlEncode(item) + ".xml"); // raises "404: Not found" if not found
             XElement xml = XElement.Parse(xmlSrc);
             Console.WriteLine(string.Format(
                 Bot.Msg("Wikidata item {0} associated with page \"{1}\" was loaded successfully."),

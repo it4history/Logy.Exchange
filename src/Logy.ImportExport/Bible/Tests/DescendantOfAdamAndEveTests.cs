@@ -1231,13 +1231,13 @@ Genealogy from Zerubbabel to Jesus:
 
             Assert.AreEqual(63, des[12].GenerationNumber);
             Assert.AreEqual("Saint Joseph", des[12].Title);
-            Assert.AreEqual("Joseph", des[12].LinkCaption);
+            Assert.AreEqual("Joseph", des[12].TitleShort);
             Assert.AreEqual("Mat 1:1-17", des[12].RefName);
             Assert.IsNull(des[12].Parent);
 
             Assert.AreEqual(63, des[13].GenerationNumber);
             Assert.AreEqual("Mary (mother of Jesus)", des[13].Title);
-            Assert.AreEqual("Mary", des[13].LinkCaption);
+            Assert.AreEqual("Mary", des[13].TitleShort);
             Assert.AreEqual(des[12], des[13].Husband);
             Assert.IsNull(des[13].Parent);
 
@@ -1259,7 +1259,7 @@ Genealogy from Zerubbabel to Jesus:
 
             Assert.AreEqual(3, des[2].GenerationNumber);
             Assert.AreEqual("Enoch (son of Cain)", des[2].Title);
-            Assert.AreEqual("Enoch", des[2].LinkCaption);
+            Assert.AreEqual("Enoch", des[2].TitleShort);
             Assert.AreEqual("Genesis 4:17", des[2].RefCaption);
             Assert.IsNull(des[2].Parent);
 
@@ -1312,7 +1312,7 @@ Genealogy from Zerubbabel to Jesus:
             Assert.AreEqual(35, des[0].GenerationNumber);
             Assert.AreEqual(des[0], des[1].Husband);
             Assert.AreEqual("List_of_minor_biblical_figures,_L–Z#Mahalath", des[1].Title);
-            Assert.AreEqual("Mahalath", des[1].LinkCaption);
+            Assert.AreEqual("Mahalath", des[1].TitleShort);
             Assert.AreEqual("2Ch 11:19", des[1].RefName);
         }
 

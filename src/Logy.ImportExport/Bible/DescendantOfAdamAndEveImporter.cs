@@ -10,7 +10,7 @@ using Skills.Xpo;
 
 namespace Logy.ImportExport.Bible
 {
-    public class DescendantOfAdamAndEveImporter : Importer
+    public class DescendantOfAdamAndEveImporter : PersonImporter
     {
         public DescendantOfAdamAndEveImporter(Doc doc, List<DbObject> objCreated)
             : base(doc, objCreated)
@@ -21,7 +21,24 @@ namespace Logy.ImportExport.Bible
         {
             var block = (DescendantOfAdamAndEve)page;
 
-            var url = BibleManager.GetDocumentUrl(block.RefName);
+            foreach (var link in new[]
+                                     {
+                                         SaveRef(block, BibleManager.GetDocumentUrl(block.RefName)),
+                                         SaveRef(block, BibleManager.GetDocumentUrl(block.Ref2Name))
+                                     })
+            {
+                if (link != null)
+                    SavePersonName(page, PersonType.Human, false, link, block.WikiDataitemId);
+            }
+
+            // families
+            // births
+        }
+
+        private Link SaveRef(DescendantOfAdamAndEve block, string url)
+        {
+            if (string.IsNullOrEmpty(url))
+                return null;
             var docManager = new DocManager(XpoSession);
             var foundDoc = docManager.FindByUrl(Doc, url);
             if (foundDoc == null)
@@ -31,26 +48,22 @@ namespace Logy.ImportExport.Bible
             }
 
             var number = BibleManager.GetDocumentNumber(block.RefName);
-            if (!string.IsNullOrEmpty(number))
+            Link link;
+            var foundDocPart = docManager.FindPart(foundDoc, number);
+            if (foundDocPart == null)
             {
-                var foundDocPart = docManager.FindPart(foundDoc, number);
-                if (foundDocPart == null)
-                {
-                    var link = foundDoc.NewLink(number);
-                    foundDocPart = link.DocPart;
-                    ObjectsCreated.Add(link.Save());
-                }
+                link = foundDoc.NewLink(number);
             }
+            else
+                link = new Link(XpoSession)
+                           {
+                               Doc = foundDoc,
+                               DocPart = foundDocPart
+                           };
 
-            if (!string.IsNullOrEmpty(block.Title))
-            {
-                Person person;
-                if (new PersonManager(XpoSession).FindByNameWithoutPName(page.TitleShort, Language, out person))
-                {
-                }
+            ObjectsCreated.Add(link.Save());
 
-                ///Doc.Wiki.Url(block.Link) block.Link
-            }
+            return link;
         }
     }
 }

@@ -44,10 +44,6 @@ namespace Logy.ImportExport.Bible
             }
         }
 
-        public string LinkCaption { get; set; }
-
-        public string OtherCaption { get; set; }
-
         public override string TitleUnique
         {
             get
@@ -57,12 +53,19 @@ namespace Logy.ImportExport.Bible
 
                 return !string.IsNullOrEmpty(Title)
                                   ? Title
-                                  : !string.IsNullOrEmpty(LinkCaption)
-                                        ? LinkCaption
+                                  : !string.IsNullOrEmpty(TitleShort)
+                                        ? TitleShort
                                         : OtherCaption;
             }
         }
 
+        /// <summary>
+        /// Visible link text. Real wiki link is Title
+        /// </summary>
+        public override string TitleShort { get; set; }
+
+        public string OtherCaption { get; set; }
+        
         [Required]
         public string RefName { get; set; }
 
@@ -72,6 +75,23 @@ namespace Logy.ImportExport.Bible
 
         public string Ref2Caption { get; set; }
 
+        public int? WikiDataitemId
+        {
+            get
+            {
+                if (!string.IsNullOrEmpty(Title))
+                {
+                    var p = new Page(Title);
+                    var wikidataItem = p.GetWikidataItem();
+                    int id;
+                    if (int.TryParse(wikidataItem.Name.LocalName.TrimStart('Q'), out id))
+                        return id;
+                }
+
+                return null;
+            }
+        }
+
         /// <returns>without duplicates</returns>
         public static List<ImportBlock> ParseDescendants(Page page, bool removeDuplicates = false)
         {
@@ -80,46 +100,43 @@ namespace Logy.ImportExport.Bible
             var descendants = (from p in Parse(page.GetSection("Descendants")) select (ImportBlock)p).ToList();
             if (!removeDuplicates)
                 return descendants;
-            else
+            var all = new List<DescendantOfAdamAndEve>();
+            foreach (var p in descendants)
             {
-                var all = new List<DescendantOfAdamAndEve>();
-                foreach (var p in descendants)
+                var descendant = (DescendantOfAdamAndEve)p;
+                var index = all.BinarySearch(descendant);
+                if (index >= 0)
                 {
-                    var descendant = (DescendantOfAdamAndEve)p;
-                    var index = all.BinarySearch(descendant);
-                    if (index >= 0)
-                    {
-                        descendant.SetTitleUnique();
-                    }
-                    else
-                    {
-                        all.Add(descendant);
-                        all.Sort();
-                    }
+                    descendant.SetTitleUnique();
                 }
-
-                all = new List<DescendantOfAdamAndEve>();
-                var unique = new List<ImportBlock>();
-                var dupli = new Dictionary<string, IList>();
-                foreach (var p in descendants)
+                else
                 {
-                    var descendant = (DescendantOfAdamAndEve)p;
-                    var index = all.BinarySearch(descendant);
-                    if (index >= 0)
-                    {
-                        unique.Remove(descendant);
-                        dupli.Merge(descendant.TitleUnique, new List<DescendantOfAdamAndEve> { all[index], descendant });
-                    }
-                    else
-                    {
-                        unique.Add(descendant);
-                        all.Add(descendant);
-                        all.Sort();
-                    }
+                    all.Add(descendant);
+                    all.Sort();
                 }
-
-                return unique;
             }
+
+            all = new List<DescendantOfAdamAndEve>();
+            var unique = new List<ImportBlock>();
+            var dupli = new Dictionary<string, IList>();
+            foreach (var p in descendants)
+            {
+                var descendant = (DescendantOfAdamAndEve)p;
+                var index = all.BinarySearch(descendant);
+                if (index >= 0)
+                {
+                    unique.Remove(descendant);
+                    dupli.Merge(descendant.TitleUnique, new List<DescendantOfAdamAndEve> { all[index], descendant });
+                }
+                else
+                {
+                    unique.Add(descendant);
+                    all.Add(descendant);
+                    all.Sort();
+                }
+            }
+
+            return unique;
         }
 
         public static List<ImportBlock> ParseDescendants(Page page)
@@ -189,7 +206,7 @@ namespace Logy.ImportExport.Bible
                                              GenerationNumberUnknown = value1 == "?",
                                              Husband = husband,
                                              Title = match.Groups[4].Value,
-                                             LinkCaption = match.Groups[5].Value,
+                                             TitleShort = match.Groups[5].Value,
                                              OtherCaption = match.Groups[6].Value,
                                              RefName = match.Groups[10].Value,
                                              RefCaption = match.Groups[12].Value,

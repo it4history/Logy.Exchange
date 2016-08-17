@@ -28,18 +28,25 @@ namespace Logy.ImportExport.Importers
                 }
             }
 
+            SavePersonName(page, type);
+        }
+
+        protected void SavePersonName(ImportBlock page, PersonType type, bool mayBeUser = true, Link link = null, int? wikiItemId = null)
+        {
             Person person;
-            if (new PersonManager(XpoSession).FindByNameWithoutPName(page.TitleShort, Language, out person, true, type))
+            if (new PersonManager(XpoSession)
+                .FindByNameWithoutPName(page.TitleUnique, Language, out person, page.TitleShort, mayBeUser, type))
             {
                 if (person == null)
                 {
-                    person = new Person(XpoSession) { Type = type };
+                    person = new Person(XpoSession) { Type = type, WikiDataItemId = wikiItemId };
                     ObjectsCreated.Add(person);
                 }
 
-                var name = new PName(person) { Name = page.TitleShort, Language = Language };
+                var name = new PName(person) { Name = page.TitleUnique, ShortName = page.TitleShort, Language = Language };
                 ObjectsCreated.Add(name);
-                var link = Doc.NewLink(page.Title);
+                if (link == null)
+                    link = Doc.NewLink(page.Title);
                 link.PName = name;
                 ObjectsCreated.Add(link.Save());
             }

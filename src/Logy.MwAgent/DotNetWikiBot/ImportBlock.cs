@@ -9,12 +9,17 @@ namespace Logy.MwAgent.DotNetWikiBot
         /// <summary>title, including namespace prefix.</summary>
         public string Title { get; set; }
 
-        public string TitleShort
+        public virtual string TitleUnique
         {
-            get { return GetShortTitle(Title); }
+            get { return Title; }
+            set { Title = value; }
         }
 
-        public virtual string TitleUnique { get; set; }
+        public virtual string TitleShort
+        {
+            get { return GetShortTitle(Title); }
+            set { }
+        }
 
         /// <summary>Filled during page importing from categories tree. Sorted from parent to child.</summary>
         public List<string> Categories { get; set; }

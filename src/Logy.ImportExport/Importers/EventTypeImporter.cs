@@ -18,7 +18,7 @@ namespace Logy.ImportExport.Importers
         public override void Import(ImportBlock page)
         {
             var eventManager = new EventManager(XpoSession);
-            if (eventManager.FindByName(page.TitleShort) == null)
+            if (eventManager.FindByName(page.TitleUnique) == null)
             {
                 EventType parent = null;
                 foreach (var category in page.Categories)
@@ -37,7 +37,7 @@ namespace Logy.ImportExport.Importers
                 }
 
                 ObjectsCreated.Add(
-                    new EventType(XpoSession) { Label = page.TitleShort, Parent = parent }.Save());
+                    new EventType(XpoSession) { Label = page.TitleUnique, Parent = parent }.Save());
             }
         }
     }
