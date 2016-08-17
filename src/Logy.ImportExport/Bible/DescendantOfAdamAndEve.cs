@@ -1,11 +1,12 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 
+using AppConfiguration;
 using Logy.Entities.Documents.Bible;
 using Logy.MwAgent.DotNetWikiBot;
-
 using Skills.Xpo;
 
 namespace Logy.ImportExport.Bible
@@ -70,6 +71,56 @@ namespace Logy.ImportExport.Bible
         public string Ref2Name { get; set; }
 
         public string Ref2Caption { get; set; }
+
+        /// <returns>without duplicates</returns>
+        public static List<ImportBlock> ParseDescendants(Page page, bool removeDuplicates = false)
+        {
+            if (string.IsNullOrEmpty(page.Text))
+                page.LoadTextOnly();
+            var descendants = (from p in Parse(page.GetSection("Descendants")) select (ImportBlock)p).ToList();
+            if (!removeDuplicates)
+                return descendants;
+            else
+            {
+                var all = new List<DescendantOfAdamAndEve>();
+                foreach (var p in descendants)
+                {
+                    var descendant = (DescendantOfAdamAndEve)p;
+                    var index = all.BinarySearch(descendant);
+                    if (index >= 0)
+                    {
+                        descendant.SetTitleUnique();
+                    }
+                    else
+                    {
+                        all.Add(descendant);
+                        all.Sort();
+                    }
+                }
+
+                all = new List<DescendantOfAdamAndEve>();
+                var unique = new List<ImportBlock>();
+                var dupli = new Dictionary<string, IList>();
+                foreach (var p in descendants)
+                {
+                    var descendant = (DescendantOfAdamAndEve)p;
+                    var index = all.BinarySearch(descendant);
+                    if (index >= 0)
+                    {
+                        unique.Remove(descendant);
+                        dupli.Merge(descendant.TitleUnique, new List<DescendantOfAdamAndEve> { all[index], descendant });
+                    }
+                    else
+                    {
+                        unique.Add(descendant);
+                        all.Add(descendant);
+                        all.Sort();
+                    }
+                }
+
+                return unique;
+            }
+        }
 
         public static List<ImportBlock> ParseDescendants(Page page)
         {

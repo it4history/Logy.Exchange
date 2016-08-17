@@ -1,9 +1,4 @@
 ﻿#if DEBUG
-using System.Collections;
-using System.Collections.Generic;
-
-using AppConfiguration;
-
 using Logy.MwAgent.DotNetWikiBot;
 
 using NUnit.Framework;
@@ -1361,44 +1356,7 @@ Genealogy from Zerubbabel to Jesus:
         [Test]
         public void Duplicates()
         {
-            var all = new List<DescendantOfAdamAndEve>();
-            var descendants = DescendantOfAdamAndEve.ParseDescendants(new Page { Text = S160817 });
-            foreach (var p in descendants)
-            {
-                var descendant = (DescendantOfAdamAndEve)p;
-                var index = all.BinarySearch(descendant);
-                if (index >= 0)
-                {
-                    descendant.SetTitleUnique();
-                }
-                else
-                {
-                    all.Add(descendant);
-                    all.Sort();
-                }
-            }
-
-            all = new List<DescendantOfAdamAndEve>();
-            var unique = new List<DescendantOfAdamAndEve>();
-            var dupli = new Dictionary<string, IList>();
-            foreach (var p in descendants)
-            {
-                var descendant = (DescendantOfAdamAndEve)p;
-                var index = all.BinarySearch(descendant);
-                if (index >= 0)
-                {
-                    unique.Remove(descendant);
-                    dupli.Merge((descendant.TitleUnique), new List<DescendantOfAdamAndEve> { all[index], descendant });
-                }
-                else
-                {
-                    unique.Add(descendant);
-                    all.Add(descendant);
-                    all.Sort();
-                }
-            }
-
-            Assert.AreEqual(0, dupli.Count);
+            Assert.AreEqual(1150, DescendantOfAdamAndEve.ParseDescendants(new Page { Text = S160817 }, true).Count);
         }
     }
 }
