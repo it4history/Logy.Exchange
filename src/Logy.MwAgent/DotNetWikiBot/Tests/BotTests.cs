@@ -11,7 +11,7 @@ namespace Logy.MwAgent.DotNetWikiBot.Tests
         {
             var site = new Site("http://logy.gq/lw");
             var pl = new PageList(site);
-            pl.FillFromCategoryTree("Category:Person");
+            pl.FillFromCategoryTree("Category:Organization");
 
             /*            // Fill it with 100 pages, where "nuclear disintegration" is mentioned
             pl.FillFromGoogleSearchResults("nuclear disintegration", 100);

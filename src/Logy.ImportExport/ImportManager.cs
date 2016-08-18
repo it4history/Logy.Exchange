@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 
 using Logy.Entities;
 using Logy.Entities.Documents;
@@ -42,7 +43,7 @@ namespace Logy.ImportExport
                     switch (doc.ImportTemplate.SyncType)
                     {
                         case SyncType.ImportFromMW:
-                            List<ImportBlock> pages;
+                            IList pages;
                             var objCreated = new List<DbObject>();
                             Importer importer = null;
                             var site = new Site(wiki.BaseUrl);
@@ -77,7 +78,7 @@ namespace Logy.ImportExport
 
                                 foreach (var page in pages)
                                 {
-                                    importer.Import(page);
+                                    importer.Import((ImportBlock)page);
                                 }
 
                                 if (importTemplate.ParentDoc != null &&

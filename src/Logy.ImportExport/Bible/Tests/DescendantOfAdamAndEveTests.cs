@@ -1,4 +1,6 @@
 ﻿#if DEBUG
+using System.Collections.Generic;
+
 using Logy.MwAgent.DotNetWikiBot;
 
 using NUnit.Framework;
@@ -8,6 +10,8 @@ namespace Logy.ImportExport.Bible.Tests
     [TestFixture]
     public class DescendantOfAdamAndEveTests
     {
+        private readonly List<DescendantOfAdamAndEve> _descendants = DescendantOfAdamAndEve.ParseDescendants(new Page { Text = S160817 }, true);
+
         private const string S160817 = @"
 '''[[Adam]]''' ({{lang-he|אָדָם}}, ''ʼĀḏām'', ""dust; man; mankind""; {{lang-ar|آدم}}, {{transl|ar|DIN|''ʼĀdam''}}) and '''[[Eve]]''' ({{lang-he|חַוָּה}}, ''Ḥawwā'', ""living one""; {{lang-ar|حواء}}, {{transl|ar|DIN|''Ḥawwāʼ''}}) were, according to the [[Book of Genesis]] of the [[Bible]], the [[List of first men or women in mythology and religion|first man and woman]] created by [[God]]. The following is an outline of their descendants as presented in the [[Bible]].
 
@@ -1319,12 +1323,42 @@ Genealogy from Zerubbabel to Jesus:
         [Test]
         public void ParseWives()
         {
-            var des = DescendantOfAdamAndEve.Parse(@"
+            var des = DescendantOfAdamAndEve.RemoveDuplicates(DescendantOfAdamAndEve.Parse(@"
 ......................22. [[Esau]]<ref name=""Ge 25:25"">Genesis 25:25</ref><br>
 .......................+ m. [[Judith]]<ref name=""Ge 26:34"">Genesis 26:34</ref><br>
-.......................+ m. [[Basemath]]<ref name=""Ge 26:34""/><br>");
+.......................+ m. [[Basemath]]<ref name=""Ge 26:34""/><br>
+......................22. [[Jacob]]<ref name=""Ge 25:26"">Genesis 25:26</ref><br>
+......................+ m. [[Leah]]<ref name=""Ge 29:16"">Genesis 29:16</ref><br>
+...........................?. [[Meshullam]]<ref name=""1Ch 9:8""/><br>
+......................+ m. [[Bilhah]]<ref name=""Ge 30:4"">Genesis 30:4</ref><br>
+..........................25. [[Amram]]<ref name=""Ex 6:18"">Exodus 6:18</ref><br>
+..........................+ m. [[Jochebed]]<ref name=""Ex 6:20"">Exodus 6:20</ref><br>
+........................24. [[Er (biblical person)|Er]]<ref name=""Ge 38:3"">Genesis 38:3</ref><br>
+........................+ m. [[Tamar (Genesis)|Tamar]]<ref name=""Ge 38:6"">Genesis 38:6</ref><br>
+........................24. [[Onan]]<ref name=""Ge 38:4"">Genesis 38:4</ref><br>
+........................+ m. [[Tamar (Genesis)|Tamar]]<ref name=""Ge 38:6"" /><br>
+"));
             Assert.AreEqual(22, des[2].GenerationNumber);
             Assert.AreEqual(des[0], des[2].Husband);
+
+            Assert.AreEqual(des[3], des[4].Husband);
+            Assert.AreEqual(des[3], des[6].Husband);
+
+            Assert.AreEqual(des[7], des[8].Husband);
+
+            Assert.AreEqual(12, des.Count);
+            Assert.IsTrue(des[10].Husbands.Contains(des[9]));
+            Assert.IsTrue(des[10].Husbands.Contains(des[11]));
+        }
+
+        [Test]
+        public void ParseKids()
+        {
+            var des = DescendantOfAdamAndEve.Parse(@"
+..........10. [[Noah]]<ref>Genesis 5:29</ref><br>
+...........11. [[Shem]]<ref name=""Ge 5:32"">Genesis 5:32</ref><br>
+");
+            Assert.AreEqual(des[0], des[1].Parent);
         }
 
         [Test]
@@ -1356,7 +1390,25 @@ Genealogy from Zerubbabel to Jesus:
         [Test]
         public void Duplicates()
         {
-            Assert.AreEqual(1150, DescendantOfAdamAndEve.ParseDescendants(new Page { Text = S160817 }, true).Count);
+            Assert.AreEqual(1149, _descendants.Count);
+        }
+
+        [Test]
+        public void Families()
+        {
+            foreach (DescendantOfAdamAndEve descendant in _descendants)
+            {
+                if(descendant.Title=="Jacob")
+                {
+                    Assert.AreEqual(4, descendant.Wives.Count);
+                    Assert.AreEqual(13, descendant.Kids.Count);
+                }
+
+                if (descendant.TitleUnique == "Noah")
+                {
+                    Assert.AreEqual(3, descendant.Kids.Count);
+                }
+            }
         }
     }
 }

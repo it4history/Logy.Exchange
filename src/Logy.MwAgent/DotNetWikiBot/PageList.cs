@@ -572,12 +572,13 @@ namespace Logy.MwAgent.DotNetWikiBot
         /// This operation may be very time-consuming and traffic-consuming.
         /// The function clears the PageList before filling begins.</summary>
         /// <param name="categoryName">Category name, with or without prefix.</param>
-        public void FillFromCategoryTree(string categoryName)
+        public void FillFromCategoryTree(string categoryName, bool leaveNamespaces = true)
         {
             Clear();
             FillAllFromCategoryTree(new List<string> { categoryName });
             RemoveRecurring();
-            RemoveNamespaces(new[] { Site.CategoryNS });
+            if (!leaveNamespaces)
+                RemoveNamespaces(new[] { Site.CategoryNS });
             if (Pages.Count != 0)
                 Console.WriteLine(
                     Bot.Msg("PageList has been filled with {0} page titles found in \"{1}\"" + " category."), 

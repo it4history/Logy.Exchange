@@ -14,10 +14,14 @@ namespace Logy.ImportExport.Bible
     public class DescendantOfAdamAndEve : ImportBlock
     {
         private readonly List<DescendantOfAdamAndEve> _kids = new List<DescendantOfAdamAndEve>();
+        
+        private readonly List<DescendantOfAdamAndEve> _wives = new List<DescendantOfAdamAndEve>();
 
-        private string _titleUnique;
+        private readonly List<DescendantOfAdamAndEve> _husbands = new List<DescendantOfAdamAndEve>();
 
         private DescendantOfAdamAndEve _parent;
+
+        private string _titleUnique;
         
         public bool GenerationNumberUnknown { get; set; }
 
@@ -25,7 +29,33 @@ namespace Logy.ImportExport.Bible
 
         public int DotsCount { get; set; }
 
-        public DescendantOfAdamAndEve Husband { get; set; }
+        public DescendantOfAdamAndEve Husband
+        {
+            get
+            {
+                return _husbands.Count > 0 ? _husbands[0] : null;
+            }
+            set
+            {
+                if (value != null)
+                {
+                    if (!_husbands.Contains(value))
+                        _husbands.Add(value);
+                    if (!value._wives.Contains(this))
+                        value._wives.Add(this);
+                }
+            }
+        }
+
+        public List<DescendantOfAdamAndEve> Wives
+        {
+            get { return _wives; }
+        }
+
+        public List<DescendantOfAdamAndEve> Husbands
+        {
+            get { return _husbands; }
+        }
 
         /// <summary>
         /// father as a rule
@@ -39,9 +69,14 @@ namespace Logy.ImportExport.Bible
             set
             {
                 _parent = value;
-                if (!_parent._kids.Contains(this))
-                    _parent._kids.Add(this);
+                if (value != null && !value._kids.Contains(this))
+                    value._kids.Add(this);
             }
+        }
+
+        public List<DescendantOfAdamAndEve> Kids
+        {
+            get { return _kids; }
         }
 
         public override string TitleUnique
@@ -92,22 +127,27 @@ namespace Logy.ImportExport.Bible
             }
         }
 
-        /// <returns>without duplicates</returns>
-        public static List<ImportBlock> ParseDescendants(Page page, bool removeDuplicates = false)
+        public static List<DescendantOfAdamAndEve> ParseDescendants(Page page, bool removeDuplicates = false)
         {
             if (string.IsNullOrEmpty(page.Text))
                 page.LoadTextOnly();
-            var descendants = (from p in Parse(page.GetSection("Descendants")) select (ImportBlock)p).ToList();
-            if (!removeDuplicates)
-                return descendants;
+            var descendants = (from p in Parse(page.GetSection("Descendants")) select p).ToList();
+            return removeDuplicates ? RemoveDuplicates(descendants) : descendants;
+        }
+
+        public static List<DescendantOfAdamAndEve> RemoveDuplicates(List<DescendantOfAdamAndEve> descendants) 
+        {
             var all = new List<DescendantOfAdamAndEve>();
             foreach (var p in descendants)
             {
-                var descendant = (DescendantOfAdamAndEve)p;
+                var descendant = p;
                 var index = all.BinarySearch(descendant);
                 if (index >= 0)
                 {
-                    descendant.SetTitleUnique();
+                    if (descendant.WifeWithManyHusbands(all[index]))
+                        descendant.MergeHusbands(all[index]);
+                    else
+                        descendant.SetTitleUnique();
                 }
                 else
                 {
@@ -117,16 +157,18 @@ namespace Logy.ImportExport.Bible
             }
 
             all = new List<DescendantOfAdamAndEve>();
-            var unique = new List<ImportBlock>();
+            var unique = new List<DescendantOfAdamAndEve>();
             var dupli = new Dictionary<string, IList>();
-            foreach (var p in descendants)
+            foreach (var descendant in descendants)
             {
-                var descendant = (DescendantOfAdamAndEve)p;
                 var index = all.BinarySearch(descendant);
                 if (index >= 0)
                 {
-                    unique.Remove(descendant);
-                    dupli.Merge(descendant.TitleUnique, new List<DescendantOfAdamAndEve> { all[index], descendant });
+                    if (!descendant.WifeWithManyHusbands(all[index]))
+                    {
+                        unique.Remove(descendant);
+                        dupli.Merge(descendant.TitleUnique, new List<DescendantOfAdamAndEve> { all[index], descendant });
+                    }
                 }
                 else
                 {
@@ -139,14 +181,7 @@ namespace Logy.ImportExport.Bible
             return unique;
         }
 
-        public static List<ImportBlock> ParseDescendants(Page page)
-        {
-            if (string.IsNullOrEmpty(page.Text))
-                page.LoadTextOnly();
-            return (from p in Parse(page.GetSection("Descendants")) select (ImportBlock)p).ToList();
-        }
-
-        public static List<DescendantOfAdamAndEve> Parse(string lines)
+        public static List<DescendantOfAdamAndEve> Parse(string lines) 
         {
             var result = new List<DescendantOfAdamAndEve>();
             DescendantOfAdamAndEve prevDescendant = null;
@@ -177,7 +212,8 @@ namespace Logy.ImportExport.Bible
                     {
                         if (prevDescendant != null)
                         {
-                            if (prevDescendant.DotsCount < dotsCount)
+                            if (prevDescendant.DotsCount < dotsCount 
+                                || (prevDescendant.DotsCount == dotsCount && prevDescendant.Husband == null))
                                 husband = prevDescendant;
                             else
                                 prevFathers.TryGetValue(dotsCount, out husband);
@@ -224,7 +260,8 @@ namespace Logy.ImportExport.Bible
                         prevFathers[dotsCount > 0 ? dotsCount : descendant.GenerationNumber] = descendant;
                         foreach (var gene in prevFathers.Keys.ToList())
                         {
-                            if (gene > descendant.GenerationNumber)
+                            if (descendant.Husband == null && descendant.GenerationNumber > 0 // no wife
+                                && gene > descendant.GenerationNumber)
                                 prevFathers.Remove(gene);
                         }
                     }
@@ -241,11 +278,10 @@ namespace Logy.ImportExport.Bible
             if (TitleUnique == "Unknown")
                 _titleUnique = "parent of " + _kids[0];
             else
-                _titleUnique = TitleUnique + (Husband != null
-                                                  ? " (wife of " + Husband
-                                                  : Parent != null
-                                                        ? " (son of " + Parent
-                                                        : " (from " + RefName) + ")";
+                _titleUnique = TitleUnique + (/// Husband != null ? " (wife of " + Husband : 
+                                             Parent != null
+                                                 ? " (son of " + Parent
+                                                 : " (from " + RefName) + ")";
         }
 
         public override string ToString()
@@ -272,6 +308,27 @@ namespace Logy.ImportExport.Bible
             }
 
             return refName;
+        }
+
+        /// <summary>
+        /// to store different husband of the same wife duplication was designed
+        /// </summary>
+        private bool WifeWithManyHusbands(DescendantOfAdamAndEve descendant)
+        {
+            return Husband != null && descendant.Husband != null
+                   && Husband.GenerationNumber == descendant.Husband.GenerationNumber;
+        }
+
+        private void MergeHusbands(DescendantOfAdamAndEve descendant)
+        {
+            foreach (var husband in descendant._husbands)
+            {
+                if (!_husbands.Contains(husband))
+                    _husbands.Add(husband);
+            }
+
+            descendant._husbands.Clear();
+            descendant._husbands.AddRange(_husbands);
         }
     }
 }

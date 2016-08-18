@@ -42,6 +42,11 @@ namespace Logy.ImportExport.Importers
                     person = new Person(XpoSession) { Type = type, WikiDataItemId = wikiItemId };
                     ObjectsCreated.Add(person);
                 }
+                else
+                {
+                    if (wikiItemId != null && person.WikiDataItemId == null)
+                        person.WikiDataItemId = wikiItemId;
+                }
 
                 var name = new PName(person) { Name = page.TitleUnique, ShortName = page.TitleShort, Language = Language };
                 ObjectsCreated.Add(name);
