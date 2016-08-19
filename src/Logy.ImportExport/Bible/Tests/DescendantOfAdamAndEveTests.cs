@@ -10,9 +10,10 @@ namespace Logy.ImportExport.Bible.Tests
     [TestFixture]
     public class DescendantOfAdamAndEveTests
     {
-        private readonly List<DescendantOfAdamAndEve> _descendants = DescendantOfAdamAndEve.ParseDescendants(new Page { Text = S160817 }, true);
+        private readonly List<DescendantOfAdamAndEve> _descendants = DescendantOfAdamAndEve
+            .ParseDescendants(new Page(new Site(Site.WikipediaBaseUrl)) { Text = S160818 }, true);
 
-        private const string S160817 = @"
+        private const string S160818 = @"
 '''[[Adam]]''' ({{lang-he|אָדָם}}, ''ʼĀḏām'', ""dust; man; mankind""; {{lang-ar|آدم}}, {{transl|ar|DIN|''ʼĀdam''}}) and '''[[Eve]]''' ({{lang-he|חַוָּה}}, ''Ḥawwā'', ""living one""; {{lang-ar|حواء}}, {{transl|ar|DIN|''Ḥawwāʼ''}}) were, according to the [[Book of Genesis]] of the [[Bible]], the [[List of first men or women in mythology and religion|first man and woman]] created by [[God]]. The following is an outline of their descendants as presented in the [[Bible]].
 
 ==Legend==
@@ -35,7 +36,7 @@ Genealogy from Adam to Zerubbabel:
 .......+ m. [[List of minor Biblical figures#Adah|Adah]]<ref name=""Ge 4:19"">Genesis 4:19</ref><br>
 ........8. [[Jabal (Bible)|Jabal]]<ref>Genesis 4:20</ref><br>
 ........8. [[Jubal (Bible)|Jubal]]<ref>Genesis 4:21</ref><br>
-.......+ m. [[List of minor Biblical figures#Zillah|Zillah]]<ref name=""Ge 4:19""/><br>
+.......+ m. [[List of minor biblical figures,_L–Z#Zillah|Zillah]]<ref name=""Ge 4:19""/><br>
 ........8. [[Tubal-Cain]]<ref name=""Ge 4:22"">Genesis 4:22</ref><br>
 ........8. [[Naamah (Genesis)|Naamah]]<ref name=""Ge 4:22""/><br>
 ..2. [[Abel]]<ref>Genesis 4:2</ref><br>
@@ -66,9 +67,9 @@ Genealogy from Adam to Zerubbabel:
 ......................22. [[Esau]]<ref name=""Ge 25:25"">Genesis 25:25</ref><br>
 .......................+ m. [[Judith]]<ref name=""Ge 26:34"">Genesis 26:34</ref><br>
 .......................+ m. [[Basemath]]<ref name=""Ge 26:34""/><br>
-.......................+ m. [[List of minor Biblical figures#Adah|Adah]]<ref name=""Ge 36:2"">Genesis 36:2</ref><br>
+.......................+ m. [[List of minor biblical figures#Adah|Adah]]<ref name=""Ge 36:2"">Genesis 36:2</ref><br>
 ........................23. [[Eliphaz]]<ref name=""Ge 36:4"">Genesis 36:4</ref><br>
-.........................24. Teman{{ref|Teman|1}}<ref name=""Ge 36:11"">Genesis 36:11</ref><br>
+.........................24. Teman<ref name=""Ge 36:11"">Genesis 36:11</ref><br>
 .........................24. [[Omar (Bible)|Omar]]<ref name=""Ge 36:11""/><br>
 .........................24. [[Zepho]]<ref name=""Ge 36:11""/><br>
 .........................24. [[Gatam]]<ref name=""Ge 36:11""/><br>
@@ -232,15 +233,15 @@ Genealogy from Adam to Zerubbabel:
 .....................................36. [[Abijah]]<ref name=""1Ch 6:28""/><br>
 .........................24. [[Merari]]{{ref|Merari|5}}<ref name=""Ge 46:11""/>
 
-..........................25. [[List of minor Biblical figures#Mahali|Mahli]]<ref name=""Ex 6:19"">Exodus 6:19</ref><br>
+..........................25. [[List of minor biblical figures,_L–Z#Mahali|Mahli]]<ref name=""Ex 6:19"">Exodus 6:19</ref><br>
 ...........................26. [[Libni]]<ref name=""1Ch 6:29"">1 Chronicles 6:29</ref><br>
 ............................27. [[Shimei]]<ref name=""1Ch 6:29""/><br>
 .............................28. [[Uzzah]]<ref name=""1Ch 6:29""/><br>
 ..............................29. [[Shimea]]<ref name=""1Ch 6:30"">1 Chronicles 6:30</ref><br>
 ...............................30. [[Haggiah]]<ref name=""1Ch 6:30""/><br>
 ................................31. [[Asaiah]]<ref name=""1Ch 6:30""/><br>
-..........................25. [[List of minor Biblical figures#Mushi|Mushi]]<ref name=""Ex 6:19""/><br>
-...........................26. [[List of minor Biblical figures#Mahali|Mahli]]<ref name=""1Ch 6:47"">1 Chronicles 6:47</ref><br>
+..........................25. [[List of minor biblical figures,_L–Z#Mushi|Mushi]]<ref name=""Ex 6:19""/><br>
+...........................26. [[List of minor biblical figures,_L–Z#Mahali|Mahli]]<ref name=""1Ch 6:47"">1 Chronicles 6:47</ref><br>
 ............................27. [[Shemer]]<ref name=""1Ch 6:46"">1 Chronicles 6:46</ref><br>
 .............................28. [[Bani (biblical figure)|Bani]]<ref name=""1Ch 6:46""/><br>
 ..............................29. [[Amzi]]<ref name=""1Ch 6:46""/><br>
@@ -314,7 +315,7 @@ Genealogy from Adam to Zerubbabel:
 .............................29. [[Abisur]]<ref name=""1Ch 2:28""/><br>
 .............................+ m. [[Abihail]]<ref name=""1Ch 2:29"">1 Chronicles 2:29</ref><br>
 ..............................30. [[Ahban]]<ref name=""1Ch 2:29""/><br>
-..............................30. [[List of minor Biblical figures#Molid|Molid]]<ref name=""1Ch 2:29""/><br>
+..............................30. [[List of minor biblical figures,_L–Z#Molid|Molid]]<ref name=""1Ch 2:29""/><br>
 ............................28. [[Jada (biblical)|Jada]]<ref name=""1Ch 2:28""/><br>
 .............................29. [[Jether]]<ref name=""1Ch 2:32"">1 Chronicles 2:32</ref><br>
 .............................29. Jonathan<ref name=""1Ch 2:32""/><br>
@@ -606,15 +607,15 @@ Genealogy from Adam to Zerubbabel:
 .........................?. Unknown<ref name=""1Ch 4:19""/><br>
 ..........................?. [[Keilah]]<ref name=""1Ch 4:19""/><br>
 .........................?. Unknown<ref name=""1Ch 4:19""/><br>
-..........................?. [[Eshtamoa the Maachathite|Eshtemoa]]<ref name=""1Ch 4:19""/><br>
+..........................?. [[Eshtamoa the Maachathite]]<ref name=""1Ch 4:19""/><br>
 ........................?. [[Naham]]<ref name=""1Ch 4:19""/><br>
-........................?. [[List of minor Biblical figures#Shimon|Shimon]]<ref name=""1Ch 4:20""/><br>
+........................?. [[List of minor biblical figures,_L–Z#Shimon|Shimon]]<ref name=""1Ch 4:20""/><br>
 .........................?. [[Amnon]]<ref name=""1Ch 4:20""/><br>
 .........................?. [[Rinnah]]<ref name=""1Ch 4:20""/><br>
 .........................?. [[Ben-Hanan]]<ref name=""1Ch 4:20""/><br>
 .........................?. [[Tilon]]<ref name=""1Ch 4:20""/><br>
 .......................23. [[Issachar]]<ref name=""Ge 30:18"">Genesis 30:18</ref><br>
-........................24. [[List of minor Biblical figures#Tola|Tola]]<ref name=""Ge 46:13"">Genesis 46:13</ref><br>
+........................24. [[List of minor biblical figures,_L–Z#Tola|Tola]]<ref name=""Ge 46:13"">Genesis 46:13</ref><br>
 .........................25. [[Uzzi]]<ref name=""1Ch 7:2"">1 Chronicles 7:2</ref><br>
 ...........................26. [[Izrahiah]]<ref name=""1Ch 7:3"">1 Chronicles 7:3</ref><br>
 ............................27. [[Michael]]<ref name=""1Ch 7:3""/><br>
@@ -628,13 +629,13 @@ Genealogy from Adam to Zerubbabel:
 .........................25. [[Samuel]]<ref name=""1Ch 7:2""/><br>
 ........................24. [[Puah]]<ref name=""Ge 46:13""/><br>
 ........................24. [[Jashub]]<ref name=""Ge 46:13""/><br>
-........................24. [[List of minor Biblical figures#Shimron|Shimron]]<ref name=""Ge 46:13""/><br>
+........................24. [[List of minor biblical figures,_L–Z#Shimron|Shimron]]<ref name=""Ge 46:13""/><br>
 ........................?. [[Zuar]]<ref name=""Nu 1:8"">Numbers 1:8</ref><br>
 .........................?. [[Nethanel]]<ref name=""Nu 1:8""/><br>
 ........................?. [[Joseph (son of Jacob)|Joseph]]<ref name=""Nu 13:7"">Numbers 13:7</ref><br>
 .........................?. [[List of minor Biblical figures#Igal|Igal]]<ref name=""Nu 13:7""/><br>
 ........................?. [[Azzan]]<ref name=""Nu 34:26"">Numbers 34:26</ref><br>
-.........................?. [[List of minor Biblical figures#Paltiel|Paltiel]]<ref name=""Nu 34:26""/><br>
+.........................?. [[List of minor biblical figures,_L–Z#Paltiel|Paltiel]]<ref name=""Nu 34:26""/><br>
 ........................?. [[Dodo]]<ref name=""Judges 10:1"">Judges 10:1</ref><br>
 .........................?. [[Puah]]<ref name=""Judges 10:1""/><br>
 ..........................?. [[Tola (Bible)|Tola]], Judge of Israel<ref name=""Judges 10:1""/><br>
@@ -676,7 +677,7 @@ Genealogy from Adam to Zerubbabel:
 .........................25. [[Jair]]<ref name=""1Ki 4:13"">1 Kings 4:13</ref><br>
 .........................?. [[Pedahzur]]<ref name=""Nu 1:10"">Numbers 1:10</ref><br>
 ..........................?. [[Gamaliel]]<ref name=""Nu 1:10""/><br>
-.........................?. [[List of minor biblical figures#Susi|Susi]]<ref name=""Nu 13:11"">Numbers 13:11</ref><br>
+.........................?. [[List of minor biblical figures,_L–Z#Susi|Susi]]<ref name=""Nu 13:11"">Numbers 13:11</ref><br>
 ..........................?. Gaddi<ref name=""Nu 13:11""/><br>
 ..........................?. [[Ephod]]<ref name=""Nu 34:23"">Numbers 34:23</ref><br>
 ..........................?. [[Hanniel]]<ref name=""Nu 34:23""/><br>
@@ -712,7 +713,7 @@ Genealogy from Adam to Zerubbabel:
 .........................?. [[Shiphtan]]<ref name=""Nu 34:24"">Numbers 34:24</ref><br>
 ..........................?. [[Kemuel]]<ref name=""Nu 34:24""/><br>
 .........................?. [[Zuph]]<ref name=""1Sa 1:1"">1 Samuel 1:1</ref><br>
-..........................?. [[List of minor Biblical figures#Tohu|Tohu]]<ref name=""1Sa 1:1""/><br>
+..........................?. [[List of minor biblical figures,_L–Z#Tohu|Tohu]]<ref name=""1Sa 1:1""/><br>
 ...........................?. [[Elihu (Job)|Elihu]]<ref name=""1Sa 1:1""/><br>
 ............................?. [[Jeroham]]<ref name=""1Sa 1:1""/><br>
 .............................?. [[Elkanah]]<ref name=""1Sa 1:1""/><br>
@@ -720,7 +721,7 @@ Genealogy from Adam to Zerubbabel:
 ..............................?. [[Samuel]]<ref name=""1Sa 1:20"">1 Samuel 1:20</ref><br>
 .........................?. [[Nebat]]<ref name=""1Ki 11:26"">1 Kings 11:26</ref><br>
 ..........................?. [[Jeroboam]]<ref name=""1Ki 11:26""/><br>
-...........................?. [[List of minor Biblical figures#Nadab|Nadab]]<ref name=""1Ki 14:20"">1 Kings 14:20</ref><br>
+...........................?. [[List of minor biblical figures,_L–Z#Nadab|Nadab]]<ref name=""1Ki 14:20"">1 Kings 14:20</ref><br>
 .........................?. [[Shuthelah]]<ref name=""1Ch 7:20"">1 Chronicles 7:20</ref><br>
 ..........................?. [[Bered]]<ref name=""1Ch 7:20""/><br>
 ...........................?. [[Tahath]]<ref name=""1Ch 7:20""/><br>
@@ -761,7 +762,7 @@ Genealogy from Adam to Zerubbabel:
 ........................24. [[Gera]]<ref name=""Ge 46:21""/><br>
 ........................24. [[Naaman]]<ref name=""Ge 46:21""/><br>
 ........................24. [[Minor characters in the Book of Genesis|Ehi]]<ref name=""Ge 46:21""/><br>
-........................24. [[List of minor Biblical figures#Rosh|Rosh]]<ref name=""Ge 46:21""/><br>
+........................24. [[List of minor biblical figures,_L–Z#Rosh|Rosh]]<ref name=""Ge 46:21""/><br>
 ........................24. [[Muppim]]<ref name=""Ge 46:21""/><br>
 ........................24. [[Huppim]]<ref name=""Ge 46:21""/><br>
 ........................24. [[List of minor Biblical figures#Ard|Ard]]<ref name=""Ge 46:21""/><br>
@@ -833,14 +834,14 @@ Genealogy from Adam to Zerubbabel:
 ............................?. [[Iphdeiah]]<ref name=""1Ch 8:25"">1 Chronicles 8:25</ref><br>
 ............................?. [[Penuel]]<ref name=""1Ch 8:25""/><br>
 ...........................?. [[Jeremoth]]<ref name=""1Ch 8:14""/><br>
-...........................?. [[List of minor Biblical figures#Zebadiah|Zebadiah]]<ref name=""1Ch 8:15"">1 Chronicles 8:15</ref><br>
+...........................?. [[List of minor biblical figures,_L–Z#Zebadiah|Zebadiah]]<ref name=""1Ch 8:15"">1 Chronicles 8:15</ref><br>
 ...........................?. [[Arad (Bibl)|Arad]]<ref name=""1Ch 8:15""/><br>
 ...........................?. [[Eder]]<ref name=""1Ch 8:15""/><br>
 ...........................?. [[Michael]]<ref name=""1Ch 8:16"">1 Chronicles 8:16</ref><br>
 ...........................?. [[Ishpah]]<ref name=""1Ch 8:16""/><br>
 ...........................?. [[Joha]]<ref name=""1Ch 8:16""/><br>
 ..........................?. [[Shema]]<ref name=""1Ch 8:13""/><br>
-..........................?. [[List of minor Biblical figures#Zebadiah|Zebadiah]]<ref name=""1Ch 8:17"">1 Chronicles 8:17</ref><br>
+..........................?. [[List of minor biblical figures,_L–Z#Zebadiah|Zebadiah]]<ref name=""1Ch 8:17"">1 Chronicles 8:17</ref><br>
 ..........................?. [[Meshullam]]<ref name=""1Ch 8:17""/><br>
 ..........................?. [[Hizki]]<ref name=""1Ch 8:17""/><br>
 ..........................?. [[Minor characters in the Book of Genesis|Heber]]<ref name=""1Ch 8:17""/><br>
@@ -880,7 +881,7 @@ Genealogy from Adam to Zerubbabel:
 ..............................?. [[Merib-Baal]]<ref name=""1Ch 8:34"">1 Chronicles 8:34</ref><br>
 ...............................?. [[Micah]]<ref name=""1Ch 8:34""/><br>
 ................................?. [[Pithon]]<ref name=""1Ch 8:35"">1 Chronicles 8:35</ref><br>
-................................?. [[List of minor Biblical figures#Melech|Melech]]<ref name=""1Ch 8:35""/><br>
+................................?. [[List of minor biblical figures,_L–Z#Melech|Melech]]<ref name=""1Ch 8:35""/><br>
 ................................?. [[Tarea]]<ref name=""1Ch 8:35""/><br>
 ................................?. [[Ahaz]]<ref name=""1Ch 8:35""/><br>
 .................................?. [[Jehoaddah]]<ref name=""1Ch 8:36"">1 Chronicles 8:36</ref><br>
@@ -889,7 +890,7 @@ Genealogy from Adam to Zerubbabel:
 ...................................?. [[Jeziel]]<ref name=""1Ch 12:3"">1 Chronicles 12:3</ref><br>
 ...................................?. [[Pelet]]<ref name=""1Ch 12:3""/><br>
 ..................................?. [[Zimri (prince)|Zimri]]<ref name=""1Ch 8:36""/><br>
-...................................?. [[List of minor Biblical figures#Moza|Moza]]<ref name=""1Ch 8:36""/><br>
+...................................?. [[List of minor biblical figures,_L–Z#Moza|Moza]]<ref name=""1Ch 8:36""/><br>
 ....................................?. [[Binea]]<ref name=""1Ch 8:37"">1 Chronicles 8:37</ref><br>
 .....................................?. [[Raphah]]<ref name=""1Ch 8:37""/><br>
 ......................................?. [[Eleasah]]<ref name=""1Ch 8:37""/><br>
@@ -959,7 +960,7 @@ Genealogy from Adam to Zerubbabel:
 ........................24. [[Areli]]<ref name=""Ge 46:16""/><br>
 ........................?. [[List of minor Biblical figures#Deuel|Deuel]]<ref name=""Nu 1:14"">Numbers 1:14</ref><br>
 .........................?. [[Eliasaph]]<ref name=""Nu 1:14""/><br>
-........................?. [[List of minor Biblical figures#Maki|Maki]]<ref name=""Nu 13:15"">Numbers 13:15</ref><br>
+........................?. [[List of minor biblical figures,_L–Z#Maki|Maki]]<ref name=""Nu 13:15"">Numbers 13:15</ref><br>
 .........................?. [[Geuel]]<ref name=""Nu 13:15""/><br>
 ........................?. [[Joel (prophet)|Joel]]<ref name=""1Ch 5:12"">1 Chronicles 5:12</ref><br>
 ........................?. [[Shapham]]<ref name=""1Ch 5:12""/><br>
@@ -978,7 +979,7 @@ Genealogy from Adam to Zerubbabel:
 .................................?. [[Sheba]]<ref name=""1Ch 5:13""/><br>
 .................................?. [[Jorai]]<ref name=""1Ch 5:13""/><br>
 .................................?. [[Jacan]]<ref name=""1Ch 5:13""/><br>
-.................................?. [[List of minor Biblical figures#Zia|Zia]]<ref name=""1Ch 5:13""/><br>
+.................................?. [[List of minor biblical figures,_L–Z#Zia|Zia]]<ref name=""1Ch 5:13""/><br>
 .................................?. [[Eber]]<ref name=""1Ch 5:13""/><br>
 ........................?. Guni<ref name=""1Ch 5:15"">1 Chronicles 5:15</ref><br>
 .........................?. [[Abdiel]]<ref name=""1Ch 5:15""/><br>
@@ -1016,20 +1017,20 @@ Genealogy from Adam to Zerubbabel:
 ...........................27. [[Imna (Bible)]]<ref name=""1Ch 7:35""/><br>
 ...........................27. [[Shelesh]]<ref name=""1Ch 7:35""/><br>
 ...........................27. [[List of minor Biblical figures#Amal|Amal]]<ref name=""1Ch 7:35""/><br>
-.........................25. [[List of minor Biblical figures#Malkiel|Malkiel]]<ref name=""Ge 46:17""/><br>
+.........................25. [[List of minor biblical figures,_L–Z#Malkiel|Malkiel]]<ref name=""Ge 46:17""/><br>
 ..........................26. [[Birzaith]]<ref name=""1Ch 7:31"">1 Chronicles 7:31</ref><br>
 ........................24. [[Serah]]<ref name=""Ge 46:17""/><br>
 ........................?. [[Ocran]]<ref name=""Nu 1:13"">Numbers 1:13</ref><br>
 .........................?. [[Pagiel]]<ref name=""Nu 1:13""/><br>
 ........................?. [[Michael]]<ref name=""Nu 13:1"">Numbers 13:1</ref><br>
 .........................?. [[Sethur]]<ref name=""Nu 13:1""/><br>
-........................?. [[List of minor Biblical figures#Shelomi|Shelomi]]<ref name=""Nu 34:27"">Numbers 34:27</ref><br>
+........................?. [[List of minor biblical figures,_L–Z#Shelomi|Shelomi]]<ref name=""Nu 34:27"">Numbers 34:27</ref><br>
 .........................?. [[Ahihud]]<ref name=""Nu 34:27""/><br>
 ........................?. [[Jether]]<ref name=""1Ch 7:38"">1 Chronicles 7:38</ref><br>
 .........................?. [[Jephunneh]]<ref name=""1Ch 7:38""/><br>
 .........................?. [[Pispah]]<ref name=""1Ch 7:38""/><br>
 .........................?. [[List of minor Biblical figures#Ara|Ara]]<ref name=""1Ch 7:38""/><br>
-........................?. [[List of minor Biblical figures#Ulla|Ulla]]<ref name=""1Ch 7:39"">1 Chronicles 7:39</ref><br>
+........................?. [[List of minor biblical figures,_L–Z#Ulla|Ulla]]<ref name=""1Ch 7:39"">1 Chronicles 7:39</ref><br>
 .........................?. [[Arah]]<ref name=""1Ch 7:39""/><br>
 .........................?. [[Hanniel]]<ref name=""1Ch 7:39""/><br>
 .........................?. [[Rizia]]<ref name=""1Ch 7:39""/><br>
@@ -1081,7 +1082,7 @@ Genealogy from Adam to Zerubbabel:
 .......................23. [[Leah]]<ref name=""Ge 29:16"" /><br>
 .......................23. [[Rachel]]<ref name=""Ge 29:6"" /><br>
 ....................+ m. [[Reumah]]<ref name=""Ge 22:24"">Genesis 22:24</ref><br>
-.....................21. [[List of minor Biblical figures#Tebah|Tebah]]<ref name=""Ge 22:24""/><br>
+.....................21. [[List of minor biblical figures,_L–Z#Tebah|Tebah]]<ref name=""Ge 22:24""/><br>
 .....................21. [[Gaham]]<ref name=""Ge 22:24""/><br>
 .....................21. [[Tahash]]<ref name=""Ge 22:24""/><br>
 .....................21. [[Maacah]]<ref name=""Ge 22:24""/><br>
@@ -1120,7 +1121,7 @@ Genealogy from Adam to Zerubbabel:
 .............13. [[Meshech]]<ref name=""Ge 10:23""/><br>
 ...........11. [[Ham (son of Noah)|Ham]]<ref name=""Ge 5:32""/><br>
 ............12. [[Cush (Bible)|Cush]]<ref name=""Ge 10:6"">Genesis 10:6</ref><br>
-.............13. [[List of minor Biblical figures#Seba|Seba]]<ref name=""Ge 10:7"">Genesis 10:7</ref><br>
+.............13. [[List of minor biblical figures,_L–Z#Seba|Seba]]<ref name=""Ge 10:7"">Genesis 10:7</ref><br>
 .............13. [[Havilah]]<ref name=""Ge 10:7""/><br>
 .............13. [[Sabtah]]<ref name=""Ge 10:7""/><br>
 .............13. [[Raamah]]<ref name=""Ge 10:7""/><br>
@@ -1146,7 +1147,7 @@ Genealogy from Adam to Zerubbabel:
 .............13. [[Girgashites]]<ref name=""Ge 10:16""/><br>
 .............13. [[Hivites]]{{ref|Hivites|8}}<ref name=""Ge 10:17"">Genesis 10:17</ref><br>
 .............13. [[Arkites]]<ref name=""Ge 10:17""/><br>
-.............13. [[List of minor Biblical figures#Sinites|Sinites]]<ref name=""Ge 10:17""/><br>
+.............13. [[List of minor biblical figures,_L–Z#Sinites|Sinites]]<ref name=""Ge 10:17""/><br>
 .............13. [[Arvadites]]<ref name=""Ge 10:18"">Genesis 10:18</ref><br>
 .............13. [[Zemarites]]<ref name=""Ge 10:18""/><br>
 .............13. [[Hamathites]]<ref name=""Ge 10:18""/><br>
@@ -1214,11 +1215,16 @@ Genealogy from Zerubbabel to Jesus:
         public void Parse()
         {
             var des = DescendantOfAdamAndEve.Parse(Best);
+            Assert.AreEqual(64, des[14].GenerationNumber);
+            Assert.AreEqual("Jesus", des[14].Title);
+            Assert.AreEqual(des[12], des[14].Father);
+            Assert.AreEqual(des[13], des[14].Mother);
+
             Assert.AreEqual(33, des[9].GenerationNumber);
             Assert.AreEqual("Azrikam", des[9].Title);
             Assert.AreEqual("1Ch 9:14", des[9].RefName);
             Assert.AreEqual("1 Chronicles 9:14", des[9].RefCaption);
-            Assert.IsNull(des[9].Parent);
+            Assert.IsNull(des[9].Father);
 
             Assert.AreEqual(33, des[10].GenerationNumber);
             Assert.AreEqual("Nun", des[10].Title);
@@ -1226,79 +1232,75 @@ Genealogy from Zerubbabel to Jesus:
             Assert.AreEqual("Numbers 13:8", des[10].Ref2Caption);
             Assert.AreEqual("1Ch 7:27", des[10].RefName);
             Assert.AreEqual("1 Chronicles 7:27", des[10].RefCaption);
-            Assert.IsNull(des[10].Parent);
+            Assert.IsNull(des[10].Father);
 
             Assert.IsTrue(des[11].GenerationNumberUnknown);
             Assert.AreEqual("Kenaz", des[11].Title);
             Assert.AreEqual("1Ch 4:15", des[11].RefName);
-            Assert.IsNull(des[11].Parent);
+            Assert.IsNull(des[11].Father);
 
             Assert.AreEqual(63, des[12].GenerationNumber);
             Assert.AreEqual("Saint Joseph", des[12].Title);
             Assert.AreEqual("Joseph", des[12].TitleShort);
             Assert.AreEqual("Mat 1:1-17", des[12].RefName);
-            Assert.IsNull(des[12].Parent);
+            Assert.IsNull(des[12].Father);
 
             Assert.AreEqual(63, des[13].GenerationNumber);
             Assert.AreEqual("Mary (mother of Jesus)", des[13].Title);
             Assert.AreEqual("Mary", des[13].TitleShort);
             Assert.AreEqual(des[12], des[13].Husband);
-            Assert.IsNull(des[13].Parent);
-
-            Assert.AreEqual(64, des[14].GenerationNumber);
-            Assert.AreEqual("Jesus", des[14].Title);
-            Assert.AreEqual(des[12], des[14].Parent);
+            Assert.IsNull(des[13].Father);
 
             Assert.AreEqual(1, des[0].GenerationNumber);
             Assert.AreEqual("Adam", des[0].Title);
             Assert.AreEqual("Genesis", des[0].RefCaption);
             Assert.AreEqual("Ge", des[0].RefName);
-            Assert.IsNull(des[0].Parent);
+            Assert.IsNull(des[0].Father);
 
             Assert.AreEqual(1, des[1].GenerationNumber);
             Assert.AreEqual("Eve", des[1].Title);
             Assert.AreEqual(des[0], des[1].Husband);
             Assert.AreEqual("Genesis 3:20", des[1].RefCaption);
-            Assert.IsNull(des[1].Parent);
+            Assert.IsNull(des[1].Father);
 
             Assert.AreEqual(3, des[2].GenerationNumber);
             Assert.AreEqual("Enoch (son of Cain)", des[2].Title);
             Assert.AreEqual("Enoch", des[2].TitleShort);
             Assert.AreEqual("Genesis 4:17", des[2].RefCaption);
-            Assert.IsNull(des[2].Parent);
+            Assert.IsNull(des[2].Father);
 
             Assert.AreEqual(4, des[3].GenerationNumber);
             Assert.AreEqual("Irad", des[3].Title);
             Assert.AreEqual("Ge 4:18", des[3].RefName);
             Assert.AreEqual("Genesis 4:18", des[3].RefCaption);
-            Assert.AreEqual(des[2], des[3].Parent);
+            Assert.AreEqual(des[2], des[3].Father);
 
             Assert.AreEqual(32, des[4].GenerationNumber);
             Assert.AreEqual("Uzziel", des[4].Title);
             Assert.AreEqual("1Ch 4:42", des[4].RefName);
-            Assert.IsNull(des[4].Parent);
+            Assert.IsNull(des[4].Father);
 
             Assert.IsTrue(des[5].GenerationNumberUnknown);
             Assert.AreEqual("Zoheth", des[5].Title);
             Assert.AreEqual("1Ch 4:20", des[5].RefName);
             Assert.AreEqual("1 Chronicles 4:20", des[5].RefCaption);
-            Assert.IsNull(des[5].Parent);
+            Assert.IsNull(des[5].Father);
 
             Assert.AreEqual(24, des[6].GenerationNumber);
             Assert.AreEqual("Teman", des[6].OtherCaption);
             Assert.AreEqual("Ge 36:11", des[6].RefName);
             Assert.AreEqual("Genesis 36:11", des[6].RefCaption);
-            Assert.IsNull(des[6].Parent);
+            Assert.IsNull(des[6].Father);
 
             Assert.AreEqual(23, des[7].GenerationNumber);
             Assert.AreEqual("Reuel", des[7].Title);
             Assert.AreEqual("Ge 36:4", des[7].RefName);
-            Assert.IsNull(des[7].Parent);
+            Assert.IsNull(des[7].Father);
 
             Assert.AreEqual(26, des[8].GenerationNumber);
             Assert.AreEqual("Aaron", des[8].Title);
             Assert.AreEqual("Ex 6:20", des[8].RefName);
-            Assert.IsNull(des[8].Parent);
+            Assert.IsNull(des[8].Father);
         }
 
         [Test]
@@ -1331,12 +1333,21 @@ Genealogy from Zerubbabel to Jesus:
 ......................+ m. [[Leah]]<ref name=""Ge 29:16"">Genesis 29:16</ref><br>
 ...........................?. [[Meshullam]]<ref name=""1Ch 9:8""/><br>
 ......................+ m. [[Bilhah]]<ref name=""Ge 30:4"">Genesis 30:4</ref><br>
+
+.........................24. [[Kohath]]<ref name=""Ge 46:11""/><br>
 ..........................25. [[Amram]]<ref name=""Ex 6:18"">Exodus 6:18</ref><br>
 ..........................+ m. [[Jochebed]]<ref name=""Ex 6:20"">Exodus 6:20</ref><br>
+...........................26. [[Aaron]]<ref name=""Ex 6:20"" /><br>
+
+.......................23. [[Judah (biblical person)|Judah]]<ref name=""Ge 29:35"">Genesis 29:35</ref><br>
 ........................24. [[Er (biblical person)|Er]]<ref name=""Ge 38:3"">Genesis 38:3</ref><br>
 ........................+ m. [[Tamar (Genesis)|Tamar]]<ref name=""Ge 38:6"">Genesis 38:6</ref><br>
 ........................24. [[Onan]]<ref name=""Ge 38:4"">Genesis 38:4</ref><br>
 ........................+ m. [[Tamar (Genesis)|Tamar]]<ref name=""Ge 38:6"" /><br>
+........................24. [[Shelah (son of Judah)|Shelah]]<ref name=""Ge 38:5"">Genesis 38:5</ref><br>
+.........................25. [[Er (Biblical name)|Er]]<ref name=""1Ch 4:21"">1 Chronicles 4:21</ref><br>
+...................... + m. [[Tamar (Genesis)|Tamar]]<ref name=""Ge 38:6"" /><br>
+........................24. [[Perez (son of Judah)|Perez]]<ref name=""Ge 38:29"">Genesis 38:29</ref><br>
 "));
             Assert.AreEqual(22, des[2].GenerationNumber);
             Assert.AreEqual(des[0], des[2].Husband);
@@ -1344,11 +1355,17 @@ Genealogy from Zerubbabel to Jesus:
             Assert.AreEqual(des[3], des[4].Husband);
             Assert.AreEqual(des[3], des[6].Husband);
 
-            Assert.AreEqual(des[7], des[8].Husband);
+            Assert.AreEqual(des[8], des[9].Husband);
+            Assert.AreEqual(des[9], des[10].Mother);
+            Assert.AreEqual(des[8], des[10].Father);
 
-            Assert.AreEqual(12, des.Count);
-            Assert.IsTrue(des[10].Husbands.Contains(des[9]));
-            Assert.IsTrue(des[10].Husbands.Contains(des[11]));
+            Assert.AreEqual(18, des.Count);
+            Assert.IsTrue(des[12].Wives.Count == 1);
+            Assert.IsTrue(des[13].Husbands.Contains(des[11]));
+            Assert.IsTrue(des[13].Husbands.Contains(des[12]));
+            Assert.IsTrue(des[13].Husbands.Contains(des[14]));
+            Assert.AreEqual(1, des[13].Kids.Count);
+            Assert.AreEqual(des[17], des[13].Kids[0]);
         }
 
         [Test]
@@ -1357,8 +1374,31 @@ Genealogy from Zerubbabel to Jesus:
             var des = DescendantOfAdamAndEve.Parse(@"
 ..........10. [[Noah]]<ref>Genesis 5:29</ref><br>
 ...........11. [[Shem]]<ref name=""Ge 5:32"">Genesis 5:32</ref><br>
-");
-            Assert.AreEqual(des[0], des[1].Parent);
+....................20. [[Abraham]]<ref name=""Ge 11:26"">Genesis 11:26</ref><br>
+....................+ m. [[Sarah]]<ref name=""Ge 11:29"">Genesis 11:29</ref><br>
+.....................21. [[Isaac]]<ref name=""Ge 21:3"">Genesis 21:3</ref><br>
+.....................+ m. [[Rebekah]]<ref name=""Ge 22:23"">Genesis 22:23</ref><br>
+......6. [[Methushael]]<ref name=""Ge 4:18""/><br>
+.......7. [[Lamech (descendant of Cain)|Lamech]]<ref name=""Ge 4:18""/><br>
+.......+ m. [[List of minor Biblical figures#Adah|Adah]]<ref name=""Ge 4:19"">Genesis 4:19</ref><br>
+........8. [[Jabal (Bible)|Jabal]]<ref>Genesis 4:20</ref><br>
+........8. [[Jubal (Bible)|Jubal]]<ref>Genesis 4:21</ref><br>
+.......+ m. [[List of minor biblical figures,_L–Z#Zillah|Zillah]]<ref name=""Ge 4:19""/><br>
+
+......................22. [[Esau]]<ref name=""Ge 25:25"">Genesis 25:25</ref><br>
+.......................+ m. [[Judith]]<ref name=""Ge 26:34"">Genesis 26:34</ref><br>
+.......................+ m. [[Basemath]]<ref name=""Ge 26:34""/><br>
+.......................+ m. [[List of minor biblical figures#Adah|Adah]]<ref name=""Ge 36:2"">Genesis 36:2</ref><br>
+........................23. [[Eliphaz]]<ref name=""Ge 36:4"">Genesis 36:4</ref><br>");
+            Assert.AreEqual(des[0], des[1].Father);
+            Assert.AreEqual(1, des[3].Kids.Count);
+            Assert.AreEqual(des[2], des[4].Father);
+            Assert.AreEqual(des[3], des[4].Mother);
+            Assert.IsNull(des[5].Mother);
+
+            Assert.AreEqual(des[7], des[11].Husband);
+
+            Assert.AreEqual(des[12], des[16].Father);
         }
 
         [Test]
@@ -1377,20 +1417,28 @@ Genealogy from Zerubbabel to Jesus:
 ");
             des[3].SetTitleUnique();
             Assert.AreEqual("parent of Eshtamoa the Maachathite", des[3].TitleUnique);
-            Assert.IsNull(des[7].Parent);
-            Assert.AreEqual(des[7], des[8].Parent);
+            Assert.IsNull(des[7].Father);
+            Assert.AreEqual(des[7], des[8].Father);
         }
 
         [Test]
         public void ParseDescendants()
         {
-            Assert.AreEqual(1150, DescendantOfAdamAndEve.ParseDescendants(new Page { Text = S160817 }).Count);
+            Assert.AreEqual(1150, DescendantOfAdamAndEve.ParseDescendants(new Page { Text = S160818 }).Count);
         }
 
         [Test]
         public void Duplicates()
         {
-            Assert.AreEqual(1149, _descendants.Count);
+            foreach (DescendantOfAdamAndEve descendant in _descendants)
+            {
+                if (descendant.Title == "Jochebed")
+                {
+                    Assert.AreEqual("Amram", descendant.Husband.Title);
+                    Assert.AreEqual(4, descendant.Father.Kids.Count);
+                }
+            }
+            Assert.AreEqual(1146, _descendants.Count);
         }
 
         [Test]
@@ -1398,7 +1446,19 @@ Genealogy from Zerubbabel to Jesus:
         {
             foreach (DescendantOfAdamAndEve descendant in _descendants)
             {
-                if(descendant.Title=="Jacob")
+                foreach (var wife in descendant.Wives)
+                    Assert.IsTrue(wife.Husbands.Contains(descendant));
+
+                foreach (var kid in descendant.Kids)
+                {
+                    Assert.AreEqual(descendant, descendant.IsWife ? kid.Mother : kid.Father);
+                    if (descendant.IsWife)
+                        Assert.IsNotNull(kid.Father);
+                    else if (descendant.Wives.Count == 0)
+                        Assert.IsNull(kid.Mother);
+                }
+
+                if (descendant.Title=="Jacob")
                 {
                     Assert.AreEqual(4, descendant.Wives.Count);
                     Assert.AreEqual(13, descendant.Kids.Count);

@@ -12,6 +12,8 @@ using Logy.MwAgent.DotNetWikiBot;
 
 using Skills.Xpo;
 
+using Site = Logy.Entities.Model.Site;
+
 namespace Logy.ImportExport
 {
     public class ImportManager : SecureManager
@@ -20,7 +22,7 @@ namespace Logy.ImportExport
         {
         }
 
-        public string Import(Wiki wiki, ImportTemplate importTemplate)
+        public string Import(Site site, ImportTemplate importTemplate)
         {
             Person mover;
             var error = CheckUser(out mover);
@@ -29,10 +31,10 @@ namespace Logy.ImportExport
 
             var doc = new Doc(XpoSession)
                           {
-                              Wiki = wiki,
+                              Site = site,
                               ImportTemplate = importTemplate,
                               Parent = importTemplate.ParentDoc,
-                              Url = Wiki.Url(wiki.BaseUrl, importTemplate.Url),
+                              Url = Site.Url(site.BaseUrl, importTemplate.Url),
                               Type = DocType.Import,
                               AddedBy = UserCurrent,
                               Mover = mover,
@@ -46,10 +48,10 @@ namespace Logy.ImportExport
                             IList pages;
                             var objCreated = new List<DbObject>();
                             Importer importer = null;
-                            var site = new Site(wiki.BaseUrl);
-                            if (site.GetNamespace(importTemplate.Url) == Site.CategoryNS)
+                            var mediawikiSite = new MwAgent.DotNetWikiBot.Site(site.BaseUrl);
+                            if (mediawikiSite.GetNamespace(importTemplate.Url) == MwAgent.DotNetWikiBot.Site.CategoryNS)
                             {
-                                var pl = new PageList(site);
+                                var pl = new PageList(mediawikiSite);
                                 pl.FillFromCategoryTree(importTemplate.Url);
                                 pages = pl.Pages;
                                 switch (importTemplate.EntityType)

@@ -21,6 +21,8 @@ namespace Logy.MwAgent.DotNetWikiBot
     [Serializable]
     public class Site
     {
+        public const string WikipediaBaseUrl = "https://en.wikipedia.org/wiki";
+
         /// <summary>Default edit comment. You can set it to whatever you would like.</summary>
         /// <example><code>mySite.defaultEditComment = "My default edit comment";</code></example>
         public const string DefaultEditComment = "Automatic page editing by robot";

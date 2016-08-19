@@ -21,26 +21,37 @@ namespace Logy.ImportExport.Bible
         {
             var block = (DescendantOfAdamAndEve)page;
 
-            foreach (var link in new[]
-                                     {
-                                         SaveRef(block, BibleManager.GetDocumentUrl(block.RefName)),
-                                         SaveRef(block, BibleManager.GetDocumentUrl(block.Ref2Name))
-                                     })
+            var link = SaveDescendant(block);
+
+            var father = link.PName.Person;
+            foreach (var wife in block.Wives)
             {
-                if (link != null)
-                    SavePersonName(page, PersonType.Human, false, link, block.WikiDataitemId);
+                var wifeLink = SaveDescendant(wife);
+                new Family(father) { Mother = wifeLink.PName.Person };
             }
 
-            // families
             // births
+        }
+
+        private Link SaveDescendant(DescendantOfAdamAndEve block)
+        {
+            SaveDescendant(block, block.Ref2Name);
+            return SaveDescendant(block, block.RefName);
+        }
+
+        private Link SaveDescendant(DescendantOfAdamAndEve block, string refName)
+        {
+            var link = SaveRef(block, BibleManager.GetDocumentUrl(refName));
+            if (link != null)
+                SavePersonName(block, PersonType.Human, false, link, null, block.WikiDataitemId);
+            return link;
         }
 
         private Link SaveRef(DescendantOfAdamAndEve block, string url)
         {
             if (string.IsNullOrEmpty(url))
                 return null;
-            var docManager = new DocManager(XpoSession);
-            var foundDoc = docManager.FindByUrl(Doc, url);
+            var foundDoc = DocManager.FindByUrl(Doc, url);
             if (foundDoc == null)
             {
                 foundDoc = new Doc(Doc) { Url = url, };
@@ -48,19 +59,7 @@ namespace Logy.ImportExport.Bible
             }
 
             var number = BibleManager.GetDocumentNumber(block.RefName);
-            Link link;
-            var foundDocPart = docManager.FindPart(foundDoc, number);
-            if (foundDocPart == null)
-            {
-                link = foundDoc.NewLink(number);
-            }
-            else
-                link = new Link(XpoSession)
-                           {
-                               Doc = foundDoc,
-                               DocPart = foundDocPart
-                           };
-
+            var link = foundDoc.NewLink(number);
             ObjectsCreated.Add(link.Save());
 
             return link;

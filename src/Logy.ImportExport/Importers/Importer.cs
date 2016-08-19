@@ -21,7 +21,7 @@ namespace Logy.ImportExport.Importers
         {
             _doc = doc;
             _objectsCreated = objectsCreated;
-            _language = doc.Wiki.MainLanguage;
+            _language = doc.Site.MainLanguage;
         }
 
         public string Language

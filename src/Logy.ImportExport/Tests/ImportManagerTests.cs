@@ -36,7 +36,7 @@ namespace Logy.ImportExport.Tests
                             where o.Url == ImportTemplate.DescendantsOfAdamAndEve
                             select o).Single();
 
-            man.Import(man.XpoSession.GetObjectByKey<Wiki>(Wikipedia.Id), template);
+            man.Import(man.XpoSession.GetObjectByKey<Site>(Wikipedia.Id), template);
         }
 
         private void Import(EntityType type)
@@ -46,7 +46,7 @@ namespace Logy.ImportExport.Tests
                             where o.Url == ImportTemplate.UrlFromEntityType(type)
                             select o).Single();
 
-            man.Import(man.XpoSession.GetObjectByKey<Wiki>(LogyEventsDb.LogyWikiId), template);
+            man.Import(man.XpoSession.GetObjectByKey<Site>(LogyEventsDb.LogyWikiId), template);
         }
     }
 }

@@ -7,6 +7,8 @@ using Logy.MwAgent.DotNetWikiBot;
 
 using Skills.Xpo;
 
+using Site = Logy.Entities.Model.Site;
+
 namespace Logy.ImportExport.Importers
 {
     public class PersonImporter : Importer
@@ -31,30 +33,47 @@ namespace Logy.ImportExport.Importers
             SavePersonName(page, type);
         }
 
-        protected void SavePersonName(ImportBlock page, PersonType type, bool mayBeUser = true, Link link = null, int? wikiItemId = null)
+        protected Link SavePersonName(
+            ImportBlock page, 
+            PersonType type, 
+            bool mayBeUser = true, 
+            Link link = null, 
+            string number = null,
+            int? wikiDataItemId = null)
         {
             Person person;
-            if (new PersonManager(XpoSession)
-                .FindByNameWithoutPName(page.TitleUnique, Language, out person, page.TitleShort, mayBeUser, type))
+            var pname = new PersonManager(XpoSession)
+                .FindByNameWithoutPName(page.TitleUnique, Language, wikiDataItemId, out person, page.TitleShort, mayBeUser, type);
+            if (pname == null)
             {
                 if (person == null)
                 {
-                    person = new Person(XpoSession) { Type = type, WikiDataItemId = wikiItemId };
+                    person = new Person(XpoSession) { Type = type };
                     ObjectsCreated.Add(person);
                 }
-                else
-                {
-                    if (wikiItemId != null && person.WikiDataItemId == null)
-                        person.WikiDataItemId = wikiItemId;
-                }
 
-                var name = new PName(person) { Name = page.TitleUnique, ShortName = page.TitleShort, Language = Language };
-                ObjectsCreated.Add(name);
-                if (link == null)
-                    link = Doc.NewLink(page.Title);
-                link.PName = name;
-                ObjectsCreated.Add(link.Save());
+                pname = new PName(person)
+                               {
+                                   Name = page.TitleUnique,
+                                   ShortName = page.TitleShort,
+                                   Language = Language,
+                                   WikiDataItemId = wikiDataItemId,
+                                   AbsoluteUrl = Site.Url(Doc.Site.BaseUrl, page.Title)
+                               };
+                ObjectsCreated.Add(pname);
             }
+            else
+            {
+                if (wikiDataItemId != null && pname.WikiDataItemId == null)
+                    pname.WikiDataItemId = wikiDataItemId;
+            }
+
+            if (link == null)
+                link = Doc.NewLink(number);
+            link.PName = pname;
+            ObjectsCreated.Add(link.Save());
+
+            return link;
         }
     }
 }

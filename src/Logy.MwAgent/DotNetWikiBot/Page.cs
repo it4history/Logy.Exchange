@@ -37,7 +37,7 @@ namespace Logy.MwAgent.DotNetWikiBot
             if (string.IsNullOrEmpty(title))
                 throw new ArgumentNullException("title");
             if (title[0] == ':')
-                title = title.TrimStart(new char[] { ':' });
+                title = title.TrimStart(new[] { ':' });
             if (title.Contains('_'))
                 title = title.Replace('_', ' ');
 
@@ -283,7 +283,7 @@ namespace Logy.MwAgent.DotNetWikiBot
             if (template.StartsWith("{{"))
                 template = template.Substring(2, template.Length - 4);
 
-            int startPos, endPos, len = 0;
+            int startPos, endPos, len;
             string str = template;
 
             while ((startPos = str.LastIndexOf("{{")) != -1)
@@ -1540,14 +1540,13 @@ namespace Logy.MwAgent.DotNetWikiBot
         /// <returns>Returns the List&lt;string&gt; object.</returns>
         public List<string> GetWikidataLinks()
         {
-            string src = Site.GetWebPage(Site.IndexPath + "?title=" + Bot.UrlEncode(Title));
-            List<string> list = new List<string>();
+            var src = Site.GetWebPage(Site.IndexPath + "?title=" + Bot.UrlEncode(Title));
+            var list = new List<string>();
             if (!src.Contains("<li class=\"interlanguage-link "))
                 return list;
             src = "<ul>" + Bot.GetSubstring(src, "<li class=\"interlanguage-link ", "</ul>");
             MatchCollection matches = Regex.Matches(src, "interlanguage-link interwiki-([^\" ]+)");
-            foreach (Match m in matches)
-                list.Add(m.Groups[1].Value);
+            list.AddRange(from Match m in matches select m.Groups[1].Value);
             return list;
         }
 
