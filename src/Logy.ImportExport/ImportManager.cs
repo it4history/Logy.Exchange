@@ -1,5 +1,8 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System;
+using System.Collections;
+using System.Linq;
+
+using DevExpress.Xpo;
 
 using Logy.Entities;
 using Logy.Entities.Documents;
@@ -10,8 +13,6 @@ using Logy.ImportExport.Bible;
 using Logy.ImportExport.Importers;
 using Logy.MwAgent.DotNetWikiBot;
 
-using Skills.Xpo;
-
 using Site = Logy.Entities.Model.Site;
 
 namespace Logy.ImportExport
@@ -20,6 +21,16 @@ namespace Logy.ImportExport
     {
         public ImportManager(Parameter input) : base(input)
         {
+        }
+
+        public static void ImportDescendantsOfAdamAndEve()
+        {
+            var man = new ImportManager(new Parameter { Admin = true });
+            var template = (from o in new XPQuery<ImportTemplate>(man.XpoSession)
+                            where o.Url == ImportTemplate.DescendantsOfAdamAndEve
+                            select o).Single();
+
+            man.Import(man.XpoSession.GetObjectByKey<Site>(Wikipedia.Id), template);
         }
 
         public string Import(Site site, ImportTemplate importTemplate)
@@ -46,7 +57,6 @@ namespace Logy.ImportExport
                     {
                         case SyncType.ImportFromMW:
                             IList pages;
-                            var objCreated = new List<DbObject>();
                             Importer importer = null;
                             var mediawikiSite = new MwAgent.DotNetWikiBot.Site(site.BaseUrl);
                             if (mediawikiSite.GetNamespace(importTemplate.Url) == MwAgent.DotNetWikiBot.Site.CategoryNS)
@@ -57,17 +67,17 @@ namespace Logy.ImportExport
                                 switch (importTemplate.EntityType)
                                 {
                                     case EntityType.Person:
-                                        importer = new PersonImporter(doc, objCreated);
+                                        importer = new PersonImporter(doc);
                                         break;
                                     case EntityType.EventType:
-                                        importer = new EventTypeImporter(doc, objCreated);
+                                        importer = new EventTypeImporter(doc);
                                         break;
                                 }
                             }
                             else
                             {
-                                pages = DescendantOfAdamAndEve.ParseDescendants(new Page(importTemplate.Url));
-                                importer = new DescendantOfAdamAndEveImporter(doc, objCreated);
+                                pages = DescendantOfAdamAndEve.ParseDescendants(new Page(importTemplate.Url), true);
+                                importer = new DescendantOfAdamAndEveImporter(doc);
                             }
                             
                             if (importer == null)
@@ -81,21 +91,22 @@ namespace Logy.ImportExport
                                 foreach (var page in pages)
                                 {
                                     importer.Import((ImportBlock)page);
+                                    if (importer.ObjectsCreated.Count > 20000)
+                                        break;
                                 }
 
                                 if (importTemplate.ParentDoc != null &&
                                     importTemplate.ParentDoc.Type == DocType.Common)
-                                {
                                     CalcManager.StartCalculation(doc);
-                                }
 
                                 doc.ImportStatus = string.Format(
                                     "Objects Created: {0}",
-                                    objCreated.Count);
+                                    importer.ObjectsCreated.Count);
                                 XpoSession.CommitTransaction();
                             }
-                            catch
+                            catch (Exception ex)
                             {
+                                Console.WriteLine(ex.Message);
                                 XpoSession.RollbackTransaction();
                             }
 

@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+﻿using System;
 
 using DevExpress.Xpo;
 
@@ -9,18 +9,15 @@ using Skills.Xpo;
 
 namespace Logy.ImportExport.Importers
 {
-    public abstract class Importer
+    public abstract class Importer : ObjectsManager
     {
         private readonly string _language;
 
         private readonly Doc _doc;
 
-        private readonly List<DbObject> _objectsCreated;
-        
-        protected Importer(Doc doc, List<DbObject> objectsCreated)
+        protected Importer(Doc doc)
         {
             _doc = doc;
-            _objectsCreated = objectsCreated;
             _language = doc.Site.MainLanguage;
         }
 
@@ -34,12 +31,7 @@ namespace Logy.ImportExport.Importers
             get { return _doc; }
         }
 
-        public List<DbObject> ObjectsCreated
-        {
-            get { return _objectsCreated; }
-        }
-
-        protected Session XpoSession
+        public override Session XpoSession
         {
             get { return _doc.XpoSession; }
         }

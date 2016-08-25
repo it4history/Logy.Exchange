@@ -12,6 +12,7 @@ using Skills.Xpo;
 namespace Logy.ImportExport.Bible
 {
     public class DescendantOfAdamAndEve : ImportBlock
+        //// IWikiData commented because this import process wants to be fast
     {
         private readonly List<DescendantOfAdamAndEve> _wives = new List<DescendantOfAdamAndEve>();
 
@@ -126,21 +127,33 @@ namespace Logy.ImportExport.Bible
 
         public string Ref2Caption { get; set; }
 
-        public int? WikiDataitemId
+        public int? WikiDataItemId
         {
             get
             {
                 if (!string.IsNullOrEmpty(Title))
                 {
                     var p = new Page(Title);
-                    var wikidataItem = p.GetWikidataItem();
-                    int id;
-                    if (int.TryParse(wikidataItem.Name.LocalName.TrimStart('Q'), out id))
-                        return id;
+                    try
+                    {
+                        var wikidataItem = p.GetWikidataItem();
+                        int id;
+                        if (int.TryParse(wikidataItem.Name.LocalName.TrimStart('Q'), out id))
+                            return id;
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine(ex.Message);
+                    }
                 }
 
                 return null;
             }
+        }
+
+        public int GenerationCalculated
+        {
+            get { return Father == null ? 1 : Father.GenerationCalculated + 1; }
         }
 
         public static List<DescendantOfAdamAndEve> ParseDescendants(Page page, bool removeDuplicates = false)
@@ -160,12 +173,18 @@ namespace Logy.ImportExport.Bible
                 var index = all.BinarySearch(descendant);
                 if (index >= 0)
                 {
-                    // Jochebed is woman and duplicated twice
-                    if (descendant.Title == "Jochebed"
+                    if (descendant.Title == "Jochebed" || descendant.Title == "Sarah" // Jochebed, Sarah are women and duplicated twice
+                        || descendant.Title == "Zerubbabel" // Zerubbabel was mentioned twice
                         || descendant.WifeWithManyHusbands(all[index]))
-                        descendant.MergeWifeDuplicates(all[index]);
+                        descendant.MergeDuplicates(all[index]);
                     else
+                    {
                         descendant.SetTitleUnique();
+                        if (descendant.IsWife && !descendant.Husband.Wives.Contains(descendant))
+                        {
+                            descendant.Husband.Wives.Add(descendant);
+                        }
+                    }
                 }
                 else
                 {
@@ -222,7 +241,7 @@ namespace Logy.ImportExport.Bible
                     DescendantOfAdamAndEve husband = null;
                     if (value1 == "?")
                     {
-                        generationNumber = 1000 + dotsCount;
+                        generationNumber = dotsCount;
                     }
                     else if (value1.StartsWith("+ m"))
                     {
@@ -291,7 +310,7 @@ namespace Logy.ImportExport.Bible
             if (TitleUnique == "Unknown")
                 _titleUnique = "parent of " + _kids[0];
             else
-                _titleUnique = TitleUnique + (/// Husband != null ? " (wife of " + Husband : 
+                _titleUnique = TitleUnique + (// Husband != null ? " (wife of " + Husband : 
                                              Father != null
                                                  ? " (son of " + Father
                                                  : " (from " + RefName) + ")";
@@ -315,16 +334,16 @@ namespace Logy.ImportExport.Bible
             DescendantOfAdamAndEve descendant,
             Dictionary<int, DescendantOfAdamAndEve> prevMothers = null)
         {
-            var useDots = prevMothers == null;
+            var useDotsForWife = prevMothers == null;
             DescendantOfAdamAndEve parent;
-            if (useDots)
+            if (useDotsForWife)
                 prevFathersOrMothers.TryGetValue(descendant.DotsCount - 1, out parent);
             else
                 prevFathersOrMothers.TryGetValue(descendant.GenerationNumber - 1, out parent);
             if (parent != null)
-                /// parent can not be determined for wives 
-                if (descendant.IsWife
-                    || descendant.GenerationNumberUnknown != parent.GenerationNumberUnknown)
+
+                // parent can not be determined for wives  || descendant.GenerationNumberUnknown != parent.GenerationNumberUnknown
+                if (descendant.IsWife) 
                     parent = null;
 
             foreach (var gene in prevFathersOrMothers.Keys.ToList())
@@ -348,7 +367,7 @@ namespace Logy.ImportExport.Bible
 
             if (descendant.IsWife || prevMothers != null)
             {
-                if (useDots && descendant.DotsCount > 0)
+                if (useDotsForWife && descendant.DotsCount > 0)
                     prevFathersOrMothers[descendant.DotsCount] = descendant;
                 else
                     prevFathersOrMothers[descendant.GenerationNumber] = descendant;
@@ -381,18 +400,21 @@ namespace Logy.ImportExport.Bible
         /// </summary>
         private bool WifeWithManyHusbands(DescendantOfAdamAndEve descendant)
         {
+            if (Title == "Basemath" && GenerationNumber == 22 && Father == null)
+                return false;
             if (IsWife && descendant.IsWife)
             {
                 var geneDiff = Math.Abs(Husband.GenerationNumber - descendant.Husband.GenerationNumber);
                 return geneDiff == 0
-                       /// Tamar with Judah
+
+                        // Tamar with Judah
                        || geneDiff == 1;
             }
 
             return false;
         }
 
-        private void MergeWifeDuplicates(DescendantOfAdamAndEve descendant)
+        private void MergeDuplicates(DescendantOfAdamAndEve descendant)
         {
             foreach (var husband in descendant._husbands)
                 if (!_husbands.Contains(husband))
@@ -404,8 +426,22 @@ namespace Logy.ImportExport.Bible
                     _kids.Add(kid);
             descendant._kids = _kids;
 
-            descendant.Father = Father;
-            descendant.Mother = Mother;
+            if (Father == null)
+                Father = descendant.Father;
+            else
+                descendant.Father = Father;
+            if (Mother == null)
+                Mother = descendant.Mother;
+            else
+                descendant.Mother = Mother;
+
+            if (descendant.RefName != RefName)
+            {
+                descendant.Ref2Name = RefName;
+                descendant.Ref2Caption = RefCaption;
+                Ref2Name = descendant.RefName;
+                Ref2Caption = descendant.RefCaption;
+            }
         }
     }
 }

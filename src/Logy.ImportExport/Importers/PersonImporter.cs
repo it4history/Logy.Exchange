@@ -1,11 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 
 using Logy.Entities.Documents;
+using Logy.Entities.Model;
 using Logy.Entities.Persons;
 using Logy.MwAgent.DotNetWikiBot;
-
-using Skills.Xpo;
 
 using Site = Logy.Entities.Model.Site;
 
@@ -13,8 +11,7 @@ namespace Logy.ImportExport.Importers
 {
     public class PersonImporter : Importer
     {
-        public PersonImporter(Doc doc, List<DbObject> objCreated)
-            : base(doc, objCreated)
+        public PersonImporter(Doc doc) : base(doc)
         {
         }
 
@@ -30,26 +27,30 @@ namespace Logy.ImportExport.Importers
                 }
             }
 
-            SavePersonName(page, type);
+            Link link;
+            SavePersonName(page, type, out link);
+            if (link != null)
+                link.Save();
         }
 
-        protected Link SavePersonName(
+        /// <returns>null, if not modified</returns>
+        protected PName SavePersonName(
             ImportBlock page, 
-            PersonType type, 
-            bool mayBeUser = true, 
-            Link link = null, 
-            string number = null,
-            int? wikiDataItemId = null)
+            PersonType type,
+            out Link link,
+            bool mayBeUser = true)
         {
+            link = null;
+            var modified = false;
             Person person;
             var pname = new PersonManager(XpoSession)
-                .FindByNameWithoutPName(page.TitleUnique, Language, wikiDataItemId, out person, page.TitleShort, mayBeUser, type);
+                .FindByNameWithoutPName(page.TitleUnique, Language, out person, page.TitleShort, mayBeUser, type);
             if (pname == null)
             {
                 if (person == null)
                 {
                     person = new Person(XpoSession) { Type = type };
-                    ObjectsCreated.Add(person);
+                    ObjectAdded(person);
                 }
 
                 pname = new PName(person)
@@ -57,23 +58,30 @@ namespace Logy.ImportExport.Importers
                                    Name = page.TitleUnique,
                                    ShortName = page.TitleShort,
                                    Language = Language,
-                                   WikiDataItemId = wikiDataItemId,
+                                   WikiDataItemId = page is IWikiData ? ((IWikiData)page).WikiDataItemId : null,
                                    AbsoluteUrl = Site.Url(Doc.Site.BaseUrl, page.Title)
                                };
-                ObjectsCreated.Add(pname);
+                ObjectAdded(pname.Save()); // Save() for finding in transaction
+                modified = true;
             }
             else
             {
-                if (wikiDataItemId != null && pname.WikiDataItemId == null)
-                    pname.WikiDataItemId = wikiDataItemId;
+                if (pname.WikiDataItemId == null)
+                {
+                    pname.WikiDataItemId = page is IWikiData ? ((IWikiData)page).WikiDataItemId : null;
+                    ObjectUpdated(pname);
+                    modified = true;
+                }
             }
 
-            if (link == null)
-                link = Doc.NewLink(number);
-            link.PName = pname;
-            ObjectsCreated.Add(link.Save());
+            if (modified)
+            {
+                link = Doc.NewLink();
+                link.PName = pname;
+                ObjectAdded(link); // not saved because may be cancelled
+            }
 
-            return link;
+            return pname;
         }
     }
 }

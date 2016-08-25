@@ -31,12 +31,7 @@ namespace Logy.ImportExport.Tests
         [Test]
         public void ImportDescendantOfAdamAndEve()
         {
-            var man = new ImportManager(new Parameter { Admin = true });
-            var template = (from o in new XPQuery<ImportTemplate>(man.XpoSession)
-                            where o.Url == ImportTemplate.DescendantsOfAdamAndEve
-                            select o).Single();
-
-            man.Import(man.XpoSession.GetObjectByKey<Site>(Wikipedia.Id), template);
+            ImportManager.ImportDescendantsOfAdamAndEve();
         }
 
         private void Import(EntityType type)
