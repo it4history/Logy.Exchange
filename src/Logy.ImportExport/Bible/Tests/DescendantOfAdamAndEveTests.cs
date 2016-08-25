@@ -1313,7 +1313,7 @@ Genealogy from Zerubbabel to Jesus:
         public void ParseRefName()
         {
             var des = DescendantOfAdamAndEve.Parse(@"
-.........................................40. [[Mattaniah]]<ref name=""1Ch 9:15""/>
+.........................................40. [[Mattaniah]]<ref name=""1Ch 9:15""/><br>
 ");
             Assert.AreEqual("1Ch 9:15", des[0].RefName);
         }
