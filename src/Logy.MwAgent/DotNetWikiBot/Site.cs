@@ -899,7 +899,8 @@ namespace Logy.MwAgent.DotNetWikiBot
                               name = el.Value
                           };
             foreach (var alias in aliases)
-                Namespaces[alias.code] += alias.name + '|'; // namespace 0 may have an alias (!)
+                if (Namespaces.ContainsKey(alias.code)) // there may be aliases 104-Type, 105-Type talk without namespaces
+                            Namespaces[alias.code] += alias.name + '|'; // namespace 0 may have an alias (!)
 
             // Load general site properties
             GeneralData = (from attr in GeneralDataXml.Element("general").Attributes()
