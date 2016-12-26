@@ -32,6 +32,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Newtonsoft.Json, Version=8.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Newtonsoft.Json.8.0.3\lib\net40\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="nunit.framework">
       <HintPath>..\packages\NUnit.2.6.4\lib\nunit.framework.dll</HintPath>
     </Reference>
@@ -55,6 +59,15 @@
     <Compile Include="DotNetWikiBot\Site.cs" />
     <Compile Include="DotNetWikiBot\Exceptions\WikiBotException.cs" />
     <Compile Include="DotNetWikiBot\Tests\PageTests.cs" />
+    <Compile Include="DotNetWikiBot\Wikidata\Claim.cs" />
+    <Compile Include="DotNetWikiBot\Wikidata\Reference.cs" />
+    <Compile Include="DotNetWikiBot\Wikidata\SingleArray.cs" />
+    <Compile Include="DotNetWikiBot\Wikidata\Result.cs" />
+    <Compile Include="DotNetWikiBot\Wikidata\ResultClaims.cs" />
+    <Compile Include="DotNetWikiBot\Wikidata\Snak.cs" />
+    <Compile Include="DotNetWikiBot\Wikidata\TypedValue.cs" />
+    <Compile Include="DotNetWikiBot\Wikidata\ValueItem.cs" />
+    <Compile Include="DotNetWikiBot\Wikidata\ValueTime.cs" />
     <Compile Include="DotNetWikiBot\XmlUrlResolverWithCache.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="DotNetWikiBot\Tests\BotTests.cs" />

@@ -3,16 +3,16 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
-
+using System.Xml.XPath;
 using AppConfiguration;
 using Logy.Entities.Documents.Bible;
+using Logy.Entities.Model;
 using Logy.MwAgent.DotNetWikiBot;
 using Skills.Xpo;
 
 namespace Logy.ImportExport.Bible
 {
-    public class DescendantOfAdamAndEve : ImportBlock
-        //// IWikiData commented because this import process wants to be fast
+    public class DescendantOfAdamAndEve : ImportBlock, IWikidata 
     {
         private readonly List<DescendantOfAdamAndEve> _wives = new List<DescendantOfAdamAndEve>();
 
@@ -127,7 +127,7 @@ namespace Logy.ImportExport.Bible
 
         public string Ref2Caption { get; set; }
 
-        public int? WikiDataItemId
+        public int? WikidataItemId
         {
             get
             {
@@ -136,10 +136,7 @@ namespace Logy.ImportExport.Bible
                     var p = new Page(Title);
                     try
                     {
-                        var wikidataItem = p.GetWikidataItem();
-                        int id;
-                        if (int.TryParse(wikidataItem.Name.LocalName.TrimStart('Q'), out id))
-                            return id;
+                        return p.GetWikidataItem().ItemId;
                     }
                     catch (Exception ex)
                     {

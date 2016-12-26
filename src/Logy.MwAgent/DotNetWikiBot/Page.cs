@@ -12,6 +12,9 @@ using System.Xml.Linq;
 using System.Xml.XPath;
 
 using Logy.MwAgent.DotNetWikiBot.Exceptions;
+using Logy.MwAgent.DotNetWikiBot.Tests;
+using Logy.MwAgent.DotNetWikiBot.Wikidata;
+using Newtonsoft.Json.Linq;
 
 namespace Logy.MwAgent.DotNetWikiBot
 {
@@ -1562,7 +1565,7 @@ namespace Logy.MwAgent.DotNetWikiBot
         ///                          where desc.Attribute("language").Value == "en"
         ///                          select desc.Attribute("value").Value).FirstOrDefault();
         /// </code></example>
-        public XElement GetWikidataItem(bool all = false)
+        public Result GetWikidataItem(bool all = false)
         {
             string src = Site.GetWebPage(Site.IndexPath + "?title=" + Bot.UrlEncode(Title));
             Match m = Regex.Match(src, "href=\"//www\\.wikidata\\.org/wiki/(Q\\d+)");
@@ -1570,21 +1573,17 @@ namespace Logy.MwAgent.DotNetWikiBot
                 m = Regex.Match(src, "\"wgWikibaseItemId\"\\:\"(Q\\d+)\"");
             if (!m.Success)
             {
-                Console.WriteLine(string.Format(Bot.Msg("No Wikidata item is associated with page \"{0}\"."), Title));
+                Console.WriteLine(Bot.Msg("No Wikidata item is associated with page \"{0}\"."), Title);
                 return null;
             }
 
             string item = m.Groups[1].Value;
             if (!all)
-                return new XElement(item);
-            string xmlSrc = Site.GetWebPage("http://www.wikidata.org/wiki/Special:EntityData/" +
-                                            Bot.UrlEncode(item) + ".xml"); // raises "404: Not found" if not found
-            XElement xml = XElement.Parse(xmlSrc);
-            Console.WriteLine(string.Format(
-                Bot.Msg("Wikidata item {0} associated with page \"{1}\" was loaded successfully."),
-                item,
-                Title));
-            return xml;
+                return new Result { Title = item };
+            string jsonSrc = Site.GetWebPage("http://www.wikidata.org/wiki/Special:EntityData/" +
+                                             Bot.UrlEncode(item) + ".json"); // raises "404: Not found" if not found
+
+            return ParseWikidataItem(jsonSrc);
         }
 
         /// <summary>Function converts basic HTML markup in this page's text to wiki
@@ -2218,6 +2217,16 @@ namespace Logy.MwAgent.DotNetWikiBot
 
             Console.WriteLine(Bot.Msg("Page \"{0}\" has been successfully deleted."), Title);
             Title = string.Empty;
+        }
+
+        internal Result ParseWikidataItem(string json)
+        {
+            var result = JObject.Parse(json)["entities"].Single().Single().ToObject<Result>();
+            Console.WriteLine(
+                Bot.Msg("Wikidata item {0} associated with page \"{1}\" was parsed successfully."),
+                result.Title,
+                Title);
+            return result;
         }
 
         private void SavePostApi(string postData)

@@ -54,24 +54,16 @@ namespace Logy.ImportExport.Importers
                 }
 
                 pname = new PName(person)
-                               {
-                                   Name = page.TitleUnique,
-                                   ShortName = page.TitleShort,
-                                   Language = Language,
-                                   WikiDataItemId = page is IWikiData ? ((IWikiData)page).WikiDataItemId : null,
-                                   AbsoluteUrl = Site.Url(Doc.Site.BaseUrl, page.Title)
-                               };
+                {
+                    Name = page.TitleUnique,
+                    ShortName = page.TitleShort,
+                    Language = Language,
+                    /* commented because this import process wants to be fast. Set WikidataItemId later for page.Title
+                    WikidataItemId = page is IWikidata ? ((IWikidata)page).WikidataItemId : null,*/
+                    AbsoluteUrl = Site.Url(Doc.Site.BaseUrl, page.Title)
+                };
                 ObjectAdded(pname.Save()); // Save() for finding in transaction
                 modified = true;
-            }
-            else
-            {
-                if (pname.WikiDataItemId == null)
-                {
-                    pname.WikiDataItemId = page is IWikiData ? ((IWikiData)page).WikiDataItemId : null;
-                    ObjectUpdated(pname);
-                    modified = true;
-                }
             }
 
             if (modified)

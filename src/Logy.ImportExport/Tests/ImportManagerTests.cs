@@ -7,6 +7,7 @@ using DevExpress.Xpo;
 using Logy.Entities;
 using Logy.Entities.Documents;
 using Logy.Entities.Model;
+using Logy.Entities.Persons;
 using Logy.Entities.Products;
 
 using NUnit.Framework;
@@ -33,6 +34,18 @@ namespace Logy.ImportExport.Tests
         {
             ImportManager.ImportDescendantsOfAdamAndEve();
         }
+
+       /* [Test]
+        public void ImportWikidata()
+        {
+            var man = new ImportManager(new Parameter { Admin = true });
+            foreach (var pname in (from o in new XPQuery<PName>(man.XpoSession)
+                where o.WikidataItemId == null
+                select o))
+            {
+
+            }
+        }*/
 
         private void Import(EntityType type)
         {
