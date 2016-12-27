@@ -12,7 +12,6 @@ using System.Xml.Linq;
 using System.Xml.XPath;
 
 using Logy.MwAgent.DotNetWikiBot.Exceptions;
-using Logy.MwAgent.DotNetWikiBot.Tests;
 using Logy.MwAgent.DotNetWikiBot.Wikidata;
 using Newtonsoft.Json.Linq;
 
@@ -1555,34 +1554,26 @@ namespace Logy.MwAgent.DotNetWikiBot
 
         /// <summary>For pages that have associated items on <see href="https://wikidata.org">
         /// Wikidata.org</see> this function returns
-        /// XElement object with all information provided by Wikidata.
         /// If page is not associated with a Wikidata item null is returned.</summary>
-        /// <returns>Returns XElement object or null.</returns>
-        /// <example><code>
-        /// Page p = new Page(enWikipedia, "Douglas Adams");
-        /// XElement wikidataItem = p.GetWikidataItem();
-        /// string description = (from desc in wikidataItem.Descendants("description")
-        ///                          where desc.Attribute("language").Value == "en"
-        ///                          select desc.Attribute("value").Value).FirstOrDefault();
-        /// </code></example>
-        public Result GetWikidataItem(bool all = false)
+        /// <param name="itemId">starts with Q</param>
+        public Result GetWikidataItem(string itemId = null)
         {
-            string src = Site.GetWebPage(Site.IndexPath + "?title=" + Bot.UrlEncode(Title));
-            Match m = Regex.Match(src, "href=\"//www\\.wikidata\\.org/wiki/(Q\\d+)");
-            if (!m.Success)    // fallback
-                m = Regex.Match(src, "\"wgWikibaseItemId\"\\:\"(Q\\d+)\"");
-            if (!m.Success)
+            if (itemId == null)
             {
-                Console.WriteLine(Bot.Msg("No Wikidata item is associated with page \"{0}\"."), Title);
-                return null;
+                string src = Site.GetWebPage(Site.IndexPath + "?title=" + Bot.UrlEncode(Title));
+                Match m = Regex.Match(src, "href=\"//www\\.wikidata\\.org/wiki/(Q\\d+)");
+                if (!m.Success) // fallback
+                    m = Regex.Match(src, "\"wgWikibaseItemId\"\\:\"(Q\\d+)\"");
+                if (!m.Success)
+                {
+                    Console.WriteLine(Bot.Msg("No Wikidata item is associated with page \"{0}\"."), Title);
+                    return null;
+                }
+
+                return new Result { Title = m.Groups[1].Value };
             }
-
-            string item = m.Groups[1].Value;
-            if (!all)
-                return new Result { Title = item };
             string jsonSrc = Site.GetWebPage("http://www.wikidata.org/wiki/Special:EntityData/" +
-                                             Bot.UrlEncode(item) + ".json"); // raises "404: Not found" if not found
-
+                                             Bot.UrlEncode(itemId) + ".json"); // raises "404: Not found" if not found
             return ParseWikidataItem(jsonSrc);
         }
 

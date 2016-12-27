@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Logy.MwAgent.DotNetWikiBot
+namespace Logy.MwAgent
 {
     public abstract class ImportBlock : IComparable
     {

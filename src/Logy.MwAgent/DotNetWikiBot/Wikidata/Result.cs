@@ -2,8 +2,10 @@ namespace Logy.MwAgent.DotNetWikiBot.Wikidata
 {
     public class Result
     {
-        public string Pageid { get; set; }
+        /// <summary>starts with Q</summary>
         public string Title { get; set; }
+
+        public string Pageid { get; set; }
         public ResultClaims Claims { get; set; }
         public int? ItemId
         {

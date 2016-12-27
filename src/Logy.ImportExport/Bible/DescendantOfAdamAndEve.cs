@@ -5,13 +5,13 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using AppConfiguration;
 using Logy.Entities.Documents.Bible;
-using Logy.Entities.Model;
+using Logy.MwAgent;
 using Logy.MwAgent.DotNetWikiBot;
 using Skills.Xpo;
 
 namespace Logy.ImportExport.Bible
 {
-    public class DescendantOfAdamAndEve : ImportBlock, IWikidata 
+    public class DescendantOfAdamAndEve : ImportBlock
     {
         private readonly List<DescendantOfAdamAndEve> _wives = new List<DescendantOfAdamAndEve>();
 
@@ -125,27 +125,6 @@ namespace Logy.ImportExport.Bible
         public string Ref2Name { get; set; }
 
         public string Ref2Caption { get; set; }
-
-        public int? WikidataItemId
-        {
-            get
-            {
-                if (!string.IsNullOrEmpty(Title))
-                {
-                    var p = new Page(Title);
-                    try
-                    {
-                        return p.GetWikidataItem().ItemId;
-                    }
-                    catch (Exception ex)
-                    {
-                        Console.WriteLine(ex.Message);
-                    }
-                }
-
-                return null;
-            }
-        }
 
         public int GenerationCalculated
         {

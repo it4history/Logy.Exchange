@@ -1,12 +1,11 @@
-﻿using System;
-
-using Logy.Entities.Documents;
+﻿using Logy.Entities.Documents;
 using Logy.Entities.Events;
-using Logy.MwAgent.DotNetWikiBot;
+using Logy.Entities.Import;
+using Logy.MwAgent;
 
 namespace Logy.ImportExport.Importers
 {
-    public class EventTypeImporter : Importer
+    public class EventTypeImporter : CategoryImporter
     {
         public EventTypeImporter(Doc doc) : base(doc)
         {

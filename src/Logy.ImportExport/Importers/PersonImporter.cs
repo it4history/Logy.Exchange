@@ -1,15 +1,15 @@
 ﻿using System;
 
 using Logy.Entities.Documents;
-using Logy.Entities.Model;
+using Logy.Entities.Import;
 using Logy.Entities.Persons;
-using Logy.MwAgent.DotNetWikiBot;
+using Logy.MwAgent;
 
 using Site = Logy.Entities.Model.Site;
 
 namespace Logy.ImportExport.Importers
 {
-    public class PersonImporter : Importer
+    public class PersonImporter : CategoryImporter
     {
         public PersonImporter(Doc doc) : base(doc)
         {

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -7,6 +8,7 @@ using Logy.Entities.Documents.Bible;
 using Logy.Entities.Events;
 using Logy.Entities.Persons;
 using Logy.ImportExport.Importers;
+using Logy.MwAgent;
 using Logy.MwAgent.DotNetWikiBot;
 
 namespace Logy.ImportExport.Bible
@@ -15,6 +17,11 @@ namespace Logy.ImportExport.Bible
     {
         public DescendantOfAdamAndEveImporter(Doc doc) : base(doc)
         {
+        }
+
+        public override IList GetPages()
+        {
+            return DescendantOfAdamAndEve.ParseDescendants(new Page(Doc.ImportTemplate.Url), true);
         }
 
         public override void Import(ImportBlock page)
