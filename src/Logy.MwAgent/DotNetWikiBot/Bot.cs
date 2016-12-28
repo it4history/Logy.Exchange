@@ -98,7 +98,7 @@ namespace Logy.MwAgent.DotNetWikiBot
 
             // Find suitable directory for cache where all required permissions are present
             char dirSep = Path.DirectorySeparatorChar;
-            CacheDir = Path.GetFullPath("Cache");
+            CacheDir = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Cache");
             try 
             {
                 if (!Directory.Exists(CacheDir))
