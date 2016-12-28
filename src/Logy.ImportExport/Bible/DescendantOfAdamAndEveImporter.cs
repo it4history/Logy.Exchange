@@ -2,29 +2,36 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-
+using DevExpress.Xpo;
 using Logy.Entities.Documents;
 using Logy.Entities.Documents.Bible;
 using Logy.Entities.Events;
 using Logy.Entities.Persons;
+using Logy.Entities.Products;
 using Logy.ImportExport.Importers;
 using Logy.MwAgent;
 using Logy.MwAgent.DotNetWikiBot;
+using Site = Logy.MwAgent.DotNetWikiBot.Site;
 
 namespace Logy.ImportExport.Bible
 {
     public class DescendantOfAdamAndEveImporter : PersonImporter
     {
-        public DescendantOfAdamAndEveImporter(Doc doc) : base(doc)
+        public DescendantOfAdamAndEveImporter(Session session) : base(session)
         {
+        }
+
+        public override string Url
+        {
+            get { return EventsDb.DescendantsOfAdamAndEve; }
         }
 
         public override IList GetPages()
         {
-            return DescendantOfAdamAndEve.ParseDescendants(new Page(new Site(Site.WikipediaBaseUrl), Doc.ImportTemplate.Url), true);
+            return DescendantOfAdamAndEve.ParseDescendants(new Page(new Site(Site.WikipediaBaseUrl), Url), true);
         }
 
-        public override void Import(ImportBlock page)
+        public override void Import(ImportBlock page, Doc doc)
         {
             var person = (DescendantOfAdamAndEve)page;
 
@@ -34,12 +41,12 @@ namespace Logy.ImportExport.Bible
             {
                 var fullFamilies = new Dictionary<Family, DescendantOfAdamAndEve>();
                 Link link;
-                var pname = SaveDescendant(person, out link);
+                var pname = SaveDescendant(person, doc, out link);
                 var fatherOrKid = pname.Person;
                 Family family;
                 foreach (var wife in person.Wives)
                 {
-                    var wifeName = SaveDescendant(wife, out link);
+                    var wifeName = SaveDescendant(wife, doc, out link);
                     var mother = wifeName.Person;
                     family = FamilyManager.Find(fatherOrKid, mother);
                     if (family == null)
@@ -88,7 +95,7 @@ namespace Logy.ImportExport.Bible
                     }
 
                     Link kidLink;
-                    var kidName = SaveDescendant(kid, out kidLink);
+                    var kidName = SaveDescendant(kid, doc, out kidLink);
                     if (kidLink != null)
                         modified = true;
 
@@ -116,30 +123,30 @@ namespace Logy.ImportExport.Bible
         }
 
         /// <returns>not null, because block.RefName is not null </returns>
-        private PName SaveDescendant(DescendantOfAdamAndEve block, out Link personLink)
+        private PName SaveDescendant(DescendantOfAdamAndEve block, Doc doc, out Link personLink)
         {
             personLink = null;
-            SaveDescendant(block, block.Ref2Name, ref personLink);
-            return SaveDescendant(block, block.RefName, ref personLink);
+            SaveDescendant(block, doc, block.Ref2Name, ref personLink);
+            return SaveDescendant(block, doc, block.RefName, ref personLink);
         }
 
-        private PName SaveDescendant(DescendantOfAdamAndEve block, string refName, ref Link docLink)
+        private PName SaveDescendant(DescendantOfAdamAndEve block, Doc doc, string refName, ref Link docLink)
         {
             Link personLink;
-            var pname = SavePersonName(block, PersonType.Human, out personLink, false);
-            docLink = SaveRef(block, BibleManager.GetDocumentUrl(refName), personLink ?? docLink) ?? personLink;
+            var pname = SavePersonName(block, doc, PersonType.Human, out personLink, false);
+            docLink = SaveRef(block, doc, BibleManager.GetDocumentUrl(refName), personLink ?? docLink) ?? personLink;
             return pname;
         }
 
-        private Link SaveRef(DescendantOfAdamAndEve block, string url, Link personLink)
+        private Link SaveRef(DescendantOfAdamAndEve block, Doc doc, string url, Link personLink)
         {
             Link docLink = null;
             if (!string.IsNullOrEmpty(url) && personLink != null)
             {
-                var foundDoc = DocManager.FindByUrl(Doc, url);
+                var foundDoc = DocManager.FindByUrl(doc, url);
                 if (foundDoc == null)
                 {
-                    foundDoc = new Doc(Doc) { Url = url };
+                    foundDoc = new Doc(doc) { Url = url };
                     foundDoc.Save();
                     ObjectAdded(foundDoc);
                 }

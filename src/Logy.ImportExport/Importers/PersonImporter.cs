@@ -1,7 +1,8 @@
 ﻿using System;
-
+using DevExpress.Xpo;
 using Logy.Entities.Documents;
 using Logy.Entities.Import;
+using Logy.Entities.Model;
 using Logy.Entities.Persons;
 using Logy.MwAgent;
 
@@ -11,11 +12,16 @@ namespace Logy.ImportExport.Importers
 {
     public class PersonImporter : CategoryImporter
     {
-        public PersonImporter(Doc doc) : base(doc)
+        public PersonImporter(Session session) : base(session)
         {
         }
 
-        public override void Import(ImportBlock page)
+        public override EntityType EntityType
+        {
+            get { return EntityType.Person; }
+        }
+
+        public override void Import(ImportBlock page, Doc doc)
         {
             var type = PersonType.Human;
             for (var i = page.Categories.Count - 1; i >= 0; i--)
@@ -28,15 +34,16 @@ namespace Logy.ImportExport.Importers
             }
 
             Link link;
-            SavePersonName(page, type, out link);
+            SavePersonName(page, doc, type, out link);
             if (link != null)
                 link.Save();
         }
 
         /// <returns>null, if not modified</returns>
         protected PName SavePersonName(
-            ImportBlock page, 
-            PersonType type,
+            ImportBlock page,
+            Doc doc,
+            PersonType type, 
             out Link link,
             bool mayBeUser = true)
         {
@@ -60,7 +67,7 @@ namespace Logy.ImportExport.Importers
                     Language = Language,
                     /* commented because this import process wants to be fast. Set WikidataItemId later for page.Title
                     WikidataItemId = page is IWikidata ? ((IWikidata)page).WikidataItemId : null,*/
-                    AbsoluteUrl = Site.Url(Doc.Site.BaseUrl, page.Title)
+                    AbsoluteUrl = Site.Url(Wiki.BaseUrl, page.Title)
                 };
                 ObjectAdded(pname.Save()); // Save() for finding in transaction
                 modified = true;
@@ -68,7 +75,7 @@ namespace Logy.ImportExport.Importers
 
             if (modified)
             {
-                link = Doc.NewLink();
+                link = doc.NewLink();
                 link.PName = pname;
                 ObjectAdded(link); // not saved because may be cancelled
             }
