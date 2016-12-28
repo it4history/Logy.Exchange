@@ -21,7 +21,7 @@ namespace Logy.ImportExport.Bible
 
         public override IList GetPages()
         {
-            return DescendantOfAdamAndEve.ParseDescendants(new Page(Doc.ImportTemplate.Url), true);
+            return DescendantOfAdamAndEve.ParseDescendants(new Page(new Site(Site.WikipediaBaseUrl), Doc.ImportTemplate.Url), true);
         }
 
         public override void Import(ImportBlock page)

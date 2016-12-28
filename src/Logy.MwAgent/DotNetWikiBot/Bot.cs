@@ -134,7 +134,7 @@ namespace Logy.MwAgent.DotNetWikiBot
                     throw new WikiBotException(msg);
                 }
 
-                Console.WriteLine(string.Format(Msg("Now using \"{0}\" directory for cache."), CacheDir));
+                Console.WriteLine(Msg("Now using \"{0}\" directory for cache."), CacheDir);
             }
 
             // Load localized messages if available
@@ -154,7 +154,7 @@ namespace Logy.MwAgent.DotNetWikiBot
             // Disable 100-continue behaviour, it's not supported on WMF servers (as of 2012)
             ServicePointManager.Expect100Continue = false;
 
-            CheckUpdates();
+            /*CheckUpdates();
 
             Console.WriteLine("Downloading cache files from web if missing");
             string[] cacheFiles =
@@ -177,7 +177,7 @@ namespace Logy.MwAgent.DotNetWikiBot
                         Console.WriteLine(ex.Message); 
                     }
                 }
-            }
+            }*/
 
             Console.WriteLine("Loading general info cache");
             using (StreamReader reader = File.OpenText(CacheDir + dirSep + "CommonData.xml"))
