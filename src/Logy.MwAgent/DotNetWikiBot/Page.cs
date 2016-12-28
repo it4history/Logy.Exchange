@@ -39,7 +39,7 @@ namespace Logy.MwAgent.DotNetWikiBot
             if (string.IsNullOrEmpty(title))
                 throw new ArgumentNullException("title");
             if (title[0] == ':')
-                title = title.TrimStart(new[] { ':' });
+                title = title.TrimStart(':');
             if (title.Contains('_'))
                 title = title.Replace('_', ' ');
 

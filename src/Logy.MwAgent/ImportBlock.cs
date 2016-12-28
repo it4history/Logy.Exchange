@@ -6,7 +6,10 @@ namespace Logy.MwAgent
 {
     public abstract class ImportBlock : IComparable
     {
-        /// <summary>title, including namespace prefix.</summary>
+        /// <summary>Filled during page importing from categories tree. Sorted from parent to child.</summary>
+        public List<string> Categories { get; set; }
+
+        /// <summary>title, including namespace prefix</summary>
         public string Title { get; set; }
 
         public virtual string TitleUnique
@@ -20,9 +23,6 @@ namespace Logy.MwAgent
             get { return GetShortTitle(Title); }
             set { }
         }
-
-        /// <summary>Filled during page importing from categories tree. Sorted from parent to child.</summary>
-        public List<string> Categories { get; set; }
 
         public static string GetShortTitle(string pageTitle)
         {
