@@ -1,6 +1,8 @@
-﻿// DotNetWikiBot Framework 3.15 - designed to make robots for MediaWiki-powered wiki sites
+﻿// Logy.MwAgent 
+// based on DotNetWikiBot Framework 3.15 - designed to make robots for MediaWiki-powered wiki sites
 // Requires Microsoft .NET Framework 3.5+ or Mono 1.9+.
 // Distributed under the terms of the GNU GPL 2.0 license: http://www.gnu.org/licenses/gpl-2.0.html
+// Copyright (c) it4history (2016-2017) it4history@gmail.com
 // Copyright (c) Iaroslav Vassiliev (2006-2016) codedriller@gmail.com
 using System;
 using System.Collections.Generic;
@@ -65,7 +67,7 @@ namespace Logy.MwAgent.DotNetWikiBot
         static Bot()
         {
             Console.Write(
-                _BotVer + " " + _Version + "\n" + "Copyright (c) Iaroslav Vassiliev, 2006-2016, GNU General Public License 2.0\n\n");
+                _BotVer + " " + _Version + "\n" + "Copyright (c) it4history and Iaroslav Vassiliev, GNU General Public License 2.0\n\n");
 
             // Format full version string
             _BotVer += "/" + _Version + " (" + Environment.OSVersion.VersionString + "; ";
