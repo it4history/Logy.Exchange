@@ -73,8 +73,8 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\NUnit.2.6.4\lib\nunit.framework.dll</HintPath>
     </Reference>
-    <Reference Include="Skills.Xpo, Version=1.0.0.5, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Skills.Xpo.1.0.0.5\lib\net40\Skills.Xpo.dll</HintPath>
+    <Reference Include="Skills.Xpo, Version=1.0.0.7, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Skills.Xpo.1.0.0.7\lib\net40\Skills.Xpo.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
