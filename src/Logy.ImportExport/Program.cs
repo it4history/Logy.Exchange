@@ -9,11 +9,6 @@ namespace Logy.ImportExport
         public static void Main(string[] args)
         {
             ProductsManager.UpdateUsed();
-            ImportDescendantsOfAdamAndEve();
-        }
-
-        public static void ImportDescendantsOfAdamAndEve()
-        {
             ImportManager.Import(typeof(DescendantOfAdamAndEveImporter));
         }
     }
