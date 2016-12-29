@@ -1,5 +1,6 @@
 ﻿using DevExpress.Xpo;
 using Logy.Entities.Documents;
+using Logy.Entities.Engine;
 using Logy.Entities.Events;
 using Logy.Entities.Import;
 using Logy.Entities.Model;
@@ -18,7 +19,7 @@ namespace Logy.ImportExport.Importers
             get { return EntityType.EventType; }
         }
 
-        public override void Import(ImportBlock page, Doc doc)
+        public override void Import(ImportBlock page, Job doc)
         {
             var eventManager = new EventManager(XpoSession);
             EventType parent = null;

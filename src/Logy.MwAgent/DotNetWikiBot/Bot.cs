@@ -31,8 +31,6 @@ namespace Logy.MwAgent.DotNetWikiBot
 
         private static readonly WebClient _webClient = new WebClient();
 
-        private static readonly Version _Version = new Version("3.15");
-
         /// <summary>Dictionary containing localized DotNetWikiBot interface messages.</summary>
         private static readonly SortedDictionary<string, string> _Messages = new SortedDictionary<string, string>();
 
@@ -66,11 +64,10 @@ namespace Logy.MwAgent.DotNetWikiBot
         /// <returns>Returns Bot object.</returns>
         static Bot()
         {
-            Console.Write(
-                _BotVer + " " + _Version + "\n" + "Copyright (c) it4history and Iaroslav Vassiliev, GNU General Public License 2.0\n\n");
+            Console.Write(_BotVer + "\n" + "Copyright (c) it4history and Iaroslav Vassiliev, GNU General Public License 2.0\n\n");
 
             // Format full version string
-            _BotVer += "/" + _Version + " (" + Environment.OSVersion.VersionString + "; ";
+            _BotVer += "/" + " (" + Environment.OSVersion.VersionString + "; ";
             if (IsRunningOnMono) 
             {
                 _BotVer += "Mono";

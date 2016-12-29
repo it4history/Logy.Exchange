@@ -5,6 +5,7 @@ using System.Linq;
 using DevExpress.Xpo;
 using Logy.Entities.Documents;
 using Logy.Entities.Documents.Bible;
+using Logy.Entities.Engine;
 using Logy.Entities.Events;
 using Logy.Entities.Persons;
 using Logy.Entities.Products;
@@ -31,7 +32,7 @@ namespace Logy.ImportExport.Bible
             return DescendantOfAdamAndEve.ParseDescendants(new Page(new Site(Site.WikipediaBaseUrl), Url), true);
         }
 
-        public override void Import(ImportBlock page, Doc doc)
+        public override void Import(ImportBlock page, Job job)
         {
             var person = (DescendantOfAdamAndEve)page;
 
@@ -41,12 +42,12 @@ namespace Logy.ImportExport.Bible
             {
                 var fullFamilies = new Dictionary<Family, DescendantOfAdamAndEve>();
                 Link link;
-                var pname = SaveDescendant(person, doc, out link);
+                var pname = SaveDescendant(person, job, out link);
                 var fatherOrKid = pname.Person;
                 Family family;
                 foreach (var wife in person.Wives)
                 {
-                    var wifeName = SaveDescendant(wife, doc, out link);
+                    var wifeName = SaveDescendant(wife, job, out link);
                     var mother = wifeName.Person;
                     family = FamilyManager.Find(fatherOrKid, mother);
                     if (family == null)
@@ -63,8 +64,12 @@ namespace Logy.ImportExport.Bible
                                        BibleManager.GetDocumentUrl(wife.Ref2Name),
                                        BibleManager.GetDocumentNumber(wife.Ref2Name));
 
-                        link.Family = family;
-                        ObjectUpdated(link.Save());
+                        // is bug, link should not be null
+                        if (link != null) 
+                        {
+                            link.Family = family;
+                            ObjectUpdated(link.Save());
+                        }
                     }
 
                     fullFamilies.Add(family, wife);
@@ -95,7 +100,7 @@ namespace Logy.ImportExport.Bible
                     }
 
                     Link kidLink;
-                    var kidName = SaveDescendant(kid, doc, out kidLink);
+                    var kidName = SaveDescendant(kid, job, out kidLink);
                     if (kidLink != null)
                         modified = true;
 
@@ -106,13 +111,17 @@ namespace Logy.ImportExport.Bible
                                 kidName,
                                 BibleManager.GetDocumentUrl(kid.RefName),
                                 BibleManager.GetDocumentNumber(kid.RefName));
+
+                        if (link == null) // is bug, link should not be null
+                            break;
+
                         kidLink.Family = family;
 
                         var eventManager = new EventManager(XpoSession);
                         kidLink.Event = new Event(
                             eventManager.SaveEventType(kid.GenerationNumberUnknown
-                                                        ? EventType.BirthInUnknownGeneration
-                                                        : EventType.Birth),
+                                ? EventType.BirthInUnknownGeneration
+                                : EventType.Birth),
                             family,
                             kidName.Person);
                         kidLink.Save();
@@ -123,30 +132,35 @@ namespace Logy.ImportExport.Bible
         }
 
         /// <returns>not null, because block.RefName is not null </returns>
-        private PName SaveDescendant(DescendantOfAdamAndEve block, Doc doc, out Link personLink)
+        private PName SaveDescendant(DescendantOfAdamAndEve block, Job job, out Link personLink)
         {
             personLink = null;
-            SaveDescendant(block, doc, block.Ref2Name, ref personLink);
-            return SaveDescendant(block, doc, block.RefName, ref personLink);
+            SaveDescendant(block, job, block.Ref2Name, ref personLink);
+            return SaveDescendant(block, job, block.RefName, ref personLink);
         }
 
-        private PName SaveDescendant(DescendantOfAdamAndEve block, Doc doc, string refName, ref Link docLink)
+        private PName SaveDescendant(DescendantOfAdamAndEve block, Job job, string refName, ref Link docLink)
         {
             Link personLink;
-            var pname = SavePersonName(block, doc, PersonType.Human, out personLink, false);
-            docLink = SaveRef(block, doc, BibleManager.GetDocumentUrl(refName), personLink ?? docLink) ?? personLink;
+            var pname = SavePersonName(block, job, PersonType.Human, out personLink, false);
+            docLink = SaveRef(block, job, BibleManager.GetDocumentUrl(refName), personLink ?? docLink) ?? personLink;
             return pname;
         }
 
-        private Link SaveRef(DescendantOfAdamAndEve block, Doc doc, string url, Link personLink)
+        private Link SaveRef(DescendantOfAdamAndEve block, Job job, string url, Link personLink)
         {
             Link docLink = null;
             if (!string.IsNullOrEmpty(url) && personLink != null)
             {
-                var foundDoc = DocManager.FindByUrl(doc, url);
+                Doc foundDoc = null;
+                var parentDoc = job.ImportTemplate.ParentDoc;
+                if (parentDoc != null)
+                    foundDoc = DocManager.FindByUrl(parentDoc, url);
+
                 if (foundDoc == null)
                 {
-                    foundDoc = new Doc(doc) { Url = url };
+                    foundDoc = parentDoc != null ? new Doc(parentDoc) : new Doc(job.XpoSession);
+                    foundDoc.Url = url;
                     foundDoc.Save();
                     ObjectAdded(foundDoc);
                 }

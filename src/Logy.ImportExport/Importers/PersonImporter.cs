@@ -1,6 +1,7 @@
 ﻿using System;
 using DevExpress.Xpo;
 using Logy.Entities.Documents;
+using Logy.Entities.Engine;
 using Logy.Entities.Import;
 using Logy.Entities.Model;
 using Logy.Entities.Persons;
@@ -21,7 +22,7 @@ namespace Logy.ImportExport.Importers
             get { return EntityType.Person; }
         }
 
-        public override void Import(ImportBlock page, Doc doc)
+        public override void Import(ImportBlock page, Job job)
         {
             var type = PersonType.Human;
             for (var i = page.Categories.Count - 1; i >= 0; i--)
@@ -34,7 +35,7 @@ namespace Logy.ImportExport.Importers
             }
 
             Link link;
-            SavePersonName(page, doc, type, out link);
+            SavePersonName(page, job, type, out link);
             if (link != null)
                 link.Save();
         }
@@ -42,7 +43,7 @@ namespace Logy.ImportExport.Importers
         /// <returns>null, if not modified</returns>
         protected PName SavePersonName(
             ImportBlock page,
-            Doc doc,
+            Job job,
             PersonType type, 
             out Link link,
             bool mayBeUser = true)
@@ -75,7 +76,7 @@ namespace Logy.ImportExport.Importers
 
             if (modified)
             {
-                link = doc.NewLink();
+                link = job.NewLink();
                 link.PName = pname;
                 ObjectAdded(link); // not saved because may be cancelled
             }
