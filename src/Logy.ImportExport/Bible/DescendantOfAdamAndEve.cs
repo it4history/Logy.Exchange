@@ -203,7 +203,10 @@ namespace Logy.ImportExport.Bible
             var prevMothers = new Dictionary<int, DescendantOfAdamAndEve>();
 
             var regex = new Regex(
-                @"(\.*\s?)(\d+|\+\sm\d?|\?)\.?\s*(\[\[([^\|.]+)\|?(.*)\]\])?([^{^<.]*)({{.*}})?"
+                @"(\.*\s?)(\d+|\+\sm\d?|\?)\.?\s*"
+                + @"(\[\[([^\|.]+)\|?(.*)\]\])?"
+                + @"([^{^<.]*)"
+                + @"({{.*}})?"
                 + @"(<ref(\sname=""([^/.]+)"")?\s*/?>(([^/.]*)</ref>)?)*\s?<");
             foreach (var line in Regex.Split(lines, "\r\n|\r|\n"))
             {
@@ -252,7 +255,7 @@ namespace Logy.ImportExport.Bible
                                              GenerationNumberUnknown = value1 == "?",
                                              Title = match.Groups[4].Value,
                                              TitleShort = match.Groups[5].Value,
-                                             OtherCaption = match.Groups[6].Value,
+                                             OtherCaption = match.Groups[6].Value.Trim(),
                                              RefName = match.Groups[10].Value,
                                              RefCaption = match.Groups[12].Value,
                                              Ref2Name = ref2Name,

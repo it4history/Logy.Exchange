@@ -65,10 +65,15 @@ namespace Logy.ImportExport.Bible
                                        BibleManager.GetDocumentNumber(wife.Ref2Name));
 
                         // is bug, link should not be null
-                        if (link != null) 
+                        if (link != null)
                         {
                             link.Family = family;
+                            if (link.Job == null)
+                                link.Job = job;
                             ObjectUpdated(link.Save());
+                        }
+                        else
+                        {
                         }
                     }
 
@@ -114,6 +119,9 @@ namespace Logy.ImportExport.Bible
 
                         if (link == null) // is bug, link should not be null
                             break;
+
+                        if (link.Job == null)
+                            link.Job = job;
 
                         kidLink.Family = family;
 
@@ -168,6 +176,12 @@ namespace Logy.ImportExport.Bible
                 var number = BibleManager.GetDocumentNumber(block.RefName);
                 docLink = foundDoc.NewLink(number);
                 docLink.PName = personLink.PName;
+                docLink.Job = job;
+                if (docLink.DocPart != null)
+                {
+                    // to eliminate duplication
+                    docLink.DocPart.Save();
+                }
                 personLink.PName = null; //// DEBUG, because personLink should not be saved to db
 
                 ObjectAdded(docLink.Save());

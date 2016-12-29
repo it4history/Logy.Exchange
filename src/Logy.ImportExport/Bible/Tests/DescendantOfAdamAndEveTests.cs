@@ -1472,6 +1472,16 @@ Genealogy from Zerubbabel to Jesus:
         }
 
         [Test]
+        public void SpaceInName()
+        {
+            var des = DescendantOfAdamAndEve.Parse(@"
+.........................25. Ethan<ref name=""1Ch 2:6"">1 Chronicles 2:6</ref><br>
+.............................28. Ethan <ref name=""1Ch 6:42""/><br>
+");
+            Assert.AreEqual("Ethan", des[1].TitleUnique);
+        }
+
+        [Test]
         public void Duplicates()
         {
             foreach (DescendantOfAdamAndEve descendant in _descendants)
