@@ -21,8 +21,6 @@ namespace Logy.MwAgent.DotNetWikiBot
     [Serializable]
     public class Site
     {
-        public const string WikipediaBaseUrl = "https://en.wikipedia.org/wiki";
-
         /// <summary>Default edit comment. You can set it to whatever you would like.</summary>
         /// <example><code>mySite.defaultEditComment = "My default edit comment";</code></example>
         public const string DefaultEditComment = "Automatic page editing by robot";
@@ -46,6 +44,10 @@ namespace Logy.MwAgent.DotNetWikiBot
         /// output and API lists output. Default is 500. Bot accounts are allowed to fetch
         /// up to 5000 items at a time. Adjust this number if required.</summary>
         public const int FetchRate = 500;
+
+        public const string WikipediaBaseUrl = "https://en.wikipedia.org/wiki";
+
+        public static readonly Site Wikipedia = new Site(WikipediaBaseUrl);
 
         /// <summary>Shortcut for Environment.NewLine property.
         /// It's "\r\n" on Windows and "\n" on Unix-like systems.</summary>

@@ -49,6 +49,7 @@
     <Compile Include="..\..\ProductAssemblyInfo.cs">
       <Link>Properties\ProductAssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="DotNetWikiBot\Wikidata\Sex.cs" />
     <Compile Include="ImportBlock.cs" />
     <Compile Include="DotNetWikiBot\Exceptions\BotDisallowedException.cs" />
     <Compile Include="DotNetWikiBot\Bot.cs" />

@@ -10,7 +10,6 @@ using Logy.Entities.Events;
 using Logy.Entities.Persons;
 using Logy.Entities.Products;
 using Logy.ImportExport.Importers;
-using Logy.MwAgent;
 using Logy.MwAgent.DotNetWikiBot;
 using Site = Logy.MwAgent.DotNetWikiBot.Site;
 
@@ -29,10 +28,10 @@ namespace Logy.ImportExport.Bible
 
         public override IList GetPages()
         {
-            return DescendantOfAdamAndEve.ParseDescendants(new Page(new Site(Site.WikipediaBaseUrl), Url), true);
+            return DescendantOfAdamAndEve.ParseDescendants(new Page(Site.Wikipedia, Url), true);
         }
 
-        public override void Import(ImportBlock page, Job job)
+        public override void Import(object page, Job job)
         {
             var person = (DescendantOfAdamAndEve)page;
 
@@ -161,7 +160,7 @@ namespace Logy.ImportExport.Bible
             if (!string.IsNullOrEmpty(url) && personLink != null)
             {
                 Doc foundDoc = null;
-                var parentDoc = job.ImportTemplate.ParentDoc;
+                var parentDoc = job.Template.ParentDoc;
                 if (parentDoc != null)
                     foundDoc = DocManager.FindByUrl(parentDoc, url);
 

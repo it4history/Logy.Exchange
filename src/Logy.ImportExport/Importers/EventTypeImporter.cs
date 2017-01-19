@@ -19,11 +19,12 @@ namespace Logy.ImportExport.Importers
             get { return EntityType.EventType; }
         }
 
-        public override void Import(ImportBlock page, Job doc)
+        public override void Import(object page, Job doc)
         {
+            var p = (ImportBlock)page;
             var eventManager = new EventManager(XpoSession);
             EventType parent = null;
-            foreach (var label in page.Categories)
+            foreach (var label in p.Categories)
             {
                 var newParent = eventManager.FindByName(label);
                 if (newParent == null)
@@ -37,7 +38,7 @@ namespace Logy.ImportExport.Importers
                 }
             }
 
-            eventManager.SaveEventType(page.TitleUnique, parent);
+            eventManager.SaveEventType(p.TitleUnique, parent);
         }
     }
 }

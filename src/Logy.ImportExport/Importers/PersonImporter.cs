@@ -22,12 +22,13 @@ namespace Logy.ImportExport.Importers
             get { return EntityType.Person; }
         }
 
-        public override void Import(ImportBlock page, Job job)
+        public override void Import(object page, Job job)
         {
+            var p = (ImportBlock)page;
             var type = PersonType.Human;
-            for (var i = page.Categories.Count - 1; i >= 0; i--)
+            for (var i = p.Categories.Count - 1; i >= 0; i--)
             {
-                var cat = page.Categories[i];
+                var cat = p.Categories[i];
                 if (Enum.TryParse(ImportBlock.GetShortTitle(cat), out type))
                 {
                     break;
@@ -35,7 +36,7 @@ namespace Logy.ImportExport.Importers
             }
 
             Link link;
-            SavePersonName(page, job, type, out link);
+            SavePersonName(p, job, type, out link);
             if (link != null)
                 link.Save();
         }

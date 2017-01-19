@@ -39,9 +39,17 @@ namespace Logy.MwAgent.DotNetWikiBot.Tests
 
             Assert.AreEqual("normal", result.Claims.P569.A.Rank);
             Assert.AreEqual("time", result.Claims.P569.A.Mainsnak.Datatype);
+            Assert.AreEqual("-3760-00-00T00:00:00Z", result.Claims.Born.Time);
+            Assert.AreEqual(19014, result.Claims.BirthPlace);
+
+            Assert.IsNull(result.Claims.Father);
+            Assert.IsNull(result.Claims.Mother);
+            Assert.AreEqual(830183, result.Claims.Spouses[0]);
+            Assert.AreEqual(205365, result.Claims.Kids[0]);
+
             var item1 = (ValueItem)result.Claims.P21.A.Mainsnak.ValueTyped;
             Assert.AreEqual("item", item1.EntityType);
-            Assert.AreEqual(ValueItem.Male, item1.NumericId);
+            Assert.AreEqual(Sex.Male, result.Claims.Sex);
             Assert.IsNull(result.Claims.P22.A.Mainsnak.ValueTyped);
             Assert.IsNull(result.Claims.P25.A.Mainsnak.ValueTyped);
 

@@ -69,7 +69,9 @@ namespace Logy.MwAgent.DotNetWikiBot
         /// <param name="title">Page title as string.</param>
         /// <returns>Returns Page object.</returns>
         public Page(string title)
-            : this(Bot.GetMostRecentSiteObject(), title)
+            : this(
+                title.StartsWith(Site.WikipediaBaseUrl) ? Site.Wikipedia : Bot.GetMostRecentSiteObject(),
+                title.Replace(Site.WikipediaBaseUrl, null).TrimStart('/'))
         {
         }
 

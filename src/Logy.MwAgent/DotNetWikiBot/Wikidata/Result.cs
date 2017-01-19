@@ -6,7 +6,9 @@ namespace Logy.MwAgent.DotNetWikiBot.Wikidata
         public string Title { get; set; }
 
         public string Pageid { get; set; }
+
         public ResultClaims Claims { get; set; }
+
         public int? ItemId
         {
             get
@@ -16,6 +18,11 @@ namespace Logy.MwAgent.DotNetWikiBot.Wikidata
                     return id;
                 return null;
             }
+        }
+
+        public static string TitleFromId(int? itemId)
+        {
+            return string.Format("Q{0}", itemId);
         }
     }
 }
