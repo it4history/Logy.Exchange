@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using System.Linq;
-using Newtonsoft.Json.Linq;
 
 namespace Logy.MwAgent.DotNetWikiBot.Wikidata
 {
@@ -18,14 +17,11 @@ namespace Logy.MwAgent.DotNetWikiBot.Wikidata
                 return (ValueTime)P569.A.Mainsnak.ValueTyped;
             }
         }
+
         public SingleArray<Claim> P19 { get; set; }
-        public int? BirthPlace
+        public List<int> BirthPlace
         {
-            get
-            {
-                var item = (ValueItem)P19.A.Mainsnak.ValueTyped;
-                return item == null ? (int?)null : item.NumericId;
-            }
+            get { return GetList(P19); }
         }
 
         /// <summary>
@@ -48,11 +44,7 @@ namespace Logy.MwAgent.DotNetWikiBot.Wikidata
         public SingleArray<Claim> P22 { get; set; }
         public int? Father
         {
-            get
-            {
-                var item = (ValueItem)P22.A.Mainsnak.ValueTyped;
-                return item == null ? (int?)null : item.NumericId;
-            }
+            get { return GetItem(P22); }
         }
 
         /// <summary>
@@ -61,11 +53,7 @@ namespace Logy.MwAgent.DotNetWikiBot.Wikidata
         public SingleArray<Claim> P25 { get; set; }
         public int? Mother
         {
-            get
-            {
-                var item = (ValueItem)P25.A.Mainsnak.ValueTyped;
-                return item == null ? (int?)null : item.NumericId;
-            }
+            get { return GetItem(P25); }
         }
 
         /// <summary>
@@ -74,11 +62,7 @@ namespace Logy.MwAgent.DotNetWikiBot.Wikidata
         public SingleArray<Claim> P26 { get; set; }
         public List<int> Spouses
         {
-            get
-            {
-                return (from link in P26.Children()
-                    select ((ValueItem)link.ToObject<Claim>().Mainsnak.ValueTyped).NumericId).ToList();
-            }
+            get { return GetList(P26); }
         }
 
         /// <summary>
@@ -87,12 +71,9 @@ namespace Logy.MwAgent.DotNetWikiBot.Wikidata
         public SingleArray<Claim> P40 { get; set; }
         public List<int> Kids
         {
-            get
-            {
-                return (from link in P40.Children()
-                    select ((ValueItem)link.ToObject<Claim>().Mainsnak.ValueTyped).NumericId).ToList();
-            }
+            get { return GetList(P40); }
         }
+
         #endregion
 
         /// <summary>
@@ -107,6 +88,13 @@ namespace Logy.MwAgent.DotNetWikiBot.Wikidata
                 return (Sex)item1.NumericId;
             }
         }
+        public bool IsMale
+        {
+            get
+            {
+                return Sex == Sex.Male;
+            }
+        }
 
         /// <summary>
         /// image
@@ -118,6 +106,20 @@ namespace Logy.MwAgent.DotNetWikiBot.Wikidata
             {
                 return string.Format("https://commons.wikimedia.org/wiki/File:{0}", P18.A.Mainsnak.ValueTyped);
             }
+        }
+
+        private int? GetItem(SingleArray<Claim> claim)
+        {
+            if (claim == null)
+                return null;
+            var item = (ValueItem)claim.A.Mainsnak.ValueTyped;
+            return item == null ? (int?)null : item.NumericId;
+        }
+
+        private List<int> GetList(SingleArray<Claim> claim)
+        {
+            return claim == null ? null : (from link in claim.Children()
+                                           select ((ValueItem)link.ToObject<Claim>().Mainsnak.ValueTyped).NumericId).ToList();
         }
     }
 }

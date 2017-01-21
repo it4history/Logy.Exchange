@@ -30,6 +30,7 @@ namespace Logy.MwAgent
             return ss.Last();
         }
 
+        #region IComparable
         public override bool Equals(object obj)
         {
             return CompareTo(obj) == 0;
@@ -45,5 +46,6 @@ namespace Logy.MwAgent
             var ib = other as ImportBlock;
             return ib == null ? -1 : TitleUnique.CompareTo(ib.TitleUnique);
         }
+        #endregion
     }
 }

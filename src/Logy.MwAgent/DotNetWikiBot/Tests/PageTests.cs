@@ -49,7 +49,7 @@ namespace Logy.MwAgent.DotNetWikiBot.Tests
 
             var item1 = (ValueItem)result.Claims.P21.A.Mainsnak.ValueTyped;
             Assert.AreEqual("item", item1.EntityType);
-            Assert.AreEqual(Sex.Male, result.Claims.Sex);
+            Assert.IsTrue(result.Claims.IsMale);
             Assert.IsNull(result.Claims.P22.A.Mainsnak.ValueTyped);
             Assert.IsNull(result.Claims.P25.A.Mainsnak.ValueTyped);
 

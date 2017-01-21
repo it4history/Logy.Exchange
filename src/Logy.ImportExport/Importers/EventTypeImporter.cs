@@ -1,5 +1,4 @@
 ﻿using DevExpress.Xpo;
-using Logy.Entities.Documents;
 using Logy.Entities.Engine;
 using Logy.Entities.Events;
 using Logy.Entities.Import;
@@ -22,11 +21,11 @@ namespace Logy.ImportExport.Importers
         public override void Import(object page, Job doc)
         {
             var p = (ImportBlock)page;
-            var eventManager = new EventManager(XpoSession);
+            var eventManager = new EventManager(this);
             EventType parent = null;
             foreach (var label in p.Categories)
             {
-                var newParent = eventManager.FindByName(label);
+                var newParent = eventManager.FindType(label);
                 if (newParent == null)
                 {
                     parent = new EventType(XpoSession) { Label = label, Parent = parent };

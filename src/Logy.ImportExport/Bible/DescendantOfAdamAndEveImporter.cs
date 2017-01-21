@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
 using DevExpress.Xpo;
 using Logy.Entities.Documents;
 using Logy.Entities.Documents.Bible;
 using Logy.Entities.Engine;
-using Logy.Entities.Events;
+using Logy.Entities.Links;
 using Logy.Entities.Persons;
 using Logy.Entities.Products;
 using Logy.ImportExport.Importers;
@@ -31,109 +29,46 @@ namespace Logy.ImportExport.Bible
             return DescendantOfAdamAndEve.ParseDescendants(new Page(Site.Wikipedia, Url), true);
         }
 
+        /// <summary>
+        /// DescendantOfAdamAndEve sent here are sorted by position in text
+        /// </summary>
         public override void Import(object page, Job job)
         {
             var person = (DescendantOfAdamAndEve)page;
+            var fm = new FamilyManager(this);
 
             // every wife in DescendantOfAdamAndEve has family with husband and managed through husband
             // her kids are in husband's family 
             if (!person.IsWife)
             {
-                var fullFamilies = new Dictionary<Family, DescendantOfAdamAndEve>();
                 Link link;
                 var pname = SaveDescendant(person, job, out link);
                 var fatherOrKid = pname.Person;
-                Family family;
                 foreach (var wife in person.Wives)
                 {
                     var wifeName = SaveDescendant(wife, job, out link);
-                    var mother = wifeName.Person;
-                    family = FamilyManager.Find(fatherOrKid, mother);
-                    if (family == null)
-                    {
-                        family = new Family(fatherOrKid) { Mother = mother };
-                        ObjectAdded(family.Save());
-                        if (link == null)
-                            link = LinkManager.FindLink(
-                                wifeName,
-                                BibleManager.GetDocumentUrl(wife.RefName),
-                                BibleManager.GetDocumentNumber(wife.RefName))
-                                   ?? LinkManager.FindLink(
-                                       wifeName,
-                                       BibleManager.GetDocumentUrl(wife.Ref2Name),
-                                       BibleManager.GetDocumentNumber(wife.Ref2Name));
 
-                        // is bug, link should not be null
-                        if (link != null)
-                        {
-                            link.Family = family;
-                            if (link.Job == null)
-                                link.Job = job;
-                            ObjectUpdated(link.Save());
-                        }
-                        else
-                        {
-                        }
-                    }
-
-                    fullFamilies.Add(family, wife);
+                    fm.AddWife(job, fatherOrKid, wifeName, link, wife.RefName, wife.Ref2Name);
                 }
-
+                
                 foreach (var kid in person.Kids)
                 {
                     if (kid.Father == null)
                         throw new NullReferenceException(kid + "'s father is null");
 
-                    var modified = false;
-                    if (kid.Mother != null)
-                    {
-                        // Family was already created
-                        family = (from pair in fullFamilies
-                                  where pair.Value == kid.Mother
-                                  select pair.Key).Single();
-                    }
-                    else
-                    {
-                        family = FamilyManager.Find(fatherOrKid);
-                        if (family == null)
-                        {
-                            family = new Family(fatherOrKid);
-                            ObjectAdded(family.Save());
-                            modified = true;
-                        }
-                    }
+                    var wifeName = SaveDescendant(kid.Mother, job, out link);
+                    var familyLink = fm.AddFamily(job, fatherOrKid, wifeName.Person);
 
                     Link kidLink;
                     var kidName = SaveDescendant(kid, job, out kidLink);
-                    if (kidLink != null)
-                        modified = true;
 
-                    if (modified)
-                    {
-                        if (kidLink == null)
-                            kidLink = LinkManager.FindLink(
-                                kidName,
-                                BibleManager.GetDocumentUrl(kid.RefName),
-                                BibleManager.GetDocumentNumber(kid.RefName));
+                    if (kidLink == null)
+                        kidLink = LinkManager.FindLink(
+                            kidName,
+                            BibleManager.GetDocumentUrl(kid.RefName),
+                            BibleManager.GetDocumentNumber(kid.RefName));
 
-                        if (link == null) // is bug, link should not be null
-                            break;
-
-                        if (link.Job == null)
-                            link.Job = job;
-
-                        kidLink.Family = family;
-
-                        var eventManager = new EventManager(XpoSession);
-                        kidLink.Event = new Event(
-                            eventManager.SaveEventType(kid.GenerationNumberUnknown
-                                ? EventType.BirthInUnknownGeneration
-                                : EventType.Birth),
-                            family,
-                            kidName.Person);
-                        kidLink.Save();
-                        ObjectAdded(kidLink.Event);
-                    }
+                    fm.AddKid(job, kidName, familyLink.Family, kidLink, kid.GenerationNumberUnknown);
                 }
             }
         }

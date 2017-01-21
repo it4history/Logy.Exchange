@@ -71,7 +71,7 @@ namespace Logy.MwAgent.DotNetWikiBot
         public Page(string title)
             : this(
                 title.StartsWith(Site.WikipediaBaseUrl) ? Site.Wikipedia : Bot.GetMostRecentSiteObject(),
-                title.Replace(Site.WikipediaBaseUrl, null).TrimStart('/'))
+                WikipediaUrlTrim(title))
         {
         }
 
@@ -157,6 +157,11 @@ namespace Logy.MwAgent.DotNetWikiBot
         public static string FormatTemplate(string templateTitle, Dictionary<string, string> templateParams)
         {
             return FormatTemplate(templateTitle, templateParams, false, false, 0);
+        }
+
+        public static string WikipediaUrlTrim(string title)
+        {
+            return title.Replace(Site.WikipediaBaseUrl, null).TrimStart('/');
         }
 
         /// <summary>Formats a template with the specified title and parameters. Formatting

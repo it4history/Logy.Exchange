@@ -1,8 +1,8 @@
 ﻿using System;
 using DevExpress.Xpo;
-using Logy.Entities.Documents;
 using Logy.Entities.Engine;
 using Logy.Entities.Import;
+using Logy.Entities.Links;
 using Logy.Entities.Model;
 using Logy.Entities.Persons;
 using Logy.MwAgent;
@@ -49,8 +49,6 @@ namespace Logy.ImportExport.Importers
             out Link link,
             bool mayBeUser = true)
         {
-            link = null;
-            var modified = false;
             Person person;
             var pname = new PersonManager(XpoSession)
                 .FindByNameWithoutPName(page.TitleUnique, Language, out person, page.TitleShort, mayBeUser, type);
@@ -72,14 +70,14 @@ namespace Logy.ImportExport.Importers
                     AbsoluteUrl = Site.Url(Wiki.BaseUrl, page.Title)
                 };
                 ObjectAdded(pname.Save()); // Save() for finding in transaction
-                modified = true;
-            }
 
-            if (modified)
-            {
                 link = job.NewLink();
                 link.PName = pname;
                 ObjectAdded(link); // not saved because may be cancelled
+            }
+            else
+            {
+                link = LinkManager.FindLink(pname);
             }
 
             return pname;
