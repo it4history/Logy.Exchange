@@ -41,36 +41,40 @@ namespace Logy.ImportExport.Bible
             // her kids are in husband's family 
             if (!person.IsWife)
             {
-                var fatherOrKid = SaveDescendant(person, job).PName.Person;
+                var fatherOrKid = GetDescendant(person, job).PName.Person;
                 foreach (var wife in person.Wives)
                 {
-                    var link = SaveDescendant(wife, job);
+                    var link = GetDescendant(wife, job);
                     fm.AddFamily(job, fatherOrKid, link.PName.Person);
                 }
-                
+
                 foreach (var kid in person.Kids)
                 {
                     if (kid.Father == null)
                         throw new NullReferenceException(kid + "'s father is null");
 
-                    var link = SaveDescendant(kid.Mother, job);
-                    var familyLink = fm.AddFamily(job, fatherOrKid, link.PName.Person);
+                    Person mother = null;
+                    if (kid.Mother != null)
+                    {
+                        mother = GetDescendant(kid.Mother, job).PName.Person;
+                    }
+                    var family = fm.AddFamily(job, fatherOrKid, mother).Family;
 
-                    link = SaveDescendant(kid, job);
-                    fm.AddKid(job, link.PName, familyLink.Family, link, kid.GenerationNumberUnknown);
+                    var link = GetDescendant(kid, job);
+                    fm.AddKid(job, link.PName, family, link, kid.GenerationNumberUnknown);
                 }
             }
         }
 
         /// <returns>Link.PName - not null, and because block.RefName is not null as well</returns>
-        private Link SaveDescendant(DescendantOfAdamAndEve block, Job job)
+        private Link GetDescendant(DescendantOfAdamAndEve block, Job job)
         {
             if (!string.IsNullOrEmpty(block.Ref2Name))
-                SaveDescendant(block, job, block.Ref2Name);
-            return SaveDescendant(block, job, block.RefName);
+                GetDescendant(block, job, block.Ref2Name);
+            return GetDescendant(block, job, block.RefName);
         }
 
-        private Link SaveDescendant(DescendantOfAdamAndEve block, Job job, string refName)
+        private Link GetDescendant(DescendantOfAdamAndEve block, Job job, string refName)
         {
             var url = BibleManager.GetDocumentUrl(refName);
             Link nameLink;
@@ -95,7 +99,7 @@ namespace Logy.ImportExport.Bible
             }
 
             var number = BibleManager.GetDocumentNumber(block.RefName);
-            var docLink = LinkManager.FindLink(name, job.Url, url, number);
+            var docLink = LinkManager.FindLink(name, job, url, number);
             if (docLink == null)
             {
                 docLink = foundDoc.NewLink(number);
