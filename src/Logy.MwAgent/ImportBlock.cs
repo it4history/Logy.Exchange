@@ -44,7 +44,7 @@ namespace Logy.MwAgent
         public int CompareTo(object other)
         {
             var ib = other as ImportBlock;
-            return ib == null ? -1 : TitleUnique.CompareTo(ib.TitleUnique);
+            return TitleUnique == null || ib == null ? -1 : TitleUnique.CompareTo(ib.TitleUnique);
         }
         #endregion
     }

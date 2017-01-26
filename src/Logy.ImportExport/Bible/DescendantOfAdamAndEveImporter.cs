@@ -41,14 +41,11 @@ namespace Logy.ImportExport.Bible
             // her kids are in husband's family 
             if (!person.IsWife)
             {
-                Link link;
-                var pname = SaveDescendant(person, job, out link);
-                var fatherOrKid = pname.Person;
+                var fatherOrKid = SaveDescendant(person, job).PName.Person;
                 foreach (var wife in person.Wives)
                 {
-                    var wifeName = SaveDescendant(wife, job, out link);
-
-                    fm.AddWife(job, fatherOrKid, wifeName, link, wife.RefName, wife.Ref2Name);
+                    var link = SaveDescendant(wife, job);
+                    fm.AddFamily(job, fatherOrKid, link.PName.Person);
                 }
                 
                 foreach (var kid in person.Kids)
@@ -56,68 +53,54 @@ namespace Logy.ImportExport.Bible
                     if (kid.Father == null)
                         throw new NullReferenceException(kid + "'s father is null");
 
-                    var wifeName = SaveDescendant(kid.Mother, job, out link);
-                    var familyLink = fm.AddFamily(job, fatherOrKid, wifeName.Person);
+                    var link = SaveDescendant(kid.Mother, job);
+                    var familyLink = fm.AddFamily(job, fatherOrKid, link.PName.Person);
 
-                    Link kidLink;
-                    var kidName = SaveDescendant(kid, job, out kidLink);
-
-                    if (kidLink == null)
-                        kidLink = LinkManager.FindLink(
-                            kidName,
-                            BibleManager.GetDocumentUrl(kid.RefName),
-                            BibleManager.GetDocumentNumber(kid.RefName));
-
-                    fm.AddKid(job, kidName, familyLink.Family, kidLink, kid.GenerationNumberUnknown);
+                    link = SaveDescendant(kid, job);
+                    fm.AddKid(job, link.PName, familyLink.Family, link, kid.GenerationNumberUnknown);
                 }
             }
         }
 
-        /// <returns>not null, because block.RefName is not null </returns>
-        private PName SaveDescendant(DescendantOfAdamAndEve block, Job job, out Link personLink)
+        /// <returns>Link.PName - not null, and because block.RefName is not null as well</returns>
+        private Link SaveDescendant(DescendantOfAdamAndEve block, Job job)
         {
-            personLink = null;
-            SaveDescendant(block, job, block.Ref2Name, ref personLink);
-            return SaveDescendant(block, job, block.RefName, ref personLink);
+            if (!string.IsNullOrEmpty(block.Ref2Name))
+                SaveDescendant(block, job, block.Ref2Name);
+            return SaveDescendant(block, job, block.RefName);
         }
 
-        private PName SaveDescendant(DescendantOfAdamAndEve block, Job job, string refName, ref Link docLink)
+        private Link SaveDescendant(DescendantOfAdamAndEve block, Job job, string refName)
         {
-            Link personLink;
-            var pname = SavePersonName(block, job, PersonType.Human, out personLink, false);
-            docLink = SaveRef(block, job, BibleManager.GetDocumentUrl(refName), personLink ?? docLink) ?? personLink;
-            return pname;
+            var url = BibleManager.GetDocumentUrl(refName);
+            Link nameLink;
+            var name = SavePersonName(block, job, PersonType.Human, out nameLink, false);
+            if (string.IsNullOrEmpty(url))
+                return (Link)nameLink.Save();
+            return SaveRef(block, job, url, name);
         }
 
-        private Link SaveRef(DescendantOfAdamAndEve block, Job job, string url, Link personLink)
+        private Link SaveRef(DescendantOfAdamAndEve block, Job job, string url, PName name)
         {
-            Link docLink = null;
-            if (!string.IsNullOrEmpty(url) && personLink != null)
+            Doc foundDoc = null;
+            var parentDoc = job.Template.ParentDoc;
+            if (parentDoc != null)
+                foundDoc = DocManager.FindByUrl(parentDoc, url);
+
+            if (foundDoc == null)
             {
-                Doc foundDoc = null;
-                var parentDoc = job.Template.ParentDoc;
-                if (parentDoc != null)
-                    foundDoc = DocManager.FindByUrl(parentDoc, url);
+                foundDoc = parentDoc != null ? new Doc(parentDoc) : new Doc(job.XpoSession);
+                foundDoc.Url = url;
+                ObjectAdded(foundDoc.Save());
+            }
 
-                if (foundDoc == null)
-                {
-                    foundDoc = parentDoc != null ? new Doc(parentDoc) : new Doc(job.XpoSession);
-                    foundDoc.Url = url;
-                    foundDoc.Save();
-                    ObjectAdded(foundDoc);
-                }
-
-                var number = BibleManager.GetDocumentNumber(block.RefName);
+            var number = BibleManager.GetDocumentNumber(block.RefName);
+            var docLink = LinkManager.FindLink(name, job.Url, url, number);
+            if (docLink == null)
+            {
                 docLink = foundDoc.NewLink(number);
-                docLink.PName = personLink.PName;
+                docLink.PName = name;
                 docLink.Job = job;
-                if (docLink.DocPart != null)
-                {
-                    // to eliminate duplication
-                    docLink.DocPart.Save();
-                }
-                personLink.PName = null; //// DEBUG, because personLink should not be saved to db
-
                 ObjectAdded(docLink.Save());
             }
 

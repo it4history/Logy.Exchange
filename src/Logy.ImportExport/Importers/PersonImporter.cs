@@ -6,7 +6,6 @@ using Logy.Entities.Links;
 using Logy.Entities.Model;
 using Logy.Entities.Persons;
 using Logy.MwAgent;
-
 using Site = Logy.Entities.Model.Site;
 
 namespace Logy.ImportExport.Importers
@@ -37,8 +36,7 @@ namespace Logy.ImportExport.Importers
 
             Link link;
             SavePersonName(p, job, type, out link);
-            if (link != null)
-                link.Save();
+            link.Save();
         }
 
         /// <returns>null, if not modified</returns>
@@ -69,16 +67,19 @@ namespace Logy.ImportExport.Importers
                     WikidataItemId = page is IWikidata ? ((IWikidata)page).WikidataItemId : null,*/
                     AbsoluteUrl = Site.Url(Wiki.BaseUrl, page.Title)
                 };
-                ObjectAdded(pname.Save()); // Save() for finding in transaction
+                ObjectAdded(pname.Save()); // Save() for finding in transaction, next link.Save() does not help with link.PName
 
                 link = job.NewLink();
                 link.PName = pname;
-                ObjectAdded(link); // not saved because may be cancelled
+                ObjectAdded(link); // not saved here, please save by yourself
             }
             else
             {
                 link = LinkManager.FindLink(pname);
             }
+
+            if (link == null)
+                throw new ArgumentNullException("every PName should be linked");
 
             return pname;
         }
