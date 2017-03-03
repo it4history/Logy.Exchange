@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using DevExpress.Xpo;
 using Logy.Entities.Engine;
 using Logy.Entities.Import;
@@ -6,7 +7,6 @@ using Logy.Entities.Links;
 using Logy.Entities.Model;
 using Logy.Entities.Persons;
 using Logy.MwAgent;
-using Site = Logy.Entities.Model.Site;
 
 namespace Logy.ImportExport.Importers
 {
@@ -24,19 +24,35 @@ namespace Logy.ImportExport.Importers
         public override void Import(object page, Job job)
         {
             var p = (ImportBlock)page;
-            var type = PersonType.Human;
-            for (var i = p.Categories.Count - 1; i >= 0; i--)
+            if (WikiSite.GetNamespace(p.TitleUnique) != MwAgent.DotNetWikiBot.Site.CategoryNS)
             {
-                var cat = p.Categories[i];
-                if (Enum.TryParse(ImportBlock.GetShortTitle(cat), out type))
-                {
-                    break;
-                }
-            }
+                Link link;
+                SavePersonName(p, job, GetPersonTypeByCategories(p.Categories), out link);
 
-            Link link;
-            SavePersonName(p, job, type, out link);
-            link.Save();
+                link.Save();
+            }
+        }
+
+        /// <summary>
+        /// looking for the biggest (int)PersonType value
+        /// </summary>
+        /// <param name="categories"></param>
+        /// <returns></returns>
+        internal static PersonType GetPersonTypeByCategories(IList<string> categories)
+        {
+            var biggest = PersonType.Person;
+            if (categories != null)
+                for (var i = categories.Count - 1; i >= 0; i--)
+                {
+                    var cat = categories[i];
+                    PersonType type;
+                    if (Enum.TryParse(ImportBlock.GetShortTitle(cat), out type)
+                        && type > biggest)
+                    {
+                        biggest = type;
+                    }
+                }
+            return biggest;
         }
 
         /// <returns>null, if not modified</returns>
@@ -49,7 +65,7 @@ namespace Logy.ImportExport.Importers
         {
             Person person;
             var pname = new PersonManager(XpoSession)
-                .FindByNameWithoutPName(page.TitleUnique, Language, out person, page.TitleShort, mayBeUser, type);
+                .FindByNameWithoutPName(page.TitleUnique, Language, out person, mayBeUser, page.TitleShort, type);
             if (pname == null)
             {
                 if (person == null)
@@ -63,9 +79,9 @@ namespace Logy.ImportExport.Importers
                     Name = page.TitleUnique,
                     ShortName = page.TitleShort,
                     Language = Language,
+                    FullName = page.Title,
                     /* commented because this import process wants to be fast. Set WikidataItemId later for page.Title
                     WikidataItemId = page is IWikidata ? ((IWikidata)page).WikidataItemId : null,*/
-                    AbsoluteUrl = Site.Url(Wiki.BaseUrl, page.Title)
                 };
                 ObjectAdded(pname.Save()); // Save() for finding in transaction, next link.Save() does not help with link.PName
 
@@ -75,6 +91,12 @@ namespace Logy.ImportExport.Importers
             }
             else
             {
+                if (person.Type != type)
+                {
+                    // careful updating: it will be strange to convert Organization to Animal
+                    person.Type = type;
+                    ObjectUpdated(person.Save());
+                }
                 link = LinkManager.FindLink(pname);
             }
 

@@ -57,8 +57,8 @@
       <HintPath>..\packages\DevExpress.Xpo.14.2.7.0\lib\net40\DevExpress.Xpo.v14.2.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Logy.Entities, Version=1.0.0.19, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Logy.Entities.1.0.0.19\lib\net40\Logy.Entities.dll</HintPath>
+    <Reference Include="Logy.Entities, Version=1.0.0.20, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Logy.Entities.1.0.0.20\lib\net40\Logy.Entities.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="MySql.Data, Version=6.9.9.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
@@ -73,8 +73,8 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\NUnit.2.6.4\lib\nunit.framework.dll</HintPath>
     </Reference>
-    <Reference Include="Skills.Xpo, Version=1.0.0.11, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Skills.Xpo.1.0.0.11\lib\net40\Skills.Xpo.dll</HintPath>
+    <Reference Include="Skills.Xpo, Version=1.0.0.12, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Skills.Xpo.1.0.0.12\lib\net40\Skills.Xpo.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
@@ -94,6 +94,7 @@
     <Compile Include="Bible\DescendantOfAdamAndEveImporter.cs" />
     <Compile Include="Importers\EventTypeImporter.cs" />
     <Compile Include="Importers\PersonImporter.cs" />
+    <Compile Include="Importers\Tests\PersonImporterTests.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

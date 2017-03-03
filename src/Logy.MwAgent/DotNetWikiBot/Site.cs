@@ -652,7 +652,7 @@ namespace Logy.MwAgent.DotNetWikiBot
             if (!Namespaces.Keys.Contains(nsIndex))
                 throw new ArgumentOutOfRangeException("nsIndex");
             if (pageTitle[0] == ':')
-                pageTitle = pageTitle.TrimStart(new[] { ':' });
+                pageTitle = pageTitle.TrimStart(':');
             int colonPos = pageTitle.IndexOf(':');
             if (colonPos == -1)
                 return pageTitle;
@@ -1000,7 +1000,7 @@ namespace Logy.MwAgent.DotNetWikiBot
 
             Regexes["interwikiLink"] = new Regex(@"(?i)\[\[((" + GeneralData["interwiki"] + "):(.+?))]]");
 
-            Regexes["wikiCategory"] = new Regex(@"(?i)\[\[\s*(((" + GetNsPrefixes(Site.CategoryNS) + @"):(.+?))(\|.+?)?)]]");
+            Regexes["wikiCategory"] = new Regex(@"(?i)\[\[\s*(((" + GetNsPrefixes(CategoryNS) + @"):(.+?))(\|.+?)?)]]");
 
             Regexes["wikiImage"] = new Regex(@"\[\[(?i)((" + GetNsPrefixes(6) + @"):(.+?))(\|(.+?))*?]]");
 
