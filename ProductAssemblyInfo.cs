@@ -3,7 +3,7 @@ using System.Reflection;
 [assembly: AssemblyVersionAttribute(Globe.Version)]
 [assembly: AssemblyFileVersionAttribute(Globe.Version)]
 [assembly: AssemblyCompany("it4history")]
-[assembly: AssemblyCopyright("copyleft")]
+[assembly: AssemblyCopyright("GPL")]
 
 public class Globe
 {
