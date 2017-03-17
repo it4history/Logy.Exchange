@@ -61,6 +61,11 @@ namespace Logy.ImportExport.Bible
                     var family = fm.AddFamily(job, fatherOrKid, mother).Family;
 
                     var link = GetDescendant(kid, job);
+                    if (!kid.GenerationNumberUnknown && !person.GenerationNumberUnknown
+                        && Math.Abs(kid.GenerationNumber - person.GenerationNumber) > 2)
+                        throw new Exception(
+                            string.Format("kid {0} is {2} generation from father {1}", kid, person, kid.GenerationNumber - person.GenerationNumber));
+
                     fm.AddKid(job, link.PName, family, link, kid.GenerationNumberUnknown);
                 }
             }

@@ -178,7 +178,7 @@ namespace Logy.ImportExport.Bible
                 {
                     if (!descendant.WifeWithManyHusbands(all[index]))
                     {
-                        unique.Remove(descendant);
+                        // !why needed unique.Remove(descendant);
                         dupli.Merge(descendant.TitleUnique, new List<DescendantOfAdamAndEve> { all[index], descendant });
                     }
                 }
@@ -261,12 +261,12 @@ namespace Logy.ImportExport.Bible
                                              Ref2Name = ref2Name,
                                              Ref2Caption = ref2Caption,
                                          }.Check();
-                    
+
                     // must de added after Title set in order to correctly add husband.Wives
                     descendant.Husband = husband;
                     result.Add(descendant);
 
-                    if (descendant.IsWife) 
+                    if (descendant.IsWife)
                     {
                         SetPrevParent(prevMothers, descendant);
                     }
@@ -288,10 +288,14 @@ namespace Logy.ImportExport.Bible
             if (TitleUnique == "Unknown")
                 _titleUnique = "parent of " + _kids[0];
             else
-                _titleUnique = TitleUnique + (// Husband != null ? " (wife of " + Husband : 
-                                             Father != null
-                                                 ? " (son of " + Father
-                                                 : " (from " + RefName) + ")";
+            {
+                if (string.IsNullOrEmpty(TitleShort))
+                    TitleShort = TitleUnique;
+                _titleUnique = TitleUnique + ( // Husband != null ? " (wife of " + Husband : 
+                                   Father != null
+                                       ? " (son of " + Father
+                                       : " (from " + RefName) + ")";
+            }
         }
 
         public override string ToString()

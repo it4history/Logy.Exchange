@@ -57,10 +57,6 @@
       <HintPath>..\packages\DevExpress.Xpo.14.2.7.0\lib\net40\DevExpress.Xpo.v14.2.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Logy.Entities, Version=1.0.0.20, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Logy.Entities.1.0.0.20\lib\net40\Logy.Entities.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="MySql.Data, Version=6.9.9.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
       <HintPath>..\packages\MySql.Data.6.9.9\lib\net40\MySql.Data.dll</HintPath>
       <Private>True</Private>
@@ -99,6 +95,10 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\Logy.Entities\Logy.Entities.csproj">
+      <Project>{389d90a1-67ab-460c-ae89-e8056659387d}</Project>
+      <Name>Logy.Entities</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Logy.MwAgent\Logy.MwAgent.csproj">
       <Project>{072DA087-F800-431E-AD49-6CAF0AB57572}</Project>
       <Name>Logy.MwAgent</Name>
