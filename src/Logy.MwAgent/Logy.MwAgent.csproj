@@ -50,6 +50,9 @@
       <Link>Properties\ProductAssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="DotNetWikiBot\Wikidata\Sex.cs" />
+    <Compile Include="DotNetWikiBot\Wikidata\SitelinksConverter.cs" />
+    <Compile Include="DotNetWikiBot\Wikidata\Sitelink.cs" />
+    <Compile Include="DotNetWikiBot\Wikidata\Sitelinks.cs" />
     <Compile Include="ImportBlock.cs" />
     <Compile Include="DotNetWikiBot\Exceptions\BotDisallowedException.cs" />
     <Compile Include="DotNetWikiBot\Bot.cs" />

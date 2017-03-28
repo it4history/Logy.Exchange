@@ -148,6 +148,26 @@ namespace Logy.MwAgent.DotNetWikiBot
         /// <summary>True, if this page is in bot account's watchlist.</summary>
         public bool Watched { get; set; }
 
+        public static string WikipediaUrlTrim(string title)
+        {
+            return title.Replace(Site.WikipediaBaseUrl, null).TrimStart('/');
+        }
+
+        public static Result ParseWikidataItem(int? itemId)
+        {
+            string jsonSrc = Site.PostDataAndGetResult("http://www.wikidata.org/wiki/Special:EntityData/Q" + itemId + ".json", null, null); // raises "404: Not found" if not found
+            return ParseWikidataItem(jsonSrc);
+        }
+
+        public static Result ParseWikidataItem(string json)
+        {
+            var result = JObject.Parse(json)["entities"].Single().Single().ToObject<Result>();
+            Console.WriteLine(
+                Bot.Msg("Wikidata item {0} associated was parsed successfully."),
+                result.Title);
+            return result;
+        }
+
         /// <summary>Formats a template with the specified title and parameters. Default formatting
         /// options are used.</summary>
         /// <param name="templateTitle">Template's title.</param>
@@ -157,11 +177,6 @@ namespace Logy.MwAgent.DotNetWikiBot
         public static string FormatTemplate(string templateTitle, Dictionary<string, string> templateParams)
         {
             return FormatTemplate(templateTitle, templateParams, false, false, 0);
-        }
-
-        public static string WikipediaUrlTrim(string title)
-        {
-            return title.Replace(Site.WikipediaBaseUrl, null).TrimStart('/');
         }
 
         /// <summary>Formats a template with the specified title and parameters. Formatting
@@ -1561,27 +1576,21 @@ namespace Logy.MwAgent.DotNetWikiBot
 
         /// <summary>For pages that have associated items on <see href="https://wikidata.org">
         /// Wikidata.org</see> this function returns
-        /// If page is not associated with a Wikidata item null is returned.</summary>
-        /// <param name="itemId">starts with Q</param>
-        public Result GetWikidataItem(string itemId = null)
+        /// If page is not associated with a Wikidata item null is returned.
+        /// Gets translations for SitelinksConverter.Languages but maybe GetWikidataLinks() is good for translations too</summary>
+        public Result GetWikidataItem()
         {
-            if (itemId == null)
+            string src = Site.GetWebPage(Site.IndexPath + "?title=" + Bot.UrlEncode(Title));
+            Match m = Regex.Match(src, "href=\"//www\\.wikidata\\.org/wiki/(Q\\d+)");
+            if (!m.Success) // fallback
+                m = Regex.Match(src, "\"wgWikibaseItemId\"\\:\"(Q\\d+)\"");
+            if (!m.Success)
             {
-                string src = Site.GetWebPage(Site.IndexPath + "?title=" + Bot.UrlEncode(Title));
-                Match m = Regex.Match(src, "href=\"//www\\.wikidata\\.org/wiki/(Q\\d+)");
-                if (!m.Success) // fallback
-                    m = Regex.Match(src, "\"wgWikibaseItemId\"\\:\"(Q\\d+)\"");
-                if (!m.Success)
-                {
-                    Console.WriteLine(Bot.Msg("No Wikidata item is associated with page \"{0}\"."), Title);
-                    return null;
-                }
-
-                return new Result { Title = m.Groups[1].Value };
+                Console.WriteLine(Bot.Msg("No Wikidata item is associated with page \"{0}\"."), Title);
+                return null;
             }
-            string jsonSrc = Site.GetWebPage("http://www.wikidata.org/wiki/Special:EntityData/" +
-                                             Bot.UrlEncode(itemId) + ".json"); // raises "404: Not found" if not found
-            return ParseWikidataItem(jsonSrc);
+
+            return new Result { Title = m.Groups[1].Value };
         }
 
         /// <summary>Function converts basic HTML markup in this page's text to wiki
@@ -2215,16 +2224,6 @@ namespace Logy.MwAgent.DotNetWikiBot
 
             Console.WriteLine(Bot.Msg("Page \"{0}\" has been successfully deleted."), Title);
             Title = string.Empty;
-        }
-
-        internal Result ParseWikidataItem(string json)
-        {
-            var result = JObject.Parse(json)["entities"].Single().Single().ToObject<Result>();
-            Console.WriteLine(
-                Bot.Msg("Wikidata item {0} associated with page \"{1}\" was parsed successfully."),
-                result.Title,
-                Title);
-            return result;
         }
 
         private void SavePostApi(string postData)

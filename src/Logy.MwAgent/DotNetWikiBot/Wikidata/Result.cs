@@ -1,3 +1,5 @@
+using Newtonsoft.Json;
+
 namespace Logy.MwAgent.DotNetWikiBot.Wikidata
 {
     public class Result
@@ -9,6 +11,9 @@ namespace Logy.MwAgent.DotNetWikiBot.Wikidata
 
         public ResultClaims Claims { get; set; }
 
+        [JsonConverter(typeof(SitelinksConverter))]
+        public Sitelinks Sitelinks { get; set; }
+        
         public int? ItemId
         {
             get

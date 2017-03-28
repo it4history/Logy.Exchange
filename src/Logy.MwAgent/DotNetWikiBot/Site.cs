@@ -249,6 +249,135 @@ namespace Logy.MwAgent.DotNetWikiBot
         /// <exclude/>
         public DateTime LastWriteTime { get; set; }
 
+        public static string PostDataAndGetResult(string pageURL, string postData, string address, CookieContainer cookies = null, bool allowRedirect = true)
+        {
+            if (string.IsNullOrEmpty(pageURL))
+                throw new ArgumentNullException("pageURL", Bot.Msg("No URL specified."));
+
+            if (pageURL.StartsWith("/") && !pageURL.StartsWith("//"))
+                pageURL = address + pageURL;
+
+            int retryDelaySeconds = 60;
+            HttpWebResponse webResp = null;
+            for (int errorCounter = 0;; errorCounter++)
+            {
+                var webReq = CreateRequest(pageURL, allowRedirect, cookies); /// == null || cookies.Count == 0 ? new CookieContainer() : cookies);
+
+                if (!string.IsNullOrEmpty(postData))
+                {
+                    if (Bot.IsRunningOnMono)    // Mono bug 636219 evasion
+                        webReq.AllowAutoRedirect = false;
+
+                    // https://bugzilla.novell.com/show_bug.cgi?id=636219
+                    webReq.Method = "POST";
+                    /// webReq.Timeout = 180000;
+                    postData += "&maxlag=" + MaxLag;
+                    var postBytes = Encoding.UTF8.GetBytes(postData);
+                    webReq.ContentLength = postBytes.Length;
+                    using (var reqStrm = webReq.GetRequestStream())
+                    {
+                        reqStrm.Write(postBytes, 0, postBytes.Length);
+                        reqStrm.Close();
+                    }
+                }
+
+                try
+                {
+                    webResp = (HttpWebResponse)webReq.GetResponse();
+                    if (webResp.Headers["Retry-After"] != null)
+                        throw new WebException("Service is unavailable due to high load.");
+
+                    // API can return HTTP code 200 (OK) along with "Retry-After"
+                    break;
+                }
+                catch (WebException e)
+                {
+                    if (webResp == null)
+                        throw;
+
+                    if (webReq.AllowAutoRedirect == false &&
+                        webResp.StatusCode == HttpStatusCode.Redirect)    // Mono bug 636219 evasion
+                        return string.Empty;
+
+                    if (e.Message.Contains("Section=ResponseStatusLine"))
+                    {   // Known Squid problem
+                        Bot.SwitchUnsafeHttpHeaderParsing(true);
+                        return PostDataAndGetResult(pageURL, postData, address, cookies, allowRedirect);
+                    }
+
+                    if (webResp.Headers["Retry-After"] != null)
+                    {    // Server is very busy
+                        if (errorCounter > RetryTimes)
+                            throw;
+
+                        // See https://www.mediawiki.org/wiki/Manual:Maxlag_parameter
+                        int seconds;
+                        int.TryParse(webResp.Headers["Retry-After"], out seconds);
+                        if (seconds > 0)
+                            retryDelaySeconds = seconds;
+                        Console.Error.WriteLine(e.Message);
+                        Console.Error.WriteLine(Bot.Msg("Retrying in {0} seconds..."), retryDelaySeconds);
+                        Bot.Wait(retryDelaySeconds);
+                    }
+                    else if (e.Status == WebExceptionStatus.ProtocolError)
+                    {
+                        var code = (int)webResp.StatusCode;
+                        if (code == 500 || code == 502 || code == 503 || code == 504)
+                        {
+                            // Remote server problem, retry
+                            if (errorCounter > RetryTimes)
+                                throw;
+                            Console.Error.WriteLine(e.Message);
+                            Console.Error.WriteLine(Bot.Msg("Retrying in {0} seconds..."), retryDelaySeconds);
+                            Bot.Wait(retryDelaySeconds);
+                        }
+                        else
+                            throw;
+                    }
+                    else
+                        throw;
+                }
+            }
+
+            string respStr;
+            using (var respStream = webResp.GetResponseStream())
+            {
+                var r = respStream;
+                if (webResp.ContentEncoding.ToLower().Contains("gzip"))
+                {
+                    r = new GZipStream(respStream, CompressionMode.Decompress);
+                }
+                else if (webResp.ContentEncoding.ToLower().Contains("deflate"))
+                {
+                    r = new DeflateStream(respStream, CompressionMode.Decompress);
+                }
+
+                if (cookies != null)
+                {
+                    var siteUri = new Uri(address);
+                    foreach (Cookie cookie in webResp.Cookies)
+                    {
+                        if (cookie.Domain[0] == '.' &&
+                            cookie.Domain.Substring(1) == siteUri.Host)
+                            cookie.Domain = cookie.Domain.TrimStart(new char[] { '.' });
+                        cookies.Add(cookie);
+                    }
+                }
+
+                using (var strmReader = new StreamReader(r, Encoding.UTF8))
+                {
+                    respStr = strmReader.ReadToEnd();
+                    strmReader.Close();
+                }
+
+                r.Close();
+                respStream.Close();
+            }
+
+            webResp.Close();
+            return respStr;
+        }
+
         /// <summary>Gets MediaWiki system messages
         /// (those listed on "Special:Allmessages" page).</summary>
         /// <param name="modified">If true, the user-customized messages are returned.
@@ -361,123 +490,7 @@ namespace Logy.MwAgent.DotNetWikiBot
         /// <returns>Returns text.</returns>
         public string PostDataAndGetResult(string pageURL, string postData, bool getCookies, bool allowRedirect)
         {
-            if (string.IsNullOrEmpty(pageURL))
-                throw new ArgumentNullException("pageURL", Bot.Msg("No URL specified."));
-            if (pageURL.StartsWith("/") && !pageURL.StartsWith("//"))
-                pageURL = Address + pageURL;
-
-            int retryDelaySeconds = 60;
-            HttpWebResponse webResp = null;
-            for (int errorCounter = 0;; errorCounter++) {
-                var webReq = CreateRequest(pageURL, allowRedirect);
-
-                if (!string.IsNullOrEmpty(postData)) {
-                    if (Bot.IsRunningOnMono)    // Mono bug 636219 evasion
-                        webReq.AllowAutoRedirect = false;
-
-                    // https://bugzilla.novell.com/show_bug.cgi?id=636219
-                    webReq.Method = "POST";
-                    /// webReq.Timeout = 180000;
-                    postData += "&maxlag=" + MaxLag;
-                    var postBytes = Encoding.UTF8.GetBytes(postData);
-                    webReq.ContentLength = postBytes.Length;
-                    using (var reqStrm = webReq.GetRequestStream())
-                    {
-                        reqStrm.Write(postBytes, 0, postBytes.Length);
-                        reqStrm.Close();
-                    }
-                }        
-
-                try {
-                    webResp = (HttpWebResponse)webReq.GetResponse();
-                    if (webResp.Headers["Retry-After"] != null)
-                        throw new WebException("Service is unavailable due to high load.");
-
-                    // API can return HTTP code 200 (OK) along with "Retry-After"
-                    break;
-                }
-                catch (WebException e) {
-                    if (webResp == null)
-                        throw;
-
-                    if (webReq.AllowAutoRedirect == false &&
-                        webResp.StatusCode == HttpStatusCode.Redirect)    // Mono bug 636219 evasion
-                        return string.Empty;
-
-                    if (e.Message.Contains("Section=ResponseStatusLine")) {   // Known Squid problem
-                        Bot.SwitchUnsafeHttpHeaderParsing(true);
-                        return PostDataAndGetResult(pageURL, postData, getCookies, allowRedirect);
-                    }
-
-                    if (webResp.Headers["Retry-After"] != null) {    // Server is very busy
-                        if (errorCounter > RetryTimes)
-                            throw;
-
-                        // See https://www.mediawiki.org/wiki/Manual:Maxlag_parameter
-                        int seconds;
-                        int.TryParse(webResp.Headers["Retry-After"], out seconds);
-                        if (seconds > 0)
-                            retryDelaySeconds = seconds;
-                        Console.Error.WriteLine(e.Message);
-                        Console.Error.WriteLine(string.Format(Bot.Msg("Retrying in {0} seconds..."), retryDelaySeconds));
-                        Bot.Wait(retryDelaySeconds);
-                    }
-                    else if (e.Status == WebExceptionStatus.ProtocolError) {
-                        var code = (int)webResp.StatusCode;
-                        if (code == 500 || code == 502 || code == 503 || code == 504)
-                        {
-                            // Remote server problem, retry
-                            if (errorCounter > RetryTimes)
-                                throw;
-                            Console.Error.WriteLine(e.Message);
-                            Console.Error.WriteLine(string.Format(Bot.Msg("Retrying in {0} seconds..."), retryDelaySeconds));
-                            Bot.Wait(retryDelaySeconds);
-                        }
-                        else
-                            throw;
-                    }
-                    else
-                        throw;
-                }
-            }
-
-            string respStr;
-            using (var respStream = webResp.GetResponseStream())
-            {
-                var r = respStream;
-                if (webResp.ContentEncoding.ToLower().Contains("gzip"))
-                {
-                    r = new GZipStream(respStream, CompressionMode.Decompress);
-                }
-                else if (webResp.ContentEncoding.ToLower().Contains("deflate"))
-                {
-                    r = new DeflateStream(respStream, CompressionMode.Decompress);
-                }
-
-                if (getCookies)
-                {
-                    var siteUri = new Uri(Address);
-                    foreach (Cookie cookie in webResp.Cookies)
-                    {
-                        if (cookie.Domain[0] == '.' &&
-                            cookie.Domain.Substring(1) == siteUri.Host)
-                            cookie.Domain = cookie.Domain.TrimStart(new char[] { '.' });
-                        Cookies.Add(cookie);
-                    }
-                }
-
-                using (var strmReader = new StreamReader(r, Encoding.UTF8))
-                {
-                    respStr = strmReader.ReadToEnd();
-                    strmReader.Close();
-                }
-
-                r.Close();
-                respStream.Close();
-            }
-
-            webResp.Close();
-            return respStr;
+            return PostDataAndGetResult(pageURL, postData, Address, getCookies ? Cookies : null, allowRedirect);
         }
 
         /// <summary>Gets and parses results of specified custom API query.
@@ -697,7 +710,7 @@ namespace Logy.MwAgent.DotNetWikiBot
             }
         }
 
-        private HttpWebRequest CreateRequest(string pageURL, bool allowRedirect)
+        private static HttpWebRequest CreateRequest(string pageURL, bool allowRedirect, CookieContainer cookies)
         {
             var webReq = (HttpWebRequest)WebRequest.Create(pageURL);
             webReq.Proxy.Credentials = CredentialCache.DefaultCredentials;
@@ -706,7 +719,7 @@ namespace Logy.MwAgent.DotNetWikiBot
             webReq.Headers.Add("Cache-Control", "no-cache, must-revalidate");
             webReq.UserAgent = Bot.BotVer;
             webReq.AllowAutoRedirect = allowRedirect;
-            webReq.CookieContainer = Cookies.Count == 0 ? new CookieContainer() : Cookies;
+            webReq.CookieContainer = cookies;
             if (Bot.UnsafeHttpHeaderParsingUsed == 0)
             {
                 webReq.ProtocolVersion = HttpVersion.Version10;
