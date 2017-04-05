@@ -79,7 +79,7 @@ namespace Logy.ImportExport.Importers
                     Name = page.TitleUnique,
                     ShortName = page.TitleShort,
                     Language = Language,
-                    FullName = page.Title,
+                    Url = page.Title,
                     /* commented because this import process wants to be fast. Set WikidataItemId later for page.Title
                     WikidataItemId = page is IWikidata ? ((IWikidata)page).WikidataItemId : null,*/
                 };
