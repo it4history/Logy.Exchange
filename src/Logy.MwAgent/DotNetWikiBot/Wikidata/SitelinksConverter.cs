@@ -7,7 +7,7 @@ namespace Logy.MwAgent.DotNetWikiBot.Wikidata
 {
     public class SitelinksConverter : JsonConverter
     {
-        private static List<string> _languages = new List<string> { "en,uk,ru" };
+        private static List<string> _languages = new List<string> { "en", "uk", "ru" };
 
         public static List<string> Languages
         {

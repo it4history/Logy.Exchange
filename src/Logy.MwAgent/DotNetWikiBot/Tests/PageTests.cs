@@ -61,6 +61,16 @@ namespace Logy.MwAgent.DotNetWikiBot.Tests
 
             Assert.AreEqual(7, result.Sitelinks.Translations.Count);
         }
+
+        [Test]
+        public void ParseWikidataItem_NoTrans()
+        {
+            var json = @"
+        {""entities"":{""Q6182499"":{""pageid"":5979175,""ns"":0,""title"":""Q6182499"",""lastrevid"":9428423,""modified"":""2013-03-04T21:02:09Z"",""type"":""item"",""id"":""Q6182499"",""labels"":{""en"":{""language"":""en"",""value"":""Jeroham""}},""descriptions"":[],""aliases"":[],""claims"":[],""sitelinks"":{""enwiki"":{""site"":""enwiki"",""title"":""Jeroham"",""badges"":[],""url"":""https://en.wikipedia.org/wiki/Jeroham""}
+}}}}";
+            var result = Page.ParseWikidataItem(json);
+            Assert.AreEqual(1, result.Sitelinks.Translations.Count);
+        }
     }
 }
 

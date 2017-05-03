@@ -11,9 +11,14 @@ namespace Logy.ImportExport.Bible.Tests
     public class DescendantOfAdamAndEveTests
     {
         private readonly List<DescendantOfAdamAndEve> _descendants = DescendantOfAdamAndEve
-            .ParseDescendants(new Page(new Site(Site.WikipediaBaseUrl)) { Text = S1703 }, true);
+            .ParseDescendants(new Page(new Site(Site.WikipediaBaseUrl)) { Text = S1705 }, true);
 
-        private const string S1703 = @"
+        private const string S1705 = @"
+{{multiple issues|
+{{npov|date=May 2017}}
+{{directory|date=May 2017}}
+{{primary sources|date=May 2017}}}}
+
 '''[[Adam]]''' ({{lang-he|אָדָם}}, ''ʼĀḏām'', ""dust; man; mankind""; {{lang-ar|آدم}}, {{transl|ar|DIN|''ʼĀdam''}}) and '''[[Eve]]''' ({{lang-he|חַוָּה}}, ''Ḥawwā'', ""living one""; {{lang-ar|حواء}}, {{transl|ar|DIN|''Ḥawwāʼ''}}) were, according to the [[Book of Genesis]] of the [[Bible]], the [[List of first men or women in mythology and religion|first man and woman]] created by [[God]]. The following is an outline of their descendants as presented in the [[Bible]].
 
 ==Legend==
@@ -25,12 +30,14 @@ namespace Logy.ImportExport.Bible.Tests
 {{Wikipedia-Books|Genealogy from Adam to Zerubbabel
     }
 }
-Genealogy from Adam to Zerubbabel:
+Genealogy from Adam to Zerubbabel:  
+
+* Cain is not listed as a descendant in the genealogy of Adam and neither are any of his children.The Bible records a family tree for Cain(Genesis 4:17-4:22) and a separate genealogy for Adam(Genesis 5:1-5:32) which is described as Mankind(Genesis 5:2). These fathered seed lines are separate up to Genesis 6:4 for good reason and should remain separate if one is to rightly divide the word of God.**  
 
 .1. [[Adam]]<ref>Genesis</ref><br>
 .+ m. [[Eve]]<ref>Genesis 3:20</ref><br>
 ..2. [[Cain]]<ref>Genesis 4:1</ref><br>
-.. 3. [[Enoch(son of Cain)|Enoch]]<ref>Genesis 4:17</ref><br>
+...3. [[Enoch(son of Cain)|Enoch]]<ref>Genesis 4:17</ref><br>
 ....4. [[Irad]]<ref name=""Ge 4:18"">Genesis 4:18</ref><br>
 .....5. [[Mehujael]]<ref name=""Ge 4:18""/><br>
 ......6. [[Methushael]]<ref name=""Ge 4:18""/><br>
@@ -43,7 +50,7 @@ Genealogy from Adam to Zerubbabel:
 ........8. [[Naamah(Genesis)|Naamah]]<ref name=""Ge 4:22""/><br>
 ..2. [[Abel]]<ref>Genesis 4:2</ref><br>
 ..2. [[Seth]]<ref>Genesis 4:25</ref><br>
-.. 3. [[Enos(biblical figure)|Enos]]<ref>Genesis 4:26</ref><br>
+...3. [[Enos(biblical figure)|Enos]]<ref>Genesis 4:26</ref><br>
 ....4. [[Kenan]]<ref>Genesis 5:9</ref><br>
 .....5. [[Mahalalel]]<ref>Genesis 5:12</ref><br>
 ......6. [[Jared(biblical figure)|Jared]]<ref>Genesis 5:15</ref><br>
@@ -671,7 +678,7 @@ Genealogy from Adam to Zerubbabel:
 ...........................27. [[Mahlah]]<ref name=""1Ch 7:18""/><br>
 .........................+ m. [[Maacah]]<ref name=""1Ch 7:16"">1 Chronicles 7:16</ref><br>
 ..........................26. [[Peresh]]<ref name=""1Ch 7:16""/><br>
-...........................27. [[Ulam(Bible)|Ulam)]]<ref name=""1Ch 7:16""/><br>
+...........................27. [[Ulam(Bible)|Ulam]]<ref name=""1Ch 7:16""/><br>
 ............................28. [[Bedan]]<ref name=""1Ch 7:17"">1 Chronicles 7:17</ref><br>
 ...........................27. [[Rakem]]<ref name=""1Ch 7:16""/><br>
 ..........................26. [[Sheresh]]<ref name=""1Ch 7:16""/><br>
@@ -739,12 +746,12 @@ Genealogy from Adam to Zerubbabel:
 .........................25. [[Jerimoth]]<ref name=""1Ch 7:7""/><br>
 .........................25. [[Iri]]<ref name=""1Ch 7:7""/><br>
 .........................25. [[Addar]]<ref name=""1Ch 8:3"">1 Chronicles 8:3</ref><br>
-.........................25. [[Gera]]<ref name=""1Ch 8:3""/><br>
+.........................25. [[List of minor biblical figures, A–K#Gera|Gera]]<ref name=""1Ch 8:3""/><br>
 .........................25. [[Abihud]]<ref name=""1Ch 8:3""/><br>
 .........................25. [[Abishua]]<ref name=""1Ch 8:4"">1 Chronicles 8:4</ref><br>
 .........................25. [[Naaman]]<ref name=""1Ch 8:4""/><br>
 .........................25. [[Ahoah]]<ref name=""1Ch 8:4""/><br>
-.........................25. [[Gera]]<ref name=""1Ch 8:5"">1 Chronicles 8:5</ref><br>
+.........................25. [[List of minor biblical figures, A–K#Gera|Gera]]<ref name=""1Ch 8:5"">1 Chronicles 8:5</ref><br>
 .........................25. [[Shephuphan]]<ref name=""1Ch 8:5""/><br>
 .........................25. [[Huram(biblical figure)|Huram]]<ref name=""1Ch 8:5""/><br>
 ........................24. [[Ashbel]]<ref name=""Ge 46:21""/><br>
@@ -761,7 +768,7 @@ Genealogy from Adam to Zerubbabel:
 .........................25. [[Abijah]]<ref name=""1Ch 7:8""/><br>
 .........................25. [[Anathoth]]<ref name=""1Ch 7:8""/><br>
 .........................25. [[Alemeth]]<ref name=""1Ch 7:8""/><br>
-........................24. [[Gera]]<ref name=""Ge 46:21""/><br>
+........................24. [[List of minor biblical figures, A–K#Gera|Gera]]<ref name=""Ge 46:21""/><br>
 ........................24. [[Naaman]]<ref name=""Ge 46:21""/><br>
 ........................24. [[Minor characters in the Book of Genesis|Ehi]]<ref name=""Ge 46:21""/><br>
 ........................24. [[List of minor biblical figures, _L–Z#Rosh|Rosh]]<ref name=""Ge 46:21""/><br>
@@ -775,7 +782,7 @@ Genealogy from Adam to Zerubbabel:
 ..........................26. [[Ehud]]<ref name=""1Ch 7:11""/><br>
 ...........................27. [[Naaman]]<ref name=""1Ch 8:7"">1 Chronicles 8:7</ref><br>
 ...........................27. [[Ahijah]]<ref name=""1Ch 8:7""/><br>
-...........................27. [[Gera]]<ref name=""1Ch 8:7""/><br>
+...........................27. [[List of minor biblical figures, A–K#Gera|Gera]]<ref name=""1Ch 8:7""/><br>
 ............................28. [[Uzza]]<ref name=""1Ch 8:7""/><br>
 ............................28. [[Ahihud]]<ref name=""1Ch 8:7""/><br>
 ..........................26. [[Kenaanah]]<ref name=""1Ch 7:11""/><br>
@@ -788,11 +795,11 @@ Genealogy from Adam to Zerubbabel:
 .........................?. [[Palti]]<ref name=""Nu 13:9""/><br>
 ........................?. [[Kison]]<ref name=""Nu 34:21"">Numbers 34:21</ref><br>
 .........................?. [[Elidad]]<ref name=""Nu 34:21""/><br>
-........................?. [[Gera]]<ref name=""Judges 3:15"">Judges 3:15</ref><br>
+........................?. [[List of minor biblical figures, A–K#Gera|Gera]]<ref name=""Judges 3:15"">Judges 3:15</ref><br>
 .........................?. [[Ehud]]<ref name=""Judges 3:15""/><br>
 ..........................?. [[Naaman]]<ref name=""1Ch 8:7"" /><br>
 ..........................?. [[Ahijah]]<ref name=""1Ch 8:7""/><br>
-..........................?. [[Gera]]<ref name=""1Ch 8:7""/><br>
+..........................?. [[List of minor biblical figures, A–K#Gera|Gera]]<ref name=""1Ch 8:7""/><br>
 ...........................?. [[Uzza]]<ref name=""1Ch 8:7""/><br>
 ...........................?. [[Ahihud]]<ref name=""1Ch 8:7""/><br>
 ........................?. [[Aphiah]]<ref name=""1Sa 9:1"">1 Samuel 9:1</ref><br>
@@ -1169,7 +1176,7 @@ Genealogy from Adam to Zerubbabel:
 ............12. [[Meshech]]<ref name=""Ge 10:2""/><br>
 ............12. [[Tiras]]<ref name=""Ge 10:2""/>
 
-Genealogy from Zerubbabel to Jesus:
+[[Genealogy of Jesus]] from Zerubbabel according to[[Gospel of Matthew|Matthew]]:
 
 .....................................................53. [[Zerubbabel]]<ref name=""Mat 1:1-17"">Matthew 1:1-17</ref><br>
 ......................................................54. [[Abiud]]<ref name=""Mat 1:1-17"" /><br>
@@ -1180,7 +1187,7 @@ Genealogy from Zerubbabel to Jesus:
 ...........................................................59. Eliud<ref name=""Mat 1:1-17"" /><br>
 ............................................................60. Eleazar<ref name=""Mat 1:1-17"" /><br>
 .............................................................61. Matthan<ref name=""Mat 1:1-17"" /><br>
-..............................................................62. [[Genealogy of Jesus|Jacob]]<ref name=""Mat 1:1-17"" /><br>
+..............................................................62. Jacob<ref name=""Mat 1:1-17"" /><br>
 ...............................................................63. [[Saint Joseph|Joseph]]<ref name=""Mat 1:1-17"" /><br>
 ...............................................................+ m. [[Mary(mother of Jesus) | Mary]]<br>
 ................................................................64. [[Jesus]]<!-- Jesus is at least the 42nd generation after Abraham(20th generation) according to literal reading of Matthew 1 -->
@@ -1195,6 +1202,7 @@ Genealogy from Zerubbabel to Jesus:
 {{DEFAULTSORT:Descendants Of Adam And Eve}}
 [[Category: Bible genealogy]]
 ";
+
 
         private const string Best = @"1. [[Adam]]<ref>Genesis</ref><br>
 .+ m. [[Eve]]<ref>Genesis 3:20</ref><br>
@@ -1212,7 +1220,6 @@ Genealogy from Zerubbabel to Jesus:
 ...............................................................+ m. [[Mary (mother of Jesus)|Mary]]<br>
 ................................................................64. [[Jesus]]<!-- Jesus is at least the 42nd generation after Abraham (20th generation) according to literal reading of Matthew 1 -->
 ";
-
         [Test]
         public void Parse()
         {
@@ -1470,7 +1477,7 @@ Genealogy from Zerubbabel to Jesus:
         [Test]
         public void ParseDescendants()
         {
-            Assert.AreEqual(1150, DescendantOfAdamAndEve.ParseDescendants(new Page { Text = S1703 }).Count);
+            Assert.AreEqual(1150, DescendantOfAdamAndEve.ParseDescendants(new Page { Text = S1705 }).Count);
         }
 
         [Test]

@@ -161,6 +161,7 @@ namespace Logy.MwAgent.DotNetWikiBot
 
         public static Result ParseWikidataItem(string json)
         {
+            json = json.Replace("\"claims\":[]", "\"claims\":{}");
             var result = JObject.Parse(json)["entities"].Single().Single().ToObject<Result>();
             Console.WriteLine(
                 Bot.Msg("Wikidata item {0} associated was parsed successfully."),
