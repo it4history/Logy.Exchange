@@ -73,6 +73,7 @@
     <Compile Include="DotNetWikiBot\Wikidata\ValueItem.cs" />
     <Compile Include="DotNetWikiBot\Wikidata\ValueTime.cs" />
     <Compile Include="DotNetWikiBot\XmlUrlResolverWithCache.cs" />
+    <Compile Include="IntlAttribute.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="DotNetWikiBot\Tests\BotTests.cs" />
   </ItemGroup>
