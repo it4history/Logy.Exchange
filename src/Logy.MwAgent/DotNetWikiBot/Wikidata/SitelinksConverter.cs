@@ -7,13 +7,7 @@ namespace Logy.MwAgent.DotNetWikiBot.Wikidata
 {
     public class SitelinksConverter : JsonConverter
     {
-        private static List<string> _languages = new List<string> { "en", "uk", "ru" };
-
-        public static List<string> Languages
-        {
-            get { return _languages; }
-            set { _languages = value; }
-        }
+        public static IEnumerable<string> Languages { get; set; }
 
         public override bool CanConvert(Type objectType)
         {
@@ -27,7 +21,7 @@ namespace Logy.MwAgent.DotNetWikiBot.Wikidata
             foreach (var child in token.Children())
             {
                 var sitelink = child.First.ToObject<Sitelink>();
-                foreach (var language in _languages)
+                foreach (var language in Languages)
                 {
                     if (sitelink.Site.StartsWith(language))
                     {
