@@ -5,6 +5,7 @@ using Logy.Entities.Documents;
 using Logy.Entities.Documents.Bible;
 using Logy.Entities.Engine;
 using Logy.Entities.Links;
+using Logy.Entities.Model;
 using Logy.Entities.Persons;
 using Logy.Entities.Products;
 using Logy.ImportExport.Importers;
@@ -22,6 +23,11 @@ namespace Logy.ImportExport.Bible
         public override string Url
         {
             get { return EventsDb.DescendantsOfAdamAndEve; }
+        }
+
+        public override EntityType EntityType
+        {
+            get { return EntityType.Person | EntityType.Family | EntityType.Event; }
         }
 
         public override IList GetPages()
