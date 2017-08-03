@@ -360,14 +360,18 @@ namespace Logy.MwAgent.DotNetWikiBot
         /// is thrown. This function is very fast, but it should be used only when
         /// metadata is not needed and no page modification is required.
         /// In other cases <see cref="Page.Load()"/> function should be used.</summary>
-        public void LoadTextOnly()
+        public void LoadTextOnly(string action = "raw", bool redirect = false)
         {
             if (string.IsNullOrEmpty(Title) && string.IsNullOrEmpty(Revision))
                 throw new WikiBotException(Bot.Msg("No title is specified for page to load."));
 
-            string res = Site.IndexPath + "?title=" + Bot.UrlEncode(Title) +
-                         (string.IsNullOrEmpty(Revision) ? string.Empty : "&oldid=" + Revision) +
-                         "&redirect=no&action=raw&ctype=text/plain&dontcountme=s";
+            string res = string.Format(
+                "{0}?title={1}{2}{3}&action={4}&ctype=text/plain&dontcountme=s",
+                Site.IndexPath,
+                Bot.UrlEncode(Title),
+                string.IsNullOrEmpty(Revision) ? string.Empty : "&oldid=" + Revision,
+                redirect ? null : "&redirect=no",
+                action);
             try
             {
                 Text = Site.GetWebPage(res);
