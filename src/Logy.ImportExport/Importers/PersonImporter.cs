@@ -24,7 +24,9 @@ namespace Logy.ImportExport.Importers
         public override void Import(object page, Job job)
         {
             var p = (ImportBlock)page;
-            if (WikiSite.GetNamespace(p.TitleUnique) != MwAgent.DotNetWikiBot.Site.CategoryNS)
+            var ns = WikiSite.GetNamespace(p.Title);
+            if (ns != MwAgent.DotNetWikiBot.Site.CategoryNS && ns != MwAgent.DotNetWikiBot.Site.TemplateNS
+                && !p.TitleUnique.Contains("/"))
             {
                 Link link;
                 SavePersonName(p, job, GetPersonTypeByCategories(p.Categories), out link);
@@ -96,6 +98,11 @@ namespace Logy.ImportExport.Importers
                     // careful updating: it will be strange to convert Organization to Animal
                     person.Type = type;
                     ObjectUpdated(person.Save());
+                }
+                if (pname.Url != page.Title)
+                {
+                    pname.Url = page.Title;
+                    ObjectUpdated(pname.Save());
                 }
                 link = LinkManager.FindLink(pname);
             }

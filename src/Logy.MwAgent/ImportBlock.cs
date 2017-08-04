@@ -12,9 +12,10 @@ namespace Logy.MwAgent
         /// <summary>title, including namespace prefix</summary>
         public string Title { get; set; }
 
+        /// <summary>without namespace or interwiki prefix</summary>
         public virtual string TitleUnique
         {
-            get { return Title; }
+            get { return Title.Split(':').Last(); }
             set { Title = value; }
         }
 

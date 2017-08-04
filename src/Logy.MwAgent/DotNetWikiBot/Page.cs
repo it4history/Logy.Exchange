@@ -1460,7 +1460,7 @@ namespace Logy.MwAgent.DotNetWikiBot
         public string GetSection(string sectionTitle)
         {
             var result = string.Empty;
-            var r = new Regex(@"(?s)\s*=+\s*" + sectionTitle + @"=+(.+)");
+            var r = new Regex(@"(?s)\s*=+\s*" + sectionTitle + @"\s*=+(.*)");
             var match = r.Match(Text);
             if (match.Success)
             {

@@ -22,7 +22,7 @@ namespace Logy.ImportExport.Bible
 
         public override string Url
         {
-            get { return EventsDb.DescendantsOfAdamAndEve; }
+            get { return LogyEventsDb.DescendantsOfAdamAndEve; }
         }
 
         public override EntityType EntityType
@@ -32,7 +32,7 @@ namespace Logy.ImportExport.Bible
 
         public override IList GetPages()
         {
-            return DescendantOfAdamAndEve.ParseDescendants(new Page(Site.Wikipedia, Url), true);
+            return DescendantOfAdamAndEve.ParseDescendants(new Page(WikiSite, Url), true);
         }
 
         /// <summary>

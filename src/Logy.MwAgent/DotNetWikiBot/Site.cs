@@ -29,6 +29,7 @@ namespace Logy.MwAgent.DotNetWikiBot
         public const bool MinorEditByDefault = true;
 
         public const int CategoryNS = 14;
+        public const int TemplateNS = 10;
 
         /// <summary>This is a maximum degree of server load when bot is
         /// still allowed to edit pages. Higher values mean more aggressive behaviour.
@@ -694,7 +695,7 @@ namespace Logy.MwAgent.DotNetWikiBot
             if (string.IsNullOrEmpty(pageTitle))
                 throw new ArgumentNullException("pageTitle");
             if (pageTitle[0] == ':')
-                pageTitle = pageTitle.TrimStart(new[] { ':' });
+                pageTitle = pageTitle.TrimStart(':');
             int ns = GetNamespace(pageTitle);
             if (ns == 0)
                 return pageTitle;

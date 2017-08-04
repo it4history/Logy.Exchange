@@ -103,7 +103,7 @@ namespace Logy.ImportExport.Bible
                     return _titleUnique;
 
                 return !string.IsNullOrEmpty(Title)
-                                  ? Title
+                                  ? Title.Split(':').Last()
                                   : !string.IsNullOrEmpty(TitleShort)
                                         ? TitleShort
                                         : OtherCaption;
@@ -148,8 +148,8 @@ namespace Logy.ImportExport.Bible
                 var index = all.BinarySearch(descendant);
                 if (index >= 0)
                 {
-                    if (descendant.Title == "Jochebed" || descendant.Title == "Sarah" // Jochebed, Sarah are women and duplicated twice
-                        || descendant.Title == "Zerubbabel" // Zerubbabel was mentioned twice
+                    if (descendant.Title == "wikipedia:Jochebed" || descendant.Title == "wikipedia:Sarah" // Jochebed, Sarah are women and duplicated twice
+                        || descendant.Title == "wikipedia:Zerubbabel" // Zerubbabel was mentioned twice
                         || descendant.WifeWithManyHusbands(all[index]))
                         descendant.MergeDuplicates(all[index]);
                     else
@@ -382,7 +382,7 @@ namespace Logy.ImportExport.Bible
         /// </summary>
         private bool WifeWithManyHusbands(DescendantOfAdamAndEve descendant)
         {
-            if (Title == "Basemath" && GenerationNumber == 22 && Father == null)
+            if (Title == "wikipedia:Basemath" && GenerationNumber == 22 && Father == null)
                 return false;
             if (IsWife && descendant.IsWife)
             {
