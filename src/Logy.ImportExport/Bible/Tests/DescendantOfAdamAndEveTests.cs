@@ -1,6 +1,6 @@
 ﻿#if DEBUG
 using System.Collections.Generic;
-
+using Logy.Entities.Products;
 using Logy.MwAgent.DotNetWikiBot;
 
 using NUnit.Framework;
@@ -11,7 +11,7 @@ namespace Logy.ImportExport.Bible.Tests
     public class DescendantOfAdamAndEveTests
     {
         private readonly List<DescendantOfAdamAndEve> _descendants = DescendantOfAdamAndEve
-            .ParseDescendants(new Page(new Site(Site.WikipediaBaseUrl)) { Text = S1708 }, true);
+            .ParseDescendants(new Page(new Site(LogyEventsDb.LogyBaseUrl)) { Text = S1708 }, true);
 
         private const string S1708 = @"
 Genealogy from Adam to Zerubbabel:  
@@ -51,7 +51,7 @@ Genealogy from Adam to Zerubbabel:
 ...............15. [[wikipedia:Peleg|Peleg]]<ref name=""Ge 10:25"">Genesis 10:25</ref><br>
 ................16. [[wikipedia:Reu|Reu]]<ref name=""Ge 11:18"">Genesis 11:18</ref><br>
 .................17. [[wikipedia:Serug|Serug]]<ref name=""Ge 11:20"">Genesis 11:20</ref><br>
-..................18. [[wikipedia:Nahor, son of Serug|Nahor]]<ref name=""Ge 11:22"">Genesis 11:22</ref><br>
+..................18. [[Nahor, son of Serug|Nahor]]<ref name=""Ge 11:22"">Genesis 11:22</ref><br>
 ...................19. [[wikipedia:Terah|Terah]]<ref name=""Ge 11:24"">Genesis 11:24</ref><br>
 ....................20. [[wikipedia:Abraham|Abraham]]<ref name=""Ge 11:26"">Genesis 11:26</ref><br>
 ....................+ m. [[wikipedia:Sarah|Sarah]]<ref name=""Ge 11:29"">Genesis 11:29</ref><br>
@@ -267,7 +267,7 @@ Genealogy from Adam to Zerubbabel:
 ........................24. [[wikipedia:Perez (son of Judah)|Perez]]<ref name=""Ge 38:29"">Genesis 38:29</ref><br>
 .........................25. [[wikipedia:Hezron|Hezron]]<ref name=""Ge 46:12"">Genesis 46:12</ref><br>
 ..........................26. [[wikipedia:Jerahmeel|Jerahmeel]]<ref name=""1Ch 2:9"">1 Chronicles 2:9</ref><br>
-...........................27. [[wikipedia:Ram (Biblical figure)|Ram]]<ref name=""1Ch 2:9"" /><br>
+...........................27. [[wikipedia:Ram (biblical figure)|Ram]]<ref name=""1Ch 2:9"" /><br>
 ............................28. [[wikipedia:Maaz|Maaz]]<ref name=""1Ch 2:27"">1 Chronicles 2:27</ref><br>
 ............................28. [[wikipedia:List of minor Biblical figures#Jamin|Jamin]]<ref name=""1Ch 2:27""/><br>
 ............................28. [[wikipedia:Eker|Eker]]<ref name=""1Ch 2:27""/><br>
@@ -394,7 +394,7 @@ Genealogy from Adam to Zerubbabel:
 ...................................................51. [[wikipedia:Jeconiah|Jehoiachin]], King of Judah<ref name=""2Ki 24:6"">2 Kings 24:6</ref><br>
 ....................................................52. [[wikipedia:Shealtiel|Shealtiel]]<ref name=""1Ch 3:17"">1 Chronicles 3:17</ref><br>
 ....................................................52. [[wikipedia:Malkiram|Malkiram]]<ref name=""1Ch 3:18"">1 Chronicles 3:18</ref><br>
-....................................................52. [[wikipedia:Pedaiah|Pedaiah]]<ref name=""1Ch 3:18""/><br>
+....................................................52. [[Pedaiah]]<ref name=""1Ch 3:18""/><br>
 .....................................................53. [[wikipedia:Zerubbabel|Zerubbabel]]<ref name=""1Ch 3:19"">1 Chronicles 3:19</ref><br>
 ......................................................54. [[wikipedia:Meshullam|Meshullam]]<ref name=""1Ch 3:19""/><br>
 ......................................................54. [[wikipedia:Hananiah, son of Azzur|Hananiah]]<ref name=""1Ch 3:19""/><br>
@@ -1160,18 +1160,19 @@ Genealogy from Adam to Zerubbabel:
 ............12. [[wikipedia:Meshech|Meshech]]<ref name=""Ge 10:2""/><br>
 ............12. [[wikipedia:Tiras|Tiras]]<ref name=""Ge 10:2""/>
 
-[[wikipedia:Genealogy of Jesus|Genealogy of Jesus]] from Zerubbabel according to [[Gospel of Matthew|Matthew]]:
+[[wikipedia:Genealogy of Jesus|Genealogy of Jesus]] from Zerubbabel according to [[:Category:Gospel of Matthew|Matthew]]:
+
 
 .....................................................53. [[wikipedia:Zerubbabel|Zerubbabel]]<ref name=""Mat 1:1-17"">Matthew 1:1-17</ref><br>
 ......................................................54. [[wikipedia:Abiud|Abiud]]<ref name=""Mat 1:1-17"" /><br>
-.......................................................55. [[wikipedia:Eliakim_(Bible)|Eliakim]]<ref name=""Mat 1:1-17"" /><br>
-........................................................56. [[Azor]]<ref name=""Mat 1:1-17"" /><br>
-.........................................................57. [[Zadok]]<ref name=""Mat 1:1-17"" /><br>
-..........................................................58. [[Achim]]<ref name=""Mat 1:1-17"" /><br>
-...........................................................59. [[Eliud]]<ref name=""Mat 1:1-17"" /><br>
-............................................................60. [[Eleazar]]<ref name=""Mat 1:1-17"" /><br>
-.............................................................61. [[Matthan]]<ref name=""Mat 1:1-17"" /><br>
-..............................................................62. [[Jacob]]<ref name=""Mat 1:1-17"" /><br>
+.......................................................55. [[Jews from Gospel of Matthew#Eliakim|Eliakim]]<ref name=""Mat 1:1-17"" /><br>
+........................................................56. [[Jews from Gospel of Matthew#Azor|Azor]]<ref name=""Mat 1:1-17"" /><br>
+.........................................................57. [[Jews from Gospel of Matthew#Zadok|Zadok]]<ref name=""Mat 1:1-17"" /><br>
+..........................................................58. [[Jews from Gospel of Matthew#Achim|Achim]]<ref name=""Mat 1:1-17"" /><br>
+...........................................................59. [[Jews from Gospel of Matthew#Eliud|Eliud]]<ref name=""Mat 1:1-17"" /><br>
+............................................................60. [[Jews from Gospel of Matthew#Eleazar|Eleazar]]<ref name=""Mat 1:1-17"" /><br>
+.............................................................61. [[Jews from Gospel of Matthew#Matthan|Matthan]]<ref name=""Mat 1:1-17"" /><br>
+..............................................................62. [[Jews from Gospel of Matthew#Jacob|Jacob]]<ref name=""Mat 1:1-17"" /><br>
 ...............................................................63. [[wikipedia:Saint Joseph|Joseph]]<ref name=""Mat 1:1-17"" /><br>
 ...............................................................+ m. [[wikipedia:Mary (mother of Jesus)|Mary]]<br>
 ................................................................64. [[wikipedia:Jesus|Jesus]]<!-- Jesus is at least the 42nd generation after Abraham(20th generation) according to literal reading of Matthew 1 -->
@@ -1306,6 +1307,13 @@ Genealogy from Adam to Zerubbabel:
 .........................................40. [[Mattaniah]]<ref name=""1Ch 9:15""/><br>
 ");
             Assert.AreEqual("1Ch 9:15", des[0].RefName);
+
+            des = DescendantOfAdamAndEve.RemoveDuplicates(DescendantOfAdamAndEve.Parse(@"
+.....................................................53. [[wikipedia:Zerubbabel|Zerubbabel]]<ref name=""1Ch 3:19"">1 Chronicles 3:19</ref><br>
+.....................................................53. [[wikipedia:Zerubbabel|Zerubbabel]]<ref name=""Mat 1:1-17"">Matthew 1:1-17</ref><br>
+"));
+            Assert.AreEqual("1Ch 3:19", des[0].RefName);
+            Assert.AreEqual("Mat 1:1-17", des[0].Ref2Name);
         }
 
         [Test]

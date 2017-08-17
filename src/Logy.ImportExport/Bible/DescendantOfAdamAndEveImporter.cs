@@ -4,17 +4,17 @@ using DevExpress.Xpo;
 using Logy.Entities.Documents;
 using Logy.Entities.Documents.Bible;
 using Logy.Entities.Engine;
+using Logy.Entities.Import;
 using Logy.Entities.Links;
 using Logy.Entities.Model;
 using Logy.Entities.Persons;
 using Logy.Entities.Products;
 using Logy.ImportExport.Importers;
 using Logy.MwAgent.DotNetWikiBot;
-using Site = Logy.MwAgent.DotNetWikiBot.Site;
 
 namespace Logy.ImportExport.Bible
 {
-    public class DescendantOfAdamAndEveImporter : PersonImporter
+    public class DescendantOfAdamAndEveImporter : CategoryImporter
     {
         public DescendantOfAdamAndEveImporter(Session session) : base(session)
         {
@@ -92,10 +92,10 @@ namespace Logy.ImportExport.Bible
             var name = SavePersonName(block, job, PersonType.Human, out nameLink, false);
             if (string.IsNullOrEmpty(url))
                 return (Link)nameLink.Save();
-            return SaveRef(block, job, url, name);
+            return SaveRef(refName, job, url, name);
         }
 
-        private Link SaveRef(DescendantOfAdamAndEve block, Job job, string url, PName name)
+        private Link SaveRef(string refName, Job job, string url, PName name)
         {
             Doc foundDoc = null;
             var parentDoc = job.Template.ParentDoc;
@@ -109,7 +109,7 @@ namespace Logy.ImportExport.Bible
                 ObjectAdded(foundDoc.Save());
             }
 
-            var number = BibleManager.GetDocumentNumber(block.RefName);
+            var number = BibleManager.GetDocumentNumber(refName);
             var docLink = LinkManager.FindLink(name, job, url, number);
             if (docLink == null)
             {

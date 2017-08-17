@@ -21,13 +21,14 @@ namespace Logy.MwAgent.DotNetWikiBot.Wikidata
             foreach (var child in token.Children())
             {
                 var sitelink = child.First.ToObject<Sitelink>();
-                foreach (var language in Languages)
-                {
-                    if (sitelink.Site.StartsWith(language))
+                if (Languages != null)
+                    foreach (var language in Languages)
                     {
-                        translations.Add(sitelink);
+                        if (sitelink.Site.StartsWith(language))
+                        {
+                            translations.Add(sitelink);
+                        }
                     }
-                }
             }
             return new Sitelinks { Translations = translations };
         }

@@ -9,7 +9,7 @@ namespace Logy.MwAgent.DotNetWikiBot.Tests
         [Test]
         public void PageList()
         {
-            var site = new Site("http://logy.gq/lw");
+            var site = new Site("http://logy.gq/lw"); // LogyEventsDb.LogyBaseUrl
             var pl = new PageList(site);
             pl.FillFromCategoryTree("Category:Organization");
 
