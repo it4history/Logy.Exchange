@@ -468,7 +468,7 @@ namespace Logy.MwAgent.DotNetWikiBot
         /// <returns>Returns source code.</returns>
         public string GetWebPage(string pageURL)
         {
-            return PostDataAndGetResult(pageURL, string.Empty, false, true);
+            return PostDataAndGetResult(pageURL, string.Empty, true, true);
         }
 
         /// <summary>Posts specified string to requested resource
@@ -478,7 +478,7 @@ namespace Logy.MwAgent.DotNetWikiBot
         /// <returns>Returns text.</returns>
         public string PostDataAndGetResult(string pageURL, string postData)
         {
-            return PostDataAndGetResult(pageURL, postData, false, true);
+            return PostDataAndGetResult(pageURL, postData, true, true);
         }
 
         /// <summary>Posts specified string to requested resource
