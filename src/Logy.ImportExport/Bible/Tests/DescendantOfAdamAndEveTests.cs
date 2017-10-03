@@ -1,5 +1,6 @@
 ﻿#if DEBUG
 using System.Collections.Generic;
+using Logy.Entities.Import;
 using Logy.Entities.Products;
 using Logy.MwAgent.DotNetWikiBot;
 
@@ -10,8 +11,8 @@ namespace Logy.ImportExport.Bible.Tests
     [TestFixture]
     public class DescendantOfAdamAndEveTests
     {
-        private readonly List<DescendantOfAdamAndEve> _descendants = DescendantOfAdamAndEve
-            .ParseDescendants(new Page(new Site(LogyEventsDb.LogyBaseUrl)) { Text = S1708 }, true);
+        private readonly List<DescendantOfAdamAndEve> _descendants = Descendant
+            .ParseDescendants<DescendantOfAdamAndEve>(new Page(new Site(LogyEventsDb.LogyBaseUrl)) { Text = S1708 }, true);
 
         private const string S1708 = @"
 Genealogy from Adam to Zerubbabel:  
@@ -523,7 +524,7 @@ Genealogy from Adam to Zerubbabel:
 ............................?. [[wikipedia:Acsah|Acsah]]<ref name=""Jos 15:7"">Joshua 15:7</ref><br>
 ............................?. Iru<ref name=""1Ch 4:15"">1 Chronicles 4:15</ref><br> 
 ............................?. Elah<ref name=""1Ch 4:15""/><br> 
-.............................?[[wikipedia:Kenaz|Kenaz]]<ref name=""1Ch 4:15""/><br> 
+.............................?. [[wikipedia:Kenaz|Kenaz]]<ref name=""1Ch 4:15""/><br> 
 ............................?. [[wikipedia:Naam|Naam]]<ref name=""1Ch 4:15""/><br> 
 .........................25. [[wikipedia:Hamul|Hamul]]<ref name=""Ge 46:12""/><br>
 .........................?. [[wikipedia:Bani (biblical figure)|Bani]]<ref name=""1Ch 9:4"">1 Chronicles 9:4</ref><br> 
@@ -1197,7 +1198,7 @@ Genealogy from Adam to Zerubbabel:
 ...........................26. [[Aaron]]<ref name=""Ex 6:20"" /><br>
 ..................................33. [[Azrikam]]<ref name=""1Ch 9:14"" >1 Chronicles 9:14</ref> <br>
 .................................33. [[Nun]]<ref name=""Nu 13:8"">Numbers 13:8</ref><ref name=""1Ch 7:27"">1 Chronicles 7:27</ref><br>
-.............................? [[Kenaz]]<ref name=""1Ch 4:15""/><br>
+.............................?. [[Kenaz]]<ref name=""1Ch 4:15""/><br>
 ...............................................................63. [[Saint Joseph|Joseph]]<ref name=""Mat 1:1-17"" /><br>
 ...............................................................+ m. [[Mary (mother of Jesus)|Mary]]<br>
 ................................................................64. [[Jesus]]<!-- Jesus is at least the 42nd generation after Abraham (20th generation) according to literal reading of Matthew 1 -->
@@ -1205,7 +1206,7 @@ Genealogy from Adam to Zerubbabel:
         [Test]
         public void Parse()
         {
-            var des = DescendantOfAdamAndEve.Parse(Best);
+            var des = Descendant.Parse<DescendantOfAdamAndEve>(Best);
             Assert.AreEqual(64, des[14].GenerationNumber);
             Assert.AreEqual("Jesus", des[14].Title);
             Assert.AreEqual(des[12], des[14].Father);
@@ -1303,12 +1304,12 @@ Genealogy from Adam to Zerubbabel:
         [Test]
         public void ParseRefName()
         {
-            var des = DescendantOfAdamAndEve.Parse(@"
+            var des = Descendant.Parse<DescendantOfAdamAndEve>(@"
 .........................................40. [[Mattaniah]]<ref name=""1Ch 9:15""/><br>
 ");
             Assert.AreEqual("1Ch 9:15", des[0].RefName);
 
-            des = DescendantOfAdamAndEve.RemoveDuplicates(DescendantOfAdamAndEve.Parse(@"
+            des = Descendant.RemoveDuplicates(Descendant.Parse<DescendantOfAdamAndEve>(@"
 .....................................................53. [[wikipedia:Zerubbabel|Zerubbabel]]<ref name=""1Ch 3:19"">1 Chronicles 3:19</ref><br>
 .....................................................53. [[wikipedia:Zerubbabel|Zerubbabel]]<ref name=""Mat 1:1-17"">Matthew 1:1-17</ref><br>
 "));
@@ -1319,7 +1320,7 @@ Genealogy from Adam to Zerubbabel:
         [Test]
         public void ParseM1()
         {
-            var des = DescendantOfAdamAndEve.Parse(@"
+            var des = Descendant.Parse<DescendantOfAdamAndEve>(@"
 ...................................35. [[Rehoboam]], King of Judah<ref name=""1Ki 11:43"" /><br>
 ...................................+ m1. [[List_of_minor_biblical_figures,_L–Z#Mahalath|Mahalath]]<ref name=""2Ch 11:19"" /><br>
 ");
@@ -1333,7 +1334,7 @@ Genealogy from Adam to Zerubbabel:
         [Test]
         public void ParseWives()
         {
-            var des = DescendantOfAdamAndEve.RemoveDuplicates(DescendantOfAdamAndEve.Parse(@"
+            var des = Descendant.RemoveDuplicates(Descendant.Parse<DescendantOfAdamAndEve>(@"
 ......................22. [[Esau]]<ref name=""Ge 25:25"">Genesis 25:25</ref><br>
 .......................+ m. [[Judith]]<ref name=""Ge 26:34"">Genesis 26:34</ref><br>
 .......................+ m. [[Basemath]]<ref name=""Ge 26:34""/><br>
@@ -1379,7 +1380,7 @@ Genealogy from Adam to Zerubbabel:
         [Test]
         public void ParseKids()
         {
-            var des = DescendantOfAdamAndEve.RemoveDuplicates(DescendantOfAdamAndEve.Parse(@"
+            var des = Descendant.RemoveDuplicates(Descendant.Parse<DescendantOfAdamAndEve>(@"
 ......6. [[wikipedia:Methushael]]<ref name=""Ge 4:18""/><br>
 .......7. [[wikipedia:Lamech (descendant of Cain)|Lamech]]<ref name=""Ge 4:18""/><br>
 .......+ m. [[wikipedia:List of minor Biblical figures#Adah|Adah]]<ref name=""Ge 4:19"">Genesis 4:19</ref><br>
@@ -1427,7 +1428,7 @@ Genealogy from Adam to Zerubbabel:
         [Test]
         public void ParseUnknownGeneration()
         {
-            var des = DescendantOfAdamAndEve.Parse(@"
+            var des = Descendant.Parse<DescendantOfAdamAndEve>(@"
 ...............................31. [[Ishi]]<ref name=""1Ch 2:31"">1 Chronicles 2:31</ref><br>
 ................................32. Sheshan<ref name=""1Ch 2:31""/><br>
 .................................33. [[Ahlai]]<ref name=""1Ch 2:31""/><br>
@@ -1446,7 +1447,7 @@ Genealogy from Adam to Zerubbabel:
         [Test]
         public void ParseUnknownPerson()
         {
-            var des = DescendantOfAdamAndEve.Parse(@"
+            var des = Descendant.Parse<DescendantOfAdamAndEve>(@"
 ........................?. Hodiah's wife<ref name=""1Ch 4:19"">1 Chronicles 4:19</ref><br>
 .........................?. Unknown<ref name=""1Ch 4:19""/><br>
 ..........................?. [[Keilah]]<ref name=""1Ch 4:19""/><br>
@@ -1466,13 +1467,13 @@ Genealogy from Adam to Zerubbabel:
         [Test]
         public void ParseDescendants()
         {
-            Assert.AreEqual(1150, DescendantOfAdamAndEve.ParseDescendants(new Page { Text = S1708 }).Count);
+            Assert.AreEqual(1150, Descendant.Parse<DescendantOfAdamAndEve>(S1708).Count);
         }
 
         [Test]
         public void SpaceInName()
         {
-            var des = DescendantOfAdamAndEve.Parse(@"
+            var des = Descendant.Parse<DescendantOfAdamAndEve>(@"
 .........................25. Ethan<ref name=""1Ch 2:6"">1 Chronicles 2:6</ref><br>
 .............................28. Ethan <ref name=""1Ch 6:42""/><br>
 ");
@@ -1482,7 +1483,7 @@ Genealogy from Adam to Zerubbabel:
         [Test]
         public void Duplicates()
         {
-            foreach (DescendantOfAdamAndEve descendant in _descendants)
+            foreach (var descendant in _descendants)
             {
                 if (descendant.Title.StartsWith("Gera"))
                 {
@@ -1504,7 +1505,7 @@ Genealogy from Adam to Zerubbabel:
         [Test]
         public void FamiliesAndGenerations()
         {
-            foreach (DescendantOfAdamAndEve descendant in _descendants)
+            foreach (var descendant in _descendants)
             {
                 if (!descendant.IsWife)
                     Assert.AreEqual(descendant.GenerationNumber, descendant.GenerationCalculated);
