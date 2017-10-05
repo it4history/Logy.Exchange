@@ -1187,7 +1187,7 @@ Genealogy from Adam to Zerubbabel:
 ";
 
 
-        private const string Best = @"1. [[Adam]]<ref>Genesis</ref><br>
+        private const string Best = @".1. [[Adam]]<ref>Genesis</ref><br>
 .+ m. [[Eve]]<ref>Genesis 3:20</ref><br>
 .. 3. [[Enoch (son of Cain)|Enoch]]<ref>Genesis 4:17</ref><br>
 ....4. [[Irad]]<ref name=""Ge 4:18"">Genesis 4:18</ref><br>

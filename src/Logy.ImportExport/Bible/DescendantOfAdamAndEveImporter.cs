@@ -1,15 +1,6 @@
-﻿using System;
-using System.Collections;
-using DevExpress.Xpo;
-using Logy.Entities.Documents;
-using Logy.Entities.Documents.Bible;
-using Logy.Entities.Engine;
+﻿using DevExpress.Xpo;
 using Logy.Entities.Import;
-using Logy.Entities.Links;
-using Logy.Entities.Model;
-using Logy.Entities.Persons;
 using Logy.Entities.Products;
-using Logy.MwAgent.DotNetWikiBot;
 
 namespace Logy.ImportExport.Bible
 {
