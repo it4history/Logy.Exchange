@@ -16,9 +16,9 @@ namespace Logy.MwAgent.DotNetWikiBot.Smw.Tests
         }
 
         [Test]
-        public void Login()
+        public void Get()
         {
-            Assert.IsFalse(SemanticWikiParser.Ask(_site, "[[Modification date::+]]|?Modification date")
+            Assert.IsFalse(SemanticWikiParser.Get(_site, "[[Modification date::+]]|?Modification date")
                 .Contains("readapidenied"));
         }
 

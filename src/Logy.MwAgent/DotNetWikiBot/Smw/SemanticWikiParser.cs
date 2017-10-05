@@ -6,7 +6,12 @@ namespace Logy.MwAgent.DotNetWikiBot.Smw
 {
     public class SemanticWikiParser
     {
-        public static string Ask(Site site, string query)
+        public static Dictionary<string, PageProperties> Ask(Site site, string query)
+        {
+            return Parse(Get(site, query));
+        }
+
+        internal static string Get(Site site, string query)
         {
             string respStr = site.PostDataAndGetResult(
                 site.ApiPath + "?action=ask&format=json&query=" + Bot.UrlEncode(query),

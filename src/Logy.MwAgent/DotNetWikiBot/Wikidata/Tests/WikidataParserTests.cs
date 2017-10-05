@@ -7,6 +7,12 @@ namespace Logy.MwAgent.DotNetWikiBot.Wikidata.Tests
     [TestFixture]
     public class WikidataParserTests
     {
+        [TestFixtureSetUp]
+        public void FixtureSetUp()
+        {
+            SitelinksConverter.Languages = new[] {"en", "uk", "ru"};
+        }
+
         [Test]
         public void ParseWikidataItem()
         {
