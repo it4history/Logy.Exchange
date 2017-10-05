@@ -8,19 +8,6 @@ namespace Logy.MwAgent.DotNetWikiBot.Smw
         public string Fullurl { get; set; }
         public JObject Printouts { get; set; }
 
-        public PropertyValue this[string name]
-        {
-            get
-            {
-                foreach (var property in Printouts)
-                {
-                    if (property.Key == name)
-                        return property.Value.First.ToObject<PropertyValue>();
-                }
-                return null;
-            }
-        }
-
         public List<PropertyValue> Properties
         {
             get
@@ -33,6 +20,19 @@ namespace Logy.MwAgent.DotNetWikiBot.Smw
                     list.Add(value);
                 }
                 return list;
+            }
+        }
+
+        public PropertyValue this[string name]
+        {
+            get
+            {
+                foreach (var property in Printouts)
+                {
+                    if (property.Key == name)
+                        return property.Value.First.ToObject<PropertyValue>();
+                }
+                return null;
             }
         }
     }

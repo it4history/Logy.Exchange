@@ -10,7 +10,7 @@ namespace Logy.MwAgent.DotNetWikiBot.Wikidata.Tests
         [TestFixtureSetUp]
         public void FixtureSetUp()
         {
-            SitelinksConverter.Languages = new[] {"en", "uk", "ru"};
+            SitelinksConverter.Languages = new[] { "en", "uk", "ru" };
         }
 
         [Test]

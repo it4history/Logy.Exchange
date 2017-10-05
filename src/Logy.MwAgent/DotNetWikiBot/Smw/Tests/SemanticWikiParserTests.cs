@@ -7,21 +7,6 @@ namespace Logy.MwAgent.DotNetWikiBot.Smw.Tests
     [TestFixture]
     public class SemanticWikiParserTests
     {
-        private Site _site;
-
-        [TestFixtureSetUp]
-        public void FixtureSetUp()
-        {
-            _site = new Site("http://logy.gq/lw", "te", "test");
-        }
-
-        [Test]
-        public void Get()
-        {
-            Assert.IsFalse(SemanticWikiParser.Get(_site, "[[Modification date::+]]|?Modification date")
-                .Contains("readapidenied"));
-        }
-
         private const string ApiResult = @"     {  ""query"": {
     ""printrequests"": [
       {
@@ -67,6 +52,21 @@ namespace Logy.MwAgent.DotNetWikiBot.Smw.Tests
       ""time"": ""0.011534""
     }
   }}";
+
+        private Site _site;
+
+        [TestFixtureSetUp]
+        public void FixtureSetUp()
+        {
+            _site = new Site("http://logy.gq/lw", "te", "test");
+        }
+
+        [Test]
+        public void Get()
+        {
+            Assert.IsFalse(SemanticWikiParser.Get(_site, "[[Modification date::+]]|?Modification date")
+                .Contains("readapidenied"));
+        }
 
         [Test]
         public void Parse()

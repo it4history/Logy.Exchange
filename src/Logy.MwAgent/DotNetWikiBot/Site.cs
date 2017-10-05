@@ -46,16 +46,13 @@ namespace Logy.MwAgent.DotNetWikiBot
         /// up to 5000 items at a time. Adjust this number if required.</summary>
         public const int FetchRate = 500;
 
+        public const string WikipediaBaseUrl = "https://en.wikipedia.org/wiki";
+
         /// <summary>Shortcut for Environment.NewLine property.
         /// It's "\r\n" on Windows and "\n" on Unix-like systems.</summary>
         private static readonly string Nl = Environment.NewLine;
 
-        public const string WikipediaBaseUrl = "https://en.wikipedia.org/wiki";
         private static Site _wikipedia;
-        public static Site Wikipedia
-        {
-            get { return _wikipedia ?? (_wikipedia = new Site(WikipediaBaseUrl)); }
-        } 
 
         /// <summary>Default domain for LDAP authentication, if such authentication is allowed on
         /// this site. Additional information can be found
@@ -144,6 +141,11 @@ namespace Logy.MwAgent.DotNetWikiBot
             _userDomain = userDomain;
 
             Initialize();
+        }
+        
+        public static Site Wikipedia
+        {
+            get { return _wikipedia ?? (_wikipedia = new Site(WikipediaBaseUrl)); }
         }
 
         /// <summary>Number of seconds to pause for between edits on this site.
