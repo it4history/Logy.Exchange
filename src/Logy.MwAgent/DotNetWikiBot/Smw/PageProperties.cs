@@ -15,9 +15,13 @@ namespace Logy.MwAgent.DotNetWikiBot.Smw
                 var list = new List<PropertyValue>();
                 foreach (var property in Printouts)
                 {
-                    var value = property.Value.First.ToObject<PropertyValue>();
-                    value.Name = property.Key;
-                    list.Add(value);
+                    var token = property.Value.First;
+                    if (token != null)
+                    {
+                        var value = token.ToObject<PropertyValue>();
+                        value.Name = property.Key;
+                        list.Add(value);
+                    }
                 }
                 return list;
             }
@@ -29,7 +33,7 @@ namespace Logy.MwAgent.DotNetWikiBot.Smw
             {
                 foreach (var property in Printouts)
                 {
-                    if (property.Key == name)
+                    if (property.Key == name && property.Value.First != null)
                         return property.Value.First.ToObject<PropertyValue>();
                 }
                 return null;

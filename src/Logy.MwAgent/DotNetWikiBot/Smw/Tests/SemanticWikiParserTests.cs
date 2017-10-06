@@ -40,6 +40,15 @@ namespace Logy.MwAgent.DotNetWikiBot.Smw.Tests
         ""namespace"": 0,
         ""exists"": ""1"",
         ""displaytitle"": """"
+      },
+      ""a"": {
+        ""printouts"": {
+            ""Birthday"": [],
+            ""Deathday"": [{
+                ""timestamp"": ""1356998400"",
+                ""raw"": ""1/2013""
+            }]
+        }
       }
     },
     ""serializer"": ""SMW\\Serializers\\QueryResultSerializer"",
@@ -74,6 +83,11 @@ namespace Logy.MwAgent.DotNetWikiBot.Smw.Tests
             Assert.AreEqual(
                 new DateTime(1977, 10, 27),
                 SemanticWikiParser.Parse(ApiResult)["н, Олександр"]["Birthday"].DateTime);
+            Assert.IsNull(SemanticWikiParser.Parse(ApiResult)["н, Олександр"]["Deathday"]);
+
+            Assert.AreEqual(
+                new DateTime(2013),
+                SemanticWikiParser.Parse(ApiResult)["a"]["Deathday"].DateTime);
         }
     }
 }

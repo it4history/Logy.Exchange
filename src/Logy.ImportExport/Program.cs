@@ -9,9 +9,7 @@ namespace Logy.ImportExport
     {
         public static void Main(string[] args)
         {
-            // ProductsManager.StartApi(false);
-            ProductsManager.UpdateUsed();
-            new ImportManager(DalManager.NewSession).PrepareTemplatesAndSites();
+            ProductsManager.StartApi(false);
 
             ImportManager.Import(typeof(DescendantOfAdamAndEveImporter));
         }
