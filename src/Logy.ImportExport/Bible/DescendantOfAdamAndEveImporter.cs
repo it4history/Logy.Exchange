@@ -14,5 +14,8 @@ namespace Logy.ImportExport.Bible
         {
             get { return LogyEventsDb.DescendantsOfAdamAndEve; }
         }
+
+        /// <inheritdoc />
+        public override bool IsGroup { get { return false; } }
     }
 }
