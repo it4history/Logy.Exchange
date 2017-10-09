@@ -106,9 +106,6 @@
     <None Include="app.config">
       <SubType>Designer</SubType>
     </None>
-    <None Include="Localization\lw\en.json" />
-    <None Include="Localization\lw\ru.json" />
-    <None Include="Localization\lw\uk.json" />
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>

@@ -80,14 +80,19 @@ namespace Logy.MwAgent.DotNetWikiBot.Smw.Tests
         [Test]
         public void Parse()
         {
+            var parsed = SemanticWikiParser.Parse(ApiResult);
             Assert.AreEqual(
                 new DateTime(1977, 10, 27),
-                SemanticWikiParser.Parse(ApiResult)["н, Олександр"]["Birthday"].DateTime);
-            Assert.IsNull(SemanticWikiParser.Parse(ApiResult)["н, Олександр"]["Deathday"]);
+                parsed["н, Олександр"]["Birthday"].DateTime);
+            Assert.IsNull(parsed["н, Олександр"]["Deathday"]);
 
             Assert.AreEqual(
-                new DateTime(2013),
-                SemanticWikiParser.Parse(ApiResult)["a"]["Deathday"].DateTime);
+                new DateTime(2013, 1, 1),
+                parsed["a"]["Deathday"].DateTime);
+
+            Assert.AreEqual(
+                new DateTime(2013, 1, 1),
+                parsed["a"].Get<PersonProperties>().Deathday);
         }
     }
 }

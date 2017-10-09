@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Newtonsoft.Json.Linq;
 
@@ -38,6 +39,21 @@ namespace Logy.MwAgent.DotNetWikiBot.Smw
                 }
                 return null;
             }
+        }
+
+        public T Get<T>()
+        {
+            T o = Activator.CreateInstance<T>();
+            foreach (var prop in typeof(T).GetProperties())
+            {
+                var value = this[prop.Name];
+                if (value != null)
+                {
+                    if (prop.PropertyType == typeof(DateTime?))
+                        prop.SetValue(o, value.DateTime, null);
+                }
+            }
+            return o;
         }
     }
 }

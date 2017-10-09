@@ -29,7 +29,7 @@ namespace Logy.MwAgent.DotNetWikiBot.Smw
                     return d;
                 int i;
                 if (int.TryParse(raw, out i))
-                    return new DateTime(i);
+                    return new DateTime(i, 1, 1);
                 return null;
             }
             set

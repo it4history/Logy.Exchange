@@ -56,6 +56,7 @@
     <Compile Include="..\..\ProductAssemblyInfo.cs">
       <Link>Properties\ProductAssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="DotNetWikiBot\Smw\PersonProperties.cs" />
     <Compile Include="DotNetWikiBot\Smw\PropertyValue.cs" />
     <Compile Include="DotNetWikiBot\Smw\SemanticWikiParser.cs" />
     <Compile Include="DotNetWikiBot\Smw\Tests\PropertyValueTests.cs" />
