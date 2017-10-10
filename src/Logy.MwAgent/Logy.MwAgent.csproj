@@ -59,6 +59,7 @@
     <Compile Include="DotNetWikiBot\Smw\PersonProperties.cs" />
     <Compile Include="DotNetWikiBot\Smw\PropertyValue.cs" />
     <Compile Include="DotNetWikiBot\Smw\SemanticWikiParser.cs" />
+    <Compile Include="DotNetWikiBot\Smw\Tests\PersonPropertiesTests.cs" />
     <Compile Include="DotNetWikiBot\Smw\Tests\PropertyValueTests.cs" />
     <Compile Include="DotNetWikiBot\Smw\Tests\SemanticWikiParserTests.cs" />
     <Compile Include="DotNetWikiBot\Smw\PageProperties.cs" />

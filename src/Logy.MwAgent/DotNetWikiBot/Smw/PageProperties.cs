@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Reflection;
 using Newtonsoft.Json.Linq;
 
 namespace Logy.MwAgent.DotNetWikiBot.Smw
@@ -16,11 +17,9 @@ namespace Logy.MwAgent.DotNetWikiBot.Smw
                 var list = new List<PropertyValue>();
                 foreach (var property in Printouts)
                 {
-                    var token = property.Value.First;
-                    if (token != null)
+                    var value = GetPropertyValue(property.Value.First, property);
+                    if (value != null)
                     {
-                        var value = token.ToObject<PropertyValue>();
-                        value.Name = property.Key;
                         list.Add(value);
                     }
                 }
@@ -34,8 +33,10 @@ namespace Logy.MwAgent.DotNetWikiBot.Smw
             {
                 foreach (var property in Printouts)
                 {
-                    if (property.Key == name && property.Value.First != null)
-                        return property.Value.First.ToObject<PropertyValue>();
+                    if (property.Key == name)
+                    {
+                        return GetPropertyValue(property.Value.First, property);
+                    }
                 }
                 return null;
             }
@@ -44,16 +45,31 @@ namespace Logy.MwAgent.DotNetWikiBot.Smw
         public T Get<T>()
         {
             T o = Activator.CreateInstance<T>();
-            foreach (var prop in typeof(T).GetProperties())
+            foreach (var prop in typeof(T).GetProperties(BindingFlags.Instance | BindingFlags.Public))
             {
                 var value = this[prop.Name];
                 if (value != null)
                 {
                     if (prop.PropertyType == typeof(DateTime?))
                         prop.SetValue(o, value.DateTime, null);
+                    else
+                        prop.SetValue(o, value.Raw, null);
                 }
             }
             return o;
+        }
+
+        private static PropertyValue GetPropertyValue(JToken token, KeyValuePair<string, JToken> property)
+        {
+            if (token != null)
+            {
+                var value = token.Type == JTokenType.String
+                    ? new PropertyValue { Raw = property.Value.First.Value<string>() }
+                    : token.ToObject<PropertyValue>();
+                value.Name = property.Key;
+                return value;
+            }
+            return null;
         }
     }
 }

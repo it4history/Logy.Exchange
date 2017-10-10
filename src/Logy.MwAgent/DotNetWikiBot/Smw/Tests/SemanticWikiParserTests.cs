@@ -47,7 +47,10 @@ namespace Logy.MwAgent.DotNetWikiBot.Smw.Tests
             ""Deathday"": [{
                 ""timestamp"": ""1356998400"",
                 ""raw"": ""1/2013""
-            }]
+            }],
+            ""Description"": [
+                ""a""
+            ]
         }
       }
     },
@@ -93,6 +96,10 @@ namespace Logy.MwAgent.DotNetWikiBot.Smw.Tests
             Assert.AreEqual(
                 new DateTime(2013, 1, 1),
                 parsed["a"].Get<PersonProperties>().Deathday);
+
+            Assert.AreEqual(
+                "a",
+                parsed["a"].Get<PersonProperties>().Description);
         }
     }
 }
