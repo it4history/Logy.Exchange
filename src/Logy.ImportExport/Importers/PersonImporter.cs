@@ -56,5 +56,16 @@ namespace Logy.ImportExport.Importers
                 }
             return biggest;
         }
+
+        protected override void UpdatePerson(Person person, PersonType type)
+        {
+            // careful updating: it will be strange to convert Organization to Animal
+            if ((person.Type == PersonType.Human && type == PersonType.Dynasty)
+                || (person.Type == PersonType.Dynasty && type == PersonType.Human))
+            {
+                person.Type = type;
+                ObjectUpdated(person.Save());
+            }
+        }
     }
 }

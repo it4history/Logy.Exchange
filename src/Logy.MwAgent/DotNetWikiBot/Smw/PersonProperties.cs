@@ -26,6 +26,8 @@ namespace Logy.MwAgent.DotNetWikiBot.Smw
 
         [DataMember]
         public DateTime? Birthday { get; set; }
+        [DataMember]
+        public string BirthdayText { get; set; }
 
         [DataMember]
         public DateTime? Deathday { get; set; }
