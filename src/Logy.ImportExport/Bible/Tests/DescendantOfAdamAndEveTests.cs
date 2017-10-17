@@ -100,7 +100,6 @@ Genealogy from Adam to Zerubbabel:
 .........................24. Jakin<ref name=""Ge 46:10""/><br>
 .........................24. [[wikipedia:Zohar|Zohar]]<ref name=""Ge 46:10""/><br>
 .........................24. [[wikipedia:Shaul|Shaul]]<ref name=""Ge 46:10""/>
-
 .......................23. [[wikipedia:Levi|Levi]]{{ref|Levi|4}}<ref name=""Ge 29:34"">Genesis 29:34</ref><br>
 .........................24. [[wikipedia:Gershon|Gershon]]<ref name=""Ge 46:11"">Genesis 46:11</ref><br>
 ..........................25. [[wikipedia:Libni|Libni]]<ref name=""Ex 6:17"">Exodus 6:17</ref><br>
@@ -127,7 +126,6 @@ Genealogy from Adam to Zerubbabel:
 .......................................38. [[wikipedia:Zikri|Zikri]]<ref name=""1Ch 9:15"">1 Chronicles 9:15</ref><br>
 ........................................39. [[wikipedia:Mika (Bible)|Mika]]<ref name=""1Ch 9:15""/><br>
 .........................................40. [[wikipedia:Mattaniah|Mattaniah]]<ref name=""1Ch 9:15""/><br>
-
 .........................24. [[wikipedia:Kohath|Kohath]]<ref name=""Ge 46:11""/><br>
 ..........................25. [[wikipedia:Amram|Amram]]<ref name=""Ex 6:18"">Exodus 6:18</ref><br>
 ..........................+ m. [[wikipedia:Jochebed|Jochebed]]<ref name=""Ex 6:20"">Exodus 6:20</ref><br>
@@ -226,7 +224,6 @@ Genealogy from Adam to Zerubbabel:
 .....................................36. Joel<ref name=""1Ch 6:28"">1 Chronicles 6:28</ref><br>
 .....................................36. [[wikipedia:Abijah|Abijah]]<ref name=""1Ch 6:28""/><br>
 .........................24. [[wikipedia:Merari|Merari]]{{ref|Merari|5}}<ref name=""Ge 46:11""/>
-
 ..........................25. [[wikipedia:List of minor biblical figures,_L–Z#Mahali|Mahli]]<ref name=""Ex 6:19"">Exodus 6:19</ref><br>
 ...........................26. [[wikipedia:Libni|Libni]]<ref name=""1Ch 6:29"">1 Chronicles 6:29</ref><br>
 ............................27. [[wikipedia:Shimei|Shimei]]<ref name=""1Ch 6:29""/><br>
@@ -336,7 +333,6 @@ Genealogy from Adam to Zerubbabel:
 .................................33. [[wikipedia:Raddai|Raddai]]<ref name=""1Ch 2:14""/><br>
 .................................33. [[wikipedia:List of minor biblical figures, L–Z#Ozem|Ozem]]<ref name=""1Ch 2:15"">1 Chronicles 2:15</ref><br>
 .................................33. [[wikipedia:David|David]]<ref name=""Ruth 4:22""/><br>
-
 .................................+ m. [[wikipedia:Michal|Michal]]<ref name=""1Sa 14:49""/><br>
 .................................+ m. [[wikipedia:Ahinoam|Ahinoam]] of Jezreel<ref name=""2Sa 3:2"">2 Samuel 3:2</ref><br>
 ..................................34. [[wikipedia:Amnon|Amnon]]<ref name=""2Sa 3:2""/><br>
