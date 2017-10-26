@@ -3,6 +3,7 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.Serialization;
 using AppConfiguration;
+using Logy.MwAgent.DotNetWikiBot.Wikidata;
 
 namespace Logy.MwAgent.DotNetWikiBot.Smw
 {
@@ -31,6 +32,9 @@ namespace Logy.MwAgent.DotNetWikiBot.Smw
 
         [DataMember]
         public DateTime? Deathday { get; set; }
+
+        [DataMember]
+        public Sex? Sex { get; set; }
 
         [DataMember]
         public string Description { get; set; }
