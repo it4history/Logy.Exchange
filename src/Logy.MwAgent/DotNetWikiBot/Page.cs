@@ -1247,7 +1247,7 @@ namespace Logy.MwAgent.DotNetWikiBot
         /// <summary>Downloads image, audio or video file, pointed by this page's title,
         /// from the wiki site to local computer. Redirection is resolved automatically.</summary>
         /// <param name="filePathName">Path and name of local file to save image to.</param>
-        public void DownloadImage(string filePathName)
+        public string DownloadImage(string filePathName)
         {
             string res = Site.IndexPath + "?title=" + Bot.UrlEncode(Title);
             string src = string.Empty;
@@ -1257,12 +1257,13 @@ namespace Logy.MwAgent.DotNetWikiBot
             catch (WebException e) {
                 string message = e.Message;
                 if (message.Contains(": (404) ")) {    // Not found
-                    Console.Error.WriteLine(Bot.Msg("Page \"{0}\" doesn't exist."), Title);
+                    var result = string.Format(Bot.Msg("Page \"{0}\" doesn't exist."), Title);
+                    Console.Error.WriteLine(result);
                     Text = string.Empty;
-                    return;
+                    return result;
                 }
 
-                throw;
+                return e.Message;
             }
 
             Regex fileLinkRegex1 = new Regex("<a href=\"([^\"]+?)\" class=\"internal\"");
@@ -1282,6 +1283,7 @@ namespace Logy.MwAgent.DotNetWikiBot
             Console.WriteLine(Bot.Msg("Downloading image \"{0}\"..."), Title);
             Bot.WebClient.DownloadFile(fileLink, filePathName);
             Console.WriteLine(Bot.Msg("Image \"{0}\" has been downloaded successfully."), Title);
+            return null;
         }
 
         /// <summary>Saves page text to the specified file. If the target file already exists
@@ -1934,7 +1936,7 @@ namespace Logy.MwAgent.DotNetWikiBot
                     newTemplate = newTemplate.TrimEnd("\n".ToCharArray());
                     Text = oldTemplate.Replace(Text, newTemplate, 1);
                     i++;
-                    if (firstTemplateOnly == true)
+                    if (firstTemplateOnly)
                         break;
                 }
             }
