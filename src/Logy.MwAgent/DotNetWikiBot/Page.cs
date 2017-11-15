@@ -18,10 +18,12 @@ namespace Logy.MwAgent.DotNetWikiBot
     /// <summary>Class defines wiki page object.</summary>
     [ClassInterface(ClassInterfaceType.AutoDispatch)]
     [Serializable]
-    public class Page : ImportBlock
+    public class Page : ImportBlock 
     {
         private const string ErrorOccurredWhenSavingPageBotOperationIsNotAllowedForThisAccountAtSite
             = "Error occurred when saving page \"{0}\": " + "Bot operation is not allowed for this account at \"{1}\" site.";
+
+        private string _cached_xmlQueryLanglinks;
 
         /// <summary>This constructor creates Page object with specified title and specified
         /// Site object. This is preferable constructor. Basic title normalization occurs during
@@ -1523,12 +1525,13 @@ namespace Logy.MwAgent.DotNetWikiBot
         /// prefixed with language code and colon, e.g. "de:Stern".</returns>
         public List<string> GetInterLanguageLinks()
         {
-            string src = Site.GetWebPage(Site.ApiPath +
-                                         "?format=xml&action=query&prop=langlinks&lllimit=500&titles=" +
-                                         Bot.UrlEncode(Title));
-            var xdoc = XDocument.Parse(src);
+            if (_cached_xmlQueryLanglinks == null)
+                _cached_xmlQueryLanglinks = Site.GetWebPage(Site.ApiPath +
+                                                            "?format=xml&action=query&prop=langlinks&lllimit=500&titles=" +
+                                                            Bot.UrlEncode(Title));
+            var xdoc = XDocument.Parse(_cached_xmlQueryLanglinks);
             var langLinks = (from link in xdoc.Descendants("ll")
-                             select link.Attribute("lang").Value + ':' + link.Value).ToList();
+                select link.Attribute("lang").Value + ':' + link.Value).ToList();
             return langLinks;
         }
 

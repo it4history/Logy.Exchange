@@ -46,7 +46,8 @@ namespace Logy.MwAgent.DotNetWikiBot.Wikidata
         /// Gets translations for SitelinksConverter.Languages but maybe GetWikidataLinks() is good for translations too</summary>
         public static Result GetWikidataItem(Page page)
         {
-            string src = page.Site.GetWebPage(page.Site.IndexPath + "?title=" + Bot.UrlEncode(page.Title));
+            var src = page.Text ?? /*is done for caching maybe wrong*/
+                page.Site.GetWebPage(page.Site.IndexPath + "?title=" + Bot.UrlEncode(page.Title));
             Match m = Regex.Match(src, "href=\"//www\\.wikidata\\.org/wiki/(Q\\d+)");
             if (!m.Success) // fallback
                 m = Regex.Match(src, "\"wgWikibaseItemId\"\\:\"(Q\\d+)\"");
