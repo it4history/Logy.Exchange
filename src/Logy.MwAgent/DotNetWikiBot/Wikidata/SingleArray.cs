@@ -14,5 +14,10 @@ namespace Logy.MwAgent.DotNetWikiBot.Wikidata
                 return this.First().ToObject<T>();
             }
         }
+
+        public object WithQualifier(int partId, int appliesToPart = 518)
+        {
+            return null;
+        }
     }
 }

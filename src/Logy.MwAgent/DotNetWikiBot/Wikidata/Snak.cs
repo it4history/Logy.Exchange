@@ -17,14 +17,17 @@ namespace Logy.MwAgent.DotNetWikiBot.Wikidata
             {
                 if (Snaktype != "novalue")
                 {
-                    switch (Datavalue.Type)
+                    switch (Datavalue.Type ?? Datatype)
                     {
                         case "string":
                             return Datavalue.Value;
                         case "time":
                             return ((JObject)Datavalue.Value).ToObject<ValueTime>();
                         case "wikibase-entityid":
+                        case "wikibase-item":
                             return ((JObject)Datavalue.Value).ToObject<ValueItem>();
+                        case "globecoordinate":
+                            return ((JObject)Datavalue.Value).ToObject<ValueCoor>();
                     }
                 }
                 return null;

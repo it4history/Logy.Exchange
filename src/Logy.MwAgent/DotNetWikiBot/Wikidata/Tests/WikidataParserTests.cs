@@ -59,6 +59,204 @@ namespace Logy.MwAgent.DotNetWikiBot.Wikidata.Tests
             var result = WikidataParser.ParseWikidataItem(json);
             Assert.AreEqual(1, result.Sitelinks.Translations.Count);
         }
+
+        [Test]
+        public void ParseWikidataItem_Qualifiers()
+        {
+            var json = @"
+{
+  ""entities"": {
+    ""Q1742282"": {
+      ""id"": ""Q1742282"",
+      ""claims"": {
+        ""P625"": [
+          {
+            ""mainsnak"": {
+              ""snaktype"": ""value"",
+              ""property"": ""P625"",
+              ""datavalue"": {
+                ""value"": {
+                  ""latitude"": 47.638791,
+                  ""longitude"": 35.263996,
+                  ""altitude"": null,
+                  ""precision"": 0.00000277777777778,
+                  ""globe"": ""http://www.wikidata.org/entity/Q2""
+                },
+                ""type"": ""globecoordinate""
+              },
+              ""datatype"": ""globe-coordinate""
+            },
+            ""type"": ""statement"",
+            ""id"": ""Q1742282$E70873D4-E5A0-4663-BE5E-A89B3998A748"",
+            ""rank"": ""normal"",
+            ""references"": [
+              {
+                ""hash"": ""9a24f7c0208b05d6be97077d855671d1dfdbc0dd"",
+                ""snaks"": {
+                  ""P143"": [
+                    {
+                      ""snaktype"": ""value"",
+                      ""property"": ""P143"",
+                      ""datavalue"": {
+                        ""value"": {
+                          ""entity-type"": ""item"",
+                          ""numeric-id"": 48183,
+                          ""id"": ""Q48183""
+                        },
+                        ""type"": ""wikibase-entityid""
+                      },
+                      ""datatype"": ""wikibase-item""
+                    }
+                  ]
+                },
+                ""snaks-order"": [
+                  ""P143""
+                ]
+              }
+            ]
+          },
+          {
+            ""mainsnak"": {
+              ""snaktype"": ""value"",
+              ""property"": ""P625"",
+              ""datavalue"": {
+                ""value"": {
+                  ""latitude"": 47.33,
+                  ""longitude"": 36.4461,
+                  ""altitude"": null,
+                  ""precision"": 0.0001,
+                  ""globe"": ""http://www.wikidata.org/entity/Q2""
+                },
+                ""type"": ""globecoordinate""
+              },
+              ""datatype"": ""globe-coordinate""
+            },
+            ""type"": ""statement"",
+            ""qualifiers"": {
+              ""P518"": [
+                {
+                  ""snaktype"": ""value"",
+                  ""property"": ""P518"",
+                  ""hash"": ""2c7de14bc888b5d4d007acc4940641fc46b79ba0"",
+                  ""datavalue"": {
+                    ""value"": {
+                      ""entity-type"": ""item"",
+                      ""numeric-id"": 7376362,
+                      ""id"": ""Q7376362"",
+                      ""type"": ""wikibase-entityid""
+                    }
+                  },
+                  ""datatype"": ""wikibase-item""
+                }
+              ]
+            },
+            ""qualifiers-order"": [
+              ""P518""
+            ],
+            ""id"": ""Q1742282$667F97F7-469B-41A2-A4DC-E83C2EA74AD2"",
+            ""rank"": ""normal"",
+            ""references"": [
+              {
+                ""hash"": ""288ab581e7d2d02995a26dfa8b091d96e78457fc"",
+                ""snaks"": {
+                  ""P143"": [
+                    {
+                      ""snaktype"": ""value"",
+                      ""property"": ""P143"",
+                      ""datavalue"": {
+                        ""value"": {
+                          ""entity-type"": ""item"",
+                          ""numeric-id"": 206855,
+                          ""id"": ""Q206855""
+                        },
+                        ""type"": ""wikibase-entityid""
+                      },
+                      ""datatype"": ""wikibase-item""
+                    }
+                  ]
+                },
+                ""snaks-order"": [
+                  ""P143""
+                ]
+              }
+            ]
+          },
+          {
+            ""mainsnak"": {
+              ""snaktype"": ""value"",
+              ""property"": ""P625"",
+              ""datavalue"": {
+                ""value"": {
+                  ""latitude"": 47.6308,
+                  ""longitude"": 35.2669,
+                  ""altitude"": null,
+                  ""precision"": 0.0001,
+                  ""globe"": ""http://www.wikidata.org/entity/Q2""
+                },
+                ""type"": ""globecoordinate""
+              },
+              ""datatype"": ""globe-coordinate""
+            },
+            ""type"": ""statement"",
+            ""qualifiers"": {
+              ""P518"": [
+                {
+                  ""snaktype"": ""value"",
+                  ""property"": ""P518"",
+                  ""hash"": ""544b353c2ef8ad17b20e5e38254f37c3b3858ebf"",
+                  ""datavalue"": {
+                    ""value"": {
+                      ""entity-type"": ""item"",
+                      ""numeric-id"": 1233637,
+                      ""id"": ""Q1233637""
+                    },
+                    ""type"": ""wikibase-entityid""
+                  },
+                  ""datatype"": ""wikibase-item""
+                }
+              ]
+            },
+            ""qualifiers-order"": [
+              ""P518""
+            ],
+            ""id"": ""Q1742282$F99E6235-E4E3-4429-A53C-5BC9DE640AF6"",
+            ""rank"": ""normal"",
+            ""references"": [
+              {
+                ""hash"": ""288ab581e7d2d02995a26dfa8b091d96e78457fc"",
+                ""snaks"": {
+                  ""P143"": [
+                    {
+                      ""snaktype"": ""value"",
+                      ""property"": ""P143"",
+                      ""datavalue"": {
+                        ""value"": {
+                          ""entity-type"": ""item"",
+                          ""numeric-id"": 206855,
+                          ""id"": ""Q206855""
+                        },
+                        ""type"": ""wikibase-entityid""
+                      },
+                      ""datatype"": ""wikibase-item""
+                    }
+                  ]
+                },
+                ""snaks-order"": [
+                  ""P143""
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    }
+  }
+}";
+            var result = WikidataParser.ParseWikidataItem(json);
+            Assert.AreEqual(47.638791, result.Claims.Coor.Latitude);
+            Assert.AreEqual(47.33, result.Claims.CoorRiverSource.Latitude);
+            Assert.AreEqual(47.6308, result.Claims.CoorRiverMouth.Latitude);
+        }
     }
 }
 

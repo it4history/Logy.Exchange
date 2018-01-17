@@ -108,6 +108,44 @@ namespace Logy.MwAgent.DotNetWikiBot.Wikidata
             }
         }
 
+        #region place
+        /// <summary>
+        /// coordinate location
+        /// </summary>
+        public SingleArray<Claim> P625 { get; set; }
+        public ValueCoor Coor
+        {
+            get
+            {
+                return (ValueCoor)P625.A.Mainsnak.ValueTyped;
+            }
+        }
+
+        public ValueCoor CoorRiverSource
+        {
+            get
+            {
+                return (ValueCoor)(from q in P625
+                    where
+                        q.ToObject<Claim>().Qualifiers != null
+                        && ((ValueItem)q.ToObject<Claim>().Qualifiers.P518.A.ValueTyped).NumericId == 7376362
+                    select q.ToObject<Claim>().Mainsnak.ValueTyped).SingleOrDefault();
+            }
+        }
+
+        public ValueCoor CoorRiverMouth
+        {
+            get
+            {
+                return (ValueCoor)(from q in P625
+                    where
+                        q.ToObject<Claim>().Qualifiers != null
+                        && ((ValueItem)q.ToObject<Claim>().Qualifiers.P518.A.ValueTyped).NumericId == 1233637
+                    select q.ToObject<Claim>().Mainsnak.ValueTyped).SingleOrDefault();
+            }
+        }
+        #endregion
+
         private int? GetItem(SingleArray<Claim> claim)
         {
             if (claim == null)
