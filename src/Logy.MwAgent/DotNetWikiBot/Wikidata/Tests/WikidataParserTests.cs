@@ -253,9 +253,9 @@ namespace Logy.MwAgent.DotNetWikiBot.Wikidata.Tests
   }
 }";
             var result = WikidataParser.ParseWikidataItem(json);
-            Assert.AreEqual(47.638791, result.Claims.Coor.Latitude);
-            Assert.AreEqual(47.33, result.Claims.CoorRiverSource.Latitude);
-            Assert.AreEqual(47.6308, result.Claims.CoorRiverMouth.Latitude);
+            Assert.AreEqual(47.638791, result.Claims.Coor.X);
+            Assert.AreEqual(47.33, result.Claims.CoorRiverSource.X);
+            Assert.AreEqual(47.6308, result.Claims.CoorRiverMouth.X);
         }
     }
 }

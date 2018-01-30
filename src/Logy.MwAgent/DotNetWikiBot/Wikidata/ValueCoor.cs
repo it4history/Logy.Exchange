@@ -1,21 +1,45 @@
 using System;
+using System.Runtime.Serialization;
+using AppConfiguration;
+using Newtonsoft.Json;
 
 namespace Logy.MwAgent.DotNetWikiBot.Wikidata
 {
+    [DataContract(Namespace = UrlsManager.Namespace)]
     public class ValueCoor
     {
+        public ValueCoor()
+        {
+        }
+
+        public ValueCoor(ValueCoor original)
+        {
+            X = original.X;
+            Y = original.Y;
+            Precision = original.Precision;
+            Globe = original.Globe;
+        }
+
         /// <summary>
         /// from -90 to 90
         /// </summary>
-        public double Latitude { get; set; }
+        [JsonProperty("Latitude")]
+        [DataMember]
+        public double X { get; set; }
 
         /// <summary>
         /// from -180 to 180
         /// </summary>
-        public double Longitude { get; set; }
+        [JsonProperty("Longitude")]
+        [DataMember]
+        public double Y { get; set; }
 
+        /// <summary>
+        /// why needed?
+        /// </summary>
         public double? Altitude { get; set; }
         public double? Precision { get; set; }
+
         public string Globe { get; set; }
 
         /* 5 arc-min grids contain 2,160 x 4,320 data points, are 18 MB in size and extend from
@@ -24,20 +48,18 @@ namespace Logy.MwAgent.DotNetWikiBot.Wikidata
         
         for 1 arc-min The first record is the South-West corner (-89.9917 deg latitude, 
         -179.9917 deg longitude), and the last record is the North-East corner 
-        (89.9917 deg latitude, 179.9917 deg latitude) */
-        public int Offset
+        (89.9917 deg latitude, 179.9917 deg latitude)
+        Each grid file contains 10,800 x 21,600 = 233,280,000 records */
+        public int Offset(int accuracyMin = 1)
         {
-            get
-            {
-                var row = (int)Math.Round((Latitude + 90) * (60.0 / 5));
-                var column = (int)Math.Round((Longitude + 180) * (60.0 / 5));
-                return (row * 4320) + column;
-            }
+            var row = (int)Math.Round((X + 90) * (60.0 / accuracyMin));
+            var column = (int)Math.Round((Y + 180) * (60.0 / accuracyMin));
+            return (row * (21600 / accuracyMin)) + column;
         }
 
-        public static int operator -(ValueCoor a, ValueCoor b)
+        /*public static int operator -(ValueCoor a, ValueCoor b)
         {
-            return a.Offset - b.Offset;
-        }
+            return a.Offset() - b.Offset();
+        }*/
     }
 }
