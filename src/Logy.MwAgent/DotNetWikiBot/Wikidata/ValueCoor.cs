@@ -14,23 +14,23 @@ namespace Logy.MwAgent.DotNetWikiBot.Wikidata
 
         public ValueCoor(ValueCoor original)
         {
-            X = original.X;
             Y = original.Y;
+            X = original.X;
             Precision = original.Precision;
             Globe = original.Globe;
         }
 
         /// <summary>
-        /// from -90 to 90
+        /// from -180 to 180
         /// </summary>
-        [JsonProperty("Latitude")]
+        [JsonProperty("Longitude")]
         [DataMember]
         public double X { get; set; }
 
         /// <summary>
-        /// from -180 to 180
+        /// from -90 to 90
         /// </summary>
-        [JsonProperty("Longitude")]
+        [JsonProperty("Latitude")]
         [DataMember]
         public double Y { get; set; }
 
@@ -52,8 +52,8 @@ namespace Logy.MwAgent.DotNetWikiBot.Wikidata
         Each grid file contains 10,800 x 21,600 = 233,280,000 records */
         public int Offset(int accuracyMin = 1)
         {
-            var row = (int)Math.Round((X + 90) * (60.0 / accuracyMin));
-            var column = (int)Math.Round((Y + 180) * (60.0 / accuracyMin));
+            var row = (int)Math.Round((Y + 90) * (60.0 / accuracyMin));
+            var column = (int)Math.Round((X + 180) * (60.0 / accuracyMin));
             return (row * (21600 / accuracyMin)) + column;
         }
 
