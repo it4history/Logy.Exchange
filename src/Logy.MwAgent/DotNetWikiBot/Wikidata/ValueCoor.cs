@@ -1,5 +1,6 @@
 using System;
 using System.Runtime.Serialization;
+using System.Text.RegularExpressions;
 using AppConfiguration;
 using Newtonsoft.Json;
 
@@ -14,10 +15,20 @@ namespace Logy.MwAgent.DotNetWikiBot.Wikidata
 
         public ValueCoor(ValueCoor original)
         {
-            Y = original.Y;
             X = original.X;
+            Y = original.Y;
             Precision = original.Precision;
             Globe = original.Globe;
+        }
+
+        public ValueCoor(string original)
+        {
+            var match = Regex.Match(original, @"([\d\.]+)-(\d+)");
+            if (match.Success)
+            {
+                X = double.Parse(match.Groups[1].Value);
+                Y = double.Parse(match.Groups[2].Value);
+            }
         }
 
         /// <summary>

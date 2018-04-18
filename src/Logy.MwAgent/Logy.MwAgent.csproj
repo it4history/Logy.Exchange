@@ -64,6 +64,7 @@
     <Compile Include="DotNetWikiBot\Smw\Tests\SemanticWikiParserTests.cs" />
     <Compile Include="DotNetWikiBot\Smw\PageProperties.cs" />
     <Compile Include="DotNetWikiBot\Wikidata\Qualifiers.cs" />
+    <Compile Include="DotNetWikiBot\Wikidata\Tests\ValueCoorTests.cs" />
     <Compile Include="DotNetWikiBot\Wikidata\Tests\WikidataParserTests.cs" />
     <Compile Include="DotNetWikiBot\Wikidata\ValueCoor.cs" />
     <Compile Include="DotNetWikiBot\Wikidata\WikidataParser.cs" />
