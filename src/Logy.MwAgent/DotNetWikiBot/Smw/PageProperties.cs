@@ -63,8 +63,8 @@ namespace Logy.MwAgent.DotNetWikiBot.Smw
         {
             if (token != null)
             {
-                var value = token.Type == JTokenType.String
-                    ? new PropertyValue { Raw = property.Value.First.Value<string>() }
+                var value = token.Type == JTokenType.String || token.Type == JTokenType.Integer
+                    ? new PropertyValue { Raw = property.Value.First.ToString() }
                     : token.ToObject<PropertyValue>();
                 value.Name = property.Key;
                 return value;

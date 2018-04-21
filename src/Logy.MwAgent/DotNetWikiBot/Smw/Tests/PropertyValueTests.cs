@@ -11,7 +11,7 @@ namespace Logy.MwAgent.DotNetWikiBot.Smw.Tests
         public void DateTime()
         {
             var p = new PropertyValue { Raw = "1/2000" };
-            Assert.AreEqual(new DateTime(2000), p.DateTime);
+            Assert.AreEqual(new DateTime(2000, 1, 1), p.DateTime);
         }
     }
 }

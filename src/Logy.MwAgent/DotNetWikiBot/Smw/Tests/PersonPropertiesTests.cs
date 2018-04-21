@@ -1,5 +1,4 @@
 ﻿#if DEBUG
-using System;
 using NUnit.Framework;
 
 namespace Logy.MwAgent.DotNetWikiBot.Smw.Tests
@@ -11,7 +10,7 @@ namespace Logy.MwAgent.DotNetWikiBot.Smw.Tests
         public void MakeCondition()
         {
             Assert.AreEqual(
-                "[[Birthday::+]] OR [[Deathday::+]] OR [[Description::+]]|?Birthday|?Deathday|?Description",
+                "[[Birthday::+]] OR [[BirthdayText::+]] OR [[Deathday::+]] OR [[Sex::+]] OR [[Description::+]]|?Birthday|?BirthdayText|?Deathday|?Sex|?Description",
                 PersonProperties.MakeCondition);
         }
     }

@@ -19,6 +19,9 @@ namespace Logy.MwAgent.DotNetWikiBot.Smw
         public string Raw { get; set; }
 
         [DataMember]
+        public string Fulltext { get; set; }
+
+        [DataMember]
         public DateTime? DateTime
         {
             get
