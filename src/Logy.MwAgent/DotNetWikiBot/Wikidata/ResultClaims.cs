@@ -113,19 +113,19 @@ namespace Logy.MwAgent.DotNetWikiBot.Wikidata
         /// coordinate location
         /// </summary>
         public SingleArray<Claim> P625 { get; set; }
-        public ValueCoor Coor
+        public Coor Coor
         {
             get
             {
-                return (ValueCoor)P625.A.Mainsnak.ValueTyped;
+                return (Coor)P625.A.Mainsnak.ValueTyped;
             }
         }
 
-        public ValueCoor CoorRiverSource
+        public Coor CoorRiverSource
         {
             get
             {
-                return (ValueCoor)(from q in P625
+                return (Coor)(from q in P625
                     where
                         q.ToObject<Claim>().Qualifiers != null
                         && ((ValueItem)q.ToObject<Claim>().Qualifiers.P518.A.ValueTyped).NumericId == 7376362
@@ -133,11 +133,11 @@ namespace Logy.MwAgent.DotNetWikiBot.Wikidata
             }
         }
 
-        public ValueCoor CoorRiverMouth
+        public Coor CoorRiverMouth
         {
             get
             {
-                return (ValueCoor)(from q in P625
+                return (Coor)(from q in P625
                     where
                         q.ToObject<Claim>().Qualifiers != null
                         && ((ValueItem)q.ToObject<Claim>().Qualifiers.P518.A.ValueTyped).NumericId == 1233637

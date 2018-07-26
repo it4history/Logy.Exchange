@@ -22,6 +22,12 @@ namespace Logy.MwAgent.DotNetWikiBot.Smw
         public string Fulltext { get; set; }
 
         [DataMember]
+        public string Lat { get; set; }
+
+        [DataMember]
+        public string Lon { get; set; }
+
+        [DataMember]
         public DateTime? DateTime
         {
             get

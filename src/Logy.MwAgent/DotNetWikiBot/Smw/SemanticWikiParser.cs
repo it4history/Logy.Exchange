@@ -6,6 +6,7 @@ namespace Logy.MwAgent.DotNetWikiBot.Smw
 {
     public class SemanticWikiParser
     {
+        /// <param name="query">at least one smw property is needed or redesign PageProperties class</param>
         public static Dictionary<string, PageProperties> Ask(Site site, string query)
         {
             return Parse(Get(site, query));

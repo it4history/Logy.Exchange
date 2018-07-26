@@ -27,7 +27,7 @@ namespace Logy.MwAgent.DotNetWikiBot.Wikidata
                         case "wikibase-item":
                             return ((JObject)Datavalue.Value).ToObject<ValueItem>();
                         case "globecoordinate":
-                            return ((JObject)Datavalue.Value).ToObject<ValueCoor>();
+                            return ((JObject)Datavalue.Value).ToObject<Coor>();
                     }
                 }
                 return null;
