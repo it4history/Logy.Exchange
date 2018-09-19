@@ -60,7 +60,7 @@ namespace Logy.MwAgent.DotNetWikiBot.Wikidata
                     // value = -2 * Math.PI;
                     throw new ApplicationException("Phi must be from 0 to 2PI");
                 }
-                X = 180 - ((value ?? 0) * 180) / Math.PI;
+                X = 180 - (((value ?? 0) * 180) / Math.PI);
             }
         }
 
