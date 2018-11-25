@@ -1195,6 +1195,7 @@ Genealogy from Adam to Zerubbabel:
 ..................................33. [[Azrikam]]<ref name=""1Ch 9:14"" >1 Chronicles 9:14</ref> <br>
 .................................33. [[Nun]]<ref name=""Nu 13:8"">Numbers 13:8</ref><ref name=""1Ch 7:27"">1 Chronicles 7:27</ref><br>
 .............................?. [[Kenaz]]<ref name=""1Ch 4:15""/><br>
+..............................................................62. Jacob<ref name=""Mat 1:1-17"" /><br>
 ...............................................................63. [[Saint Joseph|Joseph]]<ref name=""Mat 1:1-17"" /><br>
 ...............................................................+ m. [[Mary (mother of Jesus)|Mary]]<br>
 ................................................................64. [[Jesus]]<!-- Jesus is at least the 42nd generation after Abraham (20th generation) according to literal reading of Matthew 1 -->
@@ -1203,10 +1204,10 @@ Genealogy from Adam to Zerubbabel:
         public void Parse()
         {
             var des = Descendant.Parse<DescendantOfAdamAndEve>(Best);
-            Assert.AreEqual(64, des[14].GenerationNumber);
-            Assert.AreEqual("Jesus", des[14].Title);
-            Assert.AreEqual(des[12], des[14].Father);
-            Assert.AreEqual(des[13], des[14].Mother);
+            Assert.AreEqual(64, des[15].GenerationNumber);
+            Assert.AreEqual("Jesus", des[15].Title);
+            Assert.AreEqual(des[13], des[15].Father);
+            Assert.AreEqual(des[14], des[15].Mother);
 
             Assert.AreEqual(33, des[9].GenerationNumber);
             Assert.AreEqual("Azrikam", des[9].Title);
@@ -1227,17 +1228,22 @@ Genealogy from Adam to Zerubbabel:
             Assert.AreEqual("1Ch 4:15", des[11].RefName);
             Assert.IsNull(des[11].Father);
 
-            Assert.AreEqual(63, des[12].GenerationNumber);
-            Assert.AreEqual("Saint Joseph", des[12].Title);
-            Assert.AreEqual("Joseph", des[12].TitleShort);
+            Assert.AreEqual(62, des[12].GenerationNumber);
+            Assert.AreEqual("Jacob", des[12].OtherCaption);
             Assert.AreEqual("Mat 1:1-17", des[12].RefName);
             Assert.IsNull(des[12].Father);
 
             Assert.AreEqual(63, des[13].GenerationNumber);
-            Assert.AreEqual("Mary (mother of Jesus)", des[13].Title);
-            Assert.AreEqual("Mary", des[13].TitleShort);
-            Assert.AreEqual(des[12], des[13].Husband);
-            Assert.IsNull(des[13].Father);
+            Assert.AreEqual("Saint Joseph", des[13].Title);
+            Assert.AreEqual("Joseph", des[13].TitleShort);
+            Assert.AreEqual("Mat 1:1-17", des[13].RefName);
+            Assert.IsNotNull(des[13].Father);
+
+            Assert.AreEqual(63, des[14].GenerationNumber);
+            Assert.AreEqual("Mary (mother of Jesus)", des[14].Title);
+            Assert.AreEqual("Mary", des[14].TitleShort);
+            Assert.AreEqual(des[13], des[14].Husband);
+            Assert.IsNull(des[14].Father);
 
             Assert.AreEqual(1, des[0].GenerationNumber);
             Assert.AreEqual("Adam", des[0].Title);
