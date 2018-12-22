@@ -78,24 +78,57 @@ namespace Logy.MwAgent.DotNetWikiBot.Wikidata
 
         public string Globe { get; set; }
 
-        /* 5 arc-min grids contain 2,160 x 4,320 data points, are 18 MB in size and extend from
-        -90+5/120 deg to  +90-5/120 deg in latitude direction, and from
-        -180+5/120 deg to +180-5/120 deg in longitude direction.
-        
-        for 1 arc-min The first record is the South-West corner (-89.9917 deg latitude, 
-        -179.9917 deg longitude), and the last record is the North-East corner 
-        (89.9917 deg latitude, 179.9917 deg latitude)
-        Each grid file contains 10,800 x 21,600 = 233,280,000 records */
-        public int Offset(int accuracyMin = 1)
+        #region metrics
+        public double Sum
         {
-            var row = (int)Math.Round((Y + 90) * (60.0 / accuracyMin));
-            var column = (int)Math.Round((X + 180) * (60.0 / accuracyMin));
-            return (row * (21600 / accuracyMin)) + column;
+            get { return X + Y; }
+        }
+        public double Sqrt
+        {
+            get { return Math.Sqrt(Sum); }
         }
 
-        /*public static int operator -(ValueCoor a, ValueCoor b)
+        public static Coor operator +(Coor a, Coor b)
         {
-            return a.Offset() - b.Offset();
+            return new Coor
+            {
+                X = a.X + b.X, 
+                Y = a.Y + b.Y, 
+            }.Normalize();
+        }
+
+        public static Coor operator -(Coor a, Coor b)
+        {
+            return new Coor
+            {
+                X = a.X - b.X,
+                Y = a.Y - b.Y,
+            }.Normalize();
+        }
+
+        public static Coor operator *(Coor a, Coor b)
+        {
+            return new Coor
+            {
+                X = a.X * b.X, // may be overflow
+                Y = a.Y * b.Y, // may be overflow
+            };
+        }
+
+        /*public static double operator /(Coor a, Coor b)
+        {
+            return (b.X == 0 ? 0 : a.X / b.X)
+                   + (b.Y == 0 ? 0 : a.Y / b.Y);
         }*/
+        #endregion
+
+        public Coor Normalize()
+        {
+            while (X < -180) X += 360;
+            while (X > 180) X -= 360;
+            while (Y < -90) Y += 180;
+            while (Y > 90) Y -= 180;
+            return this;
+        }
     }
 }
