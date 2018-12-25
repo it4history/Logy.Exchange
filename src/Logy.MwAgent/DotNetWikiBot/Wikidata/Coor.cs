@@ -32,7 +32,7 @@ namespace Logy.MwAgent.DotNetWikiBot.Wikidata
         }
 
         /// <summary>
-        /// from -180 to 180
+        /// from -180 to 180, 180 corresponds to East on the right
         /// </summary>
         [JsonProperty("Longitude")]
         public double X { get; set; }
