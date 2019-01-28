@@ -49,7 +49,7 @@ namespace Logy.MwAgent.DotNetWikiBot.Wikidata
         /// spherical
         /// </summary>
         [DataMember]
-        public double? Phi
+        public double? Lambda
         {
             get
             {
@@ -60,7 +60,7 @@ namespace Logy.MwAgent.DotNetWikiBot.Wikidata
                 if (value.HasValue && value > 2 * Math.PI)
                 {
                     // value = -2 * Math.PI;
-                    throw new ApplicationException("Phi must be from 0 to 2PI");
+                    throw new ApplicationException("Lambda must be from 0 to 2PI");
                 }
                 X = 180 - (((value ?? 0) * 180) / Math.PI);
             }

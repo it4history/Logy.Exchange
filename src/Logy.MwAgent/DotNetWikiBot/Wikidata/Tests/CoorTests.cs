@@ -21,8 +21,8 @@ namespace Logy.MwAgent.DotNetWikiBot.Wikidata.Tests
             var coor = new Coor("-180:-90");
             Assert.AreEqual(-180d, coor.X);
             Assert.AreEqual(-90d, coor.Y);
-            Assert.AreEqual(0, coor.Phi);
-            Assert.AreEqual(0, coor.Theta);
+            Assert.AreEqual(0, coor.Lambda);
+            Assert.AreEqual(0, coor.Beta);
         }
     }
 }
