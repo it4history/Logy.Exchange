@@ -45,6 +45,8 @@ namespace Logy.MwAgent.DotNetWikiBot.Wikidata
 
         /// <summary>
         /// from 0 to 2PI
+        /// 
+        /// spherical
         /// </summary>
         [DataMember]
         public double? Phi
@@ -66,6 +68,8 @@ namespace Logy.MwAgent.DotNetWikiBot.Wikidata
 
         /// <summary>
         /// from 0 to PI, 0 corresponds to North pole
+        /// 
+        /// spherical
         /// </summary>
         [DataMember]
         public double? Theta
