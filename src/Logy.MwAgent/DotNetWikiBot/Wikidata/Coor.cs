@@ -70,9 +70,10 @@ namespace Logy.MwAgent.DotNetWikiBot.Wikidata
         /// from 0 to PI, 0 corresponds to North pole
         /// 
         /// spherical
+        /// http://hist.tk/hw/Reduced_co-latitude
         /// </summary>
         [DataMember]
-        public double? Theta
+        public double? Beta
         {
             get { return (90 - Y) / 180 * Math.PI; }
             set { Y = 90 - (((value ?? 0) * 180) / Math.PI); }
