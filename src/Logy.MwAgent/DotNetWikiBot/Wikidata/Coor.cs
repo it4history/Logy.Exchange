@@ -1,50 +1,56 @@
 using System;
 using System.Runtime.Serialization;
-using System.Text.RegularExpressions;
 using AppConfiguration;
 using Newtonsoft.Json;
 
 namespace Logy.MwAgent.DotNetWikiBot.Wikidata
 {
+    /// <summary>
+    /// point on sphere
+    /// </summary>
     [DataContract(Namespace = UrlsManager.Namespace)]
-    public class Coor
+    public class Coor : Point2
     {
         public Coor()
         {
         }
 
-        public Coor(Coor original)
+        public Coor(Point2 original) : base(original)
         {
-            X = original.X;
-            Y = original.Y;
+        }
+
+        public Coor(Coor original) : base(original)
+        {
             Precision = original.Precision;
             Globe = original.Globe;
         }
 
-        public Coor(string original)
+        public Coor(string original) : base(original)
         {
-            var match = Regex.Match(original, @"(-?[\d\.]+):(-?[\d\.]+)");
-            if (match.Success)
-            {
-                X = double.Parse(match.Groups[1].Value);
-                Y = double.Parse(match.Groups[2].Value);
-            }
         }
 
         /// <summary>
         /// from -180 to 180, 180 corresponds to East on the right
         /// </summary>
         [JsonProperty("Longitude")]
-        public double X { get; set; }
+        public override double X
+        {
+            get { return base.X - 180; }
+            set { base.X = value + 180; }
+        }
 
         /// <summary>
         /// from -90 to 90, 90 corresponds to North pole
         /// </summary>
         [JsonProperty("Latitude")]
-        public double Y { get; set; }
+        public override double Y
+        {
+            get { return 90 - base.Y; }
+            set { base.Y = 90 - value; }
+        }
 
         /// <summary>
-        /// from 0 to 2PI
+        /// from 2PI to 0
         /// 
         /// spherical
         /// </summary>
@@ -95,16 +101,16 @@ namespace Logy.MwAgent.DotNetWikiBot.Wikidata
 
         public static Coor operator +(Coor a, Coor b)
         {
-            return new Coor
+            return (Coor) new Coor
             {
-                X = a.X + b.X, 
-                Y = a.Y + b.Y, 
+                X = a.X + b.X,
+                Y = a.Y + b.Y,
             }.Normalize();
         }
 
         public static Coor operator -(Coor a, Coor b)
         {
-            return new Coor
+            return (Coor)new Coor
             {
                 X = a.X - b.X,
                 Y = a.Y - b.Y,
@@ -127,13 +133,5 @@ namespace Logy.MwAgent.DotNetWikiBot.Wikidata
         }*/
         #endregion
 
-        public Coor Normalize()
-        {
-            while (X < -180) X += 360;
-            while (X > 180) X -= 360;
-            while (Y < -90) Y += 180;
-            while (Y > 90) Y -= 180;
-            return this;
-        }
     }
 }

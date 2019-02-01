@@ -1,5 +1,6 @@
 ﻿#if DEBUG
 
+using System;
 using NUnit.Framework;
 
 namespace Logy.MwAgent.DotNetWikiBot.Wikidata.Tests
@@ -16,11 +17,17 @@ namespace Logy.MwAgent.DotNetWikiBot.Wikidata.Tests
         }
 
         [Test]
-        public void PhiTheta()
+        public void BetaLambda()
         {
-            var coor = new Coor("-180:-90");
+            var coor = (Coor)new Coor("-180:-90").Normalize();
             Assert.AreEqual(-180d, coor.X);
             Assert.AreEqual(-90d, coor.Y);
+            Assert.AreEqual(2 * Math.PI, coor.Lambda);
+            Assert.AreEqual(Math.PI, coor.Beta);
+
+            coor = (Coor)new Coor("180:90").Normalize();
+            Assert.AreEqual(180d, coor.X);
+            Assert.AreEqual(90d, coor.Y);
             Assert.AreEqual(0, coor.Lambda);
             Assert.AreEqual(0, coor.Beta);
         }
