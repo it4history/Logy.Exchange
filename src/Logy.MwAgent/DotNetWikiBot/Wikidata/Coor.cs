@@ -101,7 +101,7 @@ namespace Logy.MwAgent.DotNetWikiBot.Wikidata
 
         public static Coor operator +(Coor a, Coor b)
         {
-            return (Coor) new Coor
+            return (Coor)new Coor
             {
                 X = a.X + b.X,
                 Y = a.Y + b.Y,
@@ -132,6 +132,5 @@ namespace Logy.MwAgent.DotNetWikiBot.Wikidata
                    + (b.Y == 0 ? 0 : a.Y / b.Y);
         }*/
         #endregion
-
     }
 }
