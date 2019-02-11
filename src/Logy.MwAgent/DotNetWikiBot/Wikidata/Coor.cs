@@ -81,7 +81,7 @@ namespace Logy.MwAgent.DotNetWikiBot.Wikidata
         [DataMember]
         public double? Beta
         {
-            get { return (90 - Y) / 180 * Math.PI; }
+            get { return base.Y / 180 * Math.PI; }
             set { Y = 90 - (((value ?? 0) * 180) / Math.PI); }
         }
 
