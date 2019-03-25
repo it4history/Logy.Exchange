@@ -1,0 +1,162 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{F5168D45-96D8-413E-902A-BFA6282829CA}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Logy.Maps</RootNamespace>
+    <AssemblyName>Logy.Maps</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="MathNet.Numerics, Version=3.20.2.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\MathNet.Numerics.3.20.2\lib\net40\MathNet.Numerics.dll</HintPath>
+    </Reference>
+    <Reference Include="MathNet.Spatial, Version=0.4.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\MathNet.Spatial.0.4.0\lib\net40\MathNet.Spatial.dll</HintPath>
+    </Reference>
+    <Reference Include="nunit.framework, Version=2.6.4.14350, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
+      <HintPath>..\packages\NUnit.2.6.4\lib\nunit.framework.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Numerics" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.ServiceModel" />
+    <Reference Include="System.ServiceModel" />
+    <Reference Include="System.ServiceModel.Web" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Approximations\ApproximationManager.cs" />
+    <Compile Include="gdal\GrassManager.cs" />
+    <Compile Include="gdal\GdalConfiguration.cs" />
+    <Compile Include="gdal\Tests\GdalTests.cs" />
+    <Compile Include="Coloring\Color3.cs" />
+    <Compile Include="Projections\Healpix\Neibors.cs" />
+    <Compile Include="Projections\Healpix\NeighborManager.cs" />
+    <Compile Include="Projections\Healpix\Tests\HealCoorTests.cs" />
+    <Compile Include="Projections\Healpix\Tests\NeighborManagerTests.cs" />
+    <Compile Include="ReliefMaps\Basemap\DataEarth.cs" />
+    <Compile Include="ReliefMaps\Map2D\Tests\OptimizationTests.cs" />
+    <Compile Include="ReliefMaps\Map2D\RotationStopMap.cs" />
+    <Compile Include="ReliefMaps\Meridian\MeridianBase.cs" />
+    <Compile Include="ReliefMaps\Meridian\ReliefMap.cs" />
+    <Compile Include="ReliefMaps\World\Ocean\Basin.cs" />
+    <Compile Include="ReliefMaps\Meridian\Data\CentrifugalAcceleration.cs" />
+    <Compile Include="ReliefMaps\World\Ocean\BasinsData.cs" />
+    <Compile Include="ReliefMaps\Meridian\Data\GravityChecking.cs" />
+    <Compile Include="ReliefMaps\Meridian\MeridianCoor.cs" />
+    <Compile Include="Geometry\Triangles.cs" />
+    <Compile Include="Geometry\Tests\TrianglesTests.cs" />
+    <Compile Include="Projections\Equirectangular.cs" />
+    <Compile Include="Projections\Healpix\HealpixManager.cs" />
+    <Compile Include="Projections\Healpix\HealCoor.cs" />
+    <Compile Include="Coloring\ColorsManager.cs" />
+    <Compile Include="Approximations\PixelsManager.cs" />
+    <Compile Include="Projections\Healpix\Substack\HealpixPos.cs" />
+    <Compile Include="Projections\Healpix\Substack\SubstackHealpixManager.cs" />
+    <Compile Include="Projections\Tests\EquirectangularTests.cs" />
+    <Compile Include="ReliefMaps\Meridian\Data\MeridianData.cs" />
+    <Compile Include="ReliefMaps\World\Data\GeoidUndulationsData.cs" />
+    <Compile Include="ReliefMaps\World\Approximate\CoastLines.cs" />
+    <Compile Include="Coloring\Tests\ColorsManagerTests.cs" />
+    <Compile Include="ReliefMaps\Meridian\MeridianCoorFast.cs" />
+    <Compile Include="ReliefMaps\Water\WaterAndBottomData.cs" />
+    <Compile Include="ReliefMaps\Water\WaterMoving.cs" />
+    <Compile Include="Projections\Healpix\Direction.cs" />
+    <Compile Include="ReliefMaps\Meridian\MeridianMap.cs" />
+    <Compile Include="Geometry\Ellipsoid.cs" />
+    <Compile Include="Geometry\EllipsoidAcceleration.cs" />
+    <Compile Include="ReliefMaps\World\Data\CoastLinesData.cs" />
+    <Compile Include="ReliefMaps\World\Data\EllipseWithShapeData.cs" />
+    <Compile Include="ReliefMaps\Meridian\Data\MeridianWater.cs" />
+    <Compile Include="ReliefMaps\Meridian\Data\StartCheckingGeodesic.cs" />
+    <Compile Include="ReliefMaps\Water\WaterModel.cs" />
+    <Compile Include="ReliefMaps\Water\Tests\WaterModelTests.cs" />
+    <Compile Include="ReliefMaps\Basemap\DataEarth2014.cs" />
+    <Compile Include="ReliefMaps\Basemap\Map.cs" />
+    <Compile Include="Geometry\Tests\EllipsoidTests.cs" />
+    <Compile Include="Geometry\Tests\EllipsoidAccelerationTests.cs" />
+    <Compile Include="ReliefMaps\Map2D\Map2DBase.cs" />
+    <Compile Include="ReliefMaps\World\Approximate\GeoidUndulations.cs" />
+    <Compile Include="Approximations\Tests\ApproximationManagerTests.cs" />
+    <Compile Include="Projections\Healpix\Tests\HealpixManagerTests.cs" />
+    <Compile Include="ReliefMaps\Map2D\Projection.cs" />
+    <Compile Include="ReliefMaps\Map2D\DataForMap2D.cs" />
+    <Compile Include="ReliefMaps\World\Approximate\Altitudes.cs" />
+    <Compile Include="IMapsContract.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ReliefMaps\World\Data\WorldAltitudesData.cs" />
+    <Compile Include="ReliefMaps\World\Ocean\OceanMap.cs" />
+    <Compile Include="ReliefMaps\World\Ocean\Tests\BasinDataTests.cs" />
+    <Compile Include="ReliefMaps\World\Ocean\Tests\BasinTests.cs" />
+    <Compile Include="SortUtils.cs" />
+    <Compile Include="ReliefType.cs" />
+    <Compile Include="Tests\SortUtilsTests.cs" />
+    <Compile Include="Tests\Earth2014ManagerTests.cs" />
+    <Compile Include="Earth2014Manager.cs" />
+    <Compile Include="Wos\Tests\WosManagerTests.cs" />
+    <Compile Include="Wos\Water.cs" />
+    <Compile Include="Wos\WosManager.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="earth2014\Earth2014.TBI2014.5min.geod.bin" />
+    <None Include="earth2014\Earth2014Shape_minus_6371000m.BED2014.5min.geod.bin">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="earth2014\Earth2014.BED2014.5min.geod.bin">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="earth2014\Earth2014.BED2014.1min.geod.bin" />
+    <None Include="earth2014\Earth2014.ICE2014.5min.geod.bin" />
+    <None Include="earth2014\Earth2014.RET2014.5min.geod.bin" />
+    <None Include="earth2014\Earth2014.SUR2014.5min.geod.bin">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="earth2014\Earth2014Shape_minus_6371000m.RET2014.5min.geod.bin" />
+    <None Include="earth2014\Earth2014Shape_minus_6371000m.SUR2014.5min.geod.bin" />
+    <None Include="earth2014\Earth2014Shape_minus_6371000m.TBI2014.5min.geod.bin" />
+    <None Include="earth2014\MSK2014_landtypes.1min.geod.bin" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Logy.MwAgent\Logy.MwAgent.csproj">
+      <Project>{072da087-f800-431e-ad49-6caf0ab57572}</Project>
+      <Name>Logy.MwAgent</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Project="..\packages\StyleCop.MSBuild.4.7.54.0\build\StyleCop.MSBuild.Targets" Condition="Exists('..\packages\StyleCop.MSBuild.4.7.54.0\build\StyleCop.MSBuild.Targets')" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\StyleCop.MSBuild.4.7.54.0\build\StyleCop.MSBuild.Targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\StyleCop.MSBuild.4.7.54.0\build\StyleCop.MSBuild.Targets'))" />
+  </Target>
+</Project>
