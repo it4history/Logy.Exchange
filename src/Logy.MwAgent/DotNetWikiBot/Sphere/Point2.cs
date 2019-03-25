@@ -1,6 +1,6 @@
 using System.Text.RegularExpressions;
 
-namespace Logy.MwAgent.DotNetWikiBot.Wikidata
+namespace Logy.MwAgent.DotNetWikiBot.Sphere
 {
     /// <summary>
     /// point on spheroid
