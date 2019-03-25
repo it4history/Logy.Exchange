@@ -63,8 +63,8 @@
     <Compile Include="DotNetWikiBot\Smw\Tests\PropertyValueTests.cs" />
     <Compile Include="DotNetWikiBot\Smw\Tests\SemanticWikiParserTests.cs" />
     <Compile Include="DotNetWikiBot\Smw\PageProperties.cs" />
-    <Compile Include="DotNetWikiBot\Wikidata\Coor.cs" />
-    <Compile Include="DotNetWikiBot\Wikidata\Point2.cs" />
+    <Compile Include="DotNetWikiBot\Sphere\Coor.cs" />
+    <Compile Include="DotNetWikiBot\Sphere\Point2.cs" />
     <Compile Include="DotNetWikiBot\Wikidata\Qualifiers.cs" />
     <Compile Include="DotNetWikiBot\Wikidata\Tests\CoorTests.cs" />
     <Compile Include="DotNetWikiBot\Wikidata\Tests\WikidataParserTests.cs" />
