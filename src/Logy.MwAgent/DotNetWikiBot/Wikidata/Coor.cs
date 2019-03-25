@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Runtime.Serialization;
 using AppConfiguration;
 using Newtonsoft.Json;
@@ -50,9 +50,14 @@ namespace Logy.MwAgent.DotNetWikiBot.Wikidata
         }
 
         /// <summary>
-        /// from 2PI to 0
+        /// from 2PI to 0, counterclockwise, λ
         /// 
         /// spherical
+        /// http://skills.gq/aw/Axises_orientation#Z_up
+        /// Pi x = r   y = 0
+        /// Pi/2    x = 0   y = r
+        /// 0       x = -r  y = 0
+        /// 1.5Pi   x = 0  y = -r
         /// </summary>
         [DataMember]
         public double? Lambda
