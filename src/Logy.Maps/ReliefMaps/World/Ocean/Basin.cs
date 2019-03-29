@@ -2,6 +2,8 @@
 using Logy.Maps.Geometry;
 using Logy.Maps.Projections.Healpix;
 using Logy.Maps.ReliefMaps.Meridian;
+using MathNet.Numerics.LinearAlgebra;
+using MathNet.Numerics.LinearAlgebra.Double;
 using MathNet.Spatial.Euclidean;
 using MathNet.Spatial.Units;
 
@@ -147,6 +149,7 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
         public double[] Koef2;
         public double[] NormLengths;
         public UnitVector3D SpecNormal;
+        public Matrix<double> Matrix;
 
         internal override void PreInit(HealpixManager man)
         {
@@ -157,6 +160,11 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
             froms = new int[4];
 
             KQQaxisTanCotan_traverse = CalcKQQaxisTanCotan_traverse(GetKQQaxis_traverse());
+
+            // for vector 1,0,0
+            Matrix = (Matrix3D.RotationAroundYAxis(new Angle(Phi, AngleUnit.Radians))
+                      * Matrix3D.RotationAroundZAxis(new Angle(Math.PI * 2 - Lambda.Value, AngleUnit.Radians)))
+                .Transpose();
 
             Koef = new double[4];
             Koef2 = new double[4];

@@ -71,6 +71,9 @@ Each grid file contains 10,800 x 21,600 = 233,280,000 records */
             NorthCap = man.Northcap(Ring);
         }
 
+        /// <summary>
+        /// Pi/2 .. -Pi/2; Pi/2 is North pole
+        /// </summary>
         public double Phi { get { return Math.PI / 2 - Beta.Value; } }
 
         /// <returns>angle</returns>

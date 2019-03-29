@@ -1,5 +1,4 @@
-﻿using System;
-using Logy.Maps.Geometry;
+﻿using Logy.Maps.Geometry;
 using Logy.Maps.Projections.Healpix;
 
 namespace Logy.Maps.ReliefMaps.Meridian.Data
