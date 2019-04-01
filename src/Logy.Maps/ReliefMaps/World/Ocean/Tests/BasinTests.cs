@@ -39,7 +39,7 @@ namespace Logy.Maps.ReliefMaps.World.Ocean.Tests
         }
 
         [Test]
-        public void Geometry_Rotate()
+        public void Geometry_Rotate_OrderHasSense()
         {
             var normal = Basin.Oz;
             normal = normal.Rotate(new UnitVector3D(0, 1, 0), 10, AngleUnit.Degrees);
@@ -54,6 +54,24 @@ namespace Logy.Maps.ReliefMaps.World.Ocean.Tests
             normal = normal.Rotate(new UnitVector3D(1, 0, 0), -10, AngleUnit.Degrees);
             normal = normal.Rotate(new UnitVector3D(0, 1, 0), -10, AngleUnit.Degrees);
             Assert.AreEqual(Basin.Oz.X, normal.X, .0000001);
+        }
+
+        [Test]
+        public void Geometry_Rotate_Matrix()
+        {
+            var Phi = 10;
+            var Lambda = 90;
+
+            var normal = new UnitVector3D(-1, 0, 0);
+            normal = normal.Rotate(new UnitVector3D(0, 1, 0),new Angle(Phi, AngleUnit.Degrees));
+            var NormalCalm = normal.Rotate(new UnitVector3D(0, 0, 1),new Angle(-Lambda, AngleUnit.Degrees));
+
+            var rotation = Matrix3D.RotationAroundYAxis(new Angle(-Phi, AngleUnit.Degrees))
+                           * Matrix3D.RotationAroundZAxis(new Angle(Lambda, AngleUnit.Degrees));
+            var NormalCalmByMatrix = new UnitVector3D(new UnitVector3D(-1, 0, 0) * rotation);
+            Assert.AreEqual(NormalCalm.X, NormalCalmByMatrix.X, .00000001);
+            Assert.AreEqual(NormalCalm.Y, NormalCalmByMatrix.Y, .00000001);
+            Assert.AreEqual(NormalCalm.Z, NormalCalmByMatrix.Z, .00000001);
         }
 
         [Test]

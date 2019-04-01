@@ -127,7 +127,9 @@
     <Compile Include="Wos\WosManager.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="earth2014\Earth2014.TBI2014.5min.geod.bin" />
+    <None Include="earth2014\Earth2014.TBI2014.5min.geod.bin">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="earth2014\Earth2014Shape_minus_6371000m.BED2014.5min.geod.bin">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

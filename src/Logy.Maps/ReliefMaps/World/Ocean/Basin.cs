@@ -86,27 +86,23 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
             get { return new Point2D(r * Math.Cos(Lambda.Value), r * Math.Sin(Lambda.Value)); }
         }
 
-        public UnitVector3D NormalCalm
-        {
-            get
-            {
-                var normal = new UnitVector3D(-1, 0, 0);
-                normal = normal.Rotate(new UnitVector3D(0, 1, 0),
-                    new Angle(Phi, AngleUnit.Radians));
-                return normal.Rotate(new UnitVector3D(0, 0, 1),
-                    new Angle(-Lambda.Value, AngleUnit.Radians));
-            }
-        }
+        public UnitVector3D NormalCalm { get; set; }
+
+        private Plane? _surface;
         public Plane Surface
         {
             get
             {
-                var normal = new UnitVector3D(-1, 0, 0); // NormalCalm
-                normal = normal.Rotate(new UnitVector3D(0, 1, 0),
-                    new Angle((Vartheta < 0 ? -Delta_g_meridian : Delta_g_meridian) + Phi, AngleUnit.Radians));
-                normal = normal.Rotate(new UnitVector3D(0, 0, 1),
-                    new Angle(-Delta_g_traverse - Lambda.Value, AngleUnit.Radians));
-                return new Plane(normal, r);
+                if (_surface == null)
+                {
+                    var normal = new UnitVector3D(-1, 0, 0); // NormalCalm
+                    normal = normal.Rotate(new UnitVector3D(0, 1, 0),
+                        new Angle((Vartheta < 0 ? -Delta_g_meridian : Delta_g_meridian) + Phi, AngleUnit.Radians));
+                    normal = normal.Rotate(new UnitVector3D(0, 0, 1),
+                        new Angle(-Delta_g_traverse - Lambda.Value, AngleUnit.Radians));
+                    _surface = new Plane(normal, r);
+                }
+                return (Plane)_surface;
             }
         }
 
@@ -161,10 +157,12 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
 
             KQQaxisTanCotan_traverse = CalcKQQaxisTanCotan_traverse(GetKQQaxis_traverse());
 
-            // for vector 1,0,0
-            Matrix = (Matrix3D.RotationAroundYAxis(new Angle(Phi, AngleUnit.Radians))
-                      * Matrix3D.RotationAroundZAxis(new Angle(Math.PI * 2 - Lambda.Value, AngleUnit.Radians)))
-                .Transpose();
+            //todo why angle with opposite sign?
+            var rotation = Matrix3D.RotationAroundYAxis(new Angle(-Phi, AngleUnit.Radians))
+                           * Matrix3D.RotationAroundZAxis(new Angle(Lambda.Value, AngleUnit.Radians));
+            NormalCalm = new UnitVector3D(new UnitVector3D(-1, 0, 0) * rotation);
+
+            Matrix = rotation.Transpose();
 
             Koef = new double[4];
             Koef2 = new double[4];
@@ -201,7 +199,8 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
         public override double RecalculateKQQaxis(bool revert = true)
         {
             var aTraverse = base.RecalculateKQQaxis(false);
-           Delta_g_traverse = Math.Atan(aTraverse / gVpure);
+            Delta_g_traverse = Math.Atan(aTraverse / gVpure);
+            _surface = null;
 
             var KQQaxis_traverse = GetKQQaxis_traverse();
             KQQaxisTanCotan_traverse = CalcKQQaxisTanCotan_traverse(KQQaxis_traverse);
@@ -279,7 +278,7 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
         }
 
         #region reserved
-        public double Reserved;
+        public double Visual;
 
         /// <summary>
         /// in Rotation Axis plane

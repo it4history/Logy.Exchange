@@ -99,8 +99,14 @@ namespace Logy.Maps.Geometry
 
             var b = (Basin) basin;
             var axisEnd = AxisOfRotation.ToPoint3D();
-            var axisOrtohonal = new Line3D(axisEnd, Basin.O3).LineTo(b.Q3, false);
+            var axisOrtohonal = new Line3D(Basin.O3, axisEnd).LineTo(b.Q3, false);
             a = Centrifugal(axisOrtohonal.Length);
+
+            var aOnSurface = axisOrtohonal.Direction * b.Matrix;
+            aTraverse = -a * aOnSurface[1];
+            var aMerid = (b.Vartheta < 0 ? 1 : -1) * a * aOnSurface[2];
+            b.Visual = aMerid;
+            return aMerid;
 
             var surfaceCalm = new Plane(b.NormalCalm, b.r);
             var QonAxisPlane = new Plane(axisEnd, b.Q3, Basin.O3);
@@ -169,8 +175,8 @@ namespace Logy.Maps.Geometry
                 }
             }
 
-            b.Reserved = aTraverse;
-            b.Reserved = aMeridian;
+            b.Visual = aTraverse;
+            b.Visual = aMeridian;
             return aMeridian;
         }
 

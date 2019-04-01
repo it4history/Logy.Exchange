@@ -34,9 +34,9 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
 
                 var bisectors = new Point3D[4];
                 var lengths = new double[4];
-                var surface = basin.Surface;
+                //!var surface = basin.Surface;
                 var xyPlane = new Plane(basin.Q3, new UnitVector3D(0, 0, basin.Vartheta > 0 ?  1 : -1));
-                var xAxis = xyPlane.IntersectionWith(surface);
+                //!var xAxis = xyPlane.IntersectionWith(surface);
                 foreach (Direction to in Enum.GetValues(typeof(Direction)))
                 {
                     var toBasin = PixMan.Pixels[man.Neibors.Get(to, basin)];
@@ -46,22 +46,22 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
                         basin.Type = to;
                     }
 
-                    var otherQprojection = toBasin.Q3.ProjectOn(surface);//TraverseCalm);
+                    //!var otherQprojection = toBasin.Q3.ProjectOn(surface);//TraverseCalm);
                     //var dx = toBasin.Qb.X * Math.Sin(basin.Lambda.Value - toBasin.Lambda.Value);
                     //var dy = new Line3D(toBasin.Q3, otherQprojection).Length;
                     //lengths[(int)to] = Math.Sqrt(dx * dx + dy * dy);
                     //basin.Gammas[(int)to] = Math.Asin(dy / lengths[(int)to]);
-                    var Q_otherProjection = new Line3D(basin.Q3, otherQprojection);
+                    /*!var Q_otherProjection = new Line3D(basin.Q3, otherQprojection);
                     lengths[(int) to] = Q_otherProjection.Length;
 
                     var thirdPoint = new Ray3D(basin.Q3, surface.Normal).LineTo(toBasin.Q3).StartPoint;
                     var anglePlane = new Plane(basin.Q3, thirdPoint, toBasin.Q3);
                     var lineQ3s = new Line3D(basin.Q3, toBasin.Q3);
-                    bisectors[(int) to] = Point3D.MidPoint(toBasin.Q3, thirdPoint);
+                    bisectors[(int) to] = Point3D.MidPoint(toBasin.Q3, thirdPoint);*/
 
                     //var xAxis = surface.Normal.Rotate(new UnitVector3D(0, 0, 1), 90, AngleUnit.Degrees);
 
-                    alphas[(int) to] = xAxis.Direction.SignedAngleTo(Q_otherProjection.Direction, surface.Normal).Radians;
+                    //!alphas[(int) to] = xAxis.Direction.SignedAngleTo(Q_otherProjection.Direction, surface.Normal).Radians;
                     /*телесный угол, calc Cos by DotProduct
                     alphas[(int)to] = surface.Normal.SignedAngleTo(lineQ3s.Direction,
                         anglePlane.Normal//surface.Normal.Orthogonal
@@ -77,7 +77,7 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
                     //koef = Math.Tan(alphas[(int)to] - Math.PI/2);
                     basin.Koef[(int) to] = Math.Abs(Math.Pow(koef, 1));
                 }
-                basin.SpecNormal = new Line3D(basin.Q3, Point3D.Centroid(bisectors).MirrorAbout(surface)).Direction;
+                //!basin.SpecNormal = new Line3D(basin.Q3, Point3D.Centroid(bisectors).MirrorAbout(surface)).Direction;
 
                 if (_withRelief)
                 {
@@ -263,7 +263,7 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
 
         public override double? GetAltitude(Basin basin)
         {
-            //return basin.Reserved * 1000;
+            //return basin.Visual * 1000;
 //            var superKoef = basin.Koef2.Min() / basin.Koef2.Max();
 //            var superKoef = basin.Koef.Min() / basin.Koef.Max();
             //return superKoef;

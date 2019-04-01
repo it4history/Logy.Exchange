@@ -16,16 +16,16 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
     {
         public OceanMap()
         {
-            if (K < 6)
+            if (K < 7)
             {
                 YResolution = 3;
-                Scale = (6 - K) * 10;
+                Scale = (7 - K) * 3;
             }
         }
 
         protected override int K
         {
-            get { return 5; }
+            get { return 6; }
         }
 
         [SetUp]
@@ -89,19 +89,19 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
         }
 
         [Test]
-        public void Water_Centrifugal()
+        public void Water_ChangeRotation()
         {
             Data = new BasinsData(HealpixManager, false, true
-         //       , -200d//, 2000d
+                , -200d//, 2000d
             );
-            //Data.ColorsMiddle = null;
+            //fill Basin.Visual and uncomment BasinData.GetAltitude to see centrifugal components
 
-            EllipsoidAcceleration.AxisOfRotation = 
-                //new UnitVector3D(0, 1, 0)/*there are bugs*/
-                Basin.Oz.Rotate(new UnitVector3D(1, 0, 0), new Angle(15.0, AngleUnit.Degrees))
+            EllipsoidAcceleration.AxisOfRotation =
+                new UnitVector3D(1, 0, 0);
+                //Basin.Oz.Rotate(new UnitVector3D(1, 0, 0), new Angle(15.0, AngleUnit.Degrees))
                 ;
             ChangeRotation(-HealpixManager.Nside, 0);//double.MaxValue);
-            var framesCountBy2 = 5;
+            var framesCountBy2 = 500;
             Data.Cycle(1, delegate (int step)
             {
                 Data.Draw(Bmp, 0, null, YResolution, Scale);
@@ -158,8 +158,8 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
                 }
             }
             ChangeRotation(-HealpixManager.Nside, 0);//double.MaxValue);
-            var framesCountBy2 = 10;
-            Data.Cycle(50, delegate(int step) 
+            var framesCountBy2 = 20;
+            Data.Cycle(5, delegate(int step) 
             {
                 if (Data.Colors != null)
                     Data.Colors.DefaultColor = Color.FromArgb(255, 174, 201);
