@@ -1,3 +1,4 @@
+using Logy.MwAgent.Sphere;
 using Newtonsoft.Json.Linq;
 
 namespace Logy.MwAgent.DotNetWikiBot.Wikidata

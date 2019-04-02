@@ -1,10 +1,9 @@
 ﻿#if DEBUG
 
 using System;
-using Logy.MwAgent.DotNetWikiBot.Wikidata;
 using NUnit.Framework;
 
-namespace Logy.MwAgent.DotNetWikiBot.Sphere.Tests
+namespace Logy.MwAgent.Sphere.Tests
 {
     [TestFixture]
     public class CoorTests

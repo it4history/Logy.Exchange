@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using Logy.MwAgent.Sphere;
 
 namespace Logy.MwAgent.DotNetWikiBot.Wikidata
 {

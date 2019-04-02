@@ -4,7 +4,7 @@ using AppConfiguration;
 using Logy.MwAgent.DotNetWikiBot.Sphere;
 using Newtonsoft.Json;
 
-namespace Logy.MwAgent.DotNetWikiBot.Wikidata
+namespace Logy.MwAgent.Sphere
 {
     /// <summary>
     /// point on sphere
