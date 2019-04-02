@@ -1,6 +1,7 @@
 using System;
 using Logy.Maps.Healpix.Substack;
 using Logy.MwAgent.DotNetWikiBot.Wikidata;
+using Logy.MwAgent.Sphere;
 
 namespace Logy.Maps.Projections.Healpix.Substack
 {

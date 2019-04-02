@@ -97,17 +97,26 @@ namespace Logy.Maps.Geometry
                 return a * Math.Abs(Math.Cos(basin.Theta));
             }
 
-            var b = (Basin) basin;
+            var b = (Basin)basin;
             var axisEnd = AxisOfRotation.ToPoint3D();
             var axisOrtohonal = new Line3D(Basin.O3, axisEnd).LineTo(b.Q3, false);
             a = Centrifugal(axisOrtohonal.Length);
 
+            return CentrifugalByMatrix(b, a, axisOrtohonal, out aTraverse);
+            //return CentrifugalByDotProduct(b, a, axisEnd, out aTraverse);
+        }
+
+        public static double CentrifugalByMatrix(Basin b, double a, Line3D axisOrtohonal, out double aTraverse)
+        {
             var aOnSurface = axisOrtohonal.Direction * b.Matrix;
             aTraverse = -a * aOnSurface[1];
             var aMerid = (b.Vartheta < 0 ? 1 : -1) * a * aOnSurface[2];
             b.Visual = aMerid;
             return aMerid;
+        }
 
+        public static double CentrifugalByDotProduct(Basin b, double a, Point3D axisEnd, out double aTraverse)
+        { 
             var surfaceCalm = new Plane(b.NormalCalm, b.r);
             var QonAxisPlane = new Plane(axisEnd, b.Q3, Basin.O3);
 

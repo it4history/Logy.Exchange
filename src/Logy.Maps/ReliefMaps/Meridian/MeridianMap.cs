@@ -1,4 +1,4 @@
-using Logy.Maps.ReliefMaps.Map2D;
+п»їusing Logy.Maps.ReliefMaps.Map2D;
 using Logy.Maps.ReliefMaps.Meridian.Data;
 using NUnit.Framework;
 
@@ -17,7 +17,7 @@ namespace Logy.Maps.ReliefMaps.Meridian
         }
 
         /// <summary>
-        /// http://hist.tk/hw/Меридианная_проекция_-_вода#третий_пример
+        /// http://hist.tk/hw/РњРµСЂРёРґРёР°РЅРЅР°СЏ_РїСЂРѕРµРєС†РёСЏ_-_РІРѕРґР°#С‚СЂРµС‚РёР№_РїСЂРёРјРµСЂ
         /// </summary>
         [Test]
         public void EarthRotationStopped()
@@ -40,7 +40,7 @@ namespace Logy.Maps.ReliefMaps.Meridian
         }
 
         /// <summary>
-        /// http://hist.tk/hw/Меридианная_проекция_-_вода#второй_пример
+        /// http://hist.tk/hw/РњРµСЂРёРґРёР°РЅРЅР°СЏ_РїСЂРѕРµРєС†РёСЏ_-_РІРѕРґР°#РІС‚РѕСЂРѕР№_РїСЂРёРјРµСЂ
         /// slow, near 30 minutes
         /// </summary>
         [Test]
@@ -51,7 +51,7 @@ namespace Logy.Maps.ReliefMaps.Meridian
             {
                 Data.Draw(Bmp, step);
 
-                if (step % HealpixManager.Nside / 4 == 0) //(от 23,9 часов до 26,7), и в середине времени до 46,2 часов
+                if (step % HealpixManager.Nside / 4 == 0) //(Г®ГІ 23,9 Г·Г Г±Г®Гў Г¤Г® 26,7), ГЁ Гў Г±ГҐГ°ГҐГ¤ГЁГ­ГҐ ГўГ°ГҐГ¬ГҐГ­ГЁ Г¤Г® 46,2 Г·Г Г±Г®Гў
                 {
                     ChangeRotation(step);
                 }
@@ -59,7 +59,7 @@ namespace Logy.Maps.ReliefMaps.Meridian
         }
 
         /// <summary>
-        /// один тазик резко вырос или опустился
+        /// РѕРґРёРЅ С‚Р°Р·РёРє СЂРµР·РєРѕ РІС‹СЂРѕСЃ РёР»Рё РѕРїСѓСЃС‚РёР»СЃСЏ
         /// </summary>
         [Test]
         public void HighLowBasin()

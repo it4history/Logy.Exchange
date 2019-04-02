@@ -1,5 +1,6 @@
 using System;
 using System.Drawing;
+using System.Drawing.Imaging;
 using System.IO;
 using Logy.Maps.Geometry;
 using Logy.Maps.Projections;
@@ -25,7 +26,12 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
 
         protected override int K
         {
-            get { return 6; }
+            get { return 5; }
+        }
+
+        protected override ImageFormat ImageFormat
+        {
+            get { return ImageFormat.Jpeg; }
         }
 
         [SetUp]
@@ -135,20 +141,20 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
         public void Water_WhenRotationStopped()
         {
             Data = new BasinsData(HealpixManager, false, false
-                ,-3000d, 3000d
+                //,-3000d, 3000d
             );
             Data.ColorsMiddle = null;
 
-            EllipsoidAcceleration.AxisOfRotation =
-                //Basin.Oz.Rotate(new UnitVector3D(0, 1, 0), new Angle(15.0, AngleUnit.Degrees));
+            /*EllipsoidAcceleration.AxisOfRotation =
+                new UnitVector3D(1, 0, 0);/*, new Angle(15.0, AngleUnit.Degrees));
                 Basin.Oz
                     .Rotate(new UnitVector3D(0, 1, 0), new Angle(17, AngleUnit.Degrees))
                     .Rotate(new UnitVector3D(0, 0, 1), new Angle(-40, AngleUnit.Degrees))
-                    ;
+                    ;*/
 
             Basin basin = null;
             //basin =Data.PixMan.Pixels[HealpixManager.GetP() / 2];
-            var accur = 3;
+            var accur = 1.5;
             foreach (var b in Data.PixMan.Pixels)
             {
                 if (Math.Abs(b.X - (-40)) < accur  && Math.Abs(b.Y - (73)) < accur )
@@ -157,9 +163,9 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
                     break;
                 }
             }
-            ChangeRotation(-HealpixManager.Nside, 0);//double.MaxValue);
-            var framesCountBy2 = 20;
-            Data.Cycle(5, delegate(int step) 
+            ChangeRotation(-HealpixManager.Nside, double.MaxValue);
+            var framesCountBy2 = 200;
+            Data.Cycle(50, delegate(int step) 
             {
                 if (Data.Colors != null)
                     Data.Colors.DefaultColor = Color.FromArgb(255, 174, 201);

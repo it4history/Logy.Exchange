@@ -2,6 +2,7 @@
 using System.Runtime.Serialization;
 using Logy.MwAgent.DotNetWikiBot.Sphere;
 using Logy.MwAgent.DotNetWikiBot.Wikidata;
+using Logy.MwAgent.Sphere;
 
 namespace Logy.Maps.Projections.Healpix
 {

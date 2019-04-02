@@ -2,6 +2,7 @@
 using Logy.Maps.Projections.Healpix;
 using Logy.Maps.Projections.Healpix.Tests;
 using Logy.MwAgent.DotNetWikiBot.Wikidata;
+using Logy.MwAgent.Sphere;
 using NUnit.Framework;
 
 namespace Logy.Maps.Approximations.Tests

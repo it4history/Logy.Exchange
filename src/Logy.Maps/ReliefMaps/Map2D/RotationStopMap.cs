@@ -14,6 +14,7 @@ namespace Logy.Maps.ReliefMaps.Map2D
     public class RotationStopMap<T> : Map2DBase where T : MeridianBase
     {
         protected Bitmap Bmp;
+        protected Brush Background = Brushes.White;
         protected readonly List<int> ChangeLines = new List<int>();
         public WaterMoving<T> Data;
 
@@ -21,6 +22,9 @@ namespace Logy.Maps.ReliefMaps.Map2D
         public virtual void SetUp()
         {
             Bmp = CreateBitmap();
+            var g = GetFont(Bmp);
+            g.FillRectangle(Background, 0, 0, Bmp.Width, Bmp.Height);
+            g.Flush();
         }
 
         [TearDown]
@@ -37,7 +41,7 @@ namespace Logy.Maps.ReliefMaps.Map2D
                 foreach (var line in ChangeLines)
                 {
                     for (var y = -10; y < 15; y++)
-                        Bmp.SetPixel(line, YResolution * HealpixManager.Nside + y, Color.Black);
+                        Bmp.SetPixel(line, YResolution * Scale * HealpixManager.Nside + y, Color.Black);
                 }
                 return SaveBitmap(Bmp, Data.Colors, Data.Accuracy, step);
             }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using Logy.Maps.Projections.Healpix;
 using Logy.MwAgent.DotNetWikiBot.Wikidata;
+using Logy.MwAgent.Sphere;
 
 namespace Logy.Maps
 {
@@ -94,7 +95,7 @@ namespace Logy.Maps
         }
 
         public Earth2014Manager(Coor center, int accuracyMin = 1, int radiusGrad = 10)
-            :this(ReliefType.Bed, accuracyMin)
+            : this(ReliefType.Bed, accuracyMin)
         {
             _center = center;
             /// FillBuffer(center, radiusGrad);
@@ -110,7 +111,7 @@ namespace Logy.Maps
                     string.Format("Earth2014{2}.{1}2014.{0}min.geod.bin",
                         _accuracyMin,
                         _reliefType.ToString().ToUpper(),
-                        _shape ? "Shape_minus_6371000m" : ""));
+                        _shape ? "Shape_minus_6371000m" : string.Empty));
             }
         }
 

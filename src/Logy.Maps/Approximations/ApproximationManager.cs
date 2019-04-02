@@ -5,6 +5,7 @@ using Logy.Maps.Coloring;
 using Logy.Maps.Projections.Healpix;
 using Logy.MwAgent.DotNetWikiBot.Sphere;
 using Logy.MwAgent.DotNetWikiBot.Wikidata;
+using Logy.MwAgent.Sphere;
 
 namespace Logy.Maps.Approximations
 {

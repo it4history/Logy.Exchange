@@ -87,7 +87,8 @@ namespace Logy.Maps.ReliefMaps.World.Ocean.Tests
             Assert.AreEqual(from1to0, from0to1, 1);
             basin = man.GetCenter<Basin>(4);
             toBasin = man.GetCenter<Basin>(7);
-            Assert.AreEqual(basin.Surface.AbsoluteDistanceTo(toBasin.Q3),
+            Assert.AreEqual(
+                basin.Surface.AbsoluteDistanceTo(toBasin.Q3),
                 toBasin.Surface.AbsoluteDistanceTo(basin.Q3), .0001);
 
             man = new HealpixManager(1);

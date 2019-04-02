@@ -13,6 +13,7 @@ using Logy.Maps.Projections.Healpix;
 using Logy.Maps.ReliefMaps.Basemap;
 using Logy.MwAgent.DotNetWikiBot.Sphere;
 using Logy.MwAgent.DotNetWikiBot.Wikidata;
+using Logy.MwAgent.Sphere;
 using NUnit.Framework;
 
 namespace Logy.Maps.ReliefMaps.Map2D
