@@ -35,7 +35,7 @@ namespace Logy.Maps.Projections.Healpix
         {
             return (int)direction & 1;
         }
-        public int Get(Direction direction, Basin basin)
+        public int Get(Direction direction, Basin3D basin)
         {
             switch (direction)
             {
@@ -82,12 +82,12 @@ namespace Logy.Maps.Projections.Healpix
             }
         }
 
-        internal int NorthEast(Basin basin)
+        internal int NorthEast(Basin3D basin)
         {
             return North(basin, NeighborHor.East);
         }
 
-        internal int NorthWest(Basin basin)
+        internal int NorthWest(Basin3D basin)
         {
             return North(basin, NeighborHor.West);
         }
@@ -95,14 +95,14 @@ namespace Logy.Maps.Projections.Healpix
         /// <summary>
         /// lazy to seek for formulas like in North() therefore let find symmetric
         /// </summary>
-        internal int SouthWest(Basin basin)
+        internal int SouthWest(Basin3D basin)
         {
             int newRing, newPixelInRing;
             North(basin.Symmetric(_healpixManager), NeighborHor.East, out newRing, out newPixelInRing);
             _healpixManager.Symmetric(ref newRing, ref newPixelInRing);
             return _healpixManager.GetP(newRing, newPixelInRing);
         }
-        internal int SouthEast(Basin basin)
+        internal int SouthEast(Basin3D basin)
         {
             int newRing, newPixelInRing;
             North(basin.Symmetric(_healpixManager), NeighborHor.West, out newRing, out newPixelInRing);
@@ -111,12 +111,12 @@ namespace Logy.Maps.Projections.Healpix
         }
 
         /// <returns>p, from 0</returns>
-        private int North(Basin basin, NeighborHor hor)
+        private int North(Basin3D basin, NeighborHor hor)
         {
             int newRing, newPixelInRing;
             return North(basin, hor, out newRing, out newPixelInRing);
         }
-        private int North(Basin basin, NeighborHor hor, out int newRing, out int newPixelInRing)
+        private int North(Basin3D basin, NeighborHor hor, out int newRing, out int newPixelInRing)
         {
             newRing = basin.Ring - 1;
             var ringFirstP = basin.P - basin.PixelInRing + 1;

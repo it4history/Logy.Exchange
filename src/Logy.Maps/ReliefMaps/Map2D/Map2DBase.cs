@@ -131,7 +131,7 @@ namespace Logy.Maps.ReliefMaps.Map2D
         {
             var top = YResolution * HealpixManager.Nside * Scale;
             var left = HealpixManager.Nside * Scale;
-            const int upbottomedge = 3;
+            const int Upbottomedge = 3;
             int? left0 = null;
             int? left0end = null;
             for (var y = 0; y < LegendHeight; y++)
@@ -139,12 +139,13 @@ namespace Logy.Maps.ReliefMaps.Map2D
                 for (var x = 0; x < 4 * HealpixManager.Nside * Scale; x++)
                 {
                     var c = ImageFormat == ImageFormat.Png ? Color.Transparent : Color.White;
-                    if (x >= left && x < 3 * HealpixManager.Nside * Scale && y > upbottomedge &&
-                        y < LegendHeight - upbottomedge)
+                    if (x >= left && x < 3 * HealpixManager.Nside * Scale && y > Upbottomedge &&
+                        y < LegendHeight - Upbottomedge)
                     {
                         var value = data.Colors.Min +
-                                    (x - left) / (2d * HealpixManager.Nside * Scale) * (data.Colors.Max - data.Colors.Min);
-                        var upbottomedge0 = upbottomedge + (K - 7) * 3;
+                                    (x - left) / (2d * HealpixManager.Nside * Scale) *
+                                    (data.Colors.Max - data.Colors.Min);
+                        var upbottomedge0 = Upbottomedge + (K - 7) * 3;
                         if (y > upbottomedge0 + 2 && y < LegendHeight - upbottomedge0 - 1 &&
                             Math.Abs(value - data.Colors.Middle) < (data.Colors.Max - data.Colors.Min) / 50d)
                         {
@@ -154,7 +155,7 @@ namespace Logy.Maps.ReliefMaps.Map2D
                                 left0 = x;
                         }
                         else
-                            c = (Color) data.Colors.Get(value);
+                            c = (Color)data.Colors.Get(value);
                     }
                     bmp.SetPixel(x, top + y, c);
                 }
@@ -165,33 +166,33 @@ namespace Logy.Maps.ReliefMaps.Map2D
             var s = data.Colors.Min.ToString("0.#");
             var measure = g.MeasureString(s, font);
             var sTop = top + 3 + (LegendHeight - 3 - measure.Height) / 2;
-            g.DrawString(s, font, Brushes.Black,
-                new RectangleF(
-                    left - 9 - measure.Width,
-                    sTop,
-                    left,
-                    top + LegendHeight));
+            var layoutRectangle = new RectangleF(
+                left - 9 - measure.Width,
+                sTop,
+                left,
+                top + LegendHeight);
+            g.DrawString(s, font, Brushes.Black, layoutRectangle);
+
             s = string.Format("{0:0.#}{1}", data.Colors.Max, data.Dimension);
-            g.DrawString(s, font, Brushes.Black,
-                new RectangleF(
-                    left + 2 * HealpixManager.Nside * Scale + 10,
-                    sTop,
-                    left + 3 * HealpixManager.Nside * Scale,
-                    top + LegendHeight));
+            layoutRectangle = new RectangleF(
+                left + 2 * HealpixManager.Nside * Scale + 10,
+                sTop,
+                left + 3 * HealpixManager.Nside * Scale,
+                top + LegendHeight);
+            g.DrawString(s, font, Brushes.Black, layoutRectangle);
 
             if (left0.HasValue)
             {
                 var middle = data.Colors.Middle.ToString("0.#");
                 var measure0 = g.MeasureString(middle, font);
                 var rectangle = new Rectangle(
-                    (int) Math.Round(left0.Value + 2 + ((left0end.Value - left0.Value) - measure0.Width) / 2),
-                    (int) sTop,
-                    (int) measure0.Width + 1,
-                    (int) measure0.Height - 2);
+                    (int)Math.Round(left0.Value + 2 + ((left0end.Value - left0.Value) - measure0.Width) / 2),
+                    (int)sTop,
+                    (int)measure0.Width + 1,
+                    (int)measure0.Height - 2);
                 g.FillRectangle(Brushes.White, rectangle);
                 rectangle.X += 3;
-                g.DrawString(middle, font, Brushes.Black,
-                    rectangle);
+                g.DrawString(middle, font, Brushes.Black, rectangle);
             }
             g.Flush();
         }
@@ -209,16 +210,17 @@ namespace Logy.Maps.ReliefMaps.Map2D
         {
             if (!Directory.Exists(Dir))
                 Directory.CreateDirectory(Dir);
-            var filename = Path.Combine(Dir, string.Format("{1}{0}{5}min{4}{3}.{2}",
-                step == 0 ? "" : step.ToString("000") + "_",
-                colors.IsGrey ? "grey" : "",
+            var filename = string.Format(
+                "{1}{0}{5}min{4}{3}.{2}",
+                step == 0 ? null : step.ToString("000") + "_",
+                colors.IsGrey ? "grey" : null,
                 ImageFormat.ToString().ToLower(),
-                LegendToDraw ? "" : "_nolegend",
-                Projection == Projection.Equirectangular ? "_noHEALPix" : "",
-                accuracy));
-            bmp.Save(filename,
-                ImageFormat);
-            return filename;
+                LegendToDraw ? null : "_nolegend",
+                Projection == Projection.Equirectangular ? "_noHEALPix" : null,
+                accuracy);
+            var path = Path.Combine(Dir, filename);
+            bmp.Save(path, ImageFormat);
+            return path;
         }
 
         private string _dir;
@@ -239,7 +241,7 @@ namespace Logy.Maps.ReliefMaps.Map2D
         {
             return new Bitmap(
                 4 * HealpixManager.Nside * Scale,
-                YResolution * HealpixManager.Nside * Scale + (LegendToDraw ? LegendHeight : 0));
+                (YResolution * HealpixManager.Nside * Scale) + (LegendToDraw ? LegendHeight : 0));
         }
     }
 }

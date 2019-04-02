@@ -1,4 +1,4 @@
-using System;
+п»їusing System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
@@ -26,7 +26,7 @@ namespace Logy.Maps.ReliefMaps.Water
         }
 
         /// <summary>
-        /// пересечения градиента с радиусами (высотами тазиков)
+        /// РїРµСЂРµСЃРµС‡РµРЅРёСЏ РіСЂР°РґРёРµРЅС‚Р° СЃ СЂР°РґРёСѓСЃР°РјРё (РІС‹СЃРѕС‚Р°РјРё С‚Р°Р·РёРєРѕРІ)
         /// http://hist.tk/hw/Gradient_and_height_crosses
         /// </summary>
         internal virtual void GradientAndHeightCrosses()

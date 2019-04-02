@@ -5,13 +5,18 @@ namespace Logy.Maps.Wos
 {
     public class Water
     {
+        public Water()
+        {
+            EddiesPair = new SortedList<int, EddyPair>();
+        }
+
         /// <summary>
         /// should be sorted manually
         /// 
         /// SortedList performs worse than SortedDictionary during construction 
         /// if the items are not inserted in already-sorted order (https://stackoverflow.com/questions/1376965/when-to-use-a-sortedlisttkey-tvalue-over-a-sorteddictionarytkey-tvalue7)
         /// </summary>
-        public SortedList<int, EddyPair> EddiesPair = new SortedList<int, EddyPair>();
+        public SortedList<int, EddyPair> EddiesPair { get; set; }
 
         /// <summary>
         /// initial atoms grouping
@@ -24,7 +29,7 @@ namespace Logy.Maps.Wos
             if (coor.PixelInRing > 1)
             {
                 var otherEddy = GetEddy(coor.P - 1);
-                isAtomAlone = false;   
+                isAtomAlone = false;
             }
 
             if (isAtomAlone)
@@ -42,17 +47,17 @@ namespace Logy.Maps.Wos
             }
             return null;
         }
-    }
 
-    public class EddyPair
-    {
-        /// <summary>
-        /// kilometers
-        /// </summary>
-        public int MaxRadius = 50;
-
-        public EddyPair(HealCoor coor)
+        public class EddyPair
         {
+            /// <summary>
+            /// kilometers
+            /// </summary>
+            public const int MaxRadius = 50;
+
+            public EddyPair(HealCoor coor)
+            {
+            }
         }
     }
 }

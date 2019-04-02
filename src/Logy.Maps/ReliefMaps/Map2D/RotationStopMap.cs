@@ -5,13 +5,14 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using Logy.Maps.Geometry;
 using Logy.Maps.Projections;
+using Logy.Maps.ReliefMaps.Basemap;
 using Logy.Maps.ReliefMaps.Meridian;
 using Logy.Maps.ReliefMaps.Water;
 using NUnit.Framework;
 
 namespace Logy.Maps.ReliefMaps.Map2D
 {
-    public class RotationStopMap<T> : Map2DBase where T : MeridianBase
+    public class RotationStopMap<T> : Map2DBase where T : BasinBase
     {
         protected Bitmap Bmp;
         protected Brush Background = Brushes.White;
@@ -66,7 +67,7 @@ namespace Logy.Maps.ReliefMaps.Map2D
                 EllipsoidAcceleration.SiderealDayInSeconds += koef;
                 foreach (var basin in Data.PixMan.Pixels)
                 {
-                    basin.RecalculateKQQaxis();
+                    basin.RecalculateDelta_g();
                 }
 
                 var eqProjection = new Equirectangular(HealpixManager, YResolution);

@@ -22,47 +22,6 @@ namespace Logy.Maps.ReliefMaps.Meridian.Data
             }
         }
 
-        /// <summary>
-        /// PixMan.Pixels ordered asc
-        /// PixMan.Pixels.Length often != HealpixManager.RingsCount and maybe PixMan.Pixels.Length == _maxRing
-        /// </summary>
-        protected new MeridianCoor GetNorthBasin(MeridianCoor basin)
-        {
-            if (basin.Ring == 1)
-            {
-                return _symmetricPoles ? PixMan.Pixels[1] : null;
-            }
-            return PixMan.Pixels[basin.Ring - 2];
-        }
-
-        protected MeridianCoor GetSouthBasin(MeridianCoor basin)
-        {
-            if (basin.Ring == MaxRing)
-            {
-                return _symmetricPoles ? PixMan.Pixels[MaxRing - 2] : null;
-            }
-            return PixMan.Pixels[basin.Ring];
-        }
-
-        internal override void GradientAndHeightCrosses()
-        {
-            foreach (var basin in PixMan.Pixels)
-            {
-                basin.WaterReset();
-                if (basin.HasWater())
-                {
-                    var northBasin = GetNorthBasin(basin);
-                    var southBasin = GetSouthBasin(basin);
-
-                    // null if _symmetricPoles == false
-                    if (northBasin != null)
-                        basin.Hto[(int) NeighborVert.North] = basin.Intersect(northBasin);
-                    if (southBasin != null)
-                        basin.Hto[(int) NeighborVert.South] = basin.Intersect(southBasin);
-                }
-            }
-        }
-
         public override double? GetAltitude(T basin)
         {
             var northBasin = GetNorthBasin(basin);
@@ -86,6 +45,7 @@ namespace Logy.Maps.ReliefMaps.Meridian.Data
             Water.Move(basin, northBasin, NeighborVert.North);
             Water.Move(basin, southBasin, NeighborVert.South);
 
+            //return (basin.Vartheta < 0 ? Math.PI - basin.Delta_g_meridian : basin.Delta_g_meridian) * 1000;
             return basin.hOQ;
 
             if (northBasin != null)
@@ -121,6 +81,47 @@ namespace Logy.Maps.ReliefMaps.Meridian.Data
         public override void Log()
         {
             //base.Log();
+        }
+
+        internal override void GradientAndHeightCrosses()
+        {
+            foreach (var basin in PixMan.Pixels)
+            {
+                basin.WaterReset();
+                if (basin.HasWater())
+                {
+                    var northBasin = GetNorthBasin(basin);
+                    var southBasin = GetSouthBasin(basin);
+
+                    // null if _symmetricPoles == false
+                    if (northBasin != null)
+                        basin.Hto[(int)NeighborVert.North] = basin.Intersect(northBasin);
+                    if (southBasin != null)
+                        basin.Hto[(int)NeighborVert.South] = basin.Intersect(southBasin);
+                }
+            }
+        }
+
+        /// <summary>
+        /// PixMan.Pixels ordered asc
+        /// PixMan.Pixels.Length often != HealpixManager.RingsCount and maybe PixMan.Pixels.Length == _maxRing
+        /// </summary>
+        protected new MeridianCoor GetNorthBasin(MeridianCoor basin)
+        {
+            if (basin.Ring == 1)
+            {
+                return _symmetricPoles ? PixMan.Pixels[1] : null;
+            }
+            return PixMan.Pixels[basin.Ring - 2];
+        }
+
+        protected MeridianCoor GetSouthBasin(MeridianCoor basin)
+        {
+            if (basin.Ring == MaxRing)
+            {
+                return _symmetricPoles ? PixMan.Pixels[MaxRing - 2] : null;
+            }
+            return PixMan.Pixels[basin.Ring];
         }
     }
 }

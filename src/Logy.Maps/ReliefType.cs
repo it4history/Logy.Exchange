@@ -2,11 +2,11 @@ namespace Logy.Maps
 {
     /// <summary>
     /// http://ddfe.curtin.edu.au/models/Earth2014/readme_earth2014.dat
-    /* MSK2014_landtypes.1min.geod.bin... 0 - land topography above mean sea level 
-    (MSL), 1 - land topography below MSL, 2 - ocean bathymetry,
-    3 - inland lake, bedrock above MSL, 4 - inland lake, bedrock below MSL,
-    5 - ice cover, bedrock above MSL, 6 - ice cover, bedrock below MSL,
-    7 - ice shelf, 8 - ice covered lake(Vostok) */
+    /// MSK2014_landtypes.1min.geod.bin... 0 - land topography above mean sea level 
+    /// (MSL), 1 - land topography below MSL, 2 - ocean bathymetry,
+    /// 3 - inland lake, bedrock above MSL, 4 - inland lake, bedrock below MSL,
+    /// 5 - ice cover, bedrock above MSL, 6 - ice cover, bedrock below MSL,
+    /// 7 - ice shelf, 8 - ice covered lake(Vostok)
     /// </summary>
     public enum ReliefType
     {

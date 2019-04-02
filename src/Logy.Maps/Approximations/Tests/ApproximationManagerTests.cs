@@ -18,26 +18,26 @@ namespace Logy.Maps.Approximations.Tests
             {
                 pixel.Altitude = pixel.P;
             }
-            Assert.AreEqual(4, man.GetMeanAltitude(new Coor {X = 90, Y = 0}));
-            Assert.AreEqual(5, man.GetMeanAltitude(new Coor {X = 0, Y = 0}));
+            Assert.AreEqual(4, man.GetMeanAltitude(new Coor { X = 90, Y = 0 }));
+            Assert.AreEqual(5, man.GetMeanAltitude(new Coor { X = 0, Y = 0 }));
 
-            Assert.AreEqual(1.5, man.GetMeanAltitude(new Coor {X = 0, Y = 70}));
+            Assert.AreEqual(1.5, man.GetMeanAltitude(new Coor { X = 0, Y = 70 }));
 
-            Assert.AreEqual(1.5, man.GetMeanAltitude(new Coor {X = 0, Y = 90}), .02);
-            Assert.AreEqual(0, man.GetMeanAltitude(new Coor {X = 135, Y = 90}));
-            Assert.AreEqual(0, man.GetMeanAltitude(new Coor {X = 135, Y = 80}));
-            Assert.AreEqual(5.5, man.GetMeanAltitude(new Coor {X = 135, Y = 0}));
+            Assert.AreEqual(1.5, man.GetMeanAltitude(new Coor { X = 0, Y = 90 }), .02);
+            Assert.AreEqual(0, man.GetMeanAltitude(new Coor { X = 135, Y = 90 }));
+            Assert.AreEqual(0, man.GetMeanAltitude(new Coor { X = 135, Y = 80 }));
+            Assert.AreEqual(5.5, man.GetMeanAltitude(new Coor { X = 135, Y = 0 }));
 
-            Assert.AreEqual(0, man.GetMeanAltitude(new Coor {X = 135, Y = HealpixManagerTests.L41}), .1);
-            Assert.AreEqual(1.3, man.GetMeanAltitude(new Coor {X = 135, Y = 10}), .1);
-            Assert.AreEqual(1.8, man.GetMeanAltitude(new Coor {X = 135, Y = 1}), .1);
+            Assert.AreEqual(0, man.GetMeanAltitude(new Coor { X = 135, Y = HealpixManagerTests.L41 }), .1);
+            Assert.AreEqual(1.3, man.GetMeanAltitude(new Coor { X = 135, Y = 10 }), .1);
+            Assert.AreEqual(1.8, man.GetMeanAltitude(new Coor { X = 135, Y = 1 }), .1);
 
-            Assert.AreEqual(3.6, man.GetMeanAltitude(new Coor {X = 0, Y = HealpixManagerTests.L41}), .1);
+            Assert.AreEqual(3.6, man.GetMeanAltitude(new Coor { X = 0, Y = HealpixManagerTests.L41 }), .1);
 
             // vertical border at left
-            Assert.AreEqual(9.5, man.GetMeanAltitude(new Coor {X = 0, Y = -80}));
-            Assert.AreEqual(9.9, man.GetMeanAltitude(new Coor {X = -170, Y = -80}), .1);
-            Assert.AreEqual(11, man.GetMeanAltitude(new Coor {X = -135, Y = -89}), .1);
+            Assert.AreEqual(9.5, man.GetMeanAltitude(new Coor { X = 0, Y = -80 }));
+            Assert.AreEqual(9.9, man.GetMeanAltitude(new Coor { X = -170, Y = -80 }), .1);
+            Assert.AreEqual(11, man.GetMeanAltitude(new Coor { X = -135, Y = -89 }), .1);
         }
 
         [Test]

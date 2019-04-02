@@ -10,27 +10,27 @@ namespace Logy.Maps.Geometry.Tests
     [TestFixture]
     public class EllipsoidAccelerationTests
     {
-        private Basin basin0;
-        private Basin basin7;
-        private Basin basin31;
-        private Basin basin77;
-        private Basin basin95;
+        private Basin3D basin0;
+        private Basin3D basin7;
+        private Basin3D basin31;
+        private Basin3D basin77;
+        private Basin3D basin95;
 
         [SetUp]
         public void SetUp()
         {
             var man = new HealpixManager(2);
-            basin0 = man.GetCenter<Basin>(0);
-            basin7 = man.GetCenter<Basin>(7);
-            basin31 = man.GetCenter<Basin>(31);
-            basin77 = man.GetCenter<Basin>(77);
-            basin95 = man.GetCenter<Basin>(95);
+            basin0 = man.GetCenter<Basin3D>(0);
+            basin7 = man.GetCenter<Basin3D>(7);
+            basin31 = man.GetCenter<Basin3D>(31);
+            basin77 = man.GetCenter<Basin3D>(77);
+            basin95 = man.GetCenter<Basin3D>(95);
         }
 
         [TearDown]
         public void TearDown()
         {
-            EllipsoidAcceleration.AxisOfRotation = Basin.Oz;
+            EllipsoidAcceleration.AxisOfRotation = Basin3D.Oz;
         }
 
         [Test]

@@ -114,7 +114,8 @@ namespace Logy.Maps.ReliefMaps.Water.Tests
             Assert.AreEqual(1.28, northBasin.hOQ, .01);
 
             //masses сonservation law
-            Assert.AreEqual(HeightExcitement,
+            Assert.AreEqual(
+                HeightExcitement,
                 basin.hOQ + northBasin.hOQ * (northBasin.RingArea / basin.RingArea),
                 .000001);
         }
@@ -138,7 +139,8 @@ namespace Logy.Maps.ReliefMaps.Water.Tests
             Assert.AreEqual(.62, southBasin.hOQ, .01);
 
             //masses сonservation law
-            Assert.AreEqual(HeightExcitement,
+            Assert.AreEqual(
+                HeightExcitement,
                 basin.hOQ + northBasin.hOQ * (northBasin.RingArea / basin.RingArea)
                 + southBasin.hOQ * (southBasin.RingArea / basin.RingArea),
                 .000001);
@@ -194,8 +196,8 @@ namespace Logy.Maps.ReliefMaps.Water.Tests
             Assert.AreEqual(.8, basin.hOQ, .01); /*per .8 to north and south*/
             Assert.IsTrue(data.WasWaterMoved());
             data.Cycle();
-//            Assert.AreEqual(.8, basin.hOQ, .01); /*per -.16 to north and south*/
-//            data.Cycle();
+////            Assert.AreEqual(.8, basin.hOQ, .01); /*per -.16 to north and south*/
+////            data.Cycle();
             Assert.IsFalse(data.WasWaterMoved());
 
             /*    ̣ 

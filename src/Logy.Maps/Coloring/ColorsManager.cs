@@ -11,37 +11,39 @@ namespace Logy.Maps.Coloring
     {
         private readonly SortedList<int, Color3> Haxby = new SortedList<int, Color3>
         {
-            {0, new Color3(37, 57, 175)},
-            {10, new Color3(40, 127, 251)},
-            {20, new Color3(50, 190, 255)},
-            {30, new Color3(106, 235, 255)},
-            {40, new Color3(138, 236, 174)},
-            {50, new Color3(205, 255, 162)},
-            {60, new Color3(240, 236, 121)},
-            {70, new Color3(255, 189, 87)},
-            {80, new Color3(255, 161, 68)},
-            {90, new Color3(255, 186, 133)},
-            {100, new Color3(255, 255, 255)}
+            { 0, new Color3(37, 57, 175) },
+            { 10, new Color3(40, 127, 251) },
+            { 20, new Color3(50, 190, 255) },
+            { 30, new Color3(106, 235, 255) },
+            { 40, new Color3(138, 236, 174) },
+            { 50, new Color3(205, 255, 162) },
+            { 60, new Color3(240, 236, 121) },
+            { 70, new Color3(255, 189, 87) },
+            { 80, new Color3(255, 161, 68) },
+            { 90, new Color3(255, 186, 133) },
+            { 100, new Color3(255, 255, 255) }
         };
 
         internal static Color3 High = new Color3(200, 200, 200);
+
         public static readonly SortedList<int, Color3> Elevation = new SortedList<int, Color3>
         {
-            {0, new Color3(0, 191, 191)},
-            {20, new Color3(0, 255, 0)},
-            {40, new Color3(255, 255, 0)},
-            {60, new Color3(255, 127, 0)},
-            {80, new Color3(191, 127, 63)},
-            {100, High}
+            { 0, new Color3(0, 191, 191) },
+            { 20, new Color3(0, 255, 0) },
+            { 40, new Color3(255, 255, 0) },
+            { 60, new Color3(255, 127, 0) },
+            { 80, new Color3(191, 127, 63) },
+            { 100, High }
         };
 
         internal static Color3 Red = new Color3(Color.Red);
+
         public static readonly SortedList<int, Color3> Gyr1 = new SortedList<int, Color3>
         {
-            {0, new Color3(Color.Green)},
-            {10, new Color3(Color.Yellow)},
-            {50, new Color3(Color.SandyBrown)},
-            {100, Red},
+            { 0, new Color3(Color.Green) },
+            { 10, new Color3(Color.Yellow) },
+            { 50, new Color3(Color.SandyBrown) },
+            { 100, Red },
         };
 
         internal static Color3 Blue = new Color3(0, 240, 255);
@@ -50,14 +52,15 @@ namespace Logy.Maps.Coloring
 
         public static readonly SortedList<int, Color3> Water = new SortedList<int, Color3>
         {
-            {0, Blue},
-            {100, DarkBlue},
+            { 0, Blue },
+            { 100, DarkBlue },
         };
 
         public double Max { get; set; }
         public double Min { get; set; }
 
         private readonly double? _middleSet;
+
         public double Middle
         {
             get { return _middleSet ?? (Max + Min) / 2; }
@@ -89,7 +92,8 @@ namespace Logy.Maps.Coloring
 
         /// <param name="nearestIndex">may be in next ring and may be == maxIndex</param>
         /// <returns>if false then index X of funcX is between nearestIndex-1 and nearestIndex</returns>
-        public static bool FindNearest(double funcX, Func<int, double> func, bool asc, double precision, int maxIndex, ref int nearestIndex)
+        public static bool FindNearest(double funcX, Func<int, double> func, bool asc, double precision, int maxIndex,
+            ref int nearestIndex)
         {
             // if (nearestIndex == 0 && func(nearestIndex) < funcX)
             while (nearestIndex < maxIndex
@@ -153,7 +157,7 @@ namespace Logy.Maps.Coloring
 
         public void SetPixelOnBmp(double height, Bitmap bmp, Point2 point, int scale)
         {
-            SetPixelOnBmp(height, bmp, (int) point.X, (int) point.Y, scale);
+            SetPixelOnBmp(height, bmp, (int)point.X, (int)point.Y, scale);
         }
 
         public void SetPixelOnBmp(double? height, Bitmap bmp, int x, int y, int scale)
@@ -173,13 +177,13 @@ namespace Logy.Maps.Coloring
             {
                 if (height.HasValue)
                 {
-                    var grey = (int) ((height.Value - Min) * NormalKoef);
+                    var grey = (int)((height.Value - Min) * NormalKoef);
                     color = Color.FromArgb(grey, grey, grey);
                 }
             }
             else
             {
-                if (height.HasValue) color = (Color) Get(height.Value);
+                if (height.HasValue) color = (Color)Get(height.Value);
             }
 
             if (scale == 1)

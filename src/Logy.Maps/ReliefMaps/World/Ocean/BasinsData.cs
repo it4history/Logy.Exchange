@@ -9,7 +9,7 @@ using MathNet.Spatial.Units;
 
 namespace Logy.Maps.ReliefMaps.World.Ocean
 {
-    public class BasinsData : WaterMoving<Basin>
+    public class BasinsData : WaterMoving<Basin3D>
     {
         private readonly bool _withRelief;
 
@@ -35,7 +35,7 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
                 var bisectors = new Point3D[4];
                 var lengths = new double[4];
                 //!var surface = basin.Surface;
-                var xyPlane = new Plane(basin.Q3, new UnitVector3D(0, 0, basin.Vartheta > 0 ?  1 : -1));
+                var xyPlane = new Plane(basin.Q3D, new UnitVector3D(0, 0, basin.Vartheta > 0 ?  1 : -1));
                 //!var xAxis = xyPlane.IntersectionWith(surface);
                 foreach (Direction to in Enum.GetValues(typeof(Direction)))
                 {
@@ -77,7 +77,7 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
                     //koef = Math.Tan(alphas[(int)to] - Math.PI/2);
                     basin.Koef[(int) to] = Math.Abs(Math.Pow(koef, 1));
                 }
-                //!basin.SpecNormal = new Line3D(basin.Q3, Point3D.Centroid(bisectors).MirrorAbout(surface)).Direction;
+                // !basin.SpecNormal = new Line3D(basin.Q3, Point3D.Centroid(bisectors).MirrorAbout(surface)).Direction;
 
                 if (_withRelief)
                 {
@@ -95,7 +95,8 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
                 }
                 if (spheric)
                 {
-                    basin.SetKQQaxis(0, false, man);
+                    basin.Delta_g_meridian = 0;
+                    basin.InitROfEllipse(man, Ellipsoid.MeanRadius);
                 }
             }
 
@@ -123,7 +124,7 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
                     foreach (Direction to in Enum.GetValues(typeof(Direction)))
                     {
                         var toBasin = basin.Neibors[to];
-                        basin.Hto[(int) to] = -basinSurface.SignedDistanceTo(toBasin.Q3);
+                        basin.Hto[(int) to] = -basinSurface.SignedDistanceTo(toBasin.Q3D);
 /*                        var HtoVer = basin.Intersect(toBasin);
                         var HtoHor = basin.IntersectTraverse(toBasin);
                         var deltaHfull = Math.Sin(gammas[(int) to]) * HtoVer + Math.Cos(gammas[(int) to]) * HtoHor;
@@ -148,9 +149,9 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
                 }
             }
         }
-        private static double GetHto(Basin basin, NeighborVert direction)
+        private static double GetHto(BasinDotProduct basin, NeighborVert direction)
         {
-            Basin inter;
+            Basin3D inter;
             /*if (basin.Type.HasValue && NeighborManager.GetVert(basin.Type.Value) == direction) 
             {
                 var neibor = basin.Neibors[NeighborManager.GetOppositeHor(basin.Type.Value)];
@@ -158,8 +159,8 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
             }
             else*/
             {
-                Basin east;
-                Basin west;
+                Basin3D east;
+                Basin3D west;
                 if (direction == NeighborVert.North)
                 {
                     east = basin.Neibors[Direction.Ne];
@@ -171,14 +172,14 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
                     west = basin.Neibors[Direction.Sw];
                 }
 
-                inter = new Basin
+                inter = new Basin3D
                 {
                 };
                 var lambda = (east.Lambda + west.Lambda).Value / 2;
-                inter.Qb = new Point2D(.5 * (east.Q.X + west.Q.X)
+                inter.Qb = new Point2D(.5 * (east.Qb.X + west.Qb.X)
                                       //correct projection
                                       * Math.Cos(basin.Lambda.Value - lambda),
-                    .5 * (east.Q.Y + west.Q.Y));
+                    .5 * (east.Qb.Y + west.Qb.Y));
             }
             return basin.Intersect(inter);
         }
@@ -261,8 +262,9 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
             }
         }
 
-        public override double? GetAltitude(Basin basin)
+        public override double? GetAltitude(Basin3D basin)
         {
+            //return basin.Delta_g_meridian*1000;
             //return basin.Visual * 1000;
 //            var superKoef = basin.Koef2.Min() / basin.Koef2.Max();
 //            var superKoef = basin.Koef.Min() / basin.Koef.Max();

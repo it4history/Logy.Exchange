@@ -9,22 +9,24 @@ namespace Logy.Maps.ReliefMaps.Basemap
 {
     public abstract class DataEarth2014<T> : DataEarth, IDisposable where T : HealCoor
     {
-        protected readonly Earth2014Manager
-            // physical surface 
-            Relief,
-
-            // relief without water and ice masses 
-            ReliefBed;
-
         public readonly HealpixManager HealpixManager;
-        protected double? MinDefault;
-        public double? MaxDefault;
 
         /// <summary>
         /// value that treated as splitter for colors
         /// if null then is (max-min)/2
         /// </summary>
         public double? ColorsMiddle;
+
+        public double? MaxDefault;
+        protected double? MinDefault;
+
+        protected readonly Earth2014Manager
+
+            // physical surface 
+            Relief,
+
+            // relief without water and ice masses 
+            ReliefBed;
 
         protected DataEarth2014(HealpixManager man, double? min = null, double? max = null)
         {
@@ -73,17 +75,24 @@ namespace Logy.Maps.ReliefMaps.Basemap
             return hOQ;
         }
 
-        public virtual void Draw(Bitmap bmp, double deltaX = 0, IEnumerable basins = null
-            , int yResolution = 2, int scale = 1)
+        public virtual void Draw(
+            Bitmap bmp, 
+            double deltaX = 0, 
+            IEnumerable basins = null, 
+            int yResolution = 2, 
+            int scale = 1)
         {
             if (basins != null && Colors != null)
                 foreach (var pixel in basins)
                 {
-                    var healCoor = (HealCoor) pixel;
+                    var healCoor = (HealCoor)pixel;
                     var eqProjection = new Equirectangular(HealpixManager, yResolution);
                     var point = eqProjection.Offset(healCoor);
-                    Colors.SetPixelOnBmp(healCoor.Altitude, bmp,
-                        (int) (point.X + deltaX), (int) point.Y, scale);
+                    Colors.SetPixelOnBmp(
+                        healCoor.Altitude, 
+                        bmp,
+                        (int)(point.X + deltaX), 
+                        (int)point.Y, scale);
                 }
         }
 
@@ -121,8 +130,11 @@ namespace Logy.Maps.ReliefMaps.Basemap
         public virtual void Log()
         {
             if (Colors != null)
-                Console.WriteLine("{0:0.#}..{1:0.#}",//; {2}",
-                    Colors.Min, Colors.Max, GetType().Name);
+                Console.WriteLine(
+                    "{0:0.#}..{1:0.#}", ////; {2}",
+                    Colors.Min, 
+                    Colors.Max, 
+                    GetType().Name);
         }
 
         public void CheckMaxMin(double? altitude)

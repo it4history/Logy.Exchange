@@ -12,9 +12,9 @@ namespace Logy.Maps.Projections.Healpix.Tests
         private NeighborManager man2;
         private HealpixManager healpixManager; /*hack*/
 
-        public Basin Center(int p)
+        public Basin3D Center(int p)
         {
-            return healpixManager.GetCenter<Basin>(p);
+            return healpixManager.GetCenter<Basin3D>(p);
         }
 
         public NeighborManager GetMan(int k)

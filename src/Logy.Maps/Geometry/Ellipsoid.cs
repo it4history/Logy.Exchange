@@ -22,7 +22,7 @@ namespace Logy.Maps.Geometry
 
         public static readonly double Ratio = BigRadius / LessRadius;
 
-        protected static readonly double E2 = 1 - (LessRadius * LessRadius) / (BigRadius * BigRadius);
+        protected static readonly double E2 = 1 - ((LessRadius * LessRadius) / (BigRadius * BigRadius));
 
         /// <summary>
         /// Hirt_Rexer2015_Earth2014.pdf
@@ -68,8 +68,8 @@ namespace Logy.Maps.Geometry
         /// </returns>
         public static double FromSpheric(double thetaTan)
         {
-            var varphi = Math.PI / 2 - Math.Atan(thetaTan);
-            return varphi > Math.PI / 2 ? varphi - Math.PI : varphi;
+            var varphi = (Math.PI / 2) - Math.Atan(thetaTan);
+            return varphi > (Math.PI / 2) ? varphi - Math.PI : varphi;
         }
     }
 }

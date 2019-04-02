@@ -13,6 +13,12 @@ namespace Logy.Maps.ReliefMaps.Map2D
     {
         private readonly Map2DBase _map;
 
+        protected DataForMap2D(Map2DBase map) : base(map.HealpixManager)
+        {
+            _map = map;
+            ColorsMiddle = 0;
+        }
+
         /// <summary>
         /// stores Altitudes
         /// 
@@ -21,13 +27,7 @@ namespace Logy.Maps.ReliefMaps.Map2D
         /// 
         /// trying not to put this field into DataEarth2014
         /// </summary>
-        public ApproximationManager ApproxMan;
-
-        protected DataForMap2D(Map2DBase map) : base(map.HealpixManager)
-        {
-            _map = map;
-            ColorsMiddle = 0;
-        }
+        public ApproximationManager ApproxMan { get; set; }
 
         /// <summary>
         /// order is determined
@@ -55,13 +55,19 @@ namespace Logy.Maps.ReliefMaps.Map2D
                     {
                         for (var x = 0; x < width; x++)
                         {
-                            //todo do not store points in memory
-                            points[y * width + x] = new Point2(x, y);
+                            // todo do not store points in memory
+                            points[(y * width) + x] = new Point2(x, y);
                         }
                     }
                     return points;
             }
             return null;
+        }
+
+        public override void Log()
+        {
+            Console.WriteLine("lines: {0}", _map.YResolution * HealpixManager.Nside);
+            base.Log();
         }
 
         /// <summary>
@@ -85,18 +91,12 @@ namespace Logy.Maps.ReliefMaps.Map2D
                         // slow?
                         var pix = (from pixel in pixels
                             select new HealCoor(Equirectangular.CoorFromXY(pixel, _map.YResolution, HealpixManager))
-                            ).ToArray();
+                        ).ToArray();
                         colorsManager = InitAltitudes(pix, isGrey);
                     }
                     break;
             }
             colorsManager.SetScales(_map.ColorsAbove, _map.ColorsUnder);
-        }
-
-        public override void Log()
-        {
-            Console.WriteLine("lines: {0}", _map.YResolution * HealpixManager.Nside);
-            base.Log();
         }
     }
 }

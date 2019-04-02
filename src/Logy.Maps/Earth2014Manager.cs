@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using Logy.Maps.Projections.Healpix;
-using Logy.MwAgent.DotNetWikiBot.Wikidata;
 using Logy.MwAgent.Sphere;
 
 namespace Logy.Maps
@@ -14,6 +13,7 @@ namespace Logy.Maps
         public const int AltitudeAccuracy = 2; // meters
 
         private readonly FileStream _stream;
+
         /// <summary>
         /// used if _stream == null
         /// </summary>
@@ -106,12 +106,12 @@ namespace Logy.Maps
             /// get { return Path.Combine("earth2014", "Earth2014Shape_minus_6371000m.BED2014.5min.geod.bin"); }
             get
             {
-                return Path.Combine(
-                    "earth2014",
-                    string.Format("Earth2014{2}.{1}2014.{0}min.geod.bin",
-                        _accuracyMin,
-                        _reliefType.ToString().ToUpper(),
-                        _shape ? "Shape_minus_6371000m" : string.Empty));
+                var fileName = string.Format(
+                    "Earth2014{2}.{1}2014.{0}min.geod.bin",
+                    _accuracyMin,
+                    _reliefType.ToString().ToUpper(),
+                    _shape ? "Shape_minus_6371000m" : string.Empty);
+                return Path.Combine("earth2014", fileName);
             }
         }
 

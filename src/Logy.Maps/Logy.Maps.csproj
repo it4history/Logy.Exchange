@@ -66,10 +66,12 @@
     <Compile Include="ReliefMaps\Basemap\DataEarth.cs" />
     <Compile Include="ReliefMaps\Map2D\Tests\OptimizationTests.cs" />
     <Compile Include="ReliefMaps\Map2D\RotationStopMap.cs" />
+    <Compile Include="ReliefMaps\Basemap\BasinBase.cs" />
     <Compile Include="ReliefMaps\Meridian\MeridianBase.cs" />
     <Compile Include="ReliefMaps\Meridian\ReliefMap.cs" />
-    <Compile Include="ReliefMaps\World\Ocean\Basin.cs" />
+    <Compile Include="ReliefMaps\World\Ocean\Basin3d.cs" />
     <Compile Include="ReliefMaps\Meridian\Data\CentrifugalAcceleration.cs" />
+    <Compile Include="ReliefMaps\World\Ocean\BasinDotProduct.cs" />
     <Compile Include="ReliefMaps\World\Ocean\BasinsData.cs" />
     <Compile Include="ReliefMaps\Meridian\Data\GravityChecking.cs" />
     <Compile Include="ReliefMaps\Meridian\MeridianCoor.cs" />

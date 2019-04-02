@@ -57,7 +57,7 @@ namespace Logy.Maps.ReliefMaps.Water
         public override double? GetAltitude(MeridianCoor basin)
         {
             var hOQ = base.GetAltitude(basin);
-            //return basin.Depth;
+            // return basin.Depth;
             return basin.HasWater() ? hOQ : null;
             return basin.HasWater() ? basin.WaterHeight : (double?)null;
         }

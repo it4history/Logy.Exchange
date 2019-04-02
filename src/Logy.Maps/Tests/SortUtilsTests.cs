@@ -7,7 +7,7 @@ namespace Logy.Maps.Tests
     [TestFixture]
     public class SortUtilsTests
     {
-        private readonly SortedList<int,int> _list = new SortedList<int, int>();
+        private readonly SortedList<int, int> _list = new SortedList<int, int>();
 
         [Test]
         public void FindFirstIndexGreaterThanOrEqualTo()

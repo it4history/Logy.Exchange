@@ -25,19 +25,19 @@ namespace Logy.Maps.ReliefMaps.Meridian.Data
                 double more, less;
                 basin.IntersectGeodesic(northBasin, out more, out less);
 
-                //diapazon 17..22m when k=9 when * r * HealpixManager.ThetaPix 
+                // diapazon 17..22m when k=9 when * r * HealpixManager.ThetaPix 
                 var diffAngle = Math.Abs(Math.Abs(basin.Vartheta) - Math.Abs(northBasin.Vartheta));
-                //return diffAngle * r * HealpixManager.ThetaPix;
-                //r * diffAngle is 8.3..11.1km when k=9, is more accurate on equator
-                //return r * diffAngle;
+                // return diffAngle * r * HealpixManager.ThetaPix;
+                // r * diffAngle is 8.3..11.1km when k=9, is more accurate on equator
+                // return r * diffAngle;
 
-                //diapazon 16.5..22.2m for k=9 when * r * HealpixManager.ThetaPix 
+                // diapazon 16.5..22.2m for k=9 when * r * HealpixManager.ThetaPix 
                 /*var diffThetaAngle = theta - northBasin.theta;
                 diffThetaAngle = diffThetaAngle > Math.PI ? diffThetaAngle - Math.PI : diffThetaAngle;*/
-                //return diffThetaAngle * r * HealpixManager.ThetaPix;
+                // return diffThetaAngle * r * HealpixManager.ThetaPix;
 
-                //var Avert = r > northBasin.r ? basin.Am : northBasin.Am;
-                //var AvertLess = r > northBasin.r ? northBasin.Am : basin.Am;
+                // var Avert = r > northBasin.r ? basin.Am : northBasin.Am;
+                // var AvertLess = r > northBasin.r ? northBasin.Am : basin.Am;
                 var diffAnglePer2 = diffAngle / 2; // results are very the same if diffThetaAngle
                 var MNLess = Triangles.SinusesTheorem(Math.PI / 2 //+ AvertLess
                     , less, diffAnglePer2);

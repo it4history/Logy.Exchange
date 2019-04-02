@@ -4,7 +4,7 @@ using Logy.MwAgent.Sphere;
 
 namespace Logy.Maps.Projections.Healpix
 {
-//    [DataContract(Namespace = UrlsManager.Namespace)]
+///    [DataContract(Namespace = UrlsManager.Namespace)]
     public class HealCoor : Coor
     {
         public HealCoor(Point2 original) : base(original)

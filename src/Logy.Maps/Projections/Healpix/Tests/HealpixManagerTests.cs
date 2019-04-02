@@ -14,9 +14,9 @@ namespace Logy.Maps.Projections.Healpix.Tests
         [Test]
         public void Ix()
         {
-            Assert.AreEqual(1, (int) 1.99d);
-            Assert.AreEqual(1, (int) 1.5d);
-            Assert.AreEqual(1, (int) 1d);
+            Assert.AreEqual(1, (int)1.99d);
+            Assert.AreEqual(1, (int)1.5d);
+            Assert.AreEqual(1, (int)1d);
         }
 
         [Test]

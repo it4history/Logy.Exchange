@@ -1,5 +1,6 @@
 using System;
 using Logy.Maps.Projections.Healpix;
+using Logy.Maps.ReliefMaps.Basemap;
 
 namespace Logy.Maps.ReliefMaps.Meridian
 {
@@ -17,7 +18,7 @@ namespace Logy.Maps.ReliefMaps.Meridian
             lQn2 = (Beta.Value - northRingPixel.Beta.Value) * rOfEllipse / 2;
         }
 
-        public override double Intersect(MeridianBase otherBasin)
+        public override double Intersect(BasinBase otherBasin)
         {
             return Math.Tan(Delta_g_meridian) * lQn2;
         }

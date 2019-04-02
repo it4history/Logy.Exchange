@@ -20,7 +20,7 @@ namespace Logy.Maps.ReliefMaps.Meridian
         /// http://hist.tk/hw/Меридианная_проекция_-_вода#третий_пример
         /// </summary>
         [Test]
-        public void EarthRotationStopped()
+        public void Water_RotationStopped()
         {
             Data = new MeridianWater<MeridianCoor>(HealpixManager); //-5032d, 5685d);//integration not finished on 500, run again!
             ChangeRotation(-HealpixManager.Nside, double.MaxValue); // Ellipsoid.SiderealDayInSeconds*1000);
@@ -32,7 +32,7 @@ namespace Logy.Maps.ReliefMaps.Meridian
                 Data.Draw(Bmp, step);
 
                 var times = 0;
-                if (step - times < -HealpixManager.Nside) //how many times to call ChangeRotation at the beginning
+                if (step - times < -HealpixManager.Nside) //// how many times to call ChangeRotation at the beginning
                 {
                     ChangeRotation(step, 80000);
                 }
@@ -44,7 +44,7 @@ namespace Logy.Maps.ReliefMaps.Meridian
         /// slow, near 30 minutes
         /// </summary>
         [Test]
-        public void EarthRotationStopping()
+        public void Water_RotationStopping()
         {
             Data = new MeridianWater<MeridianCoor>(HealpixManager); //-3690d, 4185d);
             Data.Cycle(110, delegate(int step) // 1100 for k9

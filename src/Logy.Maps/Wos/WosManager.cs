@@ -51,26 +51,26 @@ namespace Logy.Maps.Wos
             if (_initThread != null)
                 _initThread.Abort();
         }
-   }
 
-    public class World
-    {
-        private readonly HealpixManager _man;
-        private readonly Atom[] _atoms;
-
-        public World(HealpixManager man)
+        public class World
         {
-            _man = man;
-            _atoms = new Atom[man.Npix];
+            private readonly HealpixManager _man;
+            private readonly Atom[] _atoms;
+
+            public World(HealpixManager man)
+            {
+                _man = man;
+                _atoms = new Atom[man.Npix];
+            }
+
+            public void AddWater(HealCoor coor, int bed, int surface)
+            {
+                _atoms[coor.P] = new Atom();
+            }
         }
 
-        public void AddWater(HealCoor coor, int bed, int surface)
+        internal class Atom
         {
-             _atoms[ coor.P]=new Atom();
         }
-    }
-
-    internal class Atom
-    {
     }
 }

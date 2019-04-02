@@ -10,6 +10,11 @@ namespace Logy.Maps
     /// <returns></returns>
     public static class SortUtils
     {
+        public static int FindFirstIndexGreaterThanOrEqualTo<T, U>(this SortedList<T, U> sortedList, T key)
+        {
+            return BinarySearch(sortedList.Keys, key);
+        }
+
         private static int BinarySearch<T>(IList<T> list, T value)
         {
             if (list == null)
@@ -24,12 +29,6 @@ namespace Logy.Maps
             }
             if (comp.Compare(list[lo], value) < 0) lo++;
             return lo;
-        }
-
-        public static int FindFirstIndexGreaterThanOrEqualTo<T, U>
-            (this SortedList<T, U> sortedList, T key)
-        {
-            return BinarySearch(sortedList.Keys, key);
         }
     }
 }

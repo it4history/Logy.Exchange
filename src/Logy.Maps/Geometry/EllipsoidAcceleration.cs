@@ -1,4 +1,5 @@
 using System;
+using Logy.Maps.ReliefMaps.Basemap;
 using Logy.Maps.ReliefMaps.Meridian;
 using Logy.Maps.ReliefMaps.World.Ocean;
 using MathNet.Spatial.Euclidean;
@@ -16,7 +17,7 @@ namespace Logy.Maps.Geometry
         // Period of rotation(sidereal day) in seconds
         public static double SiderealDayInSeconds = 86164.100637;
 
-        public static UnitVector3D AxisOfRotation = Basin.Oz;
+        public static UnitVector3D AxisOfRotation = Basin3D.Oz;
 
         /// <summary>
         /// https://en.wikipedia.org/wiki/Theoretical_gravity#Formulas
@@ -51,9 +52,8 @@ namespace Logy.Maps.Geometry
             double? e2 = null)
         {
             var sin2 = Math.Sin(varphi) * Math.Sin(varphi);
-            return gWithAOnEquator 
-                * ((1 + (k ?? (LessRadius * gOnPoles - BigRadius * gWithAOnEquator) / (BigRadius * gWithAOnEquator)) * sin2) 
-                / Math.Sqrt(1 - (e2 ?? E2) * sin2));
+            var realK = k ?? (LessRadius * gOnPoles - BigRadius * gWithAOnEquator) / (BigRadius * gWithAOnEquator);
+            return gWithAOnEquator * ((1 + realK * sin2) / Math.Sqrt(1 - (e2 ?? E2) * sin2));
         }
 
         /// <summary>
@@ -79,7 +79,7 @@ namespace Logy.Maps.Geometry
             return gWithAOnEquator * (1 + .0053024 * sin * sin - .0000059 * sin2a * sin2a);
         }
 
-        public static double Centrifugal(MeridianBase basin)
+        public static double Centrifugal(BasinBase basin)
         {
             double a, aTraverse;
             return Centrifugal(basin, out a, out aTraverse);
@@ -88,25 +88,25 @@ namespace Logy.Maps.Geometry
         /// <param name="a">perpendicular to AxisOrRotation</param>
         /// <param name="aTraverse"></param>
         /// <returns>aMeridian,  directed to equator of OZ</returns>
-        public static double Centrifugal(MeridianBase basin, out double a, out double aTraverse)
+        public static double Centrifugal(BasinBase basin, out double a, out double aTraverse)
         {
             aTraverse = 0;
-            if (AxisOfRotation == Basin.Oz)
+            if (AxisOfRotation == Basin3D.Oz)
             {
                 a = Centrifugal(basin.r * Math.Cos(basin.Varphi));
                 return a * Math.Abs(Math.Cos(basin.Theta));
             }
 
-            var b = (Basin)basin;
+            var b = (Basin3D)basin;
             var axisEnd = AxisOfRotation.ToPoint3D();
-            var axisOrtohonal = new Line3D(Basin.O3, axisEnd).LineTo(b.Q3, false);
+            var axisOrtohonal = new Line3D(Basin3D.O3, axisEnd).LineTo(b.Q3D, false);
             a = Centrifugal(axisOrtohonal.Length);
 
             return CentrifugalByMatrix(b, a, axisOrtohonal, out aTraverse);
             //return CentrifugalByDotProduct(b, a, axisEnd, out aTraverse);
         }
 
-        public static double CentrifugalByMatrix(Basin b, double a, Line3D axisOrtohonal, out double aTraverse)
+        public static double CentrifugalByMatrix(Basin3D b, double a, Line3D axisOrtohonal, out double aTraverse)
         {
             var aOnSurface = axisOrtohonal.Direction * b.Matrix;
             aTraverse = -a * aOnSurface[1];
@@ -115,15 +115,15 @@ namespace Logy.Maps.Geometry
             return aMerid;
         }
 
-        public static double CentrifugalByDotProduct(Basin b, double a, Point3D axisEnd, out double aTraverse)
+        public static double CentrifugalByDotProduct(BasinDotProduct b, double a, Point3D axisEnd, out double aTraverse)
         { 
             var surfaceCalm = new Plane(b.NormalCalm, b.r);
-            var QonAxisPlane = new Plane(axisEnd, b.Q3, Basin.O3);
+            var QonAxisPlane = new Plane(axisEnd, b.Q3D, Basin3D.O3);
 
             // aSphere direction
             var aSphereLine = surfaceCalm.IntersectionWith(QonAxisPlane);
 
-            var b3unit = new Line3D(Basin.O3, b.Q3).Direction;
+            var b3unit = new Line3D(Basin3D.O3, b.Q3D).Direction;
             // lays in surfaceCalm plane, directed to equator of AxisOfRotation if Math.Abs used
             var aSphere = //Math.Abs
                 (a * AxisOfRotation.DotProduct(b3unit));// axisOrtohonal.Direction.DotProduct(aSphereLine.Direction)); 
@@ -134,7 +134,7 @@ namespace Logy.Maps.Geometry
 
             aTraverse = Math.Abs(aSphere * aSphereLine.Direction.DotProduct(aTraverseLine.Direction));
 
-            var planeOZ = new Plane(Basin.Oz);
+            var planeOZ = new Plane(Basin3D.Oz);
             var planeAxis = new Plane(AxisOfRotation);
 
             //directed to equator of Oz if Math.Abs used
@@ -151,7 +151,7 @@ namespace Logy.Maps.Geometry
 
 
             // if (AxisOfRotation != Basin.Oz)
-            var spin = new Plane(Basin.OzEnd, b3unit.ToPoint3D(), axisEnd).Normal.DotProduct(b3unit);
+            var spin = new Plane(Basin3D.OzEnd, b3unit.ToPoint3D(), axisEnd).Normal.DotProduct(b3unit);
 
             // "north" hemisphere of AxisOfRotation
             if (b3unit.DotProduct(AxisOfRotation) > 0) 
@@ -170,14 +170,14 @@ namespace Logy.Maps.Geometry
             }
 
             //aMeridian<0 if Q3 between planes or inside of cones (bug when angle is near 90) of OZ and AxisOfRotation
-            if (planeOZ.SignedDistanceTo(b.Q3) * planeAxis.SignedDistanceTo(b.Q3) < 0)
+            if (planeOZ.SignedDistanceTo(b.Q3D) * planeAxis.SignedDistanceTo(b.Q3D) < 0)
             {
                 aMeridian = -aMeridian;
             }
             else
             {
-                var coneAxis = new UnitVector3D((Basin.Oz + AxisOfRotation).ToVector());
-                if (new UnitVector3D(b.Q3.ToVector()).DotProduct(coneAxis) > coneAxis.DotProduct(Basin.Oz))
+                var coneAxis = new UnitVector3D((Basin3D.Oz + AxisOfRotation).ToVector());
+                if (new UnitVector3D(b.Q3D.ToVector()).DotProduct(coneAxis) > coneAxis.DotProduct(Basin3D.Oz))
                 {
                     //inside cone
                     aMeridian = -aMeridian;

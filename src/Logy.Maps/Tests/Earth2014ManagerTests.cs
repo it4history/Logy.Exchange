@@ -20,7 +20,7 @@ namespace Logy.Maps.Tests
             using (var man = new Earth2014Manager(_crimeaCenter, 5))
             {
                 Assert.IsTrue(man.GetAltitude(mangup) > 200 && man.GetAltitude(mangup) < 600);
-                Assert.IsTrue(man.GetAltitude(sevastopol) > 0 && man.GetAltitude(sevastopol) <= 160);//why 160?
+                Assert.IsTrue(man.GetAltitude(sevastopol) > 0 && man.GetAltitude(sevastopol) <= 160); //// why 160?
             }
             using (var man = new Earth2014Manager(_crimeaCenter))
             {

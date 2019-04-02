@@ -1,5 +1,6 @@
 using System;
 using Logy.Maps.Projections.Healpix;
+using Logy.Maps.ReliefMaps.Basemap;
 using Logy.Maps.ReliefMaps.Meridian;
 
 namespace Logy.Maps.ReliefMaps.Water
@@ -44,7 +45,7 @@ namespace Logy.Maps.ReliefMaps.Water
 
         /// <param name="height">>0 when water is moved from basin</param>
         /// <returns>some volume moved from basin</returns>
-        public double PutV(MeridianBase basin, MeridianBase toBasin, double height, int to, int from)
+        public double PutV(BasinBase basin, BasinBase toBasin, double height, int to, int from)
         {
             if (Math.Abs(height) > Threshhold)
             {
@@ -65,7 +66,7 @@ namespace Logy.Maps.ReliefMaps.Water
                     }
                     else
                     {
-                        //todo test this
+                        // todo test this
                         if (toBasin.Depth.HasValue)
                         {
                             vToBasin = -Math.Min(toBasin.WaterHeight, -v * k);

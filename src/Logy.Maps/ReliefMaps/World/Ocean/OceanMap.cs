@@ -13,7 +13,7 @@ using NUnit.Framework;
 namespace Logy.Maps.ReliefMaps.World.Ocean
 {
     [TestFixture]
-    public class OceanMap : RotationStopMap<Basin>
+    public class OceanMap : RotationStopMap<Basin3D>
     {
         public OceanMap()
         {
@@ -64,11 +64,12 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
                 SaveBitmap(step + framesCountBy2);
             }, framesCountBy2);
         }
+
         [Test]
         public void Water_Gradient()
         {
             Data = new BasinsData(HealpixManager, false, false //true for sphere
-                , -2000d//, 2000d
+                , -2000d //, 2000d
             );
 
             var p = HealpixManager.GetP(HealpixManager.Nside - 1, HealpixManager.Nside * 1);
@@ -86,7 +87,7 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
 
 
             var framesCountBy2 = 15;
-            Data.Cycle(1, delegate (int step) 
+            Data.Cycle(1, delegate(int step)
             {
                 Data.Draw(Bmp, 0, null, YResolution, Scale);
                 Circle(basin);
@@ -100,12 +101,11 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
             Data = new BasinsData(HealpixManager, false, true
                 , -200d//, 2000d
             );
-            //fill Basin.Visual and uncomment BasinData.GetAltitude to see centrifugal components
+            //// fill Basin.Visual and uncomment BasinData.GetAltitude to see centrifugal components
 
             EllipsoidAcceleration.AxisOfRotation =
                 new UnitVector3D(1, 0, 0);
-                //Basin.Oz.Rotate(new UnitVector3D(1, 0, 0), new Angle(15.0, AngleUnit.Degrees))
-                ;
+                ////Basin.Oz.Rotate(new UnitVector3D(1, 0, 0), new Angle(15.0, AngleUnit.Degrees))
             ChangeRotation(-HealpixManager.Nside, 0);//double.MaxValue);
             var framesCountBy2 = 500;
             Data.Cycle(1, delegate (int step)
@@ -116,7 +116,7 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
         }
 
 
-        private void Circle(Basin basin, double r = .2)
+        private void Circle(Basin3D basin, double r = .2)
         {
             if (basin != null)
             {
@@ -138,10 +138,10 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
         }
 
         [Test]
-        public void Water_WhenRotationStopped()
+        public void Water_RotationStopped()
         {
             Data = new BasinsData(HealpixManager, false, false
-                //,-3000d, 3000d
+                // ,-3000d, 3000d
             );
             Data.ColorsMiddle = null;
 
@@ -152,8 +152,8 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
                     .Rotate(new UnitVector3D(0, 0, 1), new Angle(-40, AngleUnit.Degrees))
                     ;*/
 
-            Basin basin = null;
-            //basin =Data.PixMan.Pixels[HealpixManager.GetP() / 2];
+            Basin3D basin = null;
+            // basin =Data.PixMan.Pixels[HealpixManager.GetP() / 2];
             var accur = 1.5;
             foreach (var b in Data.PixMan.Pixels)
             {
@@ -176,7 +176,7 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
         }
 
         [Test]
-        public void Relief_WhenRotationStopped()
+        public void Relief_RotationStopped()
         {
             Data = new BasinsData(HealpixManager, true, false
                 , -7000d);
