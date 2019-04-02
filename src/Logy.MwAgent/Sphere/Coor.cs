@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Runtime.Serialization;
 using AppConfiguration;
-using Logy.MwAgent.DotNetWikiBot.Sphere;
 using Newtonsoft.Json;
 
 namespace Logy.MwAgent.Sphere
