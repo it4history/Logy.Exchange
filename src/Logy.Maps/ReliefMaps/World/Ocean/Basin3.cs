@@ -1,4 +1,5 @@
 ﻿using System;
+using Logy.Maps.Geometry;
 using Logy.Maps.Projections.Healpix;
 using Logy.Maps.ReliefMaps.Basemap;
 using MathNet.Numerics.LinearAlgebra;
@@ -7,7 +8,7 @@ using MathNet.Spatial.Units;
 
 namespace Logy.Maps.ReliefMaps.World.Ocean
 {
-    public class Basin3D : BasinBase
+    public class Basin3 : BasinBase
     {
         public static Point3D O3 = new Point3D(0, 0, 0);
         public static UnitVector3D Oz = new UnitVector3D(0, 0, 1);
@@ -24,23 +25,30 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
         /// <summary>
         /// depends on r
         /// </summary>
-        private Point3D _q3D;
-        public Point3D Q3D
+        private Point3D _q3;
+        public Point3D Q3
         {
             get
             {
                 lock (this)
                     if (!_actualQ3)
                     {
-                        _q3D = new Point3D(
+                        _q3 = new Point3D(
                             Math.Sin(Lambda.Value - Math.PI / 2) * Qb.X,
                             //Math.Cos(Lambda.Value) * Qb.X,
                             Math.Sin(Lambda.Value) * Qb.X,
                             Qb.Y);
                         _actualQ3 = true;
                     }
-                return _q3D;
+                return _q3;
             }
+        }
+
+        public Line3D RadiusLine { get { return new Line3D(O3, Q3); } }
+
+        public Ray3D RadiusRay
+        {
+            get { return new Ray3D(O3, RadiusLine.Direction); }
         }
 
         public override void WaterIn(double deltaH, int direction)
@@ -56,7 +64,8 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
             {
                 if (_surface == null)
                 {
-                    var normal = new UnitVector3D(-1, 0, 0); // NormalCalm
+                    var normal = Matrixes.RotationVector; // NormalCalm
+                    // Matrixes.Rotate analog in radians
                     normal = normal.Rotate(new UnitVector3D(0, 1, 0),
                         new Angle(Math.Sign(Vartheta) * Delta_g_meridian + Phi, AngleUnit.Radians));
                     normal = normal.Rotate(new UnitVector3D(0, 0, 1),
@@ -67,17 +76,7 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
             }
         }
 
-        public int EastInRing
-        {
-            get { return (PixelInRing == 1 ? P + PixelsCountInRing : P) - 1; }
-        }
-
-        public int WestInRing
-        {
-            get { return (PixelInRing == PixelsCountInRing ? P - PixelsCountInRing : P) + 1; }
-        }
-
-        public Neibors<Basin3D> Neibors = new Neibors<Basin3D>(new Basin3D[4]);
+        public Neibors<Basin3> Neibors = new Neibors<Basin3>(new Basin3[4]);
 
         /// <summary>
         /// key - NeighborVert (DirectionType ?)
@@ -90,7 +89,7 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
         public override bool[] Volumes { get; set; }
 
         /// <summary>
-        /// where neighbor has same ring,
+        /// neighbor of the same ring,
         /// is not too correct for pole closest rings
         /// </summary>
         public Direction? Type { get; set; }
@@ -102,6 +101,7 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
         public double[] NormLengths;
         public UnitVector3D SpecNormal;
         public Matrix<double> Matrix;
+        public Ray3D[] MeanEdges;
 
         internal override void PreInit(HealpixManager man)
         {
@@ -110,6 +110,7 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
             Volumes = new bool[4];
             deltasH = new double[4];
             froms = new int[4];
+            MeanEdges = new Ray3D[4];
 
             //todo why angle with opposite sign?
             var rotation = Matrix3D.RotationAroundYAxis(new Angle(-Phi, AngleUnit.Radians))
@@ -152,22 +153,6 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
                 return (int) NeighborManager.GetOppositeHor(to);
             }
             return (int) NeighborManager.GetOpposite(to);
-        }
-
-        public Basin3D Symmetric(HealpixManager man)
-        {
-            int newRing = Ring;
-            int newPixelInRing = PixelInRing;
-
-            man.Symmetric(ref newRing, ref newPixelInRing);
-            return new Basin3D
-            {
-                P = man.GetP(newRing, newPixelInRing),
-                PixelInRing = newPixelInRing,
-                PixelsCountInRing = PixelsCountInRing,
-                Ring = newRing,
-                NorthCap = !NorthCap,
-            };
         }
 
         #region reserved

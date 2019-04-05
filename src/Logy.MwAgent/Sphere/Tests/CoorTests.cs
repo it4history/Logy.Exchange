@@ -14,6 +14,10 @@ namespace Logy.MwAgent.Sphere.Tests
             var coor = new Coor("70.1:52");
             Assert.AreEqual(70.1d, coor.X);
             Assert.AreEqual(52, coor.Y);
+
+             coor = new Coor(new Point2(-90, 90));
+            Assert.AreEqual(Math.PI * 1.5, coor.Lambda);
+            Assert.AreEqual(0, coor.Beta);
         }
 
         [Test]

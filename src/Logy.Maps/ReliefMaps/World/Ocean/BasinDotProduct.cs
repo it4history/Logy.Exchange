@@ -10,7 +10,7 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
     /// <summary>
     /// reserved class
     /// </summary>
-    public class BasinDotProduct : Basin3D
+    public class BasinDotProduct : Basin3
     {
         public Point2D Q_traverse
         {
@@ -24,7 +24,7 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
         {
             get
             {
-                return new Plane(OzEnd, Q3D, O3);
+                return new Plane(OzEnd, Q3, O3);
             }
         }
         /// <summary>
@@ -34,7 +34,7 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
         {
             get
             {
-                return new Plane(MeridianCalm.Normal.ToPoint3D(), Q3D, O3);
+                return new Plane(MeridianCalm.Normal.ToPoint3D(), Q3, O3);
             }
         }
 
@@ -67,11 +67,11 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
 
         public double Lambda_meridian;
 
-        public double IntersectTraverse(Basin3D otherBasin)
+        public double IntersectTraverse(Basin3 otherBasin)
         {
-            var otherQtraverseProjection = otherBasin.Q3D.ProjectOn(TraverseCalm);
+            var otherQtraverseProjection = otherBasin.Q3.ProjectOn(TraverseCalm);
             var Qt = otherQtraverseProjection.ToVector3D();
-            Lambda_meridian = Qt.AngleTo(Q3D.ToVector3D()).Radians;
+            Lambda_meridian = Qt.AngleTo(Q3.ToVector3D()).Radians;
             return Triangles.SinusesTheorem(
                        Math.PI / 2 + Delta_g_traverse,
                        r,

@@ -59,6 +59,8 @@
     <Compile Include="gdal\GdalConfiguration.cs" />
     <Compile Include="gdal\Tests\GdalTests.cs" />
     <Compile Include="Coloring\Color3.cs" />
+    <Compile Include="Geometry\Matrixes.cs" />
+    <Compile Include="Geometry\Tests\MatrixesTests.cs" />
     <Compile Include="Projections\Healpix\Neibors.cs" />
     <Compile Include="Projections\Healpix\NeighborManager.cs" />
     <Compile Include="Projections\Healpix\Tests\HealCoorTests.cs" />
@@ -69,10 +71,10 @@
     <Compile Include="ReliefMaps\Basemap\BasinBase.cs" />
     <Compile Include="ReliefMaps\Meridian\MeridianBase.cs" />
     <Compile Include="ReliefMaps\Meridian\ReliefMap.cs" />
-    <Compile Include="ReliefMaps\World\Ocean\Basin3d.cs" />
+    <Compile Include="ReliefMaps\World\Ocean\Basin3.cs" />
     <Compile Include="ReliefMaps\Meridian\Data\CentrifugalAcceleration.cs" />
     <Compile Include="ReliefMaps\World\Ocean\BasinDotProduct.cs" />
-    <Compile Include="ReliefMaps\World\Ocean\BasinsData.cs" />
+    <Compile Include="ReliefMaps\World\Ocean\BasinData.cs" />
     <Compile Include="ReliefMaps\Meridian\Data\GravityChecking.cs" />
     <Compile Include="ReliefMaps\Meridian\MeridianCoor.cs" />
     <Compile Include="Geometry\Triangles.cs" />

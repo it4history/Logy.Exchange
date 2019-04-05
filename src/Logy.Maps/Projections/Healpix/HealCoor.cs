@@ -7,6 +7,14 @@ namespace Logy.Maps.Projections.Healpix
 ///    [DataContract(Namespace = UrlsManager.Namespace)]
     public class HealCoor : Coor
     {
+        /// <summary>
+        /// in degrees
+        /// amazingly X of HealCoor is preserved, it is not X of Point2; the same with Y
+        /// </summary>
+        public HealCoor(double x, double y) : base(new Point2(x, y))
+        {
+        }
+
         public HealCoor(Point2 original) : base(original)
         {
         }
@@ -44,6 +52,16 @@ namespace Logy.Maps.Projections.Healpix
         /// null if on equator bell
         /// </summary>
         public bool? NorthCap { get; set; }
+
+        public int EastInRing
+        {
+            get { return (PixelInRing == 1 ? P + PixelsCountInRing : P) - 1; }
+        }
+
+        public int WestInRing
+        {
+            get { return (PixelInRing == PixelsCountInRing ? P - PixelsCountInRing : P) + 1; }
+        }
 
         public double Longitude { get { return X; } set { X = value; } }
         public double Latitude { get { return Y; } set { Y = value; } }
@@ -95,5 +113,20 @@ Each grid file contains 10,800 x 21,600 = 233,280,000 records */
             return d; */
         }
 
+        public HealCoor Symmetric(HealpixManager man)
+        {
+            int newRing = Ring;
+            int newPixelInRing = PixelInRing;
+
+            man.Symmetric(ref newRing, ref newPixelInRing);
+            return new HealCoor()
+            {
+                P = man.GetP(newRing, newPixelInRing),
+                PixelInRing = newPixelInRing,
+                PixelsCountInRing = PixelsCountInRing,
+                Ring = newRing,
+                NorthCap = !NorthCap,
+            };
+        }
     }
- }
+}

@@ -1,5 +1,7 @@
 ﻿using System;
+using Logy.Maps.Geometry;
 using Logy.Maps.ReliefMaps.World.Ocean;
+using MathNet.Spatial.Euclidean;
 
 namespace Logy.Maps.Projections.Healpix
 {
@@ -35,7 +37,7 @@ namespace Logy.Maps.Projections.Healpix
         {
             return (int)direction & 1;
         }
-        public int Get(Direction direction, Basin3D basin)
+        public int Get(Direction direction, HealCoor basin)
         {
             switch (direction)
             {
@@ -82,12 +84,12 @@ namespace Logy.Maps.Projections.Healpix
             }
         }
 
-        internal int NorthEast(Basin3D basin)
+        internal int NorthEast(HealCoor basin)
         {
             return North(basin, NeighborHor.East);
         }
 
-        internal int NorthWest(Basin3D basin)
+        internal int NorthWest(HealCoor basin)
         {
             return North(basin, NeighborHor.West);
         }
@@ -95,14 +97,14 @@ namespace Logy.Maps.Projections.Healpix
         /// <summary>
         /// lazy to seek for formulas like in North() therefore let find symmetric
         /// </summary>
-        internal int SouthWest(Basin3D basin)
+        internal int SouthWest(HealCoor basin)
         {
             int newRing, newPixelInRing;
             North(basin.Symmetric(_healpixManager), NeighborHor.East, out newRing, out newPixelInRing);
             _healpixManager.Symmetric(ref newRing, ref newPixelInRing);
             return _healpixManager.GetP(newRing, newPixelInRing);
         }
-        internal int SouthEast(Basin3D basin)
+        internal int SouthEast(HealCoor basin)
         {
             int newRing, newPixelInRing;
             North(basin.Symmetric(_healpixManager), NeighborHor.West, out newRing, out newPixelInRing);
@@ -110,13 +112,13 @@ namespace Logy.Maps.Projections.Healpix
             return _healpixManager.GetP(newRing, newPixelInRing);
         }
 
-        /// <returns>p, from 0</returns>
-        private int North(Basin3D basin, NeighborHor hor)
+        /// <returns>P, from 0</returns>
+        private int North(HealCoor basin, NeighborHor hor)
         {
             int newRing, newPixelInRing;
             return North(basin, hor, out newRing, out newPixelInRing);
         }
-        private int North(Basin3D basin, NeighborHor hor, out int newRing, out int newPixelInRing)
+        private int North(HealCoor basin, NeighborHor hor, out int newRing, out int newPixelInRing)
         {
             newRing = basin.Ring - 1;
             var ringFirstP = basin.P - basin.PixelInRing + 1;
@@ -170,6 +172,23 @@ namespace Logy.Maps.Projections.Healpix
 
             newPixelInRing = newP - ringFirstP + 1;
             return newP;
+        }
+
+        public Ray3D MeanEdge(HealCoor basin, Direction to)
+        {
+            var toBasin = _healpixManager.GetCenter<HealCoor>(Get(to, basin));
+            var basinX = basin.X;
+            var toBasinX = toBasin.X;
+            if (basin.Ring == toBasin.Ring)
+            {
+                toBasinX = (toBasinX + basinX) / 2;
+            }
+            var basinY = basin.Y;
+            var toBasinY = _healpixManager.ExtremeByY(toBasin) ?? toBasin.Y;
+
+            return new Ray3D(
+                Basin3.O3,
+                Matrixes.Rotate(new HealCoor(basinX, toBasinY)) + Matrixes.Rotate(new HealCoor(toBasinX, basinY)));
         }
     }
 }

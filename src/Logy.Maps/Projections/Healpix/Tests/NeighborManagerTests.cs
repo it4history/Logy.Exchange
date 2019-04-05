@@ -12,9 +12,9 @@ namespace Logy.Maps.Projections.Healpix.Tests
         private NeighborManager man2;
         private HealpixManager healpixManager; /*hack*/
 
-        public Basin3D Center(int p)
+        public Basin3 Center(int p)
         {
-            return healpixManager.GetCenter<Basin3D>(p);
+            return healpixManager.GetCenter<Basin3>(p);
         }
 
         public NeighborManager GetMan(int k)
@@ -35,6 +35,7 @@ namespace Logy.Maps.Projections.Healpix.Tests
             Assert.AreEqual(NeighborVert.North, NeighborManager.GetVert(Direction.Ne));
             Assert.AreEqual(NeighborVert.South, NeighborManager.GetVert(Direction.Sw));
         }
+
         [Test]
         public void GetHor()
         {
@@ -68,6 +69,7 @@ namespace Logy.Maps.Projections.Healpix.Tests
             Assert.AreEqual(5, man.NorthEast(Center(10)));
             Assert.AreEqual(6, man.NorthEast(Center(11)));
         }
+
         [Test]
         public void NorthEast_1()
         {
@@ -102,6 +104,7 @@ namespace Logy.Maps.Projections.Healpix.Tests
             Assert.AreEqual(28, man.NorthEast(Center(37)));
             Assert.AreEqual(34, man.NorthEast(Center(43)));
         }
+
         [Test]
         public void NorthEast_2()
         {
@@ -168,6 +171,7 @@ namespace Logy.Maps.Projections.Healpix.Tests
             Assert.AreEqual(6, man.NorthWest(Center(10)));
             Assert.AreEqual(7, man.NorthWest(Center(11)));
         }
+
         [Test]
         public void NorthWest_1()
         {
@@ -207,17 +211,21 @@ namespace Logy.Maps.Projections.Healpix.Tests
             Assert.AreEqual(11, man.SouthWest(Center(10)));
             Assert.AreEqual(8, man.SouthWest(Center(11)));
         }
+
         [Test]
         public void SouthWest_1()
         {
             Assert.AreEqual(5, man.SouthWest(Center(0)));
             Assert.AreEqual(7, man.SouthWest(Center(1)));
+            Assert.AreEqual(12, man.SouthWest(Center(4)));
+            Assert.AreEqual(13, man.SouthWest(Center(5)));
             Assert.AreEqual(15, man.SouthWest(Center(7)));
 
             Assert.AreEqual(23, man.SouthWest(Center(14)));
             Assert.AreEqual(24, man.SouthWest(Center(15)));
             Assert.AreEqual(31, man.SouthWest(Center(23)));
         }
+
         [Test]
         public void SouthWest_2()
         {
@@ -244,17 +252,20 @@ namespace Logy.Maps.Projections.Healpix.Tests
             Assert.AreEqual(9, man.SouthEast(Center(10)));
             Assert.AreEqual(10, man.SouthEast(Center(11)));
         }
+
         [Test]
         public void SouthEast_1()
         {
             Assert.AreEqual(8, man.SouthEast(Center(2)));
             Assert.AreEqual(10, man.SouthEast(Center(3)));
+            Assert.AreEqual(12, man.SouthEast(Center(5)));
 
             Assert.AreEqual(15, man.SouthEast(Center(8)));
             Assert.AreEqual(16, man.SouthEast(Center(9)));
 
             Assert.AreEqual(24, man.SouthEast(Center(16)));
         }
+
         [Test]
         public void SouthEast_2()
         {
@@ -269,6 +280,24 @@ namespace Logy.Maps.Projections.Healpix.Tests
             Assert.AreEqual(79, man.SouthEast(Center(64)));
 
             Assert.AreEqual(111, man.SouthEast(Center(96)));
+        }
+
+        [Test]
+        public void MeanEdge_0()
+        {
+            man = GetMan(0);
+            Assert.AreEqual(
+                24, 
+                Basin3.Oz.AngleTo(man.MeanEdge(Center(0), Direction.Nw).Direction).Degrees,
+                1);
+            Assert.AreEqual(
+                24,
+                Basin3.Oz.AngleTo(man.MeanEdge(Center(0), Direction.Ne).Direction).Degrees,
+                1);
+            var edge0_sw = man.MeanEdge(Center(0), Direction.Sw).Direction;
+            Assert.AreEqual(-.4, edge0_sw.X, .1);
+            Assert.AreEqual(.8, edge0_sw.Y, .1);
+            Assert.AreEqual(.4, edge0_sw.Z, .1);
         }
     }
 }

@@ -35,7 +35,7 @@ namespace Logy.MwAgent.Sphere
         }
 
         /// <summary>
-        /// 0 corresponds to West
+        /// 0..360, 0 corresponds to West
         /// </summary>
         public virtual double X
         {
@@ -44,7 +44,7 @@ namespace Logy.MwAgent.Sphere
         }
 
         /// <summary>
-        /// 0 corresponds to North
+        /// 0..180, 0 corresponds to North
         /// </summary>
         public virtual double Y
         {

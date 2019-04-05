@@ -11,7 +11,7 @@ namespace Logy.Maps.ReliefMaps.World.Ocean.Tests
         [Test]
         public void Hto_SameRing()
         {
-            var data = new BasinsData(new HealpixManager(2), false, true);
+            var data = new BasinData(new HealpixManager(2), false, true);
 
             foreach (var aBasin in data.PixMan.Pixels)
             {
@@ -32,7 +32,7 @@ namespace Logy.Maps.ReliefMaps.World.Ocean.Tests
         public void Hto()
         {
             var man = new HealpixManager(2);
-            var data = new BasinsData(man, false, true);
+            var data = new BasinData(man, false, true);
 
             foreach (var aBasin in data.PixMan.Pixels)
             {
@@ -47,7 +47,7 @@ namespace Logy.Maps.ReliefMaps.World.Ocean.Tests
             foreach (var aBasin in data.PixMan.Pixels)
             {
                 if (aBasin != basin &&
-                    !(from n in basin.Neibors.Cast<Basin3D>()
+                    !(from n in basin.Neibors.Cast<Basin3>()
                         where n == aBasin
                         select n).Any())
                     Assert.AreEqual(0, aBasin.hOQ);
@@ -76,7 +76,7 @@ namespace Logy.Maps.ReliefMaps.World.Ocean.Tests
             TestNeighbors(basin);
         }
 
-        private static void TestNeighbors(Basin3D basin)
+        private static void TestNeighbors(Basin3 basin)
         {
             // k6 2, k2 150, sphere .001
             var accuracy = .001;
@@ -106,7 +106,7 @@ namespace Logy.Maps.ReliefMaps.World.Ocean.Tests
         [Test]
         public void HighBasin_31_sphere()
         {
-            var data = new BasinsData(new HealpixManager(2), false, true);
+            var data = new BasinData(new HealpixManager(2), false, true);
             var basin = data.PixMan.Pixels[31];
             basin.hOQ = 500;
             foreach (var basin1 in data.PixMan.Pixels)
@@ -114,7 +114,7 @@ namespace Logy.Maps.ReliefMaps.World.Ocean.Tests
                 for (var i = 0; i < 4; i++)
                     Assert.IsFalse(basin1.Volumes[i]);
             }
-
+//            data.Cycle();
             Cycle(data);
             Cycle(data);
             Cycle(data);
@@ -123,21 +123,23 @@ namespace Logy.Maps.ReliefMaps.World.Ocean.Tests
         [Test]
         public void HighBasin_62_126_ellipse()
         {
-            var data = new BasinsData(new HealpixManager(2), false, false);
-            data.PixMan.Pixels[62].hOQ = 500;
+            var data = new BasinData(new HealpixManager(2), false, false);
+    //        data.PixMan.Pixels[45].hOQ = 50;
             Cycle(data);
-            Assert.AreEqual(101, data.PixMan.Pixels[45].hOQ, 1);
+            //Assert.AreEqual(99, data.PixMan.Pixels[33].hOQ, 1);
+            Assert.AreEqual(99, data.PixMan.Pixels[62].hOQ, 1);
+//            Assert.AreEqual(101, data.PixMan.Pixels[45].hOQ, 1);
             Assert.AreEqual(99, data.PixMan.Pixels[77].hOQ, 1);
             Cycle(data);
 
-            data = new BasinsData(new HealpixManager(2), false, false);
+            data = new BasinData(new HealpixManager(2), false, false);
             data.PixMan.Pixels[126].hOQ = 500;
             Cycle(data);
             Assert.AreEqual(99, data.PixMan.Pixels[110].hOQ, 1);
             Assert.AreEqual(101, data.PixMan.Pixels[142].hOQ, 1);
         }
 
-        private static void Cycle(BasinsData data)
+        private static void Cycle(BasinData data)
         {
             Console.WriteLine("---------");
             data.Cycle();
@@ -151,14 +153,14 @@ namespace Logy.Maps.ReliefMaps.World.Ocean.Tests
         [Test]
         public void Intersect_2()
         {
-            var data = new BasinsData(new HealpixManager(2), false, true);
+            var data = new BasinData(new HealpixManager(2), false, true);
             foreach (var basin in data.PixMan.Pixels)
             {
                 foreach (Direction to in Enum.GetValues(typeof(Direction)))
                 {
                     var toBasin = basin.Neibors[to];
-                    var from0to1 = basin.Surface.AbsoluteDistanceTo(toBasin.Q3D);
-                    var from1to0 = toBasin.Surface.AbsoluteDistanceTo(basin.Q3D);
+                    var from0to1 = basin.Surface.AbsoluteDistanceTo(toBasin.Q3);
+                    var from1to0 = toBasin.Surface.AbsoluteDistanceTo(basin.Q3);
                     Assert.AreEqual(from1to0, from0to1, from1to0 / 100);
                 }
             }

@@ -140,7 +140,7 @@ namespace Logy.Maps.ReliefMaps.Basemap
             var thetaTan = Ellipsoid.CalcThetaTan(Beta.Value);
             Vartheta = Ellipsoid.CalcVarTheta(thetaTan);
 
-            var varphi = Ellipsoid.FromSpheric(thetaTan);
+            var varphi = Ellipsoid.CalcVarPhi(thetaTan);
             InitROfEllipse(man, Ellipsoid.Radius(varphi));
             Theta = Math.PI / 2 - varphi; // faster than Atan(thetaTan) and Atan(thetaTan)<0 when thetaTan>Pi/2
 

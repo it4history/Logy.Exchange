@@ -27,7 +27,7 @@ namespace Logy.Maps.ReliefMaps.Meridian
 
             //must be 10.69km 
             // for k5 is 10.94, k6 10.93, k7 10.9, k8 10.72
-            Data.Cycle(700, delegate(int step)
+            Data.Cycle(700, delegate(int step) // 700 for k7
             {
                 Data.Draw(Bmp, step);
 

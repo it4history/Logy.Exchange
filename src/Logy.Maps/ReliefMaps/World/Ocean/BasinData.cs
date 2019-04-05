@@ -1,15 +1,16 @@
-using System;
+Ôªøusing System;
 using System.Linq;
 using Logy.Maps.Geometry;
 using Logy.Maps.Projections.Healpix;
 using Logy.Maps.ReliefMaps.Water;
+using Logy.MwAgent.Sphere;
 using MathNet.Numerics.LinearAlgebra;
 using MathNet.Spatial.Euclidean;
 using MathNet.Spatial.Units;
 
 namespace Logy.Maps.ReliefMaps.World.Ocean
 {
-    public class BasinsData : WaterMoving<Basin3D>
+    public class BasinData : WaterMoving<Basin3>
     {
         private readonly bool _withRelief;
 
@@ -18,7 +19,7 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
             get { return ReliefType.Tbi; }
         }
 
-        public BasinsData(HealpixManager man, bool withRelief = false, bool spheric = false,
+        public BasinData(HealpixManager man, bool withRelief = false, bool spheric = false,
             double? min = null, double? max = null)
             : base(man, null, min, max)
         {
@@ -35,16 +36,18 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
                 var bisectors = new Point3D[4];
                 var lengths = new double[4];
                 //!var surface = basin.Surface;
-                var xyPlane = new Plane(basin.Q3D, new UnitVector3D(0, 0, basin.Vartheta > 0 ?  1 : -1));
+                var xyPlane = new Plane(basin.Q3, new UnitVector3D(0, 0, basin.Vartheta > 0 ?  1 : -1));
                 //!var xAxis = xyPlane.IntersectionWith(surface);
                 foreach (Direction to in Enum.GetValues(typeof(Direction)))
                 {
                     var toBasin = PixMan.Pixels[man.Neibors.Get(to, basin)];
                     basin.Neibors[to] = toBasin;
+
                     if (basin.Ring == toBasin.Ring)
                     {
                         basin.Type = to;
                     }
+                    basin.MeanEdges[(int)to] = man.Neibors.MeanEdge(basin, to);
 
                     //!var otherQprojection = toBasin.Q3.ProjectOn(surface);//TraverseCalm);
                     //var dx = toBasin.Qb.X * Math.Sin(basin.Lambda.Value - toBasin.Lambda.Value);
@@ -62,7 +65,7 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
                     //var xAxis = surface.Normal.Rotate(new UnitVector3D(0, 0, 1), 90, AngleUnit.Degrees);
 
                     //!alphas[(int) to] = xAxis.Direction.SignedAngleTo(Q_otherProjection.Direction, surface.Normal).Radians;
-                    /*ÚÂÎÂÒÌ˚È Û„ÓÎ, calc Cos by DotProduct
+                    /*—Ç–µ–ª–µ—Å–Ω—ã–π —É–≥–æ–ª, calc Cos by DotProduct
                     alphas[(int)to] = surface.Normal.SignedAngleTo(lineQ3s.Direction,
                         anglePlane.Normal//surface.Normal.Orthogonal
                         ).Radians;//*/
@@ -117,15 +120,15 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
                 basin.WaterReset();
                 if (basin.HasWater())
                 {
-                    //var normal = basin.Surface.Normal;
-                    //var basinSurface = new Plane(new UnitVector3D((basin.SpecNormal + normal).ToVector()), basin.r);
-                    var basinSurface = basin.Surface;
-
                     foreach (Direction to in Enum.GetValues(typeof(Direction)))
                     {
                         var toBasin = basin.Neibors[to];
-                        basin.Hto[(int) to] = -basinSurface.SignedDistanceTo(toBasin.Q3D);
-/*                        var HtoVer = basin.Intersect(toBasin);
+                        //basin.Hto[(int) to] = -basin.Surface.SignedDistanceTo(toBasin.Q3);
+                        basin.Hto[(int)to] = basin.Surface.IntersectionWith(basin.MeanEdges[(int)to])
+                            .DistanceTo(Basin3.O3);
+
+                        /*                       
+                        var HtoVer = basin.Intersect(toBasin);
                         var HtoHor = basin.IntersectTraverse(toBasin);
                         var deltaHfull = Math.Sin(gammas[(int) to]) * HtoVer + Math.Cos(gammas[(int) to]) * HtoHor;
                         basin.deltasH[(int) to] = deltaHfull * basin.NormLengths[(int) to];*/
@@ -151,7 +154,7 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
         }
         private static double GetHto(BasinDotProduct basin, NeighborVert direction)
         {
-            Basin3D inter;
+            Basin3 inter;
             /*if (basin.Type.HasValue && NeighborManager.GetVert(basin.Type.Value) == direction) 
             {
                 var neibor = basin.Neibors[NeighborManager.GetOppositeHor(basin.Type.Value)];
@@ -159,8 +162,8 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
             }
             else*/
             {
-                Basin3D east;
-                Basin3D west;
+                Basin3 east;
+                Basin3 west;
                 if (direction == NeighborVert.North)
                 {
                     east = basin.Neibors[Direction.Ne];
@@ -172,7 +175,7 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
                     west = basin.Neibors[Direction.Sw];
                 }
 
-                inter = new Basin3D
+                inter = new Basin3
                 {
                 };
                 var lambda = (east.Lambda + west.Lambda).Value / 2;
@@ -262,7 +265,7 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
             }
         }
 
-        public override double? GetAltitude(Basin3D basin)
+        public override double? GetAltitude(Basin3 basin)
         {
             //return basin.Delta_g_meridian*1000;
             //return basin.Visual * 1000;
@@ -271,6 +274,8 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
             //return superKoef;
             if (basin.HasWater())
             {
+                if (basin.Type==Direction.Nw)
+                { }
                 foreach (Direction to in Enum.GetValues(typeof(Direction)))
                 {
                     var toBasin = basin.Neibors[to];

@@ -1,4 +1,4 @@
-using System;
+п»їusing System;
 
 namespace Logy.Maps.Geometry
 {
@@ -27,7 +27,7 @@ namespace Logy.Maps.Geometry
         /// <summary>
         /// Hirt_Rexer2015_Earth2014.pdf
         /// </summary>
-        /// <param name="varphi">http://hist.tk/hw/Широта#геоцентрическая</param>
+        /// <param name="varphi">http://hist.tk/hw/РЁРёСЂРѕС‚Р°#РіРµРѕС†РµРЅС‚СЂРёС‡РµСЃРєР°СЏ</param>
         public static double Radius(double varphi)
         {
             var sin2 = Math.Sin(varphi) * Math.Sin(varphi);
@@ -35,7 +35,7 @@ namespace Logy.Maps.Geometry
         }
 
         /// <summary>
-        /// https://ru.wikipedia.org/wiki/Эллипс
+        /// https://ru.wikipedia.org/wiki/Р Р°РґРёСѓСЃ
         /// </summary>
         public static double RadiusRu(double angleFromBigAxis)
         {
@@ -62,11 +62,11 @@ namespace Logy.Maps.Geometry
 
         /// <returns>
         /// varphi
-        /// http://hist.tk/hw/Широта#геоцентрическая
+        /// http://hist.tk/hw/РЁРёСЂРѕС‚Р°#РіРµРѕС†РµРЅС‚СЂРёС‡РµСЃРєР°СЏ
         /// on equator varphi == 0 
         /// in sourth hemisphere varphi < 0
         /// </returns>
-        public static double FromSpheric(double thetaTan)
+        public static double CalcVarPhi(double thetaTan)
         {
             var varphi = (Math.PI / 2) - Math.Atan(thetaTan);
             return varphi > (Math.PI / 2) ? varphi - Math.PI : varphi;

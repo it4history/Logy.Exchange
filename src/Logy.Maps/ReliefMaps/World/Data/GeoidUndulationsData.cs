@@ -19,7 +19,7 @@ namespace Logy.Maps.ReliefMaps.World.Data
 
             var thetaTan = Ellipsoid.CalcThetaTan(basin.Beta.Value);
             var undulation = altitudeShape - altitude 
-                - Ellipsoid.Radius(Ellipsoid.FromSpheric(thetaTan));
+                - Ellipsoid.Radius(Ellipsoid.CalcVarPhi(thetaTan));
             return undulation;
         }
 

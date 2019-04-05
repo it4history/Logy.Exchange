@@ -22,6 +22,23 @@ namespace Logy.Maps.ReliefMaps.Meridian.Data
             }
         }
 
+        public bool WasWaterMoved()
+        {
+            foreach (var basin in PixMan.Pixels)
+            {
+                if (basin.Volumes[0] || basin.Volumes[1])
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        public override void Log()
+        {
+            //base.Log();
+        }
+
         public override double? GetAltitude(T basin)
         {
             var northBasin = GetNorthBasin(basin);
@@ -64,23 +81,6 @@ namespace Logy.Maps.ReliefMaps.Meridian.Data
                 //return (dbeta - Qq * 2)*basin.r;
                 */
             }
-        }
-
-        public bool WasWaterMoved()
-        {
-            foreach (var basin in PixMan.Pixels)
-            {
-                if (basin.Volumes[0] || basin.Volumes[1])
-                {
-                    return true;
-                }
-            }
-            return false;
-        }
-
-        public override void Log()
-        {
-            //base.Log();
         }
 
         internal override void GradientAndHeightCrosses()

@@ -1,3 +1,4 @@
+#if DEBUG
 using System;
 using System.Drawing;
 using System.Drawing.Imaging;
@@ -7,13 +8,12 @@ using Logy.Maps.Projections;
 using Logy.Maps.Projections.Healpix;
 using Logy.Maps.ReliefMaps.Map2D;
 using MathNet.Spatial.Euclidean;
-using MathNet.Spatial.Units;
 using NUnit.Framework;
 
 namespace Logy.Maps.ReliefMaps.World.Ocean
 {
     [TestFixture]
-    public class OceanMap : RotationStopMap<Basin3D>
+    public class OceanMap : RotationStopMap<Basin3>
     {
         public OceanMap()
         {
@@ -26,7 +26,7 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
 
         protected override int K
         {
-            get { return 5; }
+            get { return 4; }
         }
 
         protected override ImageFormat ImageFormat
@@ -45,7 +45,7 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
         [Test]
         public void Water_Sphere_HighBasin()
         {
-            Data = new BasinsData(HealpixManager, false, false //true for sphere
+            Data = new BasinData(HealpixManager, false, false //true for sphere
             , -200d//, 2000d
             );
 
@@ -68,7 +68,7 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
         [Test]
         public void Water_Gradient()
         {
-            Data = new BasinsData(HealpixManager, false, false //true for sphere
+            Data = new BasinData(HealpixManager, false, false //true for sphere
                 , -2000d //, 2000d
             );
 
@@ -98,7 +98,7 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
         [Test]
         public void Water_ChangeRotation()
         {
-            Data = new BasinsData(HealpixManager, false, true
+            Data = new BasinData(HealpixManager, false, true
                 , -200d//, 2000d
             );
             //// fill Basin.Visual and uncomment BasinData.GetAltitude to see centrifugal components
@@ -116,7 +116,7 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
         }
 
 
-        private void Circle(Basin3D basin, double r = .2)
+        private void Circle(Basin3 basin, double r = .2)
         {
             if (basin != null)
             {
@@ -140,7 +140,7 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
         [Test]
         public void Water_RotationStopped()
         {
-            Data = new BasinsData(HealpixManager, false, false
+            Data = new BasinData(HealpixManager, false, false
                 // ,-3000d, 3000d
             );
             Data.ColorsMiddle = null;
@@ -152,7 +152,7 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
                     .Rotate(new UnitVector3D(0, 0, 1), new Angle(-40, AngleUnit.Degrees))
                     ;*/
 
-            Basin3D basin = null;
+            Basin3 basin = null;
             // basin =Data.PixMan.Pixels[HealpixManager.GetP() / 2];
             var accur = 1.5;
             foreach (var b in Data.PixMan.Pixels)
@@ -178,7 +178,7 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
         [Test]
         public void Relief_RotationStopped()
         {
-            Data = new BasinsData(HealpixManager, true, false
+            Data = new BasinData(HealpixManager, true, false
                 , -7000d);
             Data.CheckOcean();
 
@@ -194,3 +194,4 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
         }
     }
 }
+#endif
