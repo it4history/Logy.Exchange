@@ -8,7 +8,7 @@ namespace Logy.Maps.Projections
     {
         private readonly double _resx;
         private readonly double _resy;
-        public readonly double _width;
+        private readonly double _width;
 
         private const double BorderWidth = 0;//why was .5 ?
 
@@ -45,7 +45,7 @@ namespace Logy.Maps.Projections
         public int FullOffset(Coor coor)
         {
             return (int)Math.Round(
-                /*rounging is important*/Math.Round(Y(coor.Y)) * _width 
+                /*rounding is important*/Math.Round(Y(coor.Y)) * _width 
                 + X(coor.X));
         }
 

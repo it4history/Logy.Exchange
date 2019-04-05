@@ -5,6 +5,11 @@ namespace Logy.Maps.ReliefMaps.World.Approximate
 {
     public class Altitudes : Map2DBase
     {
+        public Altitudes()
+        {
+            Frames = 30;
+        }
+
         public override Projection Projection
         {
             get { return Projection.Equirectangular; }

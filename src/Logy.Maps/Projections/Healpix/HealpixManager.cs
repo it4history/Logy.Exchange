@@ -205,15 +205,5 @@ namespace Logy.Maps.Projections.Healpix
             ring = newRing;
             pixelInRing = newPixelInRing;
         }
-
-        /// <returns>degrees, Pole latitude</returns>
-        public double? ExtremeByY(HealCoor neibor)
-        {
-            if  (neibor.Ring == 1)
-                return 90;
-            if (neibor.Ring == RingsCount)
-                return -90;
-            return null;
-        }
     }
 }

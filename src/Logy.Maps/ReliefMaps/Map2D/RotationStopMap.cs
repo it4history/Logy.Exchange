@@ -6,7 +6,6 @@ using System.Drawing.Imaging;
 using Logy.Maps.Geometry;
 using Logy.Maps.Projections;
 using Logy.Maps.ReliefMaps.Basemap;
-using Logy.Maps.ReliefMaps.Meridian;
 using Logy.Maps.ReliefMaps.Water;
 using NUnit.Framework;
 
@@ -15,7 +14,6 @@ namespace Logy.Maps.ReliefMaps.Map2D
     public class RotationStopMap<T> : Map2DBase where T : BasinBase
     {
         protected Bitmap Bmp;
-        protected Brush Background = Brushes.White;
         protected readonly List<int> ChangeLines = new List<int>();
         public WaterMoving<T> Data;
 
@@ -23,9 +21,6 @@ namespace Logy.Maps.ReliefMaps.Map2D
         public virtual void SetUp()
         {
             Bmp = CreateBitmap();
-            var g = GetFont(Bmp);
-            g.FillRectangle(Background, 0, 0, Bmp.Width, Bmp.Height);
-            g.Flush();
         }
 
         [TearDown]

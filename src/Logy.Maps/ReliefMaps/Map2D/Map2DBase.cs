@@ -19,7 +19,7 @@ namespace Logy.Maps.ReliefMaps.Map2D
     [TestFixture]
     public abstract class Map2DBase : Map
     {
-        private const int Frames = 1;
+        protected int Frames = 1;
 
         protected virtual DataForMap2D ApproximateData { get { return null; } }
 
@@ -38,6 +38,11 @@ namespace Logy.Maps.ReliefMaps.Map2D
         {
             get { return false; }
         }
+
+        /// <summary>
+        /// not for png
+        /// </summary>
+        protected Brush Background = Brushes.White;
         #endregion
 
         protected virtual bool LegendNeeded
@@ -112,6 +117,7 @@ namespace Logy.Maps.ReliefMaps.Map2D
 
         private void DrawFrames(Point2[] pixels, DataForMap2D data)
         {
+            string bitmap = null;
             for (var step = 0; step < Frames; step++)
             {
                 var bmp = CreateBitmap();
@@ -123,8 +129,9 @@ namespace Logy.Maps.ReliefMaps.Map2D
                     DrawLegend(data, bmp);
                 }
 
-                Process.Start(SaveBitmap(bmp, data.Colors, data.Accuracy));
+                bitmap = SaveBitmap(bmp, data.Colors, data.Accuracy, step);
             }
+            Process.Start(bitmap);
         }
 
         internal void DrawLegend(DataEarth data, Bitmap bmp)
@@ -239,9 +246,16 @@ namespace Logy.Maps.ReliefMaps.Map2D
 
         internal Bitmap CreateBitmap()
         {
-            return new Bitmap(
+            var bmp = new Bitmap(
                 4 * HealpixManager.Nside * Scale,
                 (YResolution * HealpixManager.Nside * Scale) + (LegendToDraw ? LegendHeight : 0));
+            if (ImageFormat != ImageFormat.Png)
+            {
+                var g = GetFont(bmp);
+                g.FillRectangle(Background, 0, 0, bmp.Width, bmp.Height);
+                g.Flush();
+            }
+            return bmp;
         }
     }
 }

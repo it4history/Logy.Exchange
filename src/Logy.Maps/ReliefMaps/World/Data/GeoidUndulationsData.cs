@@ -1,3 +1,4 @@
+using System;
 using Logy.Maps.Geometry;
 using Logy.Maps.Projections.Healpix;
 using Logy.Maps.ReliefMaps.Map2D;
@@ -17,7 +18,10 @@ namespace Logy.Maps.ReliefMaps.World.Data
             var altitude = Relief.GetAltitude(basin);
             var altitudeShape = ReliefBed.GetAltitude(basin) + Earth2014Manager.Radius2Add;
 
-            var thetaTan = Ellipsoid.CalcThetaTan(basin.Beta.Value);
+            var thetaTan =
+                //Ellipsoid.CalcThetaTan(basin.Beta.Value); 
+                //* 
+                Math.Tan(basin.Beta.Value); // may be out of range */
             var undulation = altitudeShape - altitude 
                 - Ellipsoid.Radius(Ellipsoid.CalcVarPhi(thetaTan));
             return undulation;

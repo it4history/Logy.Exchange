@@ -143,8 +143,14 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
             return 0;
         }
 
-        public int GetFrom(Direction to, HealpixManager man)
+        /// <returns>typeof Direction</returns>
+        public int GetFromAndFillType(Direction to, Basin3 toBasin, HealpixManager man)
         {
+            if (Ring == toBasin.Ring)
+            {
+                Type = to;
+            }
+
             var vert = NeighborManager.GetVert(to);
             if (Ring == 1 && vert == NeighborVert.North
                 || Ring == man.RingsCount && vert == NeighborVert.South

@@ -1,4 +1,6 @@
 ﻿#if DEBUG
+using System;
+using Logy.Maps.Approximations;
 using Logy.Maps.ReliefMaps.World.Ocean;
 using NUnit.Framework;
 
@@ -8,9 +10,7 @@ namespace Logy.Maps.Projections.Healpix.Tests
     public class NeighborManagerTests
     {
         private NeighborManager man;
-        private NeighborManager man1;
-        private NeighborManager man2;
-        private HealpixManager healpixManager; /*hack*/
+        private HealpixManager healpixManager; /*very temp*/
 
         public Basin3 Center(int p)
         {
@@ -283,21 +283,41 @@ namespace Logy.Maps.Projections.Healpix.Tests
         }
 
         [Test]
-        public void MeanEdge_0()
+        public void MeanBoundary_0()
         {
             man = GetMan(0);
             Assert.AreEqual(
                 24, 
-                Basin3.Oz.AngleTo(man.MeanEdge(Center(0), Direction.Nw).Direction).Degrees,
+                Basin3.Oz.AngleTo(man.MeanBoundary(Center(0), Direction.Nw).Direction).Degrees,
                 1);
             Assert.AreEqual(
                 24,
-                Basin3.Oz.AngleTo(man.MeanEdge(Center(0), Direction.Ne).Direction).Degrees,
+                Basin3.Oz.AngleTo(man.MeanBoundary(Center(0), Direction.Ne).Direction).Degrees,
                 1);
-            var edge0_sw = man.MeanEdge(Center(0), Direction.Sw).Direction;
+            var edge0_sw = man.MeanBoundary(Center(0), Direction.Sw).Direction;
             Assert.AreEqual(-.4, edge0_sw.X, .1);
             Assert.AreEqual(.8, edge0_sw.Y, .1);
             Assert.AreEqual(.4, edge0_sw.Z, .1);
+        }
+        [Test]
+        public void MeanBoundary_NeiborsHaveTheSame()
+        {
+            var PixMan = new PixelsManager<Basin3>(healpixManager);
+            foreach (var basin in PixMan.Pixels)
+            {
+                foreach (Direction to in Enum.GetValues(typeof(Direction)))
+                {
+                    var edge = man.MeanBoundary(basin, to).Direction;
+
+                    var toBasin = PixMan.Pixels[man.Get(to, basin)];
+                    var from = (Direction) basin.GetFromAndFillType(to, toBasin, healpixManager);
+                    var edgeTo = man.MeanBoundary(toBasin, from).Direction;
+
+                    Assert.AreEqual(edge.X, edgeTo.X, .0000000001);
+                    Assert.AreEqual(edge.Y, edgeTo.Y, .0000000001);
+                    Assert.AreEqual(edge.Z, edgeTo.Z, .0000000001);
+                }
+            }
         }
     }
 }

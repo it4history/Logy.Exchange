@@ -70,6 +70,76 @@ namespace Logy.Maps.ReliefMaps.Basemap
             RingArea = Area * PixelsCountInRing;
         }
 
+        internal override void PreInit(HealpixManager man)
+        {
+            base.PreInit(man);
+            
+            /*
+            var thetaTan = Ellipsoid.CalcThetaTan(Beta.Value);
+            var varphi = Ellipsoid.CalcVarPhi(thetaTan);
+            Theta = Math.PI / 2 - varphi; // faster than Atan(thetaTan) and Atan(thetaTan)<0 when thetaTan>Pi/2
+            */
+
+            // new
+            Theta = Beta.Value;
+            var thetaTan = Math.Tan(Theta);
+            var varphi = Math.PI / 2 - Theta;
+            // end of new
+
+            InitROfEllipse(man, Ellipsoid.Radius(varphi));
+            Vartheta = Ellipsoid.CalcVarTheta(thetaTan);
+
+            // vertical to ellipsoid surface
+            var g = EllipsoidAcceleration.GravitationalSomigliana(varphi);
+            //return g * 100;
+            double a, aTraverse;
+            var aMeridian = EllipsoidAcceleration.Centrifugal(this, out a, out aTraverse);
+            // vertical to ellipsoid surface
+            var aVert = Math.Abs(a * Math.Sin(Vartheta));
+            // horizontal to ellipsoid surface
+            //var aHoriz = a * Math.Cos(Vartheta);
+
+            // vertical to sphere
+            gVpure = (g + aVert) * Math.Cos(GoodDeflectionAngle); //Triangles.CalcGPureToCenter
+            //return gVpure*10000;
+            // horizontal to sphere
+            // max: .03299
+            // horizontal to sphere
+            var gHor = (g + aVert) * Math.Sin(GoodDeflectionAngle);
+            //gToCenterByThetaCos = gVpure / Math.Abs(Math.Cos(Theta));
+            //return basin.GoodDeflectionAngle * 1000;
+            // vertical to sphere
+            var aV = a * Math.Sin(Theta);
+            //return aV * 100;*/
+            //return aH * 100;
+            gHpure = gHor - aMeridian;
+
+            Delta_g_meridian = GoodDeflectionAngle;
+        }
+
+        public Point2D Qb
+        {
+            get { return new Point2D(r * Math.Sin(Beta.Value), r * Math.Cos(Beta.Value)); }
+            set { }
+        }
+
+        public static Line2D OQ(Point2D q)
+        {
+            return new Line2D(O, q);
+        }
+
+        /// <summary>
+        /// acceleration, vertical to sphere, no Centrifugal
+        /// </summary>
+        public double gVpure { get; set; }
+
+        /// <summary>
+        /// acceleration, horizontal to sphere, no Centrifugal
+        /// directed to equator, 0 on poles and equator
+        /// max: .016 on +-45grad
+        /// </summary>
+        public double gHpure { get; set; }
+
         #region water
         /// <summary>
         /// directed up
@@ -121,67 +191,6 @@ namespace Logy.Maps.ReliefMaps.Basemap
             }
         }
         #endregion
-
-        /// <summary>
-        /// acceleration, vertical to sphere, no Centrifugal
-        /// </summary>
-        public double gVpure { get; set; }
-
-        /// <summary>
-        /// acceleration, horizontal to sphere, no Centrifugal
-        /// directed to equator, 0 on poles and equator
-        /// max: .016 on +-45grad
-        /// </summary>
-        public double gHpure { get; set; }
-
-        internal override void PreInit(HealpixManager man)
-        {
-            base.PreInit(man);
-            var thetaTan = Ellipsoid.CalcThetaTan(Beta.Value);
-            Vartheta = Ellipsoid.CalcVarTheta(thetaTan);
-
-            var varphi = Ellipsoid.CalcVarPhi(thetaTan);
-            InitROfEllipse(man, Ellipsoid.Radius(varphi));
-            Theta = Math.PI / 2 - varphi; // faster than Atan(thetaTan) and Atan(thetaTan)<0 when thetaTan>Pi/2
-
-            // vertical to ellipsoid surface
-            var g = EllipsoidAcceleration.GravitationalSomigliana(varphi);
-            //return g * 100;
-            double a, aTraverse;
-            var aMeridian = EllipsoidAcceleration.Centrifugal(this, out a, out aTraverse);
-            // vertical to ellipsoid surface
-            var aVert = Math.Abs(a * Math.Sin(Vartheta));
-            // horizontal to ellipsoid surface
-            //var aHoriz = a * Math.Cos(Vartheta);
-
-            // vertical to sphere
-            gVpure = (g + aVert) * Math.Cos(GoodDeflectionAngle); //Triangles.CalcGPureToCenter
-            //return gVpure*10000;
-            // horizontal to sphere
-            // max: .03299
-            // horizontal to sphere
-            var gHor = (g + aVert) * Math.Sin(GoodDeflectionAngle);
-            //gToCenterByThetaCos = gVpure / Math.Abs(Math.Cos(Theta));
-            //return basin.GoodDeflectionAngle * 1000;
-            // vertical to sphere
-            var aV = a * Math.Sin(Theta);
-            //return aV * 100;*/
-            //return aH * 100;
-            gHpure = gHor - aMeridian;
-
-            Delta_g_meridian = GoodDeflectionAngle;
-        }
-
-        public Point2D Qb
-        {
-            get { return new Point2D(r * Math.Sin(Beta.Value), r * Math.Cos(Beta.Value)); }
-            set { }
-        }
-
-        public static Line2D OQ(Point2D q)
-        {
-            return new Line2D(O, q);
-        }
 
         /// <summary>
         /// key - NeighborVert

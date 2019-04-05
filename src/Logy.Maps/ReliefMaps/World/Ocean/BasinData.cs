@@ -43,11 +43,9 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
                     var toBasin = PixMan.Pixels[man.Neibors.Get(to, basin)];
                     basin.Neibors[to] = toBasin;
 
-                    if (basin.Ring == toBasin.Ring)
-                    {
-                        basin.Type = to;
-                    }
-                    basin.MeanEdges[(int)to] = man.Neibors.MeanEdge(basin, to);
+                    basin.froms[(int)to] = basin.GetFromAndFillType(to, toBasin, HealpixManager);
+
+                    basin.MeanEdges[(int)to] = man.Neibors.MeanBoundary(basin, to);
 
                     //!var otherQprojection = toBasin.Q3.ProjectOn(surface);//TraverseCalm);
                     //var dx = toBasin.Qb.X * Math.Sin(basin.Lambda.Value - toBasin.Lambda.Value);
@@ -72,6 +70,7 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
                 }
                 foreach (Direction to in Enum.GetValues(typeof(Direction)))
                 {
+
                     basin.NormLengths[(int) to] = lengths[(int) to] / lengths.Sum();
                     var deltaAngle = (alphas[(int) to] - alphas[(int) NeighborManager.GetOpposite(to)]);
                     var koef = Math.Cos(1 * (Math.Abs(deltaAngle) - Math.PI));
@@ -123,9 +122,8 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
                     foreach (Direction to in Enum.GetValues(typeof(Direction)))
                     {
                         var toBasin = basin.Neibors[to];
-                        //basin.Hto[(int) to] = -basin.Surface.SignedDistanceTo(toBasin.Q3);
-                        basin.Hto[(int)to] = basin.Surface.IntersectionWith(basin.MeanEdges[(int)to])
-                            .DistanceTo(Basin3.O3);
+                        basin.Hto[(int) to] = -basin.Surface.SignedDistanceTo(toBasin.Q3);
+                        //basin.Hto[(int)to] = basin.Surface.IntersectionWith(basin.MeanEdges[(int)to]).DistanceTo(Basin3.O3);
 
                         /*                       
                         var HtoVer = basin.Intersect(toBasin);
@@ -133,7 +131,6 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
                         var deltaHfull = Math.Sin(gammas[(int) to]) * HtoVer + Math.Cos(gammas[(int) to]) * HtoHor;
                         basin.deltasH[(int) to] = deltaHfull * basin.NormLengths[(int) to];*/
 
-                        basin.froms[(int)to] = basin.GetFrom(to, HealpixManager);
                     }
                     /*if (basin.Ring > 1)
                     {

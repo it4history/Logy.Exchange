@@ -10,7 +10,10 @@ namespace Logy.Maps.ReliefMaps.World.Approximate
     {
         public override Projection Projection
         {
-            get { return Projection.Healpix2Equirectangular; }
+            get
+            {
+                return Projection.Healpix; //Healpix2Equirectangular // Equirectangular
+            }
         }
 
         public override SortedList<int, Color3> ColorsAbove
@@ -38,7 +41,7 @@ namespace Logy.Maps.ReliefMaps.World.Approximate
 
         protected override int K
         {
-            get { return 8; }
+            get { return 9; }
         }
 
         protected override DataForMap2D ApproximateData

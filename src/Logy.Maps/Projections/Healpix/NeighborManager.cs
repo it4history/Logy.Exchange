@@ -1,6 +1,7 @@
 ﻿using System;
 using Logy.Maps.Geometry;
 using Logy.Maps.ReliefMaps.World.Ocean;
+using Logy.MwAgent.Sphere;
 using MathNet.Spatial.Euclidean;
 
 namespace Logy.Maps.Projections.Healpix
@@ -174,21 +175,43 @@ namespace Logy.Maps.Projections.Healpix
             return newP;
         }
 
-        public Ray3D MeanEdge(HealCoor basin, Direction to)
+        /// <summary>
+        /// maybe better reuse code from 5.3 Pixel Boundaries
+        /// https://www.researchgate.net/publication/1801816_HEALPix_A_Framework_for_High-Resolution_Discretization_and_Fast_Analysis_of_Data_Distributed_on_the_Sphere
+        /// </summary>
+        public Ray3D MeanBoundary(HealCoor basin, Direction to)
         {
-            var toBasin = _healpixManager.GetCenter<HealCoor>(Get(to, basin));
-            var basinX = basin.X;
-            var toBasinX = toBasin.X;
-            if (basin.Ring == toBasin.Ring)
-            {
-                toBasinX = (toBasinX + basinX) / 2;
-            }
-            var basinY = basin.Y;
-            var toBasinY = _healpixManager.ExtremeByY(toBasin) ?? toBasin.Y;
+            var deltaX = 360d / (basin.PixelsCountInRing * 2);
+            var deltaXsign = GetHor(to) == (int)NeighborHor.East ? 1 : -1;
+            var sameRingBoundaryX = basin.X + deltaXsign * deltaX;
 
-            return new Ray3D(
-                Basin3.O3,
-                Matrixes.Rotate(new HealCoor(basinX, toBasinY)) + Matrixes.Rotate(new HealCoor(toBasinX, basinY)));
+            var toBasin = _healpixManager.GetCenter<HealCoor>(Get(to, basin));
+            var toBasinX = toBasin.X;
+            double? toBasinY;
+            if (basin.Ring == 1 && GetVert(to) == NeighborVert.North)
+                toBasinY = 90;
+            else if (basin.Ring == _healpixManager.RingsCount && GetVert(to) == NeighborVert.South)
+                toBasinY = -90;
+            else
+            {
+                var boundaryRing = basin.Ring + (GetVert(to) == NeighborVert.North ? -1 : 1);
+                var boundaryDeltaX = 360d / (_healpixManager.PixelsCountInRing(boundaryRing) * 2);
+                if (toBasin.Ring == basin.Ring)
+                {
+                    var toBasinOppositeHor = _healpixManager.GetCenter<HealCoor>(Get(GetOppositeHor(to), basin));
+                    toBasinY = toBasinOppositeHor.Y;
+                    toBasinX = toBasinOppositeHor.X + deltaXsign * boundaryDeltaX;
+                }
+                else
+                {
+                    toBasinY = toBasin.Y;
+                    toBasinX = toBasinX - deltaXsign * boundaryDeltaX;
+                }
+            }
+
+            var bisector = Matrixes.Rotate(new HealCoor(toBasinX, toBasinY.Value))
+                           + Matrixes.Rotate(new HealCoor(sameRingBoundaryX, basin.Y));
+            return new Ray3D(Basin3.O3, bisector);
         }
     }
 }
