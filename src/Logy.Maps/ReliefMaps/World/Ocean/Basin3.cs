@@ -101,7 +101,9 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
         public double[] NormLengths;
         public UnitVector3D SpecNormal;
         public Matrix<double> Matrix;
+
         public Ray3D[] MeanEdges;
+        public double[] InitialHto;
 
         internal override void PreInit(HealpixManager man)
         {
@@ -111,6 +113,7 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
             deltasH = new double[4];
             froms = new int[4];
             MeanEdges = new Ray3D[4];
+            InitialHto = new double[4];
 
             //todo why angle with opposite sign?
             var rotation = Matrix3D.RotationAroundYAxis(new Angle(-Phi, AngleUnit.Radians))
@@ -128,19 +131,7 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
             base.WaterReset();
             foreach (Direction direction in Enum.GetValues(typeof(Direction)))
                 Volumes[(int)direction] = false;
-        }
-
-        /// <summary>
-        /// angle, directed to East
-        /// </summary>
-        public double Delta_g_traverse { get; set; }
-
-        public override double RecalculateDelta_g(bool revert = true)
-        {
-            var aTraverse = base.RecalculateDelta_g(false);
-            Delta_g_traverse = Math.Atan(aTraverse / gVpure);
             _surface = null;
-            return 0;
         }
 
         /// <returns>typeof Direction</returns>
@@ -156,9 +147,22 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
                 || Ring == man.RingsCount && vert == NeighborVert.South
                 || Type == to)
             {
-                return (int) NeighborManager.GetOppositeHor(to);
+                return (int)NeighborManager.GetOppositeHor(to);
             }
-            return (int) NeighborManager.GetOpposite(to);
+            return (int)NeighborManager.GetOpposite(to);
+        }
+
+        /// <summary>
+        /// angle, directed to East
+        /// </summary>
+        public double Delta_g_traverse { get; set; }
+
+        public override double RecalculateDelta_g(bool revert = true)
+        {
+            var aTraverse = base.RecalculateDelta_g(false);
+            Delta_g_traverse = Math.Atan(aTraverse / gVpure);
+            _surface = null;
+            return 0;
         }
 
         #region reserved
@@ -178,5 +182,14 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
         /// </summary>
         public double Atrans { get; set; }
         #endregion
+
+        public double Metric(Basin3 toBasin, Direction to)
+        {
+            return
+                 //-Surface.SignedDistanceTo(toBasin.Q3)
+                //Surface.IntersectionWith(toBasin.RadiusRay).DistanceTo(toBasin.Q3)
+                Surface.IntersectionWith(MeanEdges[(int)to]).DistanceTo(O3)
+                - InitialHto[(int)to];
+        }
     }
 }

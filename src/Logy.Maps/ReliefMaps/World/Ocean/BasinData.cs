@@ -13,6 +13,7 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
     public class BasinData : WaterMoving<Basin3>
     {
         private readonly bool _withRelief;
+        private readonly bool _spheric;
 
         public override ReliefType ReliefBedType
         {
@@ -24,10 +25,13 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
             : base(man, null, min, max)
         {
             _withRelief = withRelief;
+            _spheric = spheric;
             ColorsMiddle = 0;
 
             foreach (var basin in PixMan.Pixels)
             {
+                RecalcDelta_g(basin);
+
                 // 0 .. almost Pi/2 
                 //Gammas = new double[4];
 
@@ -46,6 +50,8 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
                     basin.froms[(int)to] = basin.GetFromAndFillType(to, toBasin, HealpixManager);
 
                     basin.MeanEdges[(int)to] = man.Neibors.MeanBoundary(basin, to);
+
+                    basin.InitialHto[(int)to] = basin.Metric(toBasin, to);
 
                     //!var otherQprojection = toBasin.Q3.ProjectOn(surface);//TraverseCalm);
                     //var dx = toBasin.Qb.X * Math.Sin(basin.Lambda.Value - toBasin.Lambda.Value);
@@ -95,11 +101,6 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
                         basin.Depth = -hOQ;
                     }
                 }
-                if (spheric)
-                {
-                    basin.Delta_g_meridian = 0;
-                    basin.InitROfEllipse(man, Ellipsoid.MeanRadius);
-                }
             }
 
             foreach (var basin in PixMan.Pixels)
@@ -109,6 +110,15 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
                     var toBasin = basin.Neibors[to];
                     basin.Koef2[(int) to] = basin.Koef[(int) to] * toBasin.Koef[(int) NeighborManager.GetOpposite(to)];
                 }
+            }
+        }
+
+        internal void RecalcDelta_g(Basin3 basin)
+        {
+            if (_spheric)
+            {
+                basin.InitROfEllipse(HealpixManager, Ellipsoid.MeanRadius);
+                basin.Delta_g_meridian = basin.Delta_g_traverse = 0;
             }
         }
 
@@ -122,8 +132,8 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
                     foreach (Direction to in Enum.GetValues(typeof(Direction)))
                     {
                         var toBasin = basin.Neibors[to];
-                        basin.Hto[(int) to] = -basin.Surface.SignedDistanceTo(toBasin.Q3);
-                        //basin.Hto[(int)to] = basin.Surface.IntersectionWith(basin.MeanEdges[(int)to]).DistanceTo(Basin3.O3);
+                        var hto = basin.Metric(toBasin, to);
+                        basin.Hto[(int)to] = hto;
 
                         /*                       
                         var HtoVer = basin.Intersect(toBasin);

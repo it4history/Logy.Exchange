@@ -107,14 +107,17 @@ namespace Logy.Maps.ReliefMaps.World.Ocean.Tests
         public void HighBasin_31_sphere()
         {
             var data = new BasinData(new HealpixManager(2), false, true);
-            var basin = data.PixMan.Pixels[31];
-            basin.hOQ = 500;
-            foreach (var basin1 in data.PixMan.Pixels)
+            var basin3 = data.PixMan.Pixels[31];
+            foreach (var basin in data.PixMan.Pixels)
             {
                 for (var i = 0; i < 4; i++)
-                    Assert.IsFalse(basin1.Volumes[i]);
+                    Assert.IsFalse(basin.Volumes[i]);
             }
-//            data.Cycle();
+
+            basin3.hOQ = 500;
+
+            //            data.Cycle();
+            Cycle(data);
             Cycle(data);
             Cycle(data);
             Cycle(data);

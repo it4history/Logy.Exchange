@@ -1,7 +1,6 @@
 ﻿using System;
 using Logy.Maps.Geometry;
 using Logy.Maps.ReliefMaps.World.Ocean;
-using Logy.MwAgent.Sphere;
 using MathNet.Spatial.Euclidean;
 
 namespace Logy.Maps.Projections.Healpix

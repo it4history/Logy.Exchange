@@ -19,7 +19,7 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
         {
             if (K < 7)
             {
-                YResolution = 3;
+                YResolution = 4;
                 Scale = (7 - K) * 3;
             }
         }
@@ -43,26 +43,31 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
         }
 
         [Test]
-        public void Water_Sphere_HighBasin()
+        public void Water_HighBasin()
         {
             Data = new BasinData(HealpixManager, false, false //true for sphere
-            , -200d//, 2000d
+                , -200d//, 2000d
             );
 
-
-            var h = 15000d;
-            var p = HealpixManager.GetP(HealpixManager.Nside+5, HealpixManager.Nside * 2);
-            var basin = Data.PixMan.Pixels[p]; 
-            basin.hOQ = h;
-            Data.PixMan.Pixels[HealpixManager.GetP(HealpixManager.Nside, (int)(HealpixManager.Nside * 2.5))].hOQ = h;
+            var h = 500d;
+            var p = HealpixManager.GetP(HealpixManager.Nside + 5, HealpixManager.Nside * 2);
+            var basin3 = Data.PixMan.Pixels[p];
+            basin3.hOQ = h;
+            Data.PixMan.Pixels[HealpixManager
+                .GetP(HealpixManager.Nside, (int)(HealpixManager.Nside * 2.5))].hOQ = h;
 
             var framesCountBy2 = 10;
             Data.Cycle(2, delegate(int step) //240 for k8, 150 for k7, 100 for k6
             {
                 Data.Draw(Bmp, 0, null, YResolution, Scale);
-                Circle(basin);
+                Circle(basin3);
                 SaveBitmap(step + framesCountBy2);
             }, framesCountBy2);
+            foreach (var basin in Data.PixMan.Pixels)
+            {
+                if (basin.hOQ<-1000)
+                { }
+            }
         }
 
         [Test]
