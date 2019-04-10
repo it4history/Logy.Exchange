@@ -6,7 +6,7 @@ using NUnit.Framework;
 namespace Logy.Maps.ReliefMaps.World.Ocean.Tests
 {
     [TestFixture]
-    public class BasinDataTests
+    public class BasinDataDotProductTests
     {
         [Test]
         public void Hto_SameRing()
@@ -102,9 +102,13 @@ namespace Logy.Maps.ReliefMaps.World.Ocean.Tests
                 (basin.Beta - ne.Beta) / (se.Beta - basin.Beta),
                 basin.Hto[0] / basin.Hto[1]);
         }
+    }
 
+    [TestFixture]
+    public class BasinDataTests
+    {
         [Test]
-        public void HighBasin_31_sphere()
+        public void HighBasin_31()
         {
             var data = new BasinData(new HealpixManager(2), false, true);
             var basin3 = data.PixMan.Pixels[31];
@@ -127,19 +131,21 @@ namespace Logy.Maps.ReliefMaps.World.Ocean.Tests
         public void HighBasin_62_126_ellipse()
         {
             var data = new BasinData(new HealpixManager(2), false, false);
-    //        data.PixMan.Pixels[45].hOQ = 50;
+            data.PixMan.Pixels[45].hOQ = 500;
             Cycle(data);
             //Assert.AreEqual(99, data.PixMan.Pixels[33].hOQ, 1);
-            Assert.AreEqual(99, data.PixMan.Pixels[62].hOQ, 1);
-//            Assert.AreEqual(101, data.PixMan.Pixels[45].hOQ, 1);
-            Assert.AreEqual(99, data.PixMan.Pixels[77].hOQ, 1);
+            Assert.AreEqual(50, //// 99 for SignedDistanceTo, 50 for MeanEdges
+                data.PixMan.Pixels[62].hOQ, 1);
+            Assert.AreEqual(298, //// 203 for SignedDistanceTo, 298 for MeanEdges 
+                data.PixMan.Pixels[45].hOQ, 1);
+//            Assert.AreEqual(99, data.PixMan.Pixels[77].hOQ, 1);
             Cycle(data);
 
             data = new BasinData(new HealpixManager(2), false, false);
             data.PixMan.Pixels[126].hOQ = 500;
             Cycle(data);
-            Assert.AreEqual(99, data.PixMan.Pixels[110].hOQ, 1);
-            Assert.AreEqual(101, data.PixMan.Pixels[142].hOQ, 1);
+            Assert.AreEqual(50, data.PixMan.Pixels[110].hOQ, 1);
+            Assert.AreEqual(50, data.PixMan.Pixels[142].hOQ, 1);
         }
 
         private static void Cycle(BasinData data)
@@ -150,22 +156,6 @@ namespace Logy.Maps.ReliefMaps.World.Ocean.Tests
             {
                 if (basin.hOQ != 0)
                     Console.WriteLine("{0} {1:#.#}", basin.P, basin.hOQ);
-            }
-        }
-
-        [Test]
-        public void Intersect_2()
-        {
-            var data = new BasinData(new HealpixManager(2), false, true);
-            foreach (var basin in data.PixMan.Pixels)
-            {
-                foreach (Direction to in Enum.GetValues(typeof(Direction)))
-                {
-                    var toBasin = basin.Neibors[to];
-                    var from0to1 = basin.Surface.AbsoluteDistanceTo(toBasin.Q3);
-                    var from1to0 = toBasin.Surface.AbsoluteDistanceTo(basin.Q3);
-                    Assert.AreEqual(from1to0, from0to1, from1to0 / 100);
-                }
             }
         }
     }

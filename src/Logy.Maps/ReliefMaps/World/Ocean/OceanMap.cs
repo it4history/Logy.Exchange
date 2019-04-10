@@ -8,6 +8,7 @@ using Logy.Maps.Projections;
 using Logy.Maps.Projections.Healpix;
 using Logy.Maps.ReliefMaps.Map2D;
 using MathNet.Spatial.Euclidean;
+using MathNet.Spatial.Units;
 using NUnit.Framework;
 
 namespace Logy.Maps.ReliefMaps.World.Ocean
@@ -19,14 +20,14 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
         {
             if (K < 7)
             {
-                YResolution = 4;
+                YResolution = 3;
                 Scale = (7 - K) * 3;
             }
         }
 
         protected override int K
         {
-            get { return 4; }
+            get { return 5; }
         }
 
         protected override ImageFormat ImageFormat
@@ -45,8 +46,8 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
         [Test]
         public void Water_HighBasin()
         {
-            Data = new BasinData(HealpixManager, false, false //true for sphere
-                , -200d//, 2000d
+            Data = new BasinData(HealpixManager, false, true //true for sphere
+                , -20d//, 200d
             );
 
             var h = 500d;
@@ -57,7 +58,7 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
                 .GetP(HealpixManager.Nside, (int)(HealpixManager.Nside * 2.5))].hOQ = h;
 
             var framesCountBy2 = 10;
-            Data.Cycle(2, delegate(int step) //240 for k8, 150 for k7, 100 for k6
+            Data.Cycle(1, delegate(int step) //240 for k8, 150 for k7, 100 for k6
             {
                 Data.Draw(Bmp, 0, null, YResolution, Scale);
                 Circle(basin3);
@@ -74,7 +75,7 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
         public void Water_Gradient()
         {
             Data = new BasinData(HealpixManager, false, false //true for sphere
-                , -2000d //, 2000d
+                , -200d //, 2000d
             );
 
             var p = HealpixManager.GetP(HealpixManager.Nside - 1, HealpixManager.Nside * 1);
@@ -103,17 +104,21 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
         [Test]
         public void Water_ChangeRotation()
         {
-            Data = new BasinData(HealpixManager, false, true
-                , -200d//, 2000d
+            Data = new BasinData(HealpixManager, false, false
+                //, -200d//, 2000d
             );
             //// fill Basin.Visual and uncomment BasinData.GetAltitude to see centrifugal components
 
             EllipsoidAcceleration.AxisOfRotation =
-                new UnitVector3D(1, 0, 0);
-                ////Basin.Oz.Rotate(new UnitVector3D(1, 0, 0), new Angle(15.0, AngleUnit.Degrees))
+                //new UnitVector3D(1, 0, 0);
+                //                Basin3.Oz.Rotate(new UnitVector3D(1, 0, 0), new Angle(15.0, AngleUnit.Degrees))
+                Basin3.Oz
+                    .Rotate(new UnitVector3D(0, 1, 0), new Angle(17, AngleUnit.Degrees))
+                    .Rotate(new UnitVector3D(0, 0, 1), new Angle(-40, AngleUnit.Degrees))
+                ;
             ChangeRotation(-HealpixManager.Nside, 0);//double.MaxValue);
-            var framesCountBy2 = 500;
-            Data.Cycle(1, delegate (int step)
+            var framesCountBy2 = 50;
+            Data.Cycle(15, delegate (int step)
             {
                 Data.Draw(Bmp, 0, null, YResolution, Scale);
                 SaveBitmap(step + framesCountBy2);
@@ -150,12 +155,6 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
             );
             Data.ColorsMiddle = null;
 
-            /*EllipsoidAcceleration.AxisOfRotation =
-                new UnitVector3D(1, 0, 0);/*, new Angle(15.0, AngleUnit.Degrees));
-                Basin.Oz
-                    .Rotate(new UnitVector3D(0, 1, 0), new Angle(17, AngleUnit.Degrees))
-                    .Rotate(new UnitVector3D(0, 0, 1), new Angle(-40, AngleUnit.Degrees))
-                    ;*/
 
             Basin3 basin = null;
             // basin =Data.PixMan.Pixels[HealpixManager.GetP() / 2];
@@ -175,7 +174,7 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
                 if (Data.Colors != null)
                     Data.Colors.DefaultColor = Color.FromArgb(255, 174, 201);
                 Data.Draw(Bmp, 0, null, YResolution, Scale);
-                   Circle(basin, .03);
+                Circle(basin, .03);
                 SaveBitmap(step + framesCountBy2);
             }, framesCountBy2);
         }

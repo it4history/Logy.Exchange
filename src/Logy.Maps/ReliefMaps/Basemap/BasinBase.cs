@@ -158,6 +158,7 @@ namespace Logy.Maps.ReliefMaps.Basemap
         /// </summary>
         public double? Depth { get; set; }
 
+        // h_{water}
         public double WaterHeight
         {
             get { return hOQ + Depth.Value; }

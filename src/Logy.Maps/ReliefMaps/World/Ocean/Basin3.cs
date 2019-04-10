@@ -57,22 +57,22 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
             _actualQ3 = false;
         }
 
-        private Plane? _surface;
-        public Plane Surface
+        private Plane? _s_q;
+        public Plane S_q
         {
             get
             {
-                if (_surface == null)
+                if (_s_q == null)
                 {
                     var normal = Matrixes.RotationVector; // NormalCalm
-                    // Matrixes.Rotate analog in radians
+                    // Matrixes.Rotate() analog in radians
                     normal = normal.Rotate(new UnitVector3D(0, 1, 0),
                         new Angle(Math.Sign(Vartheta) * Delta_g_meridian + Phi, AngleUnit.Radians));
                     normal = normal.Rotate(new UnitVector3D(0, 0, 1),
                         new Angle(-Delta_g_traverse - Lambda.Value, AngleUnit.Radians));
-                    _surface = new Plane(normal, r);
+                    _s_q = new Plane(normal, Q3); //r  tested in BasinTests
                 }
-                return (Plane)_surface;
+                return (Plane)_s_q;
             }
         }
 
@@ -94,12 +94,7 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
         /// </summary>
         public Direction? Type { get; set; }
 
-        public double[] deltasH;
         public int[] froms;
-        public double[] Koef;
-        public double[] Koef2;
-        public double[] NormLengths;
-        public UnitVector3D SpecNormal;
         public Matrix<double> Matrix;
 
         public Ray3D[] MeanEdges;
@@ -110,7 +105,6 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
             base.PreInit(man);
             Hto = new double[4];
             Volumes = new bool[4];
-            deltasH = new double[4];
             froms = new int[4];
             MeanEdges = new Ray3D[4];
             InitialHto = new double[4];
@@ -120,10 +114,6 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
                            * Matrix3D.RotationAroundZAxis(new Angle(Lambda.Value, AngleUnit.Radians));
 
             Matrix = rotation.Transpose();
-
-            Koef = new double[4];
-            Koef2 = new double[4];
-            NormLengths = new double[4];
         }
 
         public override void WaterReset()
@@ -131,7 +121,9 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
             base.WaterReset();
             foreach (Direction direction in Enum.GetValues(typeof(Direction)))
                 Volumes[(int)direction] = false;
-            _surface = null;
+
+            _s_q = null;
+            _actualQ3 = false;
         }
 
         /// <returns>typeof Direction</returns>
@@ -161,7 +153,7 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
         {
             var aTraverse = base.RecalculateDelta_g(false);
             Delta_g_traverse = Math.Atan(aTraverse / gVpure);
-            _surface = null;
+            _s_q = null;
             return 0;
         }
 
@@ -186,10 +178,11 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
         public double Metric(Basin3 toBasin, Direction to)
         {
             return
-                 //-Surface.SignedDistanceTo(toBasin.Q3)
-                //Surface.IntersectionWith(toBasin.RadiusRay).DistanceTo(toBasin.Q3)
-                Surface.IntersectionWith(MeanEdges[(int)to]).DistanceTo(O3)
-                - InitialHto[(int)to];
+                -S_q.SignedDistanceTo(toBasin.Q3) // bad for BasinDataTests.HighBasin_31_sphere 
+                //S_q.IntersectionWith(toBasin.RadiusRay).DistanceTo(toBasin.Q3)
+                //S_q.IntersectionWith(MeanEdges[(int)to]).DistanceTo(O3)
+                - InitialHto[(int)to] // needed for BasinDataTests.HighBasin_31
+                ;
         }
     }
 }
