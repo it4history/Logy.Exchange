@@ -7,7 +7,6 @@ using Logy.Maps.Coloring;
 using Logy.Maps.Healpix;
 using Logy.Maps.Projections.Healpix;
 using Logy.Maps.ReliefMaps.Basemap;
-using Logy.Maps.ReliefMaps.Meridian;
 using NUnit.Framework;
 
 namespace Logy.Maps.ReliefMaps.Water

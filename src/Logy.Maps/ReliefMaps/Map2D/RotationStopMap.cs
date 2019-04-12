@@ -17,6 +17,15 @@ namespace Logy.Maps.ReliefMaps.Map2D
         protected readonly List<int> ChangeLines = new List<int>();
         public WaterMoving<T> Data;
 
+        public RotationStopMap()
+        {
+            if (K < 7)
+            {
+                YResolution = 3;
+                Scale = (7 - K) * 3;
+            }
+        }
+
         [SetUp]
         public virtual void SetUp()
         {
@@ -33,11 +42,14 @@ namespace Logy.Maps.ReliefMaps.Map2D
         {
             if (Data.Colors != null)
             {
-                DrawLegend(Data, Bmp);
-                foreach (var line in ChangeLines)
+                if (K > 3)
                 {
-                    for (var y = -10; y < 15; y++)
-                        Bmp.SetPixel(line, YResolution * Scale * HealpixManager.Nside + y, Color.Black);
+                    DrawLegend(Data, Bmp);
+                    foreach (var line in ChangeLines)
+                    {
+                        for (var y = -10; y < 15; y++)
+                            Bmp.SetPixel(line, YResolution * Scale * HealpixManager.Nside + y, Color.Black);
+                    }
                 }
                 return SaveBitmap(Bmp, Data.Colors, Data.Accuracy, step);
             }
@@ -53,7 +65,6 @@ namespace Logy.Maps.ReliefMaps.Map2D
         {
             get { return ImageFormat.Png; }
         }
-
 
         protected void ChangeRotation(int step, double koef = 10000)
         {

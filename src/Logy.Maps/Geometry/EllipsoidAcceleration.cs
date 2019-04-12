@@ -13,8 +13,10 @@ namespace Logy.Maps.Geometry
         public const double GOnPoles = 9.8321849378;
         #endregion
 
+        public const double NormalSiderealDay = 86164.100637;
+
         // Period of rotation(sidereal day) in seconds
-        public static double SiderealDayInSeconds = 86164.100637;
+        public static double SiderealDayInSeconds = NormalSiderealDay;
 
         public static UnitVector3D AxisOfRotation = Basin3.Oz;
 
@@ -38,7 +40,7 @@ namespace Logy.Maps.Geometry
         }
 
         /// <summary>
-        /// https://ru.wikipedia.org/wiki/Òåîðåìà_Êëåðî#Óðàâíåíèå_Ñîìèëüÿíû
+        /// https://ru.wikipedia.org/wiki/Теорема_Клеро#Уравнение_Сомильяны
         /// includes Centrifugal
         /// </summary>
         /// <param name="k">(b * Gp - a * Ge) / a * Ge</param>

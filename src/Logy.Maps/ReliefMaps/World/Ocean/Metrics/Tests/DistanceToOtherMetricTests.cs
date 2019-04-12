@@ -3,13 +3,13 @@ using System;
 using Logy.Maps.Projections.Healpix;
 using NUnit.Framework;
 
-namespace Logy.Maps.ReliefMaps.World.Ocean.Tests
+namespace Logy.Maps.ReliefMaps.World.Ocean.Metrics.Tests
 {
     [TestFixture]
-    public class BasinTests
+    public class DistanceToOtherMetricTests
     {
         [Test]
-        public void Basin_S_q_AbsoluteDistanceTo_METRIC()
+        public void AbsoluteDistanceTo_Metric()
         {
             var man = new HealpixManager(0);
             var basin = man.GetCenter<Basin3>(0);

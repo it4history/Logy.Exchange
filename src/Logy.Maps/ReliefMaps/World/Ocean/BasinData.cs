@@ -5,14 +5,22 @@ using Logy.Maps.ReliefMaps.Water;
 
 namespace Logy.Maps.ReliefMaps.World.Ocean
 {
-    public class BasinData : WaterMoving<Basin3>
+    public class BasinData : BasinDataBase<Basin3>
+    {
+        public BasinData(HealpixManager man, bool withRelief = false, bool spheric = false,
+            double? min = null, double? max = null) : base(man, withRelief, spheric, min, max)
+        {
+        }
+    }
+
+    public class BasinDataBase<T> : WaterMoving<T> where T : Basin3
     {
         public override ReliefType ReliefBedType
         {
             get { return ReliefType.Tbi; }
         }
 
-        public BasinData(HealpixManager man, bool withRelief = false, bool spheric = false,
+        public BasinDataBase(HealpixManager man, bool withRelief = false, bool spheric = false,
             double? min = null, double? max = null)
             : base(man, null, min, max)
         {
@@ -34,9 +42,9 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
                     basin.froms[(int)to] = basin.GetFromAndFillType(to, toBasin, HealpixManager);
 
                     basin.MeanEdges[(int)to] = man.Neibors.MeanBoundary(basin, to);
-
                     basin.InitialHto[(int)to] = basin.Metric(toBasin, to);
                 }
+                basin.CorrectionSurface();
 
                 if (withRelief)
                 {
@@ -72,30 +80,27 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
             }
         }
 
-        public override double? GetAltitude(Basin3 basin)
+        public override double? GetAltitude(T basin)
         {
             //return basin.Visual * 1000;
             if (basin.HasWater())
             {
-                if (basin.Type==Direction.Nw)
-                { }
                 foreach (Direction to in Enum.GetValues(typeof(Direction)))
                 {
                     var toBasin = basin.Neibors[to];
-
                     var @from = basin.froms[(int)to];
                     var koef 
                         = .25;
                         //= basin.Koef[(int)to] / basin.Koef.Sum();
-                    //var koef = basin.Koef2[(int)to] / basin.Koef2.Sum(); koef = koef2;
+                        //= basin.Koef2[(int)to] / basin.Koef2.Sum(); koef = koef2;
 
                     //todo balance deltaH relative to basin.WaterHeight
                     var height = basin.Hto[(int)to] - toBasin.Hto[(int)@from];
 
-                    var moved = Water.PutV(basin, toBasin,
+                    var movedFromBasin = Water.PutV(basin, toBasin,
                         height * koef, 
                         (int) to, @from);
-                    if (Math.Abs(moved) > 0)
+                    if (Math.Abs(movedFromBasin) > 0)
                     {
                     }
                 }

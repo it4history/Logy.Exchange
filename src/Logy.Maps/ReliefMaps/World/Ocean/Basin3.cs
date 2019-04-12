@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using Logy.Maps.Geometry;
 using Logy.Maps.Projections.Healpix;
 using Logy.Maps.ReliefMaps.Basemap;
@@ -57,6 +59,9 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
             _actualQ3 = false;
         }
 
+        /// <summary>
+        /// Top face; surface; plane
+        /// </summary>
         private Plane? _s_q;
         public Plane S_q
         {
@@ -67,9 +72,9 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
                     var normal = Matrixes.RotationVector; // NormalCalm
                     // Matrixes.Rotate() analog in radians
                     normal = normal.Rotate(new UnitVector3D(0, 1, 0),
-                        new Angle(Math.Sign(Vartheta) * Delta_g_meridian + Phi, AngleUnit.Radians));
+                        new Angle(Math.Sign(Vartheta) * (Delta_g_meridian+Delta_s_meridian) + Phi, AngleUnit.Radians));
                     normal = normal.Rotate(new UnitVector3D(0, 0, 1),
-                        new Angle(-Delta_g_traverse - Lambda.Value, AngleUnit.Radians));
+                        new Angle(-(Delta_g_traverse+Delta_s_traverse) - Lambda.Value, AngleUnit.Radians));
                     _s_q = new Plane(normal, Q3); //r  tested in BasinTests
                 }
                 return (Plane)_s_q;
@@ -175,12 +180,45 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
         public double Atrans { get; set; }
         #endregion
 
-        public double Metric(Basin3 toBasin, Direction to)
+        public virtual double Metric(Basin3 toBasin, Direction to)
+        {
+            return -S_q.SignedDistanceTo(toBasin.Q3) // bad for BasinDataTests.HighBasin_31_sphere 
+                   //S_q.IntersectionWith(toBasin.RadiusRay).DistanceTo(toBasin.Q3)
+                   - InitialHto[(int) to] // needed for BasinDataTests.HighBasin_31
+                ;
+        }
+
+        public double Delta_s_meridian { get; set; }
+        public double Delta_s_traverse { get; set; }
+
+        /// <summary>
+        /// InitialHto and MeanEdges are filled
+        /// </summary>
+        internal void CorrectionSurface()
+        {
+            var diff = new Dictionary<int, double>();
+            for (int to = 0; to < 4; to++)
+            {
+                diff.Add(to, Math.Abs(InitialHto[to] - InitialHto.Average()));
+            }
+
+            var points = (from pair in diff
+                orderby pair.Value descending
+                //select pair.Value
+                select MeanEdges[pair.Key].Direction.ToPoint3D()
+            ).Take(3).ToArray();
+            var correctionVector = new Plane(points[0], points[1], points[2]).Normal * Matrix;
+            //Delta_s_meridian = (Vartheta < 0 ? 1 : -1) * correctionVector[2] / 1;
+            //Delta_s_traverse = -correctionVector[1] / 1;
+        }
+    }
+
+    public class Basin_MeanEdge : Basin3
+    {
+        public override double Metric(Basin3 toBasin, Direction to)
         {
             return
-                -S_q.SignedDistanceTo(toBasin.Q3) // bad for BasinDataTests.HighBasin_31_sphere 
-                //S_q.IntersectionWith(toBasin.RadiusRay).DistanceTo(toBasin.Q3)
-                //S_q.IntersectionWith(MeanEdges[(int)to]).DistanceTo(O3)
+                S_q.IntersectionWith(MeanEdges[(int)to]).DistanceTo(O3)
                 - InitialHto[(int)to] // needed for BasinDataTests.HighBasin_31
                 ;
         }
