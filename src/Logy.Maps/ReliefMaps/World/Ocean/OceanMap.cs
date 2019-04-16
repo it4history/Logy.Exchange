@@ -7,6 +7,7 @@ using Logy.Maps.Geometry;
 using Logy.Maps.Projections;
 using Logy.Maps.Projections.Healpix;
 using Logy.Maps.ReliefMaps.Map2D;
+using Logy.Maps.ReliefMaps.World.Ocean.Tests;
 using MathNet.Spatial.Euclidean;
 using MathNet.Spatial.Units;
 using NUnit.Framework;
@@ -16,18 +17,9 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
     [TestFixture]
     public class OceanMap : RotationStopMap<Basin3>
     {
-        public OceanMap()
-        {
-            if (K < 7)
-            {
-                YResolution = 3;
-                Scale = (7 - K) * 3;
-            }
-        }
-
         protected override int K
         {
-            get { return 5; }
+            get { return 4; }
         }
 
         protected override ImageFormat ImageFormat
@@ -102,27 +94,51 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
         }
 
         [Test]
-        public void Water_ChangeRotation()
+        public void Hto_Spheric()
+        {
+            Data = new BasinData(new HealpixManager(2), false, true);
+
+            Data.GradientAndHeightCrosses();
+            InitiialHtoRecalc();
+
+            var basin0 = Data.PixMan.Pixels[0];
+            // 44 44 40 40
+            //Assert.AreEqual(644, basin0.InitialHto[0] / 10000, 1);
+            Assert.AreEqual(0, basin0.RadiusLine.Direction.AngleTo(basin0.S_q.Normal).Degrees);
+
+            var basin5 = Data.PixMan.Pixels[5]; // 5,7: 46 42 40 43  
+            // 14,17: 47 41 40 45
+            // 27,31: 47 41 42 42
+
+            ChangeRotation(-HealpixManager.Nside, double.MaxValue);
+            Assert.AreEqual(0, basin0.Hto[0]);
+
+            //Data.GradientAndHeightCrosses();
+            Assert.AreEqual(0, basin0.Hto[0]);
+
+            BasinDataTests.Cycle(Data);
+        }
+
+        private void InitiialHtoRecalc()
+        {
+            foreach (var basin in Data.PixMan.Pixels)
+            {
+                foreach (Direction to in Enum.GetValues(typeof(Direction)))
+                {
+                    basin.InitialHto[(int)to] = 0;
+                    basin.InitialHto[(int)to] = basin.Metric(null, to);
+                }
+            }
+        }
+
+        [Test]
+        public override void Water_ChangeRotation()
         {
             Data = new BasinData(HealpixManager, false, false
                 //, -200d//, 2000d
             );
-            //// fill Basin.Visual and uncomment BasinData.GetAltitude to see centrifugal components
 
-            EllipsoidAcceleration.AxisOfRotation =
-                //new UnitVector3D(1, 0, 0);
-                //                Basin3.Oz.Rotate(new UnitVector3D(1, 0, 0), new Angle(15.0, AngleUnit.Degrees))
-                Basin3.Oz
-                    .Rotate(new UnitVector3D(0, 1, 0), new Angle(17, AngleUnit.Degrees))
-                    .Rotate(new UnitVector3D(0, 0, 1), new Angle(-40, AngleUnit.Degrees))
-                ;
-            ChangeRotation(-HealpixManager.Nside, 0);//double.MaxValue);
-            var framesCountBy2 = 50;
-            Data.Cycle(15, delegate (int step)
-            {
-                Data.Draw(Bmp, 0, null, YResolution, Scale);
-                SaveBitmap(step + framesCountBy2);
-            }, framesCountBy2);
+            base.Water_ChangeRotation();
         }
 
 
@@ -153,7 +169,7 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
             Data = new BasinData(HealpixManager, false, false
                 // ,-3000d, 3000d
             );
-            Data.ColorsMiddle = null;
+            //Data.ColorsMiddle = null;
 
 
             Basin3 basin = null;
@@ -169,7 +185,7 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
             }
             ChangeRotation(-HealpixManager.Nside, double.MaxValue);
             var framesCountBy2 = 200;
-            Data.Cycle(50, delegate(int step) 
+            Data.Cycle(1, delegate(int step) 
             {
                 if (Data.Colors != null)
                     Data.Colors.DefaultColor = Color.FromArgb(255, 174, 201);

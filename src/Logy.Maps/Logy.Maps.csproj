@@ -118,7 +118,7 @@
     <Compile Include="IMapsContract.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ReliefMaps\World\Data\WorldAltitudesData.cs" />
-    <Compile Include="ReliefMaps\World\Ocean\Metrics\Tests\MeanEdgeMetricTests.cs" />
+    <Compile Include="ReliefMaps\World\Ocean\Metrics\Tests\SignedDistanceTests.cs" />
     <Compile Include="ReliefMaps\World\Ocean\OceanMap.cs" />
     <Compile Include="ReliefMaps\World\Ocean\Tests\BasinDataTests.cs" />
     <Compile Include="ReliefMaps\World\Ocean\Metrics\Tests\DistanceToOtherMetricTests.cs" />

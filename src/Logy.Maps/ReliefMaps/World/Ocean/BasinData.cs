@@ -42,9 +42,13 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
                     basin.froms[(int)to] = basin.GetFromAndFillType(to, toBasin, HealpixManager);
 
                     basin.MeanEdges[(int)to] = man.Neibors.MeanBoundary(basin, to);
+                }
+                //basin.CorrectionSurface();
+                foreach (Direction to in Enum.GetValues(typeof(Direction)))
+                {
+                    var toBasin = basin.Neibors[to];
                     basin.InitialHto[(int)to] = basin.Metric(toBasin, to);
                 }
-                basin.CorrectionSurface();
 
                 if (withRelief)
                 {
@@ -92,7 +96,6 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
                     var koef 
                         = .25;
                         //= basin.Koef[(int)to] / basin.Koef.Sum();
-                        //= basin.Koef2[(int)to] / basin.Koef2.Sum(); koef = koef2;
 
                     //todo balance deltaH relative to basin.WaterHeight
                     var height = basin.Hto[(int)to] - toBasin.Hto[(int)@from];

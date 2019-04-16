@@ -7,6 +7,9 @@ using Logy.Maps.Geometry;
 using Logy.Maps.Projections;
 using Logy.Maps.ReliefMaps.Basemap;
 using Logy.Maps.ReliefMaps.Water;
+using Logy.Maps.ReliefMaps.World.Ocean;
+using MathNet.Spatial.Euclidean;
+using MathNet.Spatial.Units;
 using NUnit.Framework;
 
 namespace Logy.Maps.ReliefMaps.Map2D
@@ -21,7 +24,7 @@ namespace Logy.Maps.ReliefMaps.Map2D
         {
             if (K < 7)
             {
-                YResolution = 3;
+                YResolution = 4;
                 Scale = (7 - K) * 3;
             }
         }
@@ -66,6 +69,29 @@ namespace Logy.Maps.ReliefMaps.Map2D
             get { return ImageFormat.Png; }
         }
 
+        public virtual void Water_ChangeRotation()
+        {
+            //// fill Basin.Visual and uncomment BasinData.GetAltitude to see centrifugal components
+
+            EllipsoidAcceleration.AxisOfRotation =
+                //new UnitVector3D(1, 0, 0);
+                //                Basin3.Oz.Rotate(new UnitVector3D(1, 0, 0), new Angle(15.0, AngleUnit.Degrees))
+                Basin3.Oz
+                    .Rotate(new UnitVector3D(0, 1, 0), new Angle(17, AngleUnit.Degrees))
+                    .Rotate(new UnitVector3D(0, 0, 1), new Angle(-40, AngleUnit.Degrees))
+                ;
+
+            //InitiialHtoRecalc();
+
+            ChangeRotation(-HealpixManager.Nside, 0);
+            var framesCountBy2 = 50;
+            Data.Cycle(15, delegate (int step)
+            {
+                Data.Draw(Bmp, 0, null, YResolution, Scale);
+                SaveBitmap(step + framesCountBy2);
+            }, framesCountBy2);
+        }
+
         protected void ChangeRotation(int step, double koef = 10000)
         {
             if (koef > 0 || -koef < EllipsoidAcceleration.SiderealDayInSeconds)
@@ -78,9 +104,8 @@ namespace Logy.Maps.ReliefMaps.Map2D
 
                 var eqProjection = new Equirectangular(HealpixManager, YResolution);
                 var point = eqProjection.Offset(Data.PixMan.Pixels[HealpixManager.RingsCount / 2]);
-                var line = (int) (point.X + step);
+                var line = (int)(point.X + step);
                 ChangeLines.Add(Math.Max(0, line));
-                //Console.WriteLine(Ellipsoid.SiderealDayInSeconds);
             }
         }
     }
