@@ -12,13 +12,13 @@ namespace Logy.Maps.ReliefMaps.World.Ocean.Metrics.Tests
         }
 
         [Test]
-        public override void Water_ChangeRotation()
+        public override void Water_ChangeAxis17()
         {
             Data = new BasinDataBase<BasinSignedDistance>(HealpixManager, false, false
                 //, -200d //, 2000d
             );
 
-            base.Water_ChangeRotation();
+            base.Water_ChangeAxis17();
         }
     }
 }

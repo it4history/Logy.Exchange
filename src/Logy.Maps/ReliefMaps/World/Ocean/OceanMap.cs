@@ -3,13 +3,10 @@ using System;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
-using Logy.Maps.Geometry;
 using Logy.Maps.Projections;
 using Logy.Maps.Projections.Healpix;
 using Logy.Maps.ReliefMaps.Map2D;
 using Logy.Maps.ReliefMaps.World.Ocean.Tests;
-using MathNet.Spatial.Euclidean;
-using MathNet.Spatial.Units;
 using NUnit.Framework;
 
 namespace Logy.Maps.ReliefMaps.World.Ocean
@@ -19,7 +16,7 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
     {
         protected override int K
         {
-            get { return 4; }
+            get { return 5; }
         }
 
         protected override ImageFormat ImageFormat
@@ -123,7 +120,7 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
         {
             foreach (var basin in Data.PixMan.Pixels)
             {
-                foreach (Direction to in Enum.GetValues(typeof(Direction)))
+                for (int to = 0; to < 4; to++)
                 {
                     basin.InitialHto[(int)to] = 0;
                     basin.InitialHto[(int)to] = basin.Metric(null, to);
@@ -132,35 +129,13 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
         }
 
         [Test]
-        public override void Water_ChangeRotation()
+        public override void Water_ChangeAxis17()
         {
             Data = new BasinData(HealpixManager, false, false
-                //, -200d//, 2000d
+                , -2600d, 2700d
             );
 
-            base.Water_ChangeRotation();
-        }
-
-
-        private void Circle(Basin3 basin, double r = .2)
-        {
-            if (basin != null)
-            {
-                var width = .05;//k4
-                foreach (var pixel in Data.PixMan.Pixels)
-                {
-                    var healCoor = (HealCoor) pixel;
-                    var dist = basin.DistanceTo(healCoor);
-                    if (Data.Colors != null
-                        && dist >= r - width && dist <= r + width)
-                    {
-                        var eqProjection = new Equirectangular(HealpixManager, YResolution);
-                        var point = eqProjection.Offset(healCoor);
-                        Data.Colors.SetPixelOnBmp(null, Bmp,
-                            (int) (point.X), (int) point.Y, Scale);
-                    }
-                }
-            }
+            base.Water_ChangeAxis17();
         }
 
         [Test]
@@ -172,25 +147,11 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
             //Data.ColorsMiddle = null;
 
 
-            Basin3 basin = null;
-            // basin =Data.PixMan.Pixels[HealpixManager.GetP() / 2];
-            var accur = 1.5;
-            foreach (var b in Data.PixMan.Pixels)
-            {
-                if (Math.Abs(b.X - (-40)) < accur  && Math.Abs(b.Y - (73)) < accur )
-                {
-                    basin = b;
-                    break;
-                }
-            }
             ChangeRotation(-HealpixManager.Nside, double.MaxValue);
             var framesCountBy2 = 200;
             Data.Cycle(1, delegate(int step) 
             {
-                if (Data.Colors != null)
-                    Data.Colors.DefaultColor = Color.FromArgb(255, 174, 201);
                 Data.Draw(Bmp, 0, null, YResolution, Scale);
-                Circle(basin, .03);
                 SaveBitmap(step + framesCountBy2);
             }, framesCountBy2);
         }

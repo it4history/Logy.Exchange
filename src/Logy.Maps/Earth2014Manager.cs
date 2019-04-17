@@ -18,6 +18,7 @@ namespace Logy.Maps
         /// used if _stream == null
         /// </summary>
         private readonly byte[] _buf;
+        private readonly bool _readAllAtStart = false;
 
         private readonly ReliefType _reliefType;
 
@@ -80,7 +81,7 @@ namespace Logy.Maps
             _reliefType = type;
             _accuracyMin = accuracyMin;
             _shape = shape;
-            if (false /*readAllAtStart*/)
+            if (_readAllAtStart)
             {
                 using (var stream = new FileStream(Filepath, FileMode.Open))
                 {

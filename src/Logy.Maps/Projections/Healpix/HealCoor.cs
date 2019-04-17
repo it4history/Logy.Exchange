@@ -4,7 +4,7 @@ using Logy.MwAgent.Sphere;
 
 namespace Logy.Maps.Projections.Healpix
 {
-///    [DataContract(Namespace = UrlsManager.Namespace)]
+    /// [DataContract(Namespace = UrlsManager.Namespace)]
     public class HealCoor : Coor
     {
         /// <summary>
@@ -35,23 +35,23 @@ namespace Logy.Maps.Projections.Healpix
         /// from 0 to Npix-1
         /// </summary>
         public int P { get; set; }
-        /// <summary>
-        /// from 0
-        /// </summary>
 
         /// <summary>
         /// from 1
         /// </summary>
         public int PixelInRing { get; set; }
+
+        #region cached in PreInit
+        /// <summary>
+        /// null if on equator bell
+        /// </summary>
+        public bool? NorthCap { get; set; }
+
         /// <summary>
         /// cached from HealpixManager.PixelsCountInRing in PreInit
         /// </summary>
         public int PixelsCountInRing { get; set; }
-        /// <summary>
-        /// cached in PreInit
-        /// null if on equator bell
-        /// </summary>
-        public bool? NorthCap { get; set; }
+        #endregion
 
         public int EastInRing
         {
@@ -65,6 +65,11 @@ namespace Logy.Maps.Projections.Healpix
 
         public double Longitude { get { return X; } set { X = value; } }
         public double Latitude { get { return Y; } set { Y = value; } }
+
+        /// <summary>
+        /// Pi/2 .. -Pi/2; Pi/2 is North pole
+        /// </summary>
+        public double Phi { get { return (Math.PI / 2) - Beta.Value; } }
 
         /* data in spherical geocoordinates!!!
 5 arc-min grids contain 2,160 x 4,320 data points, are 18 MB in size and extend from
@@ -87,11 +92,6 @@ Each grid file contains 10,800 x 21,600 = 233,280,000 records */
             PixelsCountInRing = man.PixelsCountInRing(Ring);
             NorthCap = man.Northcap(Ring);
         }
-
-        /// <summary>
-        /// Pi/2 .. -Pi/2; Pi/2 is North pole
-        /// </summary>
-        public double Phi { get { return Math.PI / 2 - Beta.Value; } }
 
         /// <returns>angle</returns>
         public double DistanceTo(HealCoor coor)

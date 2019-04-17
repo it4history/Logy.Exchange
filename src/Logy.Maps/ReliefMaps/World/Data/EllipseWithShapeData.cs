@@ -13,14 +13,14 @@ namespace Logy.Maps.ReliefMaps.World.Data
             get { return ReliefType.Bed; }
         }
 
-        protected override bool IsReliefBedShape
-        {
-            get { return true; }
-        }
-
         public override int Accuracy
         {
             get { return 1; }
+        }
+
+        protected override bool IsReliefBedShape
+        {
+            get { return true; }
         }
     }
 }

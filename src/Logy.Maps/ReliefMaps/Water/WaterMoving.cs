@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Drawing;
 using Logy.Maps.Approximations;
 using Logy.Maps.Coloring;
-using Logy.Maps.Healpix;
 using Logy.Maps.Projections.Healpix;
 using Logy.Maps.ReliefMaps.Basemap;
 using NUnit.Framework;
@@ -81,12 +80,19 @@ namespace Logy.Maps.ReliefMaps.Water
                     if (previousMin.HasValue && previousMax.HasValue)
                         if (Colors.Min < previousMin || Colors.Max > previousMax)
                         {
+                            if (Colors.Max < previousMax)
+                            {
+                                Console.WriteLine("wag detected");
+                            }
                             //Console.WriteLine("Max was {1:#.}, now {2:.#}, min {3:.#}", 0, previousMax, Colors.Max, Colors.Min);
                         }
-                        else if (!MinDefault.HasValue && !MaxDefault.HasValue) /*not IsDynamicScale*/
+                        else
                         {
-                            Console.WriteLine("integration finished at step {0}", step);
-                            break;
+                            if (!MinDefault.HasValue && !MaxDefault.HasValue) /*not IsDynamicScale*/
+                            {
+                                Console.WriteLine("integration finished at step {0}", step);
+                                break;
+                            }
                         }
                     previousMax = Colors.Max;
                     previousMin = Colors.Min;

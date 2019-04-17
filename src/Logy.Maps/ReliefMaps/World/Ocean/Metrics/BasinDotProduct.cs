@@ -7,7 +7,7 @@ using Logy.Maps.ReliefMaps.Meridian;
 using Logy.Maps.ReliefMaps.Water;
 using MathNet.Spatial.Euclidean;
 
-namespace Logy.Maps.ReliefMaps.World.Ocean
+namespace Logy.Maps.ReliefMaps.World.Ocean.Metrics
 {
     /// <summary>
     /// reserved class
@@ -163,7 +163,7 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
 
                     basin.MeanEdges[(int)to] = man.Neibors.MeanBoundary(basin, to);
 
-                    basin.InitialHto[(int)to] = basin.Metric(toBasin, to);
+                    basin.InitialHto[(int)to] = basin.Metric(toBasin, (int)to);
 
                     //!var otherQprojection = toBasin.Q3.ProjectOn(surface);//TraverseCalm);
                     //var dx = toBasin.Qb.X * Math.Sin(basin.Lambda.Value - toBasin.Lambda.Value);
@@ -241,7 +241,7 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
                 basin.WaterReset();
                 if (basin.HasWater())
                 {
-                    foreach (Direction to in Enum.GetValues(typeof(Direction)))
+                    for (int to = 0; to < 4; to++)
                     {
                         var toBasin = basin.Neibors[to];
                         var hto = basin.Metric(toBasin, to);

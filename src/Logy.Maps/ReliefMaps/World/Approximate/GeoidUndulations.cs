@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Drawing;
-using Logy.Maps.Healpix;
+using Logy.Maps.Coloring;
 using Logy.Maps.ReliefMaps.Map2D;
 using Logy.Maps.ReliefMaps.World.Data;
 
@@ -12,7 +12,7 @@ namespace Logy.Maps.ReliefMaps.World.Approximate
         {
             get
             {
-                return Projection.Healpix; //Healpix2Equirectangular // Equirectangular
+                return Projection.Healpix; // Healpix2Equirectangular // Equirectangular
             }
         }
 

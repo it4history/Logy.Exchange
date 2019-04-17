@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
-using Logy.Maps.Healpix;
 using Logy.MwAgent.Sphere;
 
 namespace Logy.Maps.Coloring

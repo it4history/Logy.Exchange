@@ -1,5 +1,4 @@
 ﻿#if DEBUG
-using Logy.Maps.Healpix;
 using NUnit.Framework;
 
 namespace Logy.Maps.Coloring.Tests

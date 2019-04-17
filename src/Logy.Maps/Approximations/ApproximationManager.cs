@@ -20,7 +20,7 @@ namespace Logy.Maps.Approximations
             return ColorsManager.LinearApproximation(deltas, P => Pixels[P].Altitude.Value);
         }
 
-        internal double GetMeanAltitude(Coor coor)
+        public double GetMeanAltitude(Coor coor)
         {
             return GetMeanAltitude(coor, P => Pixels[P].Altitude.Value);
         }
@@ -39,9 +39,9 @@ namespace Logy.Maps.Approximations
         public KeyValuePair<int, double>[] GetDeltas(Coor coor)
         {
             // find nearest 2 rings, may be 1 ring in polar areas
-            var approximately = (int) ((90 - coor.Y) / 180 * Pixels.Length);
+            var approximately = (int)((90 - coor.Y) / 180 * Pixels.Length);
 
-            //  beginning of ring above coor
+            // beginning of ring above coor
             var nearestFirstRingPixelUp = Math.Max(Math.Min(Pixels.Length - 1, approximately), 0);
             nearestFirstRingPixelUp -= Pixels[nearestFirstRingPixelUp].PixelInRing - 1;
 
@@ -50,7 +50,7 @@ namespace Logy.Maps.Approximations
                 nearestFirstRingPixelUp -= HealpixManager.PixelsCountInRing(Pixels[nearestFirstRingPixelUp - 1].Ring);
             }
 
-            //  beginning of ring under coor
+            // beginning of ring under coor
             var nearestFirstRingPixelDown = Math.Max(0, nearestFirstRingPixelUp);
             while (nearestFirstRingPixelDown < Pixels.Length && coor.Y < Pixels[nearestFirstRingPixelDown].Y)
             {
@@ -95,12 +95,12 @@ namespace Logy.Maps.Approximations
                 false,
                 PrecisionGrad,
                 nearestPixel + HealpixManager.PixelsCountInRing(Pixels[nearestPixel].Ring),
-                ref nearestPixel)) //todo add approximation 
+                ref nearestPixel)) // todo add approximation 
                 previous = nearestPixel;
             else
             {
                 previous = nearestPixel - 1;
-                if (nearestPixel == Pixels.Length || Pixels[nearestPixel].PixelInRing == 1) /*next ring*/
+                if (nearestPixel == Pixels.Length || Pixels[nearestPixel].PixelInRing == 1 /*next ring*/)
                 {
                     var pixelsInRing = HealpixManager.PixelsCountInRing(Pixels[wasNearestPixel].Ring);
                     if (wasNearestPixel == nearestPixel)

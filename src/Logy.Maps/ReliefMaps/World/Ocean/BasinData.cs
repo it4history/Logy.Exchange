@@ -44,10 +44,10 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
                     basin.MeanEdges[(int)to] = man.Neibors.MeanBoundary(basin, to);
                 }
                 //basin.CorrectionSurface();
-                foreach (Direction to in Enum.GetValues(typeof(Direction)))
+                for (int to = 0; to < 4; to++)
                 {
                     var toBasin = basin.Neibors[to];
-                    basin.InitialHto[(int)to] = basin.Metric(toBasin, to);
+                    basin.InitialHto[to] = basin.Metric(toBasin, to);
                 }
 
                 if (withRelief)
@@ -74,11 +74,11 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
                 basin.WaterReset();
                 if (basin.HasWater())
                 {
-                    foreach (Direction to in Enum.GetValues(typeof(Direction)))
+                    for (int to = 0; to < 4; to++)
                     {
                         var toBasin = basin.Neibors[to];
                         var hto = basin.Metric(toBasin, to);
-                        basin.Hto[(int)to] = hto;
+                        basin.Hto[to] = hto;
                     }
                 }
             }
@@ -89,20 +89,20 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
             //return basin.Visual * 1000;
             if (basin.HasWater())
             {
-                foreach (Direction to in Enum.GetValues(typeof(Direction)))
+                for (int to = 0; to < 4; to++)
                 {
                     var toBasin = basin.Neibors[to];
-                    var @from = basin.froms[(int)to];
+                    var @from = basin.froms[to];
                     var koef 
                         = .25;
                         //= basin.Koef[(int)to] / basin.Koef.Sum();
 
                     //todo balance deltaH relative to basin.WaterHeight
-                    var height = basin.Hto[(int)to] - toBasin.Hto[(int)@from];
+                    var height = basin.Hto[to] - toBasin.Hto[@from];
 
                     var movedFromBasin = Water.PutV(basin, toBasin,
                         height * koef, 
-                        (int) to, @from);
+                        to, @from);
                     if (Math.Abs(movedFromBasin) > 0)
                     {
                     }

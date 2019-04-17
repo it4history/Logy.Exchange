@@ -5,6 +5,7 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using Logy.Maps.Geometry;
 using Logy.Maps.Projections;
+using Logy.Maps.Projections.Healpix;
 using Logy.Maps.ReliefMaps.Basemap;
 using Logy.Maps.ReliefMaps.Water;
 using Logy.Maps.ReliefMaps.World.Ocean;
@@ -24,7 +25,7 @@ namespace Logy.Maps.ReliefMaps.Map2D
         {
             if (K < 7)
             {
-                YResolution = 4;
+                YResolution = 3;
                 Scale = (7 - K) * 3;
             }
         }
@@ -69,7 +70,7 @@ namespace Logy.Maps.ReliefMaps.Map2D
             get { return ImageFormat.Png; }
         }
 
-        public virtual void Water_ChangeRotation()
+        public virtual void Water_ChangeAxis17()
         {
             //// fill Basin.Visual and uncomment BasinData.GetAltitude to see centrifugal components
 
@@ -82,14 +83,51 @@ namespace Logy.Maps.ReliefMaps.Map2D
                 ;
 
             //InitiialHtoRecalc();
-
             ChangeRotation(-HealpixManager.Nside, 0);
-            var framesCountBy2 = 50;
-            Data.Cycle(15, delegate (int step)
+
+
+            T basin = null;
+            // basin =Data.PixMan.Pixels[HealpixManager.GetP() / 2];
+            var accur = 1.5;
+            foreach (var b in Data.PixMan.Pixels)
             {
+                if (Math.Abs(b.X - (-40)) < accur && Math.Abs(b.Y - (73)) < accur)
+                {
+                    basin = b;
+                    break;
+                }
+            }
+
+            var framesCountBy2 = 50;
+            Data.Cycle(80, delegate (int step) // 15 for k4, 80 for k5
+            {
+                if (Data.Colors != null)
+                    Data.Colors.DefaultColor = Color.FromArgb(255, 174, 201);
                 Data.Draw(Bmp, 0, null, YResolution, Scale);
+                Circle(basin, .03);
                 SaveBitmap(step + framesCountBy2);
             }, framesCountBy2);
+        }
+
+        protected void Circle(T basin, double r = .2)
+        {
+            if (basin != null)
+            {
+                var width = .03;//.05 for k4
+                foreach (var pixel in Data.PixMan.Pixels)
+                {
+                    var healCoor = (HealCoor)pixel;
+                    var dist = basin.DistanceTo(healCoor);
+                    if (Data.Colors != null
+                        && dist >= r - width && dist <= r + width)
+                    {
+                        var eqProjection = new Equirectangular(HealpixManager, YResolution);
+                        var point = eqProjection.Offset(healCoor);
+                        Data.Colors.SetPixelOnBmp(null, Bmp,
+                            (int)(point.X), (int)point.Y, Scale);
+                    }
+                }
+            }
         }
 
         protected void ChangeRotation(int step, double koef = 10000)

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using Logy.Maps.Geometry;
 using Logy.Maps.Projections.Healpix;
@@ -25,23 +24,22 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
 
         private bool _actualQ3;
         /// <summary>
-        /// depends on r
+        /// depends on hOQ only from r
         /// </summary>
         private Point3D _q3;
         public Point3D Q3
         {
             get
             {
-                lock (this)
-                    if (!_actualQ3)
-                    {
-                        _q3 = new Point3D(
-                            Math.Sin(Lambda.Value - Math.PI / 2) * Qb.X,
-                            //Math.Cos(Lambda.Value) * Qb.X,
-                            Math.Sin(Lambda.Value) * Qb.X,
-                            Qb.Y);
-                        _actualQ3 = true;
-                    }
+                if (!_actualQ3)
+                {
+                    _q3 = new Point3D(
+                        Math.Sin(Lambda.Value - Math.PI / 2) * Qb.X,
+                        //Math.Cos(Lambda.Value) * Qb.X,
+                        Math.Sin(Lambda.Value) * Qb.X,
+                        Qb.Y);
+                    _actualQ3 = true;
+                }
                 return _q3;
             }
         }
@@ -60,14 +58,17 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
         }
 
         /// <summary>
-        /// Top face; surface; plane
+        /// nulled when gradients changed
         /// </summary>
         private Plane? _s_q;
+        /// <summary>
+        /// Top face; surface; plane
+        /// </summary>
         public Plane S_q
         {
             get
             {
-                if (_s_q == null)
+                if (_s_q == null || !_actualQ3)
                 {
                     var normal = Matrixes.RotationVector; // NormalCalm
                     // Matrixes.Rotate() analog in radians
@@ -75,7 +76,7 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
                         new Angle(Math.Sign(Vartheta) * (Delta_g_meridian + Delta_s_meridian) + Phi, AngleUnit.Radians));
                     normal = normal.Rotate(new UnitVector3D(0, 0, 1),
                         new Angle(-(Delta_g_traverse + Delta_s_traverse) - Lambda.Value, AngleUnit.Radians));
-                    _s_q = new Plane(normal, Q3); //r  tested in BasinTests
+                    _s_q = new Plane(normal, Q3); // Q3 and not r - tested in BasinTests
                 }
                 return (Plane)_s_q;
             }
@@ -124,11 +125,10 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
         public override void WaterReset()
         {
             base.WaterReset();
-            foreach (Direction direction in Enum.GetValues(typeof(Direction)))
-                Volumes[(int)direction] = false;
+            for (int to = 0; to < 4; to++)
+                Volumes[to] = false;
 
-            _s_q = null;
-            _actualQ3 = false;
+            //_actualQ3 = false;
         }
 
         /// <returns>typeof Direction</returns>
@@ -180,10 +180,11 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
         public double Atrans { get; set; }
         #endregion
 
-        public virtual double Metric(Basin3 toBasin, Direction to)
+        /// <param name="to">Direction</param>
+        public virtual double Metric(Basin3 toBasin, int to)
         {
-            return S_q.IntersectionWith(MeanEdges[(int)to]).DistanceTo(O3) /*MeanEdge metric*/
-                   - InitialHto[(int)to] // needed for BasinDataTests.HighBasin_31
+            return S_q.IntersectionWith(MeanEdges[to]).DistanceTo(O3) /*MeanEdge metric*/
+                   - InitialHto[to] // needed for BasinDataTests.HighBasin_31
                 ;
         }
 
@@ -206,17 +207,18 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
             Visual =
             Delta_s_meridian = - (Vartheta < 0 ? 1 : -1) * correctionVector[2] / k;
             Delta_s_traverse = -correctionVector[1] / k; //*/
+            _s_q = null;
         }
     }
 
     public class BasinSignedDistance : Basin3
     {
-        public override double Metric(Basin3 toBasin, Direction to)
+        public override double Metric(Basin3 toBasin, int to)
         {
             return
                 -S_q.SignedDistanceTo(toBasin.Q3) // bad for BasinDataTests.HighBasin_31_sphere 
                 //S_q.IntersectionWith(toBasin.RadiusRay).DistanceTo(toBasin.Q3)
-                - InitialHto[(int)to] // needed for BasinDataTests.HighBasin_31 movedBasins
+                - InitialHto[to] // needed for BasinDataTests.HighBasin_31 movedBasins
                 ;
         }
     }

@@ -302,15 +302,15 @@ namespace Logy.Maps.Projections.Healpix.Tests
         [Test]
         public void MeanBoundary_NeiborsHaveTheSame()
         {
-            var PixMan = new PixelsManager<Basin3>(healpixManager);
-            foreach (var basin in PixMan.Pixels)
+            var pixMan = new PixelsManager<Basin3>(healpixManager);
+            foreach (var basin in pixMan.Pixels)
             {
                 foreach (Direction to in Enum.GetValues(typeof(Direction)))
                 {
                     var edge = man.MeanBoundary(basin, to).Direction;
 
-                    var toBasin = PixMan.Pixels[man.Get(to, basin)];
-                    var from = (Direction) basin.GetFromAndFillType(to, toBasin, healpixManager);
+                    var toBasin = pixMan.Pixels[man.Get(to, basin)];
+                    var from = (Direction)basin.GetFromAndFillType(to, toBasin, healpixManager);
                     var edgeTo = man.MeanBoundary(toBasin, from).Direction;
 
                     Assert.AreEqual(edge.X, edgeTo.X, .0000000001);

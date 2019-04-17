@@ -1,6 +1,7 @@
 ﻿using System;
 using Logy.Maps.ReliefMaps.Basemap;
 using Logy.Maps.ReliefMaps.World.Ocean;
+using Logy.Maps.ReliefMaps.World.Ocean.Metrics;
 using MathNet.Spatial.Euclidean;
 using NUnit.Framework;
 

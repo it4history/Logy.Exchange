@@ -7,7 +7,6 @@ using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 using System.IO;
 using Logy.Maps.Coloring;
-using Logy.Maps.Healpix;
 using Logy.Maps.Projections;
 using Logy.Maps.Projections.Healpix;
 using Logy.Maps.ReliefMaps.Basemap;

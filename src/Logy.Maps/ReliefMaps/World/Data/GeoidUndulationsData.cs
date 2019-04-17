@@ -13,23 +13,20 @@ namespace Logy.Maps.ReliefMaps.World.Data
             ColorsMiddle = -22;
         }
 
+        public override int Accuracy
+        {
+            get { return 1; }
+        }
+
         public override double? GetAltitude(HealCoor basin)
         {
             var altitude = Relief.GetAltitude(basin);
             var altitudeShape = ReliefBed.GetAltitude(basin) + Earth2014Manager.Radius2Add;
 
-            var thetaTan =
-                //Ellipsoid.CalcThetaTan(basin.Beta.Value); 
-                //* 
-                Math.Tan(basin.Beta.Value); // may be out of range */
-            var undulation = altitudeShape - altitude 
-                - Ellipsoid.Radius(Ellipsoid.CalcVarPhi(thetaTan));
+            var thetaTan = Math.Tan(basin.Beta.Value); /* may be out of range */
+                var undulation = altitudeShape - altitude
+                                 - Ellipsoid.Radius(Ellipsoid.CalcVarPhi(thetaTan));
             return undulation;
-        }
-
-        public override int Accuracy
-        {
-            get { return 1; }
         }
 
         public override void Log()

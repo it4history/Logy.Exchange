@@ -1,17 +1,10 @@
 using System;
 using System.Drawing;
 
-namespace Logy.Maps.Healpix
+namespace Logy.Maps.Coloring
 {
     public class Color3 : IComparable
     {
-        /// <summary>
-        /// from 0 to 255
-        /// </summary>
-        public double R { get; private set; }
-        public double G { get; private set; }
-        public double B { get; private set; }
-
         public Color3(double r, double g, double b)
         {
             R = r;
@@ -23,29 +16,36 @@ namespace Logy.Maps.Healpix
         {
         }
 
-        public static Color3 operator -(Color3 a, Color3 b)
-        {
-            return new Color3(a.R - b.R,a.G - b.G,a.B - b.B);
-        }
-
-        public static Color3 operator +(Color3 a, Color3 b)
-        {
-            return new Color3(a.R + b.R,a.G + b.G,a.B + b.B);
-        }
-
-        public static Color3 operator *(double b, Color3 a)
-        {
-            return new Color3(a.R * b,a.G * b,a.B * b);
-        }
+        /// <summary>
+        /// from 0 to 255
+        /// </summary>
+        public double R { get; private set; }
+        public double G { get; private set; }
+        public double B { get; private set; }
 
         public double Sum
         {
             get { return R + G + B; }
         }
 
+        public static Color3 operator -(Color3 a, Color3 b)
+        {
+            return new Color3(a.R - b.R, a.G - b.G, a.B - b.B);
+        }
+
+        public static Color3 operator +(Color3 a, Color3 b)
+        {
+            return new Color3(a.R + b.R, a.G + b.G, a.B + b.B);
+        }
+
+        public static Color3 operator *(double b, Color3 a)
+        {
+            return new Color3(a.R * b, a.G * b, a.B * b);
+        }
+
         public static explicit operator Color(Color3 a)
         {
-            return Color.FromArgb((int) a.R, (int) a.G, (int) a.B);
+            return Color.FromArgb((int)a.R, (int)a.G, (int)a.B);
         }
 
         #region IComparable
@@ -69,6 +69,5 @@ namespace Logy.Maps.Healpix
             return -1;
         }
         #endregion
-
     }
 }

@@ -6,11 +6,11 @@ namespace Logy.Maps.Projections
 {
     public class Equirectangular
     {
+        private const double BorderWidth = 0; // why was .5 ?
+
         private readonly double _resx;
         private readonly double _resy;
         private readonly double _width;
-
-        private const double BorderWidth = 0;//why was .5 ?
 
         /// <summary>
         /// x from 0 to 4 * man.Nside
@@ -18,7 +18,7 @@ namespace Logy.Maps.Projections
         /// </summary>
         public Equirectangular(HealpixManager man, int yResolution = 2)
         {
-            var collapse1PixelWidth =  4 * man.Nside / (4 * man.Nside + 1 /*shrinking on one pixel at width*/ + BorderWidth);
+            var collapse1PixelWidth = 4 * man.Nside / ((4 * man.Nside) + 1 /*shrinking on one pixel at width*/ + BorderWidth);
             _resx = man.Nside / 90.0 * collapse1PixelWidth;
             _resy = _resx * yResolution / 2;
         }
@@ -45,22 +45,21 @@ namespace Logy.Maps.Projections
         public int FullOffset(Coor coor)
         {
             return (int)Math.Round(
-                /*rounding is important*/Math.Round(Y(coor.Y)) * _width 
+                (/*rounding is important*/Math.Round(Y(coor.Y)) * _width)
                 + X(coor.X));
         }
 
         public Point2 Offset(Coor coor)
         {
             return new Point2(
-                (int) Math.Round(X(coor.X)),
-                (int) Math.Round(Y(coor.Y))
-            );
+                (int)Math.Round(X(coor.X)),
+                (int)Math.Round(Y(coor.Y)));
         }
 
         internal static Coor CoorFromXY(Point2 p, int yResolution, HealpixManager man, int step = 0)
         {
-            var lat = 90d - (p.Y + BorderWidth) * 180d / (yResolution * man.Nside);
-            var lon = (p.X + BorderWidth) * 360 / (4 * man.Nside) - (180 - step);
+            var lat = 90d - ((p.Y + BorderWidth) * 180d / (yResolution * man.Nside));
+            var lon = ((p.X + BorderWidth) * 360 / (4 * man.Nside)) - (180 - step);
             var coor = (Coor)new Coor { Y = lat, X = lon }.Normalize();
             return coor;
         }

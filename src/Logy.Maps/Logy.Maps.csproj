@@ -55,7 +55,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Approximations\ApproximationManager.cs" />
-    <Compile Include="gdal\GrassManager.cs" />
     <Compile Include="gdal\GdalConfiguration.cs" />
     <Compile Include="gdal\Tests\GdalTests.cs" />
     <Compile Include="Coloring\Color3.cs" />
@@ -84,8 +83,6 @@
     <Compile Include="Projections\Healpix\HealCoor.cs" />
     <Compile Include="Coloring\ColorsManager.cs" />
     <Compile Include="Approximations\PixelsManager.cs" />
-    <Compile Include="Projections\Healpix\Substack\HealpixPos.cs" />
-    <Compile Include="Projections\Healpix\Substack\SubstackHealpixManager.cs" />
     <Compile Include="Projections\Tests\EquirectangularTests.cs" />
     <Compile Include="ReliefMaps\Meridian\Data\MeridianData.cs" />
     <Compile Include="ReliefMaps\World\Data\GeoidUndulationsData.cs" />
@@ -160,7 +157,9 @@
       <Name>Logy.MwAgent</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Projections\Healpix\Substack\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\StyleCop.MSBuild.4.7.54.0\build\StyleCop.MSBuild.Targets" Condition="Exists('..\packages\StyleCop.MSBuild.4.7.54.0\build\StyleCop.MSBuild.Targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

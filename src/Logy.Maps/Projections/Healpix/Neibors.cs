@@ -11,6 +11,12 @@ namespace Logy.Maps.Projections.Healpix
             _basins = basins;
         }
 
+        public T this[int direction]
+        {
+            get { return _basins[direction]; }
+            set { _basins[direction] = value; }
+        }
+
         public T this[Direction direction]
         {
             get { return _basins[(int) direction]; }

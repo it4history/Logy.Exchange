@@ -141,12 +141,18 @@ namespace Logy.Maps.ReliefMaps.Basemap
         public double gHpure { get; set; }
 
         #region water
+
         /// <summary>
         /// directed up
         /// relative to rOfEllipse 
         /// may include geoidUndulation
         /// </summary>
-        public double hOQ { get; set; }
+        public double hOQ
+        {
+            get;
+            /* may influence on many things! */
+            internal set;
+        }
 
         /// <summary>
         /// directed down
@@ -183,6 +189,7 @@ namespace Logy.Maps.ReliefMaps.Basemap
         {
         }
 
+        /// <param name="deltaH">!= 0</param>
         public virtual void WaterIn(double deltaH, int direction)
         {
             lock (this)
