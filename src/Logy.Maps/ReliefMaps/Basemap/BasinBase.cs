@@ -10,6 +10,12 @@ namespace Logy.Maps.ReliefMaps.Basemap
         public static Point2D O = new Point2D(0, 0);
 
         #region static angles
+        public double BetaSin { get; private set; }
+        public double BetaCos { get; private set; }
+        public double LambdaSin { get; private set; }
+        public double LambdaMinusPi2Sin { get; private set; }
+        public double LambdaCos { get; private set; }
+
         public double ThetaTan { get; set; }
         /// <summary>
         /// from 0 to Pi
@@ -73,7 +79,12 @@ namespace Logy.Maps.ReliefMaps.Basemap
         internal override void PreInit(HealpixManager man)
         {
             base.PreInit(man);
-            
+            LambdaSin = Math.Sin(Lambda.Value);
+            LambdaMinusPi2Sin = Math.Sin(Lambda.Value - Math.PI / 2);
+            LambdaCos = Math.Cos(Lambda.Value);
+            BetaSin = Math.Sin(Beta.Value);
+            BetaCos = Math.Cos(Beta.Value);
+
             /*
             var thetaTan = Ellipsoid.CalcThetaTan(Beta.Value);
             var varphi = Ellipsoid.CalcVarPhi(thetaTan);
@@ -119,7 +130,7 @@ namespace Logy.Maps.ReliefMaps.Basemap
 
         public Point2D Qb
         {
-            get { return new Point2D(r * Math.Sin(Beta.Value), r * Math.Cos(Beta.Value)); }
+            get { return new Point2D(r * BetaSin, r * BetaCos); }
             set { }
         }
 

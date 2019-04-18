@@ -73,7 +73,7 @@ namespace Logy.Maps.Coloring
         public bool IsGrey { get; private set; }
         private SortedList<int, Color3> _above = Gyr1;
         private SortedList<int, Color3> _under = Water;
-        public Color DefaultColor;
+        public Color DefaultColor = Color.BurlyWood;
 
         public ColorsManager(double min, double max, double? middle = null, bool isGrey = false)
         {

@@ -28,13 +28,13 @@ namespace Logy.Maps.ReliefMaps.Basemap
             // relief without water and ice masses 
             ReliefBed;
 
-        protected DataEarth2014(HealpixManager man, double? min = null, double? max = null)
+        protected DataEarth2014(HealpixManager man, double? min = null, double? max = null, bool readAllAtStart = false)
         {
             HealpixManager = man;
             MinDefault = min;
             MaxDefault = max;
-            Relief = new Earth2014Manager(ReliefType, Accuracy, IsReliefShape);
-            ReliefBed = new Earth2014Manager(ReliefBedType, Accuracy, IsReliefBedShape);
+            Relief = new Earth2014Manager(ReliefType, Accuracy, IsReliefShape, readAllAtStart);
+            ReliefBed = new Earth2014Manager(ReliefBedType, Accuracy, IsReliefBedShape, readAllAtStart);
         }
 
         /// <summary>

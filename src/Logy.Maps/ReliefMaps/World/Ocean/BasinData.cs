@@ -8,8 +8,8 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
     public class BasinData : BasinDataBase<Basin3>
     {
         public BasinData(HealpixManager man, bool withRelief = false, bool spheric = false,
-            double? min = null, double? max = null)
-            : base(man, withRelief, spheric, min, max)
+            double? min = null, double? max = null, bool readAllAtStart = false)
+            : base(man, withRelief, spheric, min, max, readAllAtStart)
         {
         }
     }
@@ -17,8 +17,8 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
     public class BasinDataBase<T> : WaterMoving<T> where T : Basin3
     {
         public BasinDataBase(HealpixManager man, bool withRelief = false, bool spheric = false,
-            double? min = null, double? max = null)
-            : base(man, null, min, max)
+            double? min = null, double? max = null, bool readAllAtStart = false)
+            : base(man, null, min, max, readAllAtStart)
         {
             Visual = basin => basin.hOQ;
             ColorsMiddle = 0;

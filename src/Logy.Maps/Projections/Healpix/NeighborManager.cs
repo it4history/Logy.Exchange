@@ -24,7 +24,7 @@ namespace Logy.Maps.Projections.Healpix
             var northP = basin.P - basin.PixelInRing;
             var pixelsInNorthRing = _healpixManager.PixelsCountInRing(basin.Ring - 1);
             var northPixelInRing = basin.PixelInRing * pixelsInNorthRing /
-                                   _healpixManager.PixelsCountInRing(basin.Ring);
+                                   basin.PixelsCountInRing /* _healpixManager.PixelsCountInRing(basin.Ring) */;
             return northP - pixelsInNorthRing + Math.Max(1, northPixelInRing);
         }
 

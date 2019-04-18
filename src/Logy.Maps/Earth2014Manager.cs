@@ -12,13 +12,15 @@ namespace Logy.Maps
 
         public const int AltitudeAccuracy = 2; // meters
 
-        private readonly FileStream _stream;
-
+        private readonly bool _readAllAtStart;
         /// <summary>
-        /// used if _stream == null
+        /// used if !_readAllAtStart
+        /// </summary>
+        private readonly FileStream _stream;
+        /// <summary>
+        /// used if _readAllAtStart
         /// </summary>
         private readonly byte[] _buf;
-        private readonly bool _readAllAtStart = false;
 
         private readonly ReliefType _reliefType;
 
@@ -74,10 +76,11 @@ namespace Logy.Maps
             }
         }*/
 
-        public Earth2014Manager(ReliefType type, int accuracyMin = 5, bool shape = false)
+        public Earth2014Manager(ReliefType type, int accuracyMin = 5, bool shape = false, bool readAllAtStart = false)
         {
             if (type == ReliefType.Mask && accuracyMin != 1)
                 throw new ApplicationException("ReliefType.Mask in 1 accuracy only");
+            _readAllAtStart = readAllAtStart;
             _reliefType = type;
             _accuracyMin = accuracyMin;
             _shape = shape;
@@ -167,7 +170,7 @@ namespace Logy.Maps
         {
             var position = place.Offset(_accuracyMin) * 2;
             int a, b;
-            if (_stream == null)
+            if (_readAllAtStart)
             {
                 a = _buf[position];
                 b = _buf[position + 1];

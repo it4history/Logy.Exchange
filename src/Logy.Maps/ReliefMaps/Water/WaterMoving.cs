@@ -19,7 +19,7 @@ namespace Logy.Maps.ReliefMaps.Water
         public WaterModel Water;
 
         protected WaterMoving(HealpixManager man, T[] basins,
-            double? min = null, double? max = null) : base(man, min, max)
+            double? min = null, double? max = null, bool readAllAtStart = false) : base(man, min, max, readAllAtStart)
         {
             PixMan = new PixelsManager<T>(man, basins);
             Water = new WaterModel(man);

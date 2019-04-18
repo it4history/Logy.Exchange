@@ -34,9 +34,9 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
                 if (!_actualQ3)
                 {
                     _q3 = new Point3D(
-                        Math.Sin(Lambda.Value - Math.PI / 2) * Qb.X,
+                        LambdaMinusPi2Sin * Qb.X,
                         //Math.Cos(Lambda.Value) * Qb.X,
-                        Math.Sin(Lambda.Value) * Qb.X,
+                        LambdaSin * Qb.X,
                         Qb.Y);
                     _actualQ3 = true;
                 }
@@ -60,7 +60,25 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
         /// <summary>
         /// nulled when gradients changed
         /// </summary>
-        private Plane? _s_q;
+        private UnitVector3D? _normal;
+        public UnitVector3D Normal
+        {
+            get
+            {
+                if (_normal == null)
+                {
+                    var normal = Matrixes.RotationVector; // NormalCalm
+                    // Matrixes.Rotate() analog in radians
+                    normal = normal.Rotate(new UnitVector3D(0, 1, 0),
+                        new Angle(Math.Sign(Vartheta) * (Delta_g_meridian + Delta_s_meridian) + Phi, AngleUnit.Radians));
+                    _normal = normal.Rotate(new UnitVector3D(0, 0, 1),
+                        new Angle(-(Delta_g_traverse + Delta_s_traverse) - Lambda.Value, AngleUnit.Radians));
+                }
+                return _normal.Value;
+            }
+        }
+
+        private Plane _plane;
         /// <summary>
         /// Top face; surface; plane
         /// </summary>
@@ -68,17 +86,11 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
         {
             get
             {
-                if (_s_q == null || !_actualQ3)
+                if (_normal == null || !_actualQ3)
                 {
-                    var normal = Matrixes.RotationVector; // NormalCalm
-                    // Matrixes.Rotate() analog in radians
-                    normal = normal.Rotate(new UnitVector3D(0, 1, 0),
-                        new Angle(Math.Sign(Vartheta) * (Delta_g_meridian + Delta_s_meridian) + Phi, AngleUnit.Radians));
-                    normal = normal.Rotate(new UnitVector3D(0, 0, 1),
-                        new Angle(-(Delta_g_traverse + Delta_s_traverse) - Lambda.Value, AngleUnit.Radians));
-                    _s_q = new Plane(normal, Q3); // Q3 and not r - tested in BasinTests
+                    _plane = new Plane(Normal, Q3); // Q3 and not r - tested in BasinTests
                 }
-                return (Plane)_s_q;
+                return _plane;
             }
         }
 
@@ -158,7 +170,7 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
         {
             var aTraverse = base.RecalculateDelta_g(false);
             Delta_g_traverse = Math.Atan(aTraverse / gVpure);
-            _s_q = null;
+            _normal = null;
             return 0;
         }
 
@@ -207,7 +219,7 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
             Visual =
             Delta_s_meridian = - (Vartheta < 0 ? 1 : -1) * correctionVector[2] / k;
             Delta_s_traverse = -correctionVector[1] / k; //*/
-            _s_q = null;
+            _normal = null;
         }
     }
 

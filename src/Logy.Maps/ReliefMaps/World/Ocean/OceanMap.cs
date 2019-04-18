@@ -39,11 +39,6 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
                 Circle(basin3);
                 SaveBitmap(step + framesCountBy2);
             }, framesCountBy2);
-            foreach (var basin in Data.PixMan.Pixels)
-            {
-                if (basin.hOQ<-1000)
-                { }
-            }
         }
 
         [Test]
@@ -121,9 +116,9 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
                 //, -2600d, 2700d
             )
             {
-                SamePolesAndEquatorGravitation = true,
+                /*SamePolesAndEquatorGravitation = true,
                 NoIntegrationFinish = true,
-                Visual = basin => basin.r - Earth2014Manager.Radius2Add
+                Visual = basin => basin.r - Earth2014Manager.Radius2Add //*/
             };
 
             Water_ChangeAxis(17); // 45, 90

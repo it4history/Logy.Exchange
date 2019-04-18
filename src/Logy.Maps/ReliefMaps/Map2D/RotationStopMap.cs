@@ -32,7 +32,7 @@ namespace Logy.Maps.ReliefMaps.Map2D
 
         protected override int K
         {
-            get { return 4; }
+            get { return 7; }
         }
 
         public override Projection Projection

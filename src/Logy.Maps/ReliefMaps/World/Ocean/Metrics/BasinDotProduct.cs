@@ -22,7 +22,7 @@ namespace Logy.Maps.ReliefMaps.World.Ocean.Metrics
 
         public Point2D Q_traverse
         {
-            get { return new Point2D(r * Math.Cos(Lambda.Value), r * Math.Sin(Lambda.Value)); }
+            get { return new Point2D(r * LambdaCos, r * LambdaSin); }
         }
 
         /// <summary>
@@ -326,7 +326,7 @@ namespace Logy.Maps.ReliefMaps.World.Ocean.Metrics
                         var toBasin = basin.Neibors[to];
                         var deltaBeta = (basin.Beta - toBasin.Beta).Value;
                         var deltaLambda = (basin.Lambda - toBasin.Lambda).Value
-                                          * Math.Sin(basin.Beta.Value)
+                                          * basin.BetaSin
                             ; //*2;
 
                         var length = Math.Sqrt(deltaBeta * deltaBeta + deltaLambda * deltaLambda);
