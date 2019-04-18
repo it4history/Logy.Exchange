@@ -92,8 +92,8 @@ namespace Logy.Maps.ReliefMaps.Basemap
             // vertical to ellipsoid surface
             var g = EllipsoidAcceleration.GravitationalSomigliana(varphi);
             //return g * 100;
-            double a, aTraverse;
-            var aMeridian = EllipsoidAcceleration.Centrifugal(this, out a, out aTraverse);
+            double a, aTraverse, aVertical;
+            var aMeridian = EllipsoidAcceleration.Centrifugal(this, out a, out aTraverse, out aVertical);
             // vertical to ellipsoid surface
             var aVert = Math.Abs(a * Math.Sin(Vartheta));
             // horizontal to ellipsoid surface
@@ -229,7 +229,8 @@ namespace Logy.Maps.ReliefMaps.Basemap
             //return basin.gHpure * 1000;
             double a;
             double aTraverse;
-            var aMeridian = EllipsoidAcceleration.Centrifugal(this, out a, out aTraverse);
+            double aVertical;
+            var aMeridian = EllipsoidAcceleration.Centrifugal(this, out a, out aTraverse, out aVertical);
 
             // range: 0..0.0034
             var newDeflectionAngleTan = (gHpure + aMeridian) / (gVpure /*+ aVertical*/);

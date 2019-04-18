@@ -1,9 +1,5 @@
-#if DEBUG
-using System;
-using System.Drawing;
-using System.Drawing.Imaging;
+﻿#if DEBUG
 using System.IO;
-using Logy.Maps.Projections;
 using Logy.Maps.Projections.Healpix;
 using Logy.Maps.ReliefMaps.Map2D;
 using Logy.Maps.ReliefMaps.World.Ocean.Tests;
@@ -14,16 +10,6 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
     [TestFixture]
     public class OceanMap : RotationStopMap<Basin3>
     {
-        protected override int K
-        {
-            get { return 5; }
-        }
-
-        protected override ImageFormat ImageFormat
-        {
-            get { return ImageFormat.Jpeg; }
-        }
-
         [SetUp]
         public override void SetUp()
         {
@@ -129,13 +115,18 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
         }
 
         [Test]
-        public override void Water_ChangeAxis17()
+        public void Water_ChangeAxis()
         {
             Data = new BasinData(HealpixManager, false, false
-                , -2600d, 2700d
-            );
+                //, -2600d, 2700d
+            )
+            {
+                SamePolesAndEquatorGravitation = true,
+                NoIntegrationFinish = true,
+                Visual = basin => basin.r - Earth2014Manager.Radius2Add
+            };
 
-            base.Water_ChangeAxis17();
+            Water_ChangeAxis(17); // 45, 90
         }
 
         [Test]
@@ -154,24 +145,6 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
                 Data.Draw(Bmp, 0, null, YResolution, Scale);
                 SaveBitmap(step + framesCountBy2);
             }, framesCountBy2);
-        }
-
-        [Test]
-        public void Relief_RotationStopped()
-        {
-            Data = new BasinData(HealpixManager, true, false
-                , -7000d);
-            Data.CheckOcean();
-
-            ChangeRotation(-HealpixManager.Nside, double.MaxValue);
-            var framesCountBy2 = 3;
-            Data.Cycle(10, delegate(int step) //240 for k8, 150 for k7, 100 for k6
-            {
-                Data.Draw(Bmp);
-                SaveBitmap(step + framesCountBy2);
-            }, framesCountBy2);
-
-            Data.RecheckOcean();
         }
     }
 }

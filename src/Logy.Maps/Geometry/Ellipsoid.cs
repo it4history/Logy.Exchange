@@ -14,6 +14,10 @@ namespace Logy.Maps.Geometry
         /// Tyapkin - 6356778
         /// </summary>
         public const double LessRadius = 6356752.3141;
+
+        /// <summary>
+        /// near Earth2014Manager.Radius2Add
+        /// </summary>
         public const double MeanRadius = 6371008.8;
 
         // Period of rotation(sidereal day) in seconds

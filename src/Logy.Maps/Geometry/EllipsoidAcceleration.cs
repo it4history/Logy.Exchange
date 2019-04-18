@@ -83,19 +83,20 @@ namespace Logy.Maps.Geometry
 
         public static double Centrifugal(BasinBase basin)
         {
-            double a, aTraverse;
-            return Centrifugal(basin, out a, out aTraverse);
+            double a, aTraverse, aVertical;
+            return Centrifugal(basin, out a, out aTraverse, out aVertical);
         }
 
         /// <param name="a">perpendicular to AxisOrRotation</param>
         /// <param name="aTraverse"></param>
         /// <returns>aMeridian,  directed to equator of OZ</returns>
-        public static double Centrifugal(BasinBase basin, out double a, out double aTraverse)
+        public static double Centrifugal(BasinBase basin, out double a, out double aTraverse, out double aVertical)
         {
-            aTraverse = 0;
+            aTraverse = 0; 
             if (AxisOfRotation == Basin3.Oz)
             {
                 a = Centrifugal(basin.r * Math.Cos(basin.Varphi));
+                aVertical = a * Math.Sin(basin.Theta);
                 return a * Math.Abs(Math.Cos(basin.Theta));
             }
 
@@ -104,16 +105,17 @@ namespace Logy.Maps.Geometry
             var axisOrtohonal = new Line3D(Basin3.O3, axisEnd).LineTo(b.Q3, false);
             a = Centrifugal(axisOrtohonal.Length);
 
-            return CentrifugalByMatrix(b, a, axisOrtohonal, out aTraverse);
+            return CentrifugalByMatrix(b, a, axisOrtohonal, out aTraverse, out aVertical);
             //return CentrifugalByDotProduct(b, a, axisEnd, out aTraverse);
         }
 
-        public static double CentrifugalByMatrix(Basin3 b, double a, Line3D axisOrtohonal, out double aTraverse)
+        public static double CentrifugalByMatrix(Basin3 b, double a, Line3D axisOrtohonal, out double aTraverse, out double aVertical)
         {
             var aOnSurface = axisOrtohonal.Direction * b.Matrix;
             aTraverse = -a * aOnSurface[1];
+            aVertical = Math.Abs(a * aOnSurface[0]);
             var aMerid = (b.Vartheta < 0 ? 1 : -1) * a * aOnSurface[2];
-            b.Visual = aMerid;
+            b.Visual = aVertical;
             return aMerid;
         }
 

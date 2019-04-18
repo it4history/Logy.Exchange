@@ -50,52 +50,60 @@ namespace Logy.Maps.Geometry.Tests
             Assert.AreEqual(0, new UnitVector3D(1, 0, 0).DotProduct(new UnitVector3D(0, 1, 0)));
             Assert.AreEqual(1, new UnitVector3D(1, 0, 0).DotProduct(new UnitVector3D(1, 0, 0)));
 
-            double a, aTraverse;
+            double a, aTraverse, aVertical;
             Assert.AreEqual(0, EllipsoidAcceleration.Centrifugal(basin0), .01);
             Assert.AreEqual(.024, EllipsoidAcceleration.Centrifugal(basin31), .01);
-            Assert.AreEqual(0, EllipsoidAcceleration.Centrifugal(basin95, out a, out aTraverse), .000001);
+            Assert.AreEqual(0, EllipsoidAcceleration.Centrifugal(basin95, out a, out aTraverse, out aVertical), .000001);
             Assert.AreEqual(.0339, a, .0001);
             Assert.AreEqual(0, aTraverse);
+            Assert.AreEqual(.0339, aVertical, .0001);
 
             EllipsoidAcceleration.AxisOfRotation = new UnitVector3D(1, 0, 0);
-            Assert.AreEqual(-.003, EllipsoidAcceleration.Centrifugal(basin0, out a, out aTraverse), .001);
+            Assert.AreEqual(-.003, EllipsoidAcceleration.Centrifugal(basin0, out a, out aTraverse, out aVertical), .001);
             Assert.AreEqual(.034, a, .01);
             Assert.AreEqual(-.003, aTraverse, .001);
-            Assert.AreEqual(-.017, EllipsoidAcceleration.Centrifugal(basin31, out a, out aTraverse), .001);
+            Assert.AreEqual(.0331, aVertical, .0001);
+            Assert.AreEqual(-.017, EllipsoidAcceleration.Centrifugal(basin31, out a, out aTraverse, out aVertical), .001);
             Assert.AreEqual(.024, a, .01);
             Assert.AreEqual(.005, aTraverse, .001);
+            Assert.AreEqual(.0157, aVertical, .0001);
             Assert.AreEqual(0, EllipsoidAcceleration.Centrifugal(basin95), .01);
         }
 
         [Test]
         public void Centrifugal_aMeridian_BugOfCone()
         {
-            double a, aTraverse;
+            double a, aTraverse, aVertical;
             EllipsoidAcceleration.AxisOfRotation = new UnitVector3D(1, 0, 0);
-            Assert.AreEqual(-.003, EllipsoidAcceleration.Centrifugal(basin77, out a, out aTraverse), .001);
+            Assert.AreEqual(-.003, EllipsoidAcceleration.Centrifugal(basin77, out a, out aTraverse, out aVertical), .001);
             Assert.AreEqual(.017, a, .01);
             Assert.AreEqual(.017, aTraverse, .001);
+            Assert.AreEqual(.0174, aVertical, .0001);
 
             EllipsoidAcceleration.AxisOfRotation = new UnitVector3D(0, 1, 0);
-            Assert.AreEqual(-.003, EllipsoidAcceleration.Centrifugal(basin77, out a, out aTraverse), .001);
+            Assert.AreEqual(-.003, EllipsoidAcceleration.Centrifugal(basin77, out a, out aTraverse, out aVertical), .001);
             Assert.AreEqual(.017, a, .01);
             Assert.AreEqual(-.017, aTraverse, .001);
-            Assert.AreEqual(-.001, EllipsoidAcceleration.Centrifugal(basin31, out a, out aTraverse), .001);
+            Assert.AreEqual(.0174, aVertical, .0001);
+            Assert.AreEqual(-.001, EllipsoidAcceleration.Centrifugal(basin31, out a, out aTraverse, out aVertical), .001);
             Assert.AreEqual(.024, a, .01);
             Assert.AreEqual(-.005, aTraverse, .001);
+            Assert.AreEqual(.0331, aVertical, .0001);
         }
 
         [Test]
         public void Centrifugal_Y()
         {
-            double a, aTraverse;
+            double a, aTraverse, aVertical;
             EllipsoidAcceleration.AxisOfRotation = new UnitVector3D(0, 1, 0);
-            Assert.AreEqual(-.003, EllipsoidAcceleration.Centrifugal(basin0, out a, out aTraverse), .001);
+            Assert.AreEqual(-.003, EllipsoidAcceleration.Centrifugal(basin0, out a, out aTraverse, out aVertical), .001);
             Assert.AreEqual(.034, a, .01);
             Assert.AreEqual(.003, aTraverse, .001);
-            Assert.AreEqual(-.002, EllipsoidAcceleration.Centrifugal(basin7, out a, out aTraverse), .001);
+            Assert.AreEqual(.0331, aVertical, .0001);
+            Assert.AreEqual(-.002, EllipsoidAcceleration.Centrifugal(basin7, out a, out aTraverse, out aVertical), .001);
             Assert.AreEqual(.024, a, .01);
             Assert.AreEqual(-.005, aTraverse, .001);
+            Assert.AreEqual(.0331, aVertical, .0001);
         }
     }
 }

@@ -12,6 +12,8 @@ namespace Logy.Maps.ReliefMaps.Water
 {
     public abstract class WaterMoving<T> : DataEarth2014<T> where T : HealCoor
     {
+        private bool? _isDynamicScale;
+
         protected internal readonly PixelsManager<T> PixMan;
 
         public WaterModel Water;
@@ -22,6 +24,19 @@ namespace Logy.Maps.ReliefMaps.Water
             PixMan = new PixelsManager<T>(man, basins);
             Water = new WaterModel(man);
         }
+
+        public bool IsDynamicScale
+        {
+            get { return _isDynamicScale ?? (!MinDefault.HasValue && !MaxDefault.HasValue); }
+            set { _isDynamicScale = value; }
+        }
+        
+        /// <summary>
+        /// maybe value decreases but not increases
+        /// </summary>
+        public bool NoIntegrationFinish { get; set; }
+
+        public bool SamePolesAndEquatorGravitation { get; set; }
 
         /// <summary>
         /// пересечения градиента с радиусами (высотами тазиков)
@@ -88,11 +103,12 @@ namespace Logy.Maps.ReliefMaps.Water
                         }
                         else
                         {
-                            if (!MinDefault.HasValue && !MaxDefault.HasValue) /*not IsDynamicScale*/
-                            {
-                                Console.WriteLine("integration finished at step {0}", step);
-                                break;
-                            }
+                            if (!NoIntegrationFinish)
+                                if (!MinDefault.HasValue && !MaxDefault.HasValue) /*not IsDynamicScale*/
+                                {
+                                    Console.WriteLine("integration finished at step {0}", step);
+                                    break;
+                                }
                         }
                     previousMax = Colors.Max;
                     previousMin = Colors.Min;
@@ -115,11 +131,6 @@ namespace Logy.Maps.ReliefMaps.Water
                         { 0, ColorsManager.WaterBorder },
                         { 100, ColorsManager.DarkBlue },
                     });
-        }
-
-        protected virtual bool IsDynamicScale
-        {
-            get { return !MinDefault.HasValue && !MaxDefault.HasValue; }
         }
 
         public override void Draw(Bitmap bmp, double deltaX = 0, IEnumerable basins = null, 

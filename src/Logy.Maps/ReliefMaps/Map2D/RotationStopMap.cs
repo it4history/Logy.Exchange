@@ -30,6 +30,21 @@ namespace Logy.Maps.ReliefMaps.Map2D
             }
         }
 
+        protected override int K
+        {
+            get { return 4; }
+        }
+
+        public override Projection Projection
+        {
+            get { return Projection.Healpix; }
+        }
+
+        protected override ImageFormat ImageFormat
+        {
+            get { return ImageFormat.Jpeg; }
+        }
+
         [SetUp]
         public virtual void SetUp()
         {
@@ -60,17 +75,7 @@ namespace Logy.Maps.ReliefMaps.Map2D
             return null;
         }
 
-        public override Projection Projection
-        {
-            get { return Projection.Healpix; }
-        }
-
-        protected override ImageFormat ImageFormat
-        {
-            get { return ImageFormat.Png; }
-        }
-
-        public virtual void Water_ChangeAxis17()
+        public void Water_ChangeAxis(int angle = 17)
         {
             //// fill Basin.Visual and uncomment BasinData.GetAltitude to see centrifugal components
 
@@ -78,7 +83,7 @@ namespace Logy.Maps.ReliefMaps.Map2D
                 //new UnitVector3D(1, 0, 0);
                 //                Basin3.Oz.Rotate(new UnitVector3D(1, 0, 0), new Angle(15.0, AngleUnit.Degrees))
                 Basin3.Oz
-                    .Rotate(new UnitVector3D(0, 1, 0), new Angle(17, AngleUnit.Degrees))
+                    .Rotate(new UnitVector3D(0, 1, 0), new Angle(angle, AngleUnit.Degrees))
                     .Rotate(new UnitVector3D(0, 0, 1), new Angle(-40, AngleUnit.Degrees))
                 ;
 
@@ -91,15 +96,15 @@ namespace Logy.Maps.ReliefMaps.Map2D
             var accur = 1.5;
             foreach (var b in Data.PixMan.Pixels)
             {
-                if (Math.Abs(b.X - (-40)) < accur && Math.Abs(b.Y - (73)) < accur)
+                if (Math.Abs(b.X - (-40)) < accur && Math.Abs(b.Y - (90 - angle)) < accur)
                 {
                     basin = b;
                     break;
                 }
             }
 
-            var framesCountBy2 = 50;
-            Data.Cycle(80, delegate (int step) // 15 for k4, 80 for k5
+            var framesCountBy2 = 60;
+            Data.Cycle(15, delegate (int step) // 15 for k4, 80 for k5
             {
                 if (Data.Colors != null)
                     Data.Colors.DefaultColor = Color.FromArgb(255, 174, 201);
@@ -137,6 +142,8 @@ namespace Logy.Maps.ReliefMaps.Map2D
                 EllipsoidAcceleration.SiderealDayInSeconds += koef;
                 foreach (var basin in Data.PixMan.Pixels)
                 {
+                    if (Data.SamePolesAndEquatorGravitation)
+                        basin.gHpure = 0;
                     basin.RecalculateDelta_g();
                 }
 

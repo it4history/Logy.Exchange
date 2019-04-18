@@ -8,22 +8,19 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
     public class BasinData : BasinDataBase<Basin3>
     {
         public BasinData(HealpixManager man, bool withRelief = false, bool spheric = false,
-            double? min = null, double? max = null) : base(man, withRelief, spheric, min, max)
+            double? min = null, double? max = null)
+            : base(man, withRelief, spheric, min, max)
         {
         }
     }
 
     public class BasinDataBase<T> : WaterMoving<T> where T : Basin3
     {
-        public override ReliefType ReliefBedType
-        {
-            get { return ReliefType.Tbi; }
-        }
-
         public BasinDataBase(HealpixManager man, bool withRelief = false, bool spheric = false,
             double? min = null, double? max = null)
             : base(man, null, min, max)
         {
+            Visual = basin => basin.hOQ;
             ColorsMiddle = 0;
 
             foreach (var basin in PixMan.Pixels)
@@ -67,6 +64,13 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
             }
         }
 
+        public override ReliefType ReliefBedType
+        {
+            get { return ReliefType.Tbi; }
+        }
+
+        public Func<T, double> Visual { get; set; }
+
         internal override void GradientAndHeightCrosses()
         {
             foreach (var basin in PixMan.Pixels)
@@ -93,22 +97,22 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
                 {
                     var toBasin = basin.Neibors[to];
                     var @from = basin.froms[to];
-                    var koef 
+                    var koef
                         = .25;
-                        //= basin.Koef[(int)to] / basin.Koef.Sum();
+                    //= basin.Koef[(int)to] / basin.Koef.Sum();
 
                     //todo balance deltaH relative to basin.WaterHeight
                     var height = basin.Hto[to] - toBasin.Hto[@from];
 
                     var movedFromBasin = Water.PutV(basin, toBasin,
-                        height * koef, 
+                        height * koef,
                         to, @from);
                     if (Math.Abs(movedFromBasin) > 0)
                     {
                     }
                 }
             }
-            return basin.HasWater() ? basin.hOQ : (double?)null;
+            return basin.HasWater() ? Visual(basin) : (double?)null;
         }
     }
 }
