@@ -7,12 +7,17 @@ namespace Logy.Maps.ReliefMaps.World.Approximate
     {
         public Altitudes()
         {
-            Frames = 30;
+            Frames = 1;
         }
 
         public override Projection Projection
         {
             get { return Projection.Equirectangular; }
+        }
+
+        protected override int K
+        {
+            get { return 8; }
         }
 
         protected override DataForMap2D ApproximateData

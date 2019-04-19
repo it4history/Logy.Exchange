@@ -23,6 +23,22 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
         }
 
         private bool _actualQ3;
+        public override double hOQ
+        {
+            get { return base.hOQ; }
+
+            internal set
+            {
+                base.hOQ = value;
+                _actualQ3 = false;
+            }
+        }
+
+        public Point2D Qb
+        {
+            get { return new Point2D(r * BetaSin, r * BetaCos); }
+            set { }
+        }
         /// <summary>
         /// depends on hOQ only from r
         /// </summary>
@@ -33,14 +49,26 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
             {
                 if (!_actualQ3)
                 {
+                    var qb = Qb;
                     _q3 = new Point3D(
-                        LambdaMinusPi2Sin * Qb.X,
-                        //Math.Cos(Lambda.Value) * Qb.X,
-                        LambdaSin * Qb.X,
-                        Qb.Y);
+                        LambdaMinusPi2Sin * qb.X,
+                        //Math.Cos(Lambda.Value) * qb.X,
+                        LambdaSin * qb.X,
+                        qb.Y);
                     _actualQ3 = true;
                 }
                 return _q3;
+            }
+        }
+        public Point3D Qgeiod
+        {
+            get
+            {
+                var x = rOfEllipse * BetaSin;
+                return new Point3D(
+                    LambdaMinusPi2Sin * x,
+                    LambdaSin * x,
+                    rOfEllipse * BetaCos);
             }
         }
 
@@ -49,12 +77,6 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
         public Ray3D RadiusRay
         {
             get { return new Ray3D(O3, RadiusLine.Direction); }
-        }
-
-        public override void WaterIn(double deltaH, int direction)
-        {
-            base.WaterIn(deltaH, direction);
-            _actualQ3 = false;
         }
 
         /// <summary>
@@ -78,7 +100,7 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
             }
         }
 
-        private Plane _plane;
+        private Plane _s_q;
         /// <summary>
         /// Top face; surface; plane
         /// </summary>
@@ -88,9 +110,16 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
             {
                 if (_normal == null || !_actualQ3)
                 {
-                    _plane = new Plane(Normal, Q3); // Q3 and not r - tested in BasinTests
+                    _s_q = new Plane(Normal, Q3); // Q3 and not r - tested in BasinTests
                 }
-                return _plane;
+                return _s_q;
+            }
+        }
+        public Plane S_geiod
+        {
+            get
+            {
+                return new Plane(Normal, Qgeiod);
             }
         }
 
@@ -139,8 +168,6 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
             base.WaterReset();
             for (int to = 0; to < 4; to++)
                 Volumes[to] = false;
-
-            //_actualQ3 = false;
         }
 
         /// <returns>typeof Direction</returns>
@@ -193,9 +220,9 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
         #endregion
 
         /// <param name="to">Direction</param>
-        public virtual double Metric(Basin3 toBasin, int to)
+        public virtual double Metric(Basin3 toBasin, int to, bool initial = false)
         {
-            return S_q.IntersectionWith(MeanEdges[to]).DistanceTo(O3) /*MeanEdge metric*/
+            return (initial ? S_geiod : S_q).IntersectionWith(MeanEdges[to]).DistanceTo(O3) /*MeanEdge metric*/
                    - InitialHto[to] // needed for BasinDataTests.HighBasin_31
                 ;
         }
@@ -225,7 +252,7 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
 
     public class BasinSignedDistance : Basin3
     {
-        public override double Metric(Basin3 toBasin, int to)
+        public override double Metric(Basin3 toBasin, int to, bool initial = false)
         {
             return
                 -S_q.SignedDistanceTo(toBasin.Q3) // bad for BasinDataTests.HighBasin_31_sphere 

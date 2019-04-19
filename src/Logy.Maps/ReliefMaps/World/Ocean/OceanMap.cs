@@ -33,11 +33,12 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
                 .GetP(HealpixManager.Nside, (int)(HealpixManager.Nside * 2.5))].hOQ = h;
 
             var framesCountBy2 = 10;
-            Data.Cycle(1, delegate(int step) //240 for k8, 150 for k7, 100 for k6
+            Data.Cycle(delegate(int step) 
             {
                 Data.Draw(Bmp, 0, null, YResolution, Scale);
                 Circle(basin3);
-                SaveBitmap(step + framesCountBy2);
+                SaveBitmap(step);
+                return 1; //240 for k8, 150 for k7, 100 for k6
             }, framesCountBy2);
         }
 
@@ -63,11 +64,12 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
 
 
             var framesCountBy2 = 15;
-            Data.Cycle(1, delegate(int step)
+            Data.Cycle(delegate(int step)
             {
                 Data.Draw(Bmp, 0, null, YResolution, Scale);
                 Circle(basin);
-                SaveBitmap(step + framesCountBy2);
+                SaveBitmap(step);
+                return 1;
             }, framesCountBy2);
         }
 
@@ -135,10 +137,11 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
 
             ChangeRotation(-HealpixManager.Nside, double.MaxValue);
             var framesCountBy2 = 200;
-            Data.Cycle(1, delegate(int step) 
+            Data.Cycle(delegate(int step) 
             {
                 Data.Draw(Bmp, 0, null, YResolution, Scale);
-                SaveBitmap(step + framesCountBy2);
+                SaveBitmap(step);
+                return 1;
             }, framesCountBy2);
         }
     }

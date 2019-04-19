@@ -27,12 +27,20 @@ namespace Logy.Maps.ReliefMaps.Map2D
             {
                 YResolution = 3;
                 Scale = (7 - K) * 3;
+                /*if (K < 5)
+                {
+                    Scale += 7 - 5;
+                }*/
+            }
+                if (K == 7)
+            {
+                Scale = 2;
             }
         }
 
         protected override int K
         {
-            get { return 7; }
+            get { return 6; }
         }
 
         public override Projection Projection
@@ -66,8 +74,9 @@ namespace Logy.Maps.ReliefMaps.Map2D
                     DrawLegend(Data, Bmp);
                     foreach (var line in ChangeLines)
                     {
-                        for (var y = -10; y < 15; y++)
-                            Bmp.SetPixel(line, YResolution * Scale * HealpixManager.Nside + y, Color.Black);
+                        if (line < Bmp.Width)
+                            for (var y = -10; y < 0; y++)
+                                Bmp.SetPixel(line, YResolution * Scale * HealpixManager.Nside + y, Color.Black);
                     }
                 }
                 return SaveBitmap(Bmp, Data.Colors, Data.Accuracy, step);
@@ -104,13 +113,14 @@ namespace Logy.Maps.ReliefMaps.Map2D
             }
 
             var framesCountBy2 = 60;
-            Data.Cycle(15, delegate (int step) // 15 for k4, 80 for k5
+            Data.Cycle(delegate (int step) 
             {
                 if (Data.Colors != null)
                     Data.Colors.DefaultColor = Color.FromArgb(255, 174, 201);
                 Data.Draw(Bmp, 0, null, YResolution, Scale);
                 Circle(basin, .03);
-                SaveBitmap(step + framesCountBy2);
+                SaveBitmap(step);
+                return 15; // 15 for k4, 80 for k5
             }, framesCountBy2);
         }
 
@@ -137,7 +147,8 @@ namespace Logy.Maps.ReliefMaps.Map2D
 
         protected void ChangeRotation(int step, double koef = 10000)
         {
-            if (koef > 0 || -koef < EllipsoidAcceleration.SiderealDayInSeconds)
+            if (koef > 0 && EllipsoidAcceleration.SiderealDayInSeconds < double.MaxValue / 2
+                || -koef < EllipsoidAcceleration.SiderealDayInSeconds)
             {
                 EllipsoidAcceleration.SiderealDayInSeconds += koef;
                 foreach (var basin in Data.PixMan.Pixels)

@@ -22,6 +22,10 @@ namespace Logy.Maps.ReliefMaps.Map2D
 
         protected virtual DataForMap2D ApproximateData { get { return null; } }
 
+        protected Map2DBase()
+        {
+            LegendNeeded = true;
+        }
         #region colors
         public virtual SortedList<int, Color3> ColorsAbove
         {
@@ -44,10 +48,7 @@ namespace Logy.Maps.ReliefMaps.Map2D
         protected Brush Background = Brushes.White;
         #endregion
 
-        protected virtual bool LegendNeeded
-        {
-            get { return true; }
-        }
+        protected bool LegendNeeded { get; set; }
 
         private bool LegendToDraw
         {
@@ -123,10 +124,7 @@ namespace Logy.Maps.ReliefMaps.Map2D
 
                 DrawFrame(pixels, data, bmp, step);
 
-                if (LegendToDraw)
-                {
-                    DrawLegend(data, bmp);
-                }
+                DrawLegend(data, bmp);
 
                 bitmap = SaveBitmap(bmp, data.Colors, data.Accuracy, step);
             }
@@ -135,6 +133,9 @@ namespace Logy.Maps.ReliefMaps.Map2D
 
         internal void DrawLegend(DataEarth data, Bitmap bmp)
         {
+            if (!LegendToDraw)
+                return;
+
             var top = YResolution * HealpixManager.Nside * Scale;
             var left = HealpixManager.Nside * Scale;
             const int Upbottomedge = 3;
@@ -197,7 +198,7 @@ namespace Logy.Maps.ReliefMaps.Map2D
                     (int)measure0.Width + 1,
                     (int)measure0.Height - 2);
                 g.FillRectangle(Brushes.White, rectangle);
-                rectangle.X += 3;
+                rectangle.X += K > 6 ? 3 : 0;
                 g.DrawString(middle, font, Brushes.Black, rectangle);
             }
             g.Flush();

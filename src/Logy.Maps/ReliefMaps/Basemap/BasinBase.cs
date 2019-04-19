@@ -64,15 +64,18 @@ namespace Logy.Maps.ReliefMaps.Basemap
             get { return hOQ + rOfEllipse; }
         }
 
+        /// <summary>
+        /// geoid surface, may be changed
+        /// </summary>
         public double rOfEllipse { get; private set; }
         public double RingArea { get; private set; }
         public double Area { get; private set; }
 
-        public void InitROfEllipse(HealpixManager man, double r)
+        public void InitROfEllipse(HealpixManager man, double newR)
         {
-            rOfEllipse = r;
+            rOfEllipse = newR;
 
-            Area = r * r * man.OmegaPix;
+            Area = newR * newR * man.OmegaPix;
             RingArea = Area * PixelsCountInRing;
         }
 
@@ -128,11 +131,6 @@ namespace Logy.Maps.ReliefMaps.Basemap
             Delta_g_meridian = GoodDeflectionAngle;
         }
 
-        public Point2D Qb
-        {
-            get { return new Point2D(r * BetaSin, r * BetaCos); }
-            set { }
-        }
 
         public static Line2D OQ(Point2D q)
         {
@@ -158,10 +156,10 @@ namespace Logy.Maps.ReliefMaps.Basemap
         /// relative to rOfEllipse 
         /// may include geoidUndulation
         /// </summary>
-        public double hOQ
+        public virtual double hOQ
         {
             get;
-            /* may influence on many things! */
+            /* may influence on many things! like Basin3.S_q */
             internal set;
         }
 

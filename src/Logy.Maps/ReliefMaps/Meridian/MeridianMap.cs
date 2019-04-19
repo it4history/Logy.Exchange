@@ -27,7 +27,7 @@ namespace Logy.Maps.ReliefMaps.Meridian
 
             //must be 10.69km 
             // for k5 is 10.94, k6 10.93, k7 10.9, k8 10.72
-            Data.Cycle(700, delegate(int step) // 700 for k7
+            Data.Cycle(delegate(int step) 
             {
                 Data.Draw(Bmp, step);
 
@@ -36,6 +36,7 @@ namespace Logy.Maps.ReliefMaps.Meridian
                 {
                     ChangeRotation(step, 80000);
                 }
+                return 700; // 700 for k7
             });
         }
 
@@ -47,7 +48,7 @@ namespace Logy.Maps.ReliefMaps.Meridian
         public void Water_RotationStopping()
         {
             Data = new MeridianWater<MeridianCoor>(HealpixManager); //-3690d, 4185d);
-            Data.Cycle(110, delegate(int step) // 1100 for k9
+            Data.Cycle(delegate(int step) 
             {
                 Data.Draw(Bmp, step);
 
@@ -55,6 +56,7 @@ namespace Logy.Maps.ReliefMaps.Meridian
                 {
                     ChangeRotation(step);
                 }
+                return 110; // 1100 for k9
             });
         }
 
@@ -71,9 +73,10 @@ namespace Logy.Maps.ReliefMaps.Meridian
             Data.PixMan.Pixels[HealpixManager.RingsCount * 3 / 4 + 1].hOQ = h;
             Data.PixMan.Pixels[HealpixManager.RingsCount * 3 / 4 + 2].hOQ = h;
             Data.ColorsMiddle = 50;
-            Data.Cycle(1, delegate(int step)
+            Data.Cycle(delegate(int step)
             {
                 Data.Draw(Bmp, step);
+                return 1;
             });
         }
 

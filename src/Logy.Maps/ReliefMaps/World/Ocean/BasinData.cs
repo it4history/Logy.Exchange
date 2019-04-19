@@ -1,5 +1,4 @@
 ﻿using System;
-using Logy.Maps.Geometry;
 using Logy.Maps.Projections.Healpix;
 using Logy.Maps.ReliefMaps.Water;
 
@@ -21,14 +20,36 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
             : base(man, null, min, max, readAllAtStart)
         {
             Visual = basin => basin.hOQ;
+            //Visual = basin.Visual * 1000;
+
             ColorsMiddle = 0;
 
             foreach (var basin in PixMan.Pixels)
             {
+                if (withRelief)
+                {
+                    int waterHeight;
+                    var hOQ = GetHeights(basin, (int)basin.rOfEllipse, out waterHeight);
+                    basin.hOQ = hOQ;
+                    if (waterHeight > 0)
+                    {
+                        basin.Depth = waterHeight - hOQ;
+                    }
+                    else
+                    {
+                        basin.Depth = -hOQ;
+                    }
+                }
                 if (spheric)
                 {
-                    basin.InitROfEllipse(HealpixManager, Ellipsoid.MeanRadius);
                     basin.Delta_g_meridian = basin.Delta_g_traverse = 0;
+                    if (withRelief)
+                    {
+                        var diff = Earth2014Manager.Radius2Add - basin.rOfEllipse;
+                        basin.Depth += diff;
+                        basin.hOQ -= diff;
+                    }
+                    basin.InitROfEllipse(HealpixManager, Earth2014Manager.Radius2Add);
                 }
 
                 foreach (Direction to in Enum.GetValues(typeof(Direction)))
@@ -44,22 +65,7 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
                 for (int to = 0; to < 4; to++)
                 {
                     var toBasin = basin.Neibors[to];
-                    basin.InitialHto[to] = basin.Metric(toBasin, to);
-                }
-
-                if (withRelief)
-                {
-                    int waterHeight;
-                    var hOQ = GetHeights(basin, (int)basin.rOfEllipse, out waterHeight);
-                    basin.hOQ = hOQ;
-                    if (waterHeight > 0)
-                    {
-                        basin.Depth = waterHeight - hOQ;
-                    }
-                    else
-                    {
-                        basin.Depth = -hOQ;
-                    }
+                    basin.InitialHto[to] = basin.Metric(toBasin, to, true);
                 }
             }
         }
@@ -90,7 +96,6 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
 
         public override double? GetAltitude(T basin)
         {
-            //return basin.Visual * 1000;
             if (basin.HasWater())
             {
                 for (int to = 0; to < 4; to++)
@@ -112,7 +117,7 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
                     }
                 }
             }
-            return basin.HasWater() ? Visual(basin) : (double?)null;
+            return basin.HasWater() ? Visual(basin) : (double?)null; // basin.hOQ;
         }
     }
 }

@@ -74,7 +74,7 @@ namespace Logy.Maps.ReliefMaps.Water
         /// <param name="timeKoef"></param>
         /// <param name="action"></param>
         /// <param name="width">if 1 then 2 cycles: -1 and 0</param>
-        public void Cycle(int timeKoef, Action<int> action, int? width = null)
+        public void Cycle(Func<int, int> action, int? width = null)
         {
             double? previousMax = null;
             double? previousMin = null;
@@ -82,7 +82,7 @@ namespace Logy.Maps.ReliefMaps.Water
             for (var step = -w; step < w; step++)
             {
                 SetScales();
-                action(step);
+                int timeKoef = action(step + w);
 
                 //viscosity = i < 0 ? .6 : .4;// .6 - .2 * i / (2 * w);
                 for (var cycle = 0; cycle < timeKoef; cycle++)
@@ -123,7 +123,7 @@ namespace Logy.Maps.ReliefMaps.Water
                     new SortedList<int, Color3>
                     {
                         { 0, ColorsManager.WaterBorder },
-                        { 10, new Color3(Color.Yellow) },
+                        { 25, new Color3(Color.Yellow) },
                         { 50, new Color3(Color.SandyBrown) },
                         { 100, new Color3(Color.Red) },
                     }, new SortedList<int, Color3>
@@ -138,6 +138,11 @@ namespace Logy.Maps.ReliefMaps.Water
         {
             base.Draw(bmp, deltaX, PixMan.Pixels, yResolution, scale);
             Log();
+        }
+
+        public override void Log()
+        {
+            if (!IsDynamicScale) base.Log();
         }
 
         /// <returns>millions of cubic km</returns>

@@ -11,9 +11,10 @@ namespace Logy.Maps.ReliefMaps.Map2D.Tests
         public void AnyModificationofGetAltitude()
         {
             Data = new MeridianWater<MeridianCoorFast>(HealpixManager);
-            Data.Cycle(1, delegate(int step)
+            Data.Cycle(delegate(int step)
             {
                 Data.Draw(Bmp, step);
+                return 1;
             });
         }
     }

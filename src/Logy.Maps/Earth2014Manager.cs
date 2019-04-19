@@ -8,6 +8,9 @@ namespace Logy.Maps
 {
     public class Earth2014Manager : IDisposable
     {
+        /// <summary>
+        /// like Ellipsoid.MeanRadius
+        /// </summary>
         public const int Radius2Add = 6371000;
 
         public const int AltitudeAccuracy = 2; // meters

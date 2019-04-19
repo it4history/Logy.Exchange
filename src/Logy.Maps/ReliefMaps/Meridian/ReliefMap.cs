@@ -25,11 +25,12 @@ namespace Logy.Maps.ReliefMaps.Meridian
             data.CheckOcean();
 
             ChangeRotation(-HealpixManager.Nside, double.MaxValue);
-            Data.Cycle(100, delegate(int step) //240 for k8, 150 for k7, 100 for k6
+            Data.Cycle(delegate(int step) 
             {
                 if (Data.Colors != null)
                     Data.Colors.DefaultColor = Color.FromArgb(255, 174, 201);
                 Data.Draw(Bmp, step);
+                return 100; //240 for k8, 150 for k7, 100 for k6
             });
 
             data.RecheckOcean();
