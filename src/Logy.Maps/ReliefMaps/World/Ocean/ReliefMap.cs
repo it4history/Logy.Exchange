@@ -58,13 +58,13 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
 
             var changeSteps = 15;
 
-            var framesCountBy2 = 300;
+            var framesCountBy2 = 500;
             Data.Cycle(delegate(int step) //20 for k5
             {
                 if (step % changeSteps == 0)
                 {
                     double koef;
-                    if (step == framesCountBy2)
+                    if (step == framesCountBy2 / 3)
                         koef = double.MaxValue;
                     else if ((step / changeSteps) % 3 == 3 - 1)
                         koef = 10000;

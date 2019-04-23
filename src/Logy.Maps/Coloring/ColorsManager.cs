@@ -48,6 +48,7 @@ namespace Logy.Maps.Coloring
         internal static Color3 Blue = new Color3(0, 240, 255);
         internal static Color3 DarkBlue = new Color3(0, 50, 170);
         internal static Color3 WaterBorder = new Color3(Color.Aquamarine);
+        internal static Color Land = Color.BurlyWood;
 
         public static readonly SortedList<int, Color3> Water = new SortedList<int, Color3>
         {
@@ -73,7 +74,7 @@ namespace Logy.Maps.Coloring
         public bool IsGrey { get; private set; }
         private SortedList<int, Color3> _above = Gyr1;
         private SortedList<int, Color3> _under = Water;
-        public Color DefaultColor = Color.BurlyWood;
+        public Color DefaultColor = Land;
 
         public ColorsManager(double min, double max, double? middle = null, bool isGrey = false)
         {

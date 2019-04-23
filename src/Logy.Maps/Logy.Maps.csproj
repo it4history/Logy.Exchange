@@ -70,6 +70,7 @@
     <Compile Include="ReliefMaps\Basemap\BasinBase.cs" />
     <Compile Include="ReliefMaps\Meridian\MeridianBase.cs" />
     <Compile Include="ReliefMaps\Meridian\ReliefMap.cs" />
+    <Compile Include="ReliefMaps\World\Approximate\Percentage.cs" />
     <Compile Include="ReliefMaps\World\Ocean\ReliefMap.cs" />
     <Compile Include="ReliefMaps\World\Ocean\Basin3.cs" />
     <Compile Include="ReliefMaps\Meridian\Data\CentrifugalAcceleration.cs" />
