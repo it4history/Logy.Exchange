@@ -219,7 +219,7 @@ namespace Logy.Maps.ReliefMaps.Map2D
                 Directory.CreateDirectory(Dir);
             var filename = string.Format(
                 "{1}{0}{5}min{4}{3}.{2}",
-                step == 0 ? null : step.ToString("000") + "_",
+                step == 0 ? null : step.ToString("0000") + "_",
                 colors.IsGrey ? "grey" : null,
                 ImageFormat.ToString().ToLower(),
                 LegendToDraw ? null : "_nolegend",

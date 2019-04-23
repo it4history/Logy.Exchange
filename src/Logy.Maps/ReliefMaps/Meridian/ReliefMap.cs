@@ -1,11 +1,11 @@
-using System.Drawing;
+п»їusing System.Drawing;
 using Logy.Maps.ReliefMaps.Water;
 using NUnit.Framework;
 
 namespace Logy.Maps.ReliefMaps.Meridian
 {
     /// <summary>
-    /// http://hist.tk/hw/Рельеф_Земли_-_усредненный_меридиан
+    /// http://hist.tk/hw/Р РµР»СЊРµС„_Р—РµРјР»Рё_-_СѓСЃСЂРµРґРЅРµРЅРЅС‹Р№_РјРµСЂРёРґРёР°РЅ
     /// </summary>
     [TestFixture]
     public class ReliefMap : MeridianMap
@@ -22,18 +22,15 @@ namespace Logy.Maps.ReliefMaps.Meridian
                 ,-3128d, 7336d
             );
             Data = data;
-            data.CheckOcean();
-
+            
             ChangeRotation(-HealpixManager.Nside, double.MaxValue);
             Data.Cycle(delegate(int step) 
             {
                 if (Data.Colors != null)
                     Data.Colors.DefaultColor = Color.FromArgb(255, 174, 201);
-                Data.Draw(Bmp, step);
+                Data.Draw(Bmp, step - HealpixManager.Nside, null, YResolution, Scale);
                 return 100; //240 for k8, 150 for k7, 100 for k6
             });
-
-            data.RecheckOcean();
         }
     }
 }

@@ -123,7 +123,7 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
                 Visual = basin => basin.r - Earth2014Manager.Radius2Add //*/
             };
 
-            Water_ChangeAxis(17); // 45, 90
+            ChangeAxis(); // 45, 90
         }
 
         [Test]

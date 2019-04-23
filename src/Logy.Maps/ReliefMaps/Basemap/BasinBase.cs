@@ -186,7 +186,7 @@ namespace Logy.Maps.ReliefMaps.Basemap
         {
             get
             {
-                if (HasWater())
+                if (Depth != null && HasWater())
                 {
                     return WaterHeight * Area;
                 }

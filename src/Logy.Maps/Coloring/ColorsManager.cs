@@ -186,6 +186,12 @@ namespace Logy.Maps.Coloring
                 if (height.HasValue) color = (Color)Get(height.Value);
             }
 
+            SetPixelOnBmp(color, bmp, x, y, scale);
+        }
+
+        public void SetPixelOnBmp(Color color, Bitmap bmp, int x, int y, int scale)
+        {
+
             if (scale == 1)
                 bmp.SetPixel(x, y, color);
             else

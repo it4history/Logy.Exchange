@@ -37,6 +37,8 @@ namespace Logy.Maps.ReliefMaps.Water
                     basin.Depth = -surfaceHeightAll / pixelsInRing;
                 }
             }
+
+            CheckOcean();
         }
 
         public override ReliefType ReliefBedType

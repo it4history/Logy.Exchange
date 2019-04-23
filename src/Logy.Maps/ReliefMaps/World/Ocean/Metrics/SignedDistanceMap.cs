@@ -13,7 +13,7 @@ namespace Logy.Maps.ReliefMaps.World.Ocean.Metrics
                 //, -200d //, 2000d
             );
 
-            Water_ChangeAxis();
+            ChangeAxis();
         }
     }
 }

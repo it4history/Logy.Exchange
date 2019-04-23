@@ -68,6 +68,11 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
                     basin.InitialHto[to] = basin.Metric(toBasin, to, true);
                 }
             }
+
+            if (withRelief)
+            {
+                CheckOcean();
+            }
         }
 
         public override ReliefType ReliefBedType

@@ -122,6 +122,7 @@
     <Compile Include="ReliefMaps\World\Ocean\Tests\BasinDataTests.cs" />
     <Compile Include="ReliefMaps\World\Ocean\Metrics\Tests\DistanceToOtherMetricTests.cs" />
     <Compile Include="ReliefMaps\World\Ocean\Metrics\Tests\MeridianMetricTests.cs" />
+    <Compile Include="ReliefMaps\World\Ocean\ReliefAxis17.cs" />
     <Compile Include="SortUtils.cs" />
     <Compile Include="ReliefType.cs" />
     <Compile Include="Tests\SortUtilsTests.cs" />

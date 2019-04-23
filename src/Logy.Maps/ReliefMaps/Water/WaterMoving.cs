@@ -142,7 +142,8 @@ namespace Logy.Maps.ReliefMaps.Water
 
         public override void Log()
         {
-            if (!IsDynamicScale) base.Log();
+            if (!MinDefault.HasValue || !MaxDefault.HasValue)
+                base.Log();
         }
 
         /// <returns>millions of cubic km</returns>
@@ -159,19 +160,21 @@ namespace Logy.Maps.ReliefMaps.Water
             }
             return ToMilCumKm(oceanVolume);
         }
-        private double oceanVolume;
+        private double _oceanVolume;
         public void CheckOcean()
         {
-            oceanVolume = GetOceanVolume();
-            Assert.GreaterOrEqual(oceanVolume, 1330);
-            Assert.LessOrEqual(oceanVolume, 1340);
+            _oceanVolume = GetOceanVolume();
+            Assert.GreaterOrEqual(_oceanVolume, 1330);
+            Assert.LessOrEqual(_oceanVolume, 1340);
         }
 
-        public void RecheckOcean()
+        public double RecheckOcean()
         {
             var newOceanVolume = GetOceanVolume();
+            var diff = _oceanVolume - newOceanVolume;
             Console.WriteLine("initial ocean: {0:.##}; diff at end: {1}",
-                oceanVolume, oceanVolume - newOceanVolume);
+                _oceanVolume, diff);
+            return diff;
         }
     }
 }
