@@ -42,7 +42,7 @@ namespace Logy.Maps.ReliefMaps.Map2D
 
         protected override int K
         {
-            get { return 7; }
+            get { return 6; }
         }
 
         public override Projection Projection
@@ -91,7 +91,7 @@ namespace Logy.Maps.ReliefMaps.Map2D
 
         public void ChangeAxis(
             double angle = 17,
-            int framesCountBy2 = 60,
+            int framesCountBy2 = 100, // for k6
             Func<int, int> timeKoefByStep = null,
             bool slow = false,
             Func<int> slowSteps = null)
@@ -109,7 +109,7 @@ namespace Logy.Maps.ReliefMaps.Map2D
                 if (step == 0 || slow && step % slowSteps() == 0 && slowCycle++ < slowCyclesCount)
                 {
                     var angleLong = angle * slowCycle / slowCyclesCount;
-                    var angleLat = -40d * slowCycle / slowCyclesCount;
+                    var angleLat = -40d; //// * slowCycle / slowCyclesCount;
                     EllipsoidAcceleration.AxisOfRotation =
                         Basin3.Oz
                             .Rotate(

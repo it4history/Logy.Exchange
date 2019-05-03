@@ -29,6 +29,8 @@ namespace Logy.Maps.ReliefMaps.Water
         public double Threshhold { get; private set; }
         public double ThreshholdNotReliable { get; private set; }
 
+        public bool IsMeridian { get; set; }
+
         /// <summary>
         /// for meridian projection
         /// </summary>
@@ -52,7 +54,7 @@ namespace Logy.Maps.ReliefMaps.Water
                 // must be transaction
                 if (!toBasin.Volumes[from] && !basin.Volumes[to])
                 {
-                    var k = basin.RingArea / toBasin.RingArea;
+                    var k = IsMeridian ? basin.RingArea / toBasin.RingArea : 1;
                     var v = Viscosity * height;
                     var vFromBasin = v;
                     double? vToBasin = null;
