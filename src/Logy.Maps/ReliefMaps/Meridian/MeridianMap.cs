@@ -25,11 +25,11 @@ namespace Logy.Maps.ReliefMaps.Meridian
             Data = new MeridianWater<MeridianCoor>(HealpixManager); //-5032d, 5685d);//integration not finished on 500, run again!
             ChangeRotation(-HealpixManager.Nside, double.MaxValue); // Ellipsoid.SiderealDayInSeconds*1000);
 
-            //must be 10.69km 
+            // must be 10.69km 
             // for k5 is 10.94, k6 10.93, k7 10.9, k8 10.72
             Data.Cycle(delegate(int step) 
             {
-                Data.Draw(Bmp, step);
+                Data.Draw(Bmp, step - HealpixManager.Nside, null, YResolution, Scale);
 
                 var times = 0;
                 if (step - times < -HealpixManager.Nside) //// how many times to call ChangeRotation at the beginning
@@ -50,7 +50,7 @@ namespace Logy.Maps.ReliefMaps.Meridian
             Data = new MeridianWater<MeridianCoor>(HealpixManager); //-3690d, 4185d);
             Data.Cycle(delegate(int step) 
             {
-                Data.Draw(Bmp, step);
+                Data.Draw(Bmp, step - HealpixManager.Nside, null, YResolution, Scale);
 
                 if (step % HealpixManager.Nside / 4 == 0) //(îò 23,9 ÷àñîâ äî 26,7), è â ñåðåäèíå âðåìåíè äî 46,2 ÷àñîâ
                 {
@@ -75,7 +75,7 @@ namespace Logy.Maps.ReliefMaps.Meridian
             Data.ColorsMiddle = 50;
             Data.Cycle(delegate(int step)
             {
-                Data.Draw(Bmp, step);
+                Data.Draw(Bmp, step - HealpixManager.Nside, null, YResolution, Scale);
                 return 1;
             });
         }
@@ -88,7 +88,7 @@ namespace Logy.Maps.ReliefMaps.Meridian
         {
             Data = new Gravity(HealpixManager);
             Data.MoveAllWater();
-            Data.Draw(Bmp);
+            Data.Draw(Bmp, 0, null, YResolution, Scale);
         }
 
         /// <summary>
@@ -99,7 +99,7 @@ namespace Logy.Maps.ReliefMaps.Meridian
         {
             Data = new CentrifugalAcceleration(HealpixManager);
             Data.MoveAllWater();
-            Data.Draw(Bmp);
+            Data.Draw(Bmp, 0, null, YResolution, Scale);
         }
 
         [Test]
@@ -107,7 +107,7 @@ namespace Logy.Maps.ReliefMaps.Meridian
         {
             Data = new StartCheckingGeodesic(HealpixManager);
             Data.MoveAllWater();
-            Data.Draw(Bmp);
+            Data.Draw(Bmp, 0, null, YResolution, Scale);
         }
     }
 }

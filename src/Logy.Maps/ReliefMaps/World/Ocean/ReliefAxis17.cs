@@ -11,37 +11,23 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
             LegendNeeded = true;
         }
 
-        /// <summary>
-        /// framesCountBy2 == 100 is not enough for all integration
-        /// </summary>
-        [Test]
-        public void AxisChange_Sharp()
+        protected override int K
         {
-            Data = new BasinData(HealpixManager, true, false
-                //, -6000d, null
-                //, -1000d, 5000d, true
-            )
-            {
-                NoIntegrationFinish = true,
-            };
-
-            ChangeAxis();
+            get { return 6; }
         }
 
         [Test]
         public void AxisChange_Slow()
         {
-            Data = new BasinData(HealpixManager, true, false
-                //, -2000d, 2000d, true
-            )
+            Data = new BasinData(HealpixManager, true)
             {
-                NoIntegrationFinish = true,
+                IntegrationEndless = true,
             };
 
 
             ChangeAxis(
                 17,
-                500,
+                1000,
                 step =>
                 {
                     switch (K)
@@ -59,6 +45,23 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
                     }
                     return 10;
                 });
+        }
+
+        /// <summary>
+        /// framesCountBy2 == 100 is not enough for all integration
+        /// </summary>
+        [Test]
+        public void AxisChange_Sharp()
+        {
+            Data = new BasinData(HealpixManager, true, false
+                //, -6000d, null
+                //, -1000d, 5000d, true
+            )
+            {
+                IntegrationEndless = true,
+            };
+
+            ChangeAxis();
         }
     }
 }

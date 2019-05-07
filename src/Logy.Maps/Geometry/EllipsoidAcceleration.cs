@@ -89,6 +89,7 @@ namespace Logy.Maps.Geometry
 
         /// <param name="a">perpendicular to AxisOrRotation</param>
         /// <param name="aTraverse"></param>
+        /// <param name="aVertical">projected value to the sphere normal, > 0</param>
         /// <returns>aMeridian,  directed to equator of OZ</returns>
         public static double Centrifugal(BasinBase basin, out double a, out double aTraverse, out double aVertical)
         {

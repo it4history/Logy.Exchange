@@ -18,7 +18,7 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
                 //       , -7000d
             )
             {
-                NoIntegrationFinish = true,
+                IntegrationEndless = true,
                 //Visual = basin => basin.WaterHeight
             };
 
@@ -45,7 +45,7 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
             )
             {
                 SamePolesAndEquatorGravitation = true,
-                NoIntegrationFinish = true,
+                IntegrationEndless = true,
                 //Visual = basin => basin.Depth.Value
                 //Visual = basin => basin.r - Earth2014Manager.Radius2Add //*/
             };

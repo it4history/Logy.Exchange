@@ -34,7 +34,7 @@ namespace Logy.Maps.ReliefMaps.Water
         /// <summary>
         /// maybe value decreases but not increases
         /// </summary>
-        public bool NoIntegrationFinish { get; set; }
+        public bool IntegrationEndless { get; set; }
 
         public bool SamePolesAndEquatorGravitation { get; set; }
 
@@ -103,7 +103,7 @@ namespace Logy.Maps.ReliefMaps.Water
                         }
                         else
                         {
-                            if (!NoIntegrationFinish)
+                            if (!IntegrationEndless)
                                 if (!MinDefault.HasValue && !MaxDefault.HasValue) /*not IsDynamicScale*/
                                 {
                                     Console.WriteLine("integration finished at step {0}", step);

@@ -52,7 +52,6 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
                     var qb = Qb;
                     _q3 = new Point3D(
                         LambdaMinusPi2Sin * qb.X,
-                        //Math.Cos(Lambda.Value) * qb.X,
                         LambdaSin * qb.X,
                         qb.Y);
                     _actualQ3 = true;
@@ -89,7 +88,8 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
             {
                 if (_normal == null)
                 {
-                    var normal = Matrixes.RotationVector; // NormalCalm
+                    var normal = Matrixes.RotationVector; 
+
                     // Matrixes.Rotate() analog in radians
                     normal = normal.Rotate(new UnitVector3D(0, 1, 0),
                         new Angle(Math.Sign(Vartheta) * (Delta_g_meridian + Delta_s_meridian) + Phi, AngleUnit.Radians));

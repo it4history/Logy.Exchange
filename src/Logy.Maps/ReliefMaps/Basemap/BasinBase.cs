@@ -242,7 +242,7 @@ namespace Logy.Maps.ReliefMaps.Basemap
             var aMeridian = EllipsoidAcceleration.Centrifugal(this, out a, out aTraverse, out aVertical);
 
             // range: 0..0.0034
-            var newDeflectionAngleTan = (gHpure + aMeridian) / (gVpure /*+ aVertical*/);
+            var newDeflectionAngleTan = (gHpure + aMeridian) / (gVpure - aVertical);
 
             //todo try to rid of newDeflectionAngle and calculate without Atan, Tan
             var newDeflectionAngle = Math.Atan(newDeflectionAngleTan);
