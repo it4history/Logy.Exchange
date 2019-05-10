@@ -1,4 +1,5 @@
 #if DEBUG
+using Logy.Maps.Exchange;
 using NUnit.Framework;
 
 namespace Logy.Maps.ReliefMaps.World.Ocean
@@ -11,23 +12,19 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
             LegendNeeded = true;
         }
 
-        protected override int K
-        {
-            get { return 6; }
-        }
+        protected override int K => 5;
 
         [Test]
         public void AxisChange_Slow()
         {
-            Data = new BasinData(HealpixManager, true)
-            {
-                IntegrationEndless = true,
-            };
-
+            SetData(new ChangeAxis { Slow = true },
+                new BasinData(HealpixManager, true)
+                {
+                    IntegrationEndless = true,
+                });
 
             ChangeAxis(
-                17,
-                1000,
+                1,
                 step =>
                 {
                     switch (K)
@@ -36,7 +33,6 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
                     }
                     return 15;
                 },
-                true,
                 () =>
                 {
                     switch (K)
@@ -46,6 +42,7 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
                     return 10;
                 });
         }
+
 
         /// <summary>
         /// framesCountBy2 == 100 is not enough for all integration

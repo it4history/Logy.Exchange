@@ -23,18 +23,18 @@ namespace Logy.Maps.Projections.Healpix
         {
         }
 
+        /// <summary>
+        /// from 0 to Npix-1
+        /// </summary>
         [DataMember]
+        public int P { get; set; }
+
         public double? Altitude { get; set; }
 
         /// <summary>
         /// from 1 to HealpixManager.RingsCount
         /// </summary>
         public int Ring { get; set; }
-
-        /// <summary>
-        /// from 0 to Npix-1
-        /// </summary>
-        public int P { get; set; }
 
         /// <summary>
         /// from 1

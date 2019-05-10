@@ -14,13 +14,7 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
         public static Point3D O3 = new Point3D(0, 0, 0);
         public static UnitVector3D Oz = new UnitVector3D(0, 0, 1);
 
-        public static Point3D OzEnd
-        {
-            get
-            {
-                return Oz.ToPoint3D();
-            }
-        }
+        public static Point3D OzEnd => Oz.ToPoint3D();
 
         private bool _actualQ3;
         public override double hOQ
@@ -71,12 +65,9 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
             }
         }
 
-        public Line3D RadiusLine { get { return new Line3D(O3, Q3); } }
+        public Line3D RadiusLine => new Line3D(O3, Q3);
 
-        public Ray3D RadiusRay
-        {
-            get { return new Ray3D(O3, RadiusLine.Direction); }
-        }
+        public Ray3D RadiusRay => new Ray3D(O3, RadiusLine.Direction);
 
         /// <summary>
         /// nulled when gradients changed
@@ -115,13 +106,7 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
                 return _s_q;
             }
         }
-        public Plane S_geiod
-        {
-            get
-            {
-                return new Plane(Normal, Qgeiod);
-            }
-        }
+        public Plane S_geiod => new Plane(Normal, Qgeiod);
 
         public Neibors<Basin3> Neibors = new Neibors<Basin3>(new Basin3[4]);
 

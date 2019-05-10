@@ -27,10 +27,7 @@ namespace Logy.Maps.Projections.Healpix
         /// there are Nside polar rings
         /// there are 2*Nside-1 equator 
         /// </summary>
-        public int RingsCount
-        {
-            get { return 4 * Nside - 1; }
-        }
+        public int RingsCount => 4 * Nside - 1;
 
         /// <summary>
         /// there are 2*Nside-1 equator rings

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Runtime.Serialization;
 using AppConfiguration;
-using Newtonsoft.Json;
 
 namespace Logy.MwAgent.Sphere
 {
@@ -32,7 +31,7 @@ namespace Logy.MwAgent.Sphere
         /// <summary>
         /// from -180 to 180, 180 corresponds to East on the right
         /// </summary>
-        [JsonProperty("Longitude")]
+        /// [JsonProperty("Longitude")]
         public override double X
         {
             get { return base.X - 180; }
@@ -42,7 +41,7 @@ namespace Logy.MwAgent.Sphere
         /// <summary>
         /// from -90 to 90, 90 corresponds to North pole
         /// </summary>
-        [JsonProperty("Latitude")]
+        /// [JsonProperty("Latitude")]
         public override double Y
         {
             get { return 90 - base.Y; }
@@ -59,7 +58,6 @@ namespace Logy.MwAgent.Sphere
         /// 0       x = -r  y = 0
         /// 1.5Pi   x = 0  y = -r
         /// </summary>
-        [DataMember]
         public double? Lambda
         {
             get
@@ -83,7 +81,6 @@ namespace Logy.MwAgent.Sphere
         /// spherical
         /// http://hist.tk/hw/Reduced_co-latitude
         /// </summary>
-        [DataMember]
         public double? Beta
         {
             get { return base.Y / 180 * Math.PI; }

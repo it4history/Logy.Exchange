@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.Serialization;
 using Logy.Maps.Geometry;
 using Logy.Maps.Projections.Healpix;
 using MathNet.Spatial.Euclidean;
@@ -156,6 +157,7 @@ namespace Logy.Maps.ReliefMaps.Basemap
         /// relative to rOfEllipse 
         /// may include geoidUndulation
         /// </summary>
+        [DataMember]
         public virtual double hOQ
         {
             get;
@@ -171,6 +173,7 @@ namespace Logy.Maps.ReliefMaps.Basemap
         /// 
         /// int? is not enough when geoidUndulation included
         /// </summary>
+        [DataMember]
         public double? Depth { get; set; }
 
         // h_{water}

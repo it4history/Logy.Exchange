@@ -71,7 +71,6 @@ namespace Logy.Maps.ReliefMaps.Water
         {
         }
 
-        /// <param name="timeKoef"></param>
         /// <param name="action"></param>
         /// <param name="width">if 1 then 2 cycles: -1 and 0</param>
         public void Cycle(Func<int, int> action, int? width = null)
@@ -171,8 +170,8 @@ namespace Logy.Maps.ReliefMaps.Water
         public double RecheckOcean()
         {
             var newOceanVolume = GetOceanVolume();
-            var diff = _oceanVolume - newOceanVolume;
-            Console.WriteLine("initial ocean: {0:.##}; diff at end: {1}",
+            var diff = newOceanVolume - _oceanVolume;
+            Console.WriteLine("initial ocean: {0:.##}; increased on: {1}",
                 _oceanVolume, diff);
             return diff;
         }

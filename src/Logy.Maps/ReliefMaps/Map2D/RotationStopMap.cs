@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
+using Logy.Maps.Exchange;
 using Logy.Maps.Geometry;
 using Logy.Maps.Projections;
 using Logy.Maps.Projections.Healpix;
@@ -12,6 +13,7 @@ using Logy.Maps.ReliefMaps.Water;
 using Logy.Maps.ReliefMaps.World.Ocean;
 using MathNet.Spatial.Euclidean;
 using MathNet.Spatial.Units;
+using Newtonsoft.Json;
 using NUnit.Framework;
 
 namespace Logy.Maps.ReliefMaps.Map2D
@@ -37,23 +39,30 @@ namespace Logy.Maps.ReliefMaps.Map2D
                 Scale = 2;
             }
         }
-        
-        public WaterMoving<T> Data { get; set; }
 
-        protected override int K
+        public Bundle<T> Bundle { get; private set; }
+
+        public WaterMoving<T> Data
         {
-            get { return 6; }
+            get { return Bundle.Data; }
+            set
+            {
+                if (Bundle == null)
+                    Bundle = new Bundle<T>(value);
+            }
         }
 
-        public override Projection Projection
+        protected void SetData(Algorythm algorythm, WaterMoving<T> data)
         {
-            get { return Projection.Healpix; }
+            Bundle = new Bundle<T>(data, algorythm);
         }
 
-        protected override ImageFormat ImageFormat
-        {
-            get { return ImageFormat.Jpeg; }
-        }
+
+        protected override int K => 6;
+
+        public override Projection Projection => Projection.Healpix;
+
+        protected override ImageFormat ImageFormat => ImageFormat.Jpeg;
 
         [SetUp]
         public virtual void SetUp()
@@ -65,9 +74,11 @@ namespace Logy.Maps.ReliefMaps.Map2D
         public void TearDown()
         {
             Process.Start(SaveBitmap());
-            var diff = Data.RecheckOcean();
-            File.AppendAllText(Path.Combine(Dir, "stats.txt"),
-                string.Format("ocean volume diff: {0}", diff));
+            Bundle.Algorithm.Diff = Data.RecheckOcean();
+            using (var file = File.CreateText(Path.Combine(Dir, "stats.json")))
+            {
+                new JsonSerializer().Serialize(file, Bundle);
+            }
         }
 
         protected string SaveBitmap(int step = 0)
@@ -84,48 +95,51 @@ namespace Logy.Maps.ReliefMaps.Map2D
                                 Bmp.SetPixel(line, YResolution * Scale * HealpixManager.Nside + y, Color.Black);
                     }
                 }
+                Bundle.Algorithm.LastStep = step;
                 return SaveBitmap(Bmp, Data.Colors, Data.Accuracy, step);
             }
             return null;
         }
 
         public void ChangeAxis(
-            double angle = 17,
             int framesCountBy2 = 100, // for k6
             Func<int, int> timeKoefByStep = null,
-            bool slow = false,
             Func<int> slowSteps = null)
         {
-            //// fill Basin.Visual to see centrifugal components
+            var algorythm = (ChangeAxis)Bundle.Algorithm;
 
             T pole = null;
             var accur = 1.5;
 
             var slowCyclesCount = 10;
-            var slowCycle = slow ? 1 : slowCyclesCount;
+            var slowCycle = algorythm.Slow ? 1 : slowCyclesCount;
 
             Data.Cycle(delegate(int step)
             {
-                if (step == 0 || slow && step % slowSteps() == 0 && slowCycle++ < slowCyclesCount)
+                if (step == 0 || algorythm.Slow && step % slowSteps() == 0 && slowCycle++ < slowCyclesCount)
                 {
-                    var angleLong = angle * slowCycle / slowCyclesCount;
-                    var angleLat = -40d; //// * slowCycle / slowCyclesCount;
+                    var newPole = new PoleNorth
+                    {
+                        X = algorythm.DesiredPoleNorth.X, //// * slowCycle / slowCyclesCount
+                        Y = 90 - (90 - algorythm.DesiredPoleNorth.Y) * slowCycle / slowCyclesCount
+                    };
+                    algorythm.Poles.Add(step, newPole);
+                    
                     EllipsoidAcceleration.AxisOfRotation =
                         Basin3.Oz
                             .Rotate(
                                 new UnitVector3D(0, 1, 0),
-                                new Angle(angleLong, AngleUnit.Degrees))
+                                new Angle(90 - newPole.Y, AngleUnit.Degrees))
                             .Rotate(
                                 new UnitVector3D(0, 0, 1),
-                                new Angle(angleLat, AngleUnit.Degrees))
-                        ;
+                                new Angle(newPole.X, AngleUnit.Degrees));
 
                     //InitiialHtoRecalc();
                     ChangeRotation(step - HealpixManager.Nside, 0);
 
                     foreach (var b in Data.PixMan.Pixels)
                     {
-                        if (Math.Abs(b.X - angleLat) < accur && Math.Abs(b.Y - (90 - angleLong)) < accur)
+                        if (Math.Abs(b.X - newPole.X) < accur && Math.Abs(b.Y - newPole.Y) < accur)
                         {
                             pole = b;
                             break;
@@ -136,7 +150,7 @@ namespace Logy.Maps.ReliefMaps.Map2D
                 Data.Draw(Bmp, 0, null, YResolution, Scale);
                 Circle(pole, .03);
                 SaveBitmap(step);
-                return timeKoefByStep == null ? 15 : timeKoefByStep(step); // 15 for k4, 80 for k5 of Meridian
+                return timeKoefByStep?.Invoke(step) ?? 15; // 15 for k4, 80 for k5 of Meridian
             }, framesCountBy2);
         }
 
