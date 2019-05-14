@@ -19,19 +19,6 @@ namespace Logy.Maps.ReliefMaps.Meridian.Data
             Water.IsMeridian = true;
         }
 
-        private static T[] GetBasins(HealpixManager man)
-        {
-            var pix = new List<T>();
-            T last;
-            for (var south = man.Npix - 3; south > 0; south = man.Neibors.NorthMean(last))
-            {
-                last = man.GetCenter<T>(south);
-                pix.Add(last);
-            }
-            pix.Reverse(); //GetAltitude looks for northbasin
-            return pix.ToArray();
-        }
-
         protected MeridianCoor GetNorthBasin(MeridianCoor basin)
         {
             if (basin.Ring == 1)
@@ -47,6 +34,19 @@ namespace Logy.Maps.ReliefMaps.Meridian.Data
                 throw new ApplicationException("northBasin.Ring == basin.Ring");
             }
             return northBasin;
+        }
+
+        private static T[] GetBasins(HealpixManager man)
+        {
+            var pix = new List<T>();
+            T last;
+            for (var south = man.Npix - 3; south > 0; south = man.Neibors.NorthMean(last))
+            {
+                last = man.GetCenter<T>(south);
+                pix.Add(last);
+            }
+            pix.Reverse(); /// GetAltitude looks for northbasin
+            return pix.ToArray();
         }
     }
 }

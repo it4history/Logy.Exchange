@@ -218,7 +218,7 @@ namespace Logy.Maps.ReliefMaps.Basemap
         public abstract double[] Hto { get; set; }
 
         /// <summary>
-        /// whether water was moved during MeridianData.Cycle(...)
+        /// whether water was moved during MeridianData.Frame(...)
         /// </summary>
         public abstract bool[] Volumes { get; set; }
 

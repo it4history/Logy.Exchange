@@ -11,12 +11,23 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
 {
     public class Basin3 : BasinBase
     {
-        public static Point3D O3 = new Point3D(0, 0, 0);
-        public static UnitVector3D Oz = new UnitVector3D(0, 0, 1);
+        /// <summary>
+        /// nulled when gradients changed
+        /// </summary>
+        private UnitVector3D? _normal;
+
+        private bool _actualQ3;
+
+        /// <summary>
+        /// depends on hOQ only from r
+        /// </summary>
+        private Point3D _q3;
+
+        public static Point3D O3 { get; } = new Point3D(0, 0, 0);
+        public static UnitVector3D Oz { get; } = new UnitVector3D(0, 0, 1);
 
         public static Point3D OzEnd => Oz.ToPoint3D();
 
-        private bool _actualQ3;
         public override double hOQ
         {
             get { return base.hOQ; }
@@ -33,10 +44,7 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
             get { return new Point2D(r * BetaSin, r * BetaCos); }
             set { }
         }
-        /// <summary>
-        /// depends on hOQ only from r
-        /// </summary>
-        private Point3D _q3;
+
         public Point3D Q3
         {
             get
@@ -69,10 +77,6 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
 
         public Ray3D RadiusRay => new Ray3D(O3, RadiusLine.Direction);
 
-        /// <summary>
-        /// nulled when gradients changed
-        /// </summary>
-        private UnitVector3D? _normal;
         public UnitVector3D Normal
         {
             get

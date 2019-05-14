@@ -32,14 +32,13 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
             Data.PixMan.Pixels[HealpixManager
                 .GetP(HealpixManager.Nside, (int)(HealpixManager.Nside * 2.5))].hOQ = h;
 
-            var framesCountBy2 = 10;
-            Data.Cycle(delegate(int step) 
+            Data.DoFrames(delegate(int frame) 
             {
                 Data.Draw(Bmp, 0, null, YResolution, Scale);
                 Circle(basin3);
-                SaveBitmap(step);
+                SaveBitmap(frame);
                 return 1; //240 for k8, 150 for k7, 100 for k6
-            }, framesCountBy2);
+            }, 20);
         }
 
         [Test]
@@ -63,14 +62,13 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
             Data.PixMan.Pixels[p].Delta_g_traverse = .2;
 
 
-            var framesCountBy2 = 15;
-            Data.Cycle(delegate(int step)
+            Data.DoFrames(delegate(int frame)
             {
                 Data.Draw(Bmp, 0, null, YResolution, Scale);
                 Circle(basin);
-                SaveBitmap(step);
+                SaveBitmap(frame);
                 return 1;
-            }, framesCountBy2);
+            }, 30);
         }
 
         [Test]
@@ -96,7 +94,7 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
             //Data.GradientAndHeightCrosses();
             Assert.AreEqual(0, basin0.Hto[0]);
 
-            BasinDataTests.Cycle(Data);
+            BasinDataTests.DoFrame(Data);
         }
 
         private void InitiialHtoRecalc()
@@ -136,13 +134,12 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
 
 
             ChangeRotation(-HealpixManager.Nside, double.MaxValue);
-            var framesCountBy2 = 200;
-            Data.Cycle(delegate(int step) 
+            Data.DoFrames(delegate(int frame) 
             {
                 Data.Draw(Bmp, 0, null, YResolution, Scale);
-                SaveBitmap(step);
+                SaveBitmap(frame);
                 return 1;
-            }, framesCountBy2);
+            }, 400);
         }
     }
 }

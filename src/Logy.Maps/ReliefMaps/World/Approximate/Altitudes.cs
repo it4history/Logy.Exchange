@@ -10,19 +10,10 @@ namespace Logy.Maps.ReliefMaps.World.Approximate
             Frames = 1;
         }
 
-        public override Projection Projection
-        {
-            get { return Projection.Equirectangular; }
-        }
+        public override Projection Projection => Projection.Equirectangular;
 
-        protected override int K
-        {
-            get { return 8; }
-        }
+        protected override int K => 8;
 
-        protected override DataForMap2D ApproximateData
-        {
-            get { return new WorldAltitudesData(this); }
-        }
+        protected override DataForMap2D ApproximateData => new WorldAltitudesData(this);
     }
 }

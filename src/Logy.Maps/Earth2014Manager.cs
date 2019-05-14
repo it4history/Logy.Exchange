@@ -16,10 +16,12 @@ namespace Logy.Maps
         public const int AltitudeAccuracy = 2; // meters
 
         private readonly bool _readAllAtStart;
+
         /// <summary>
         /// used if !_readAllAtStart
         /// </summary>
         private readonly FileStream _stream;
+
         /// <summary>
         /// used if _readAllAtStart
         /// </summary>

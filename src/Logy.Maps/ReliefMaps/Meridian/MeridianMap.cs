@@ -11,10 +11,7 @@ namespace Logy.Maps.ReliefMaps.Meridian
     [TestFixture]
     public class MeridianMap : RotationStopMap<MeridianCoor>
     {
-        protected override int K
-        {
-            get { return 7; }
-        }
+        protected override int K => 7;
 
         /// <summary>
         /// http://hist.tk/hw/Меридианная_проекция_-_вода#третий_пример
@@ -22,21 +19,21 @@ namespace Logy.Maps.ReliefMaps.Meridian
         [Test]
         public void Water_RotationStopped()
         {
-            Data = new MeridianWater<MeridianCoor>(HealpixManager); //-5032d, 5685d);//integration not finished on 500, run again!
-            ChangeRotation(-HealpixManager.Nside, double.MaxValue); // Ellipsoid.SiderealDayInSeconds*1000);
+            Data = new MeridianWater<MeridianCoor>(HealpixManager); /// -5032d, 5685d); / /integration not finished on 1000, run again!
+            ChangeRotation(-HealpixManager.Nside, double.MaxValue); ///  Ellipsoid.SiderealDayInSeconds*1000);
 
             // must be 10.69km 
             // for k5 is 10.94, k6 10.93, k7 10.9, k8 10.72
-            Data.Cycle(delegate(int step) 
+            Data.DoFrames(delegate(int frame) 
             {
-                Data.Draw(Bmp, step - HealpixManager.Nside, null, YResolution, Scale);
+                Data.Draw(Bmp, frame - HealpixManager.Nside, null, YResolution, Scale);
 
                 var times = 0;
-                if (step - times < -HealpixManager.Nside) //// how many times to call ChangeRotation at the beginning
+                if (frame - times < -HealpixManager.Nside) //// how many times to call ChangeRotation at the beginning
                 {
-                    ChangeRotation(step, 80000);
+                    ChangeRotation(frame, 80000);
                 }
-                return 700; // 700 for k7
+                return 1400; // 1400 for k7
             });
         }
 
@@ -48,13 +45,13 @@ namespace Logy.Maps.ReliefMaps.Meridian
         public void Water_RotationStopping()
         {
             Data = new MeridianWater<MeridianCoor>(HealpixManager); //-3690d, 4185d);
-            Data.Cycle(delegate(int step) 
+            Data.DoFrames(delegate(int frame) 
             {
-                Data.Draw(Bmp, step - HealpixManager.Nside, null, YResolution, Scale);
+                Data.Draw(Bmp, frame - HealpixManager.Nside, null, YResolution, Scale);
 
-                if (step % HealpixManager.Nside / 4 == 0) //(îò 23,9 ÷àñîâ äî 26,7), è â ñåðåäèíå âðåìåíè äî 46,2 ÷àñîâ
+                if (frame % HealpixManager.Nside / 4 == 0) //(îò 23,9 ÷àñîâ äî 26,7), è â ñåðåäèíå âðåìåíè äî 46,2 ÷àñîâ
                 {
-                    ChangeRotation(step);
+                    ChangeRotation(frame);
                 }
                 return 110; // 1100 for k9
             });
@@ -73,9 +70,9 @@ namespace Logy.Maps.ReliefMaps.Meridian
             Data.PixMan.Pixels[HealpixManager.RingsCount * 3 / 4 + 1].hOQ = h;
             Data.PixMan.Pixels[HealpixManager.RingsCount * 3 / 4 + 2].hOQ = h;
             Data.ColorsMiddle = 50;
-            Data.Cycle(delegate(int step)
+            Data.DoFrames(delegate(int frame)
             {
-                Data.Draw(Bmp, step - HealpixManager.Nside, null, YResolution, Scale);
+                Data.Draw(Bmp, frame - HealpixManager.Nside, null, YResolution, Scale);
                 return 1;
             });
         }

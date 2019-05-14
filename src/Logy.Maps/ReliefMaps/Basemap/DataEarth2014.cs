@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Drawing;
+using System.Runtime.Serialization;
 using Logy.Maps.Coloring;
 using Logy.Maps.Projections;
 using Logy.Maps.Projections.Healpix;
@@ -15,8 +16,10 @@ namespace Logy.Maps.ReliefMaps.Basemap
         /// value that treated as splitter for colors
         /// if null then is (max-min)/2
         /// </summary>
+        [IgnoreDataMember]
         public double? ColorsMiddle;
 
+        [IgnoreDataMember]
         public double? MaxDefault;
         protected double? MinDefault;
 
@@ -45,7 +48,7 @@ namespace Logy.Maps.ReliefMaps.Basemap
             double? min = MinDefault, max = MaxDefault;
             foreach (var basin in basins)
             {
-                var altitude = GetAltitude((T) basin);
+                var altitude = GetAltitude(basin);
                 basin.Altitude = altitude; // not needed for Projection.Equirectangular
                 if (altitude.HasValue)
                 {
@@ -96,30 +99,20 @@ namespace Logy.Maps.ReliefMaps.Basemap
                 }
         }
 
-        public virtual int Accuracy
-        {
-            get { return 5; }
-        }
+        public virtual int Accuracy => 5;
 
         /// <summary>
         /// mainly not ReliefType.Bed
         /// </summary>
-        public virtual ReliefType ReliefType
-        {
-            get { return ReliefType.Sur; }
-        }
-        public virtual ReliefType ReliefBedType
-        {
-            get { return ReliefType.Bed; }
-        }
-        protected virtual bool IsReliefShape
-        {
-            get { return false; }
-        }
-        protected virtual bool IsReliefBedShape
-        {
-            get { return IsReliefShape; }
-        }
+        [IgnoreDataMember]
+        public virtual ReliefType ReliefType => ReliefType.Sur;
+
+        [IgnoreDataMember]
+        public virtual ReliefType ReliefBedType => ReliefType.Bed;
+
+        protected virtual bool IsReliefShape => false;
+
+        protected virtual bool IsReliefBedShape => IsReliefShape;
 
         public void Dispose()
         {

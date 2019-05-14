@@ -7,7 +7,7 @@ namespace Logy.Maps.ReliefMaps.Meridian.Data
 {
     public class StartCheckingGeodesic : MeridianData<MeridianCoor>
     {
-        private int _maxH;
+        /* private int _maxH; */
 
         public StartCheckingGeodesic(HealpixManager man) : base(man)
         {
@@ -16,7 +16,7 @@ namespace Logy.Maps.ReliefMaps.Meridian.Data
 
         public override double? GetAltitude(MeridianCoor basin)
         {
-            //basin.PreInit(HealpixManager);
+            //// basin.PreInit(HealpixManager);
 
             double? diff = null;
             var northBasin = GetNorthBasin(basin);
@@ -45,7 +45,6 @@ namespace Logy.Maps.ReliefMaps.Meridian.Data
                     , more, diffAnglePer2);
 
                 diff = MNMore - MNLess;
-
             }
             return diff;
         }
@@ -86,8 +85,8 @@ namespace Logy.Maps.ReliefMaps.Meridian.Data
 
         public override void Log()
         {
-            Console.WriteLine(_maxH);
-            //diapazon 7m for k=5, 3.5m for k=6, 1.75m for k=7, 0.88m for k=8 and 0.44m when k=9
+            // Console.WriteLine(_maxH);
+            // diapazon 7m for k=5, 3.5m for k=6, 1.75m for k=7, 0.88m for k=8 and 0.44m when k=9
             var diapazon = 7 * Math.Pow(0.5, HealpixManager.K - 5) * 1.1;
             Assert.LessOrEqual(Colors.Max, diapazon / 2);
             Assert.GreaterOrEqual(Colors.Min, -diapazon / 2);

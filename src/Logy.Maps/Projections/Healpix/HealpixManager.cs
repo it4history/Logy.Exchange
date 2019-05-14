@@ -1,13 +1,16 @@
 ﻿using System;
+using System.Runtime.Serialization;
 
 namespace Logy.Maps.Projections.Healpix
 {
     public class HealpixManager
     {
+        [IgnoreDataMember]
         public readonly int Nside;
 
         public readonly int K;
 
+        [IgnoreDataMember]
         public readonly NeighborManager Neibors;
 
         /// <param name="k">resolution, 9 is 5-arc min, 11 is 1-arc min</param>
@@ -27,37 +30,43 @@ namespace Logy.Maps.Projections.Healpix
         /// there are Nside polar rings
         /// there are 2*Nside-1 equator 
         /// </summary>
+        [IgnoreDataMember]
         public int RingsCount => 4 * Nside - 1;
 
         /// <summary>
         /// there are 2*Nside-1 equator rings
         /// </summary>
-        public int EquatorPixelsCount { get; private set; }
+        [IgnoreDataMember]
+        public int EquatorPixelsCount { get; }
 
         /// <summary>
         /// 4*ringNumber pixels at polar ring
         /// 4*Nside pixels at equator ring
         /// </summary>
-        public int PolarPixelsCount { get; private set; }
+        [IgnoreDataMember]
+        public int PolarPixelsCount { get; }
 
         /// <summary>
         /// Npix = (4 + 4 * Nside) * Nside + (2 * Nside - 1) * 4 * Nside
         /// = 4 * Nside + 4 * Nside* Nside + 8 * Nside* Nside - 4 * Nside
         /// = 12 * Nside* Nside;
         /// </summary>
-        public int Npix { get; private set; }
+        [IgnoreDataMember]
+        public int Npix { get; }
 
         /// <summary>
         /// Sqrt from OmegaPix, in radians
         /// 
         /// 6.4km/r when k = 10, 12.7km/r when k = 9
         /// </summary>
-        public double ThetaPix { get; private set; }
+        [IgnoreDataMember]
+        public double ThetaPix { get; }
 
         /// <summary>
         /// area of pixel in radians*radians, Ωpix
         /// </summary>
-        public double OmegaPix { get; private set; }
+        [IgnoreDataMember]
+        public double OmegaPix { get; }
 
         public bool IsSouthPolar(int p)
         {

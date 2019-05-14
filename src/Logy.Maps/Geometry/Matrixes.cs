@@ -6,7 +6,7 @@ namespace Logy.Maps.Geometry
 {
     public class Matrixes
     {
-        public static UnitVector3D RotationVector = new UnitVector3D(-1, 0, 0);
+        public static UnitVector3D RotationVector { get; } = new UnitVector3D(-1, 0, 0);
 
         public static UnitVector3D Rotate(HealCoor coor)
         {

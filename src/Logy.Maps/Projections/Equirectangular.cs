@@ -56,10 +56,10 @@ namespace Logy.Maps.Projections
                 (int)Math.Round(Y(coor.Y)));
         }
 
-        internal static Coor CoorFromXY(Point2 p, int yResolution, HealpixManager man, int step = 0)
+        internal static Coor CoorFromXY(Point2 p, int yResolution, HealpixManager man, int frame = 0)
         {
             var lat = 90d - ((p.Y + BorderWidth) * 180d / (yResolution * man.Nside));
-            var lon = ((p.X + BorderWidth) * 360 / (4 * man.Nside)) - (180 - step);
+            var lon = ((p.X + BorderWidth) * 360 / (4 * man.Nside)) - (180 - frame);
             var coor = (Coor)new Coor { Y = lat, X = lon }.Normalize();
             return coor;
         }

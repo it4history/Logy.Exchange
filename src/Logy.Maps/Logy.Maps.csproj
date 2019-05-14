@@ -35,6 +35,9 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="dotMemory.Unit, Version=111.0.0.0, Culture=neutral, PublicKeyToken=1010a0d8d6380325, processorArchitecture=MSIL">
+      <HintPath>..\packages\JetBrains.dotMemoryUnit.3.0.20171219.105559\lib\net35\dotMemory.Unit.dll</HintPath>
+    </Reference>
     <Reference Include="MathNet.Numerics, Version=3.20.2.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\MathNet.Numerics.3.20.2\lib\net40\MathNet.Numerics.dll</HintPath>
     </Reference>
@@ -59,8 +62,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Approximations\ApproximationManager.cs" />
+    <Compile Include="Exchange\Algorythm.cs" />
     <Compile Include="Exchange\Bundle.cs" />
-    <Compile Include="Exchange\BundleTests.cs" />
+    <Compile Include="Exchange\Tests\BundleTests.cs" />
+    <Compile Include="Exchange\ChangeAxis.cs" />
+    <Compile Include="Exchange\PoleNorth.cs" />
     <Compile Include="gdal\GdalConfiguration.cs" />
     <Compile Include="gdal\Tests\GdalTests.cs" />
     <Compile Include="Coloring\Color3.cs" />
@@ -77,6 +83,8 @@
     <Compile Include="ReliefMaps\Meridian\MeridianBase.cs" />
     <Compile Include="ReliefMaps\Meridian\ReliefMap.cs" />
     <Compile Include="ReliefMaps\World\Approximate\Percentage.cs" />
+    <Compile Include="ReliefMaps\World\Approximate\PercentageData.cs" />
+    <Compile Include="ReliefMaps\World\Ocean\BasinDataBase.cs" />
     <Compile Include="ReliefMaps\World\Ocean\ReliefMap.cs" />
     <Compile Include="ReliefMaps\World\Ocean\Basin3.cs" />
     <Compile Include="ReliefMaps\Meridian\Data\CentrifugalAcceleration.cs" />
@@ -167,7 +175,6 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Exchange\Tests\" />
     <Folder Include="Projections\Healpix\Substack\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

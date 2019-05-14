@@ -10,10 +10,7 @@ namespace Logy.Maps.ReliefMaps.Meridian
     [TestFixture]
     public class ReliefMap : MeridianMap
     {
-        protected override int K
-        {
-            get { return 6; }
-        }
+        protected override int K => 6;
 
         [Test]
         public void Relief_WhenRotationStopped()
@@ -24,12 +21,12 @@ namespace Logy.Maps.ReliefMaps.Meridian
             Data = data;
             
             ChangeRotation(-HealpixManager.Nside, double.MaxValue);
-            Data.Cycle(delegate(int step) 
+            Data.DoFrames(delegate(int frame) 
             {
                 if (Data.Colors != null)
                     Data.Colors.DefaultColor = Color.FromArgb(255, 174, 201);
-                Data.Draw(Bmp, step - HealpixManager.Nside, null, YResolution, Scale);
-                return 100; //240 for k8, 150 for k7, 100 for k6
+                Data.Draw(Bmp, frame - HealpixManager.Nside, null, YResolution, Scale);
+                return 100; /// 240 for k8, 150 for k7, 100 for k6
             });
         }
     }

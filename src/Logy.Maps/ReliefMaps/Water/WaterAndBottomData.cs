@@ -41,10 +41,7 @@ namespace Logy.Maps.ReliefMaps.Water
             CheckOcean();
         }
 
-        public override ReliefType ReliefBedType
-        {
-            get { return ReliefType.Tbi; }
-        }
+        public override ReliefType ReliefBedType => ReliefType.Tbi;
 
         protected override bool IsReliefShape
         {
@@ -59,9 +56,10 @@ namespace Logy.Maps.ReliefMaps.Water
         public override double? GetAltitude(MeridianCoor basin)
         {
             var hOQ = base.GetAltitude(basin);
+
             // return basin.Depth;
             return basin.HasWater() ? hOQ : null;
-            return basin.HasWater() ? basin.WaterHeight : (double?)null;
+            /// return basin.HasWater() ? basin.WaterHeight : (double?)null;
         }
 
         public override double GetOceanVolume()
@@ -70,7 +68,7 @@ namespace Logy.Maps.ReliefMaps.Water
             for (var ring = 1; ring <= MaxRing; ring++)
             {
                 var basin = PixMan.Pixels[ring - 1];
-                oceanVolume += basin.Volume * basin.PixelsCountInRing; //basin.RingArea;
+                oceanVolume += basin.Volume * basin.PixelsCountInRing; /// basin.RingArea;
             }
             return ToMilCumKm(oceanVolume);
         }

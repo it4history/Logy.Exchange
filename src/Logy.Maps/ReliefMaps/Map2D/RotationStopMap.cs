@@ -44,17 +44,19 @@ namespace Logy.Maps.ReliefMaps.Map2D
 
         public WaterMoving<T> Data
         {
-            get { return Bundle.Data; }
+            get { return Bundle.Algorithm.Data; }
             set
             {
                 if (Bundle == null)
                     Bundle = new Bundle<T>(value);
+                else
+                    throw new ApplicationException();
             }
         }
 
-        protected void SetData(Algorythm algorythm, WaterMoving<T> data)
+        protected void SetData(Algorythm<T> algorythm)
         {
-            Bundle = new Bundle<T>(data, algorythm);
+            Bundle = new Bundle<T>(algorythm);
         }
 
 
@@ -73,7 +75,9 @@ namespace Logy.Maps.ReliefMaps.Map2D
         [TearDown]
         public void TearDown()
         {
-            Process.Start(SaveBitmap());
+            Data.IsRunning = false;
+            Data.RunningTask.Wait();
+            Process.Start(SaveBitmap(Data.Frame));
             Bundle.Algorithm.Diff = Data.RecheckOcean();
             using (var file = File.CreateText(Path.Combine(Dir, "stats.json")))
             {
@@ -81,7 +85,7 @@ namespace Logy.Maps.ReliefMaps.Map2D
             }
         }
 
-        protected string SaveBitmap(int step = 0)
+        protected string SaveBitmap(int frame)
         {
             if (Data.Colors != null)
             {
@@ -95,35 +99,34 @@ namespace Logy.Maps.ReliefMaps.Map2D
                                 Bmp.SetPixel(line, YResolution * Scale * HealpixManager.Nside + y, Color.Black);
                     }
                 }
-                Bundle.Algorithm.LastStep = step;
-                return SaveBitmap(Bmp, Data.Colors, Data.Accuracy, step);
+                return SaveBitmap(Bmp, Data.Colors, Data.Accuracy, $"{Bundle.Algorithms.Count}_{frame:0000}_");
             }
             return null;
         }
 
         public void ChangeAxis(
-            int framesCountBy2 = 100, // for k6
-            Func<int, int> timeKoefByStep = null,
-            Func<int> slowSteps = null)
+            int framesCount = 200, /// for k6
+            Func<int, int> timeKoefByFrame = null,
+            Func<int> slowFrames = null)
         {
-            var algorythm = (ChangeAxis)Bundle.Algorithm;
+            var algorythm = Bundle.Algorithm as ChangeAxis;
 
             T pole = null;
             var accur = 1.5;
 
-            var slowCyclesCount = 10;
-            var slowCycle = algorythm.Slow ? 1 : slowCyclesCount;
+            var slowFramesCount = 10;
+            var slowFrame = algorythm.Slow ? 1 : slowFramesCount;
 
-            Data.Cycle(delegate(int step)
+            Data.DoFrames(delegate(int frame)
             {
-                if (step == 0 || algorythm.Slow && step % slowSteps() == 0 && slowCycle++ < slowCyclesCount)
+                if (frame == 0 || algorythm.Slow && frame % slowFrames() == 0 && slowFrame++ < slowFramesCount)
                 {
                     var newPole = new PoleNorth
                     {
-                        X = algorythm.DesiredPoleNorth.X, //// * slowCycle / slowCyclesCount
-                        Y = 90 - (90 - algorythm.DesiredPoleNorth.Y) * slowCycle / slowCyclesCount
+                        X = algorythm.DesiredPoleNorth.X, //// * slowFrame / slowFramesCount
+                        Y = 90 - (90 - algorythm.DesiredPoleNorth.Y) * slowFrame / slowFramesCount
                     };
-                    algorythm.Poles.Add(step, newPole);
+                    algorythm.Poles.Add(frame, newPole);
                     
                     EllipsoidAcceleration.AxisOfRotation =
                         Basin3.Oz
@@ -134,8 +137,8 @@ namespace Logy.Maps.ReliefMaps.Map2D
                                 new UnitVector3D(0, 0, 1),
                                 new Angle(newPole.X, AngleUnit.Degrees));
 
-                    //InitiialHtoRecalc();
-                    ChangeRotation(step - HealpixManager.Nside, 0);
+                    // InitiialHtoRecalc();
+                    ChangeRotation(frame - HealpixManager.Nside, 0);
 
                     foreach (var b in Data.PixMan.Pixels)
                     {
@@ -149,9 +152,9 @@ namespace Logy.Maps.ReliefMaps.Map2D
 
                 Data.Draw(Bmp, 0, null, YResolution, Scale);
                 Circle(pole, .03);
-                SaveBitmap(step);
-                return timeKoefByStep?.Invoke(step) ?? 15; // 15 for k4, 80 for k5 of Meridian
-            }, framesCountBy2);
+                SaveBitmap(frame);
+                return timeKoefByFrame?.Invoke(frame) ?? 15; // 15 for k4, 80 for k5 of Meridian
+            }, framesCount);
         }
 
         protected void Circle(T basin, double r = .2)
@@ -175,7 +178,7 @@ namespace Logy.Maps.ReliefMaps.Map2D
             }
         }
 
-        protected void ChangeRotation(int step, double koef = 10000)
+        protected void ChangeRotation(int frame, double koef = 10000)
         {
             if (koef > 0 && EllipsoidAcceleration.SiderealDayInSeconds < double.MaxValue / 2
                 || -koef < EllipsoidAcceleration.SiderealDayInSeconds)
@@ -190,7 +193,7 @@ namespace Logy.Maps.ReliefMaps.Map2D
 
                 var eqProjection = new Equirectangular(HealpixManager, YResolution);
                 var point = eqProjection.Offset(Data.PixMan.Pixels[HealpixManager.RingsCount / 2]);
-                var line = (int)(point.X + step);
+                var line = (int)(point.X + frame);
                 ChangeLines.Add(Math.Max(0, line));
             }
         }

@@ -5,7 +5,6 @@ namespace Logy.Maps.ReliefMaps.Meridian.Data
 {
     public class MeridianWater<T> : MeridianData<T> where T : MeridianCoor
     {
-        public int MaxRing;
         private readonly bool _symmetricPoles = true;
 
         public MeridianWater(HealpixManager man, double? min = null, double? max = null) : base(man, min, max)
@@ -22,6 +21,8 @@ namespace Logy.Maps.ReliefMaps.Meridian.Data
             }
         }
 
+        public int MaxRing { get; }
+
         public bool WasWaterMoved()
         {
             foreach (var basin in PixMan.Pixels)
@@ -36,7 +37,7 @@ namespace Logy.Maps.ReliefMaps.Meridian.Data
 
         public override void Log()
         {
-            //base.Log();
+            // base.Log();
         }
 
         public override double? GetAltitude(T basin)
@@ -44,7 +45,7 @@ namespace Logy.Maps.ReliefMaps.Meridian.Data
             var northBasin = GetNorthBasin(basin);
             var southBasin = GetSouthBasin(basin);
 
-            //return basin.Vartheta;// KQQaxisTan;
+            // return basin.Vartheta;// KQQaxisTan;
             /* диапазон 1,8м для k8, 1м для k9 http://hist.tk/hw/file:Deltah_Q-h_Q_s.png
             var hQ = northBasin.Intersect(basin);
             return basin.Altitude = basin.Hto[0] - hQ;//*/
@@ -62,16 +63,16 @@ namespace Logy.Maps.ReliefMaps.Meridian.Data
             Water.Move(basin, northBasin, NeighborVert.North);
             Water.Move(basin, southBasin, NeighborVert.South);
 
-            //return (basin.Vartheta < 0 ? Math.PI - basin.Delta_g_meridian : basin.Delta_g_meridian) * 1000;
+            // return (basin.Vartheta < 0 ? Math.PI - basin.Delta_g_meridian : basin.Delta_g_meridian) * 1000;
             return basin.hOQ;
 
-            if (northBasin != null)
+            /*if (northBasin != null)
             {
                 //return basin.Beta;
                 // Угол Δβ не равен ThetaPix(θpix)
                 //var dbeta = basin.Theta - northBasin.Theta;
 
-                /* геоцентрические координаты, obsolete
+                //// геоцентрические координаты, obsolete
                 // range 65% .. 87%
                 //return (dbeta / HealpixManager.ThetaPix) * 100;
 
@@ -79,8 +80,7 @@ namespace Logy.Maps.ReliefMaps.Meridian.Data
                 //var Qq = basin.Theta - (Math.PI / 2 - Math.Atan(N.Y / N.X));
                 // range -.3km .. .3km, not symmetric to equator
                 //return (dbeta - Qq * 2)*basin.r;
-                */
-            }
+            }*/
         }
 
         internal override void GradientAndHeightCrosses()

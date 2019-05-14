@@ -17,19 +17,18 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
         [Test]
         public void AxisChange_Slow()
         {
-            SetData(new ChangeAxis { Slow = true },
-                new BasinData(HealpixManager, true)
-                {
-                    IntegrationEndless = true,
-                });
+            SetData(new ChangeAxis(new BasinData(HealpixManager, true)
+            {
+                IntegrationEndless = true,
+            }) { Slow = true });
 
             ChangeAxis(
-                1,
-                step =>
+                2000,
+                frame =>
                 {
                     switch (K)
                     {
-                        case 7: return 15 + step / 10;
+                        case 7: return 15 + frame / 10;
                     }
                     return 15;
                 },

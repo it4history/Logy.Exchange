@@ -20,27 +20,18 @@ namespace Logy.Maps.ReliefMaps.Map2D
     {
         protected int Frames = 1;
 
-        protected virtual DataForMap2D ApproximateData { get { return null; } }
+        protected virtual DataForMap2D ApproximateData => null;
 
         protected Map2DBase()
         {
             LegendNeeded = true;
         }
         #region colors
-        public virtual SortedList<int, Color3> ColorsAbove
-        {
-            get { return ColorsManager.Gyr1; }
-        }
+        public virtual SortedList<int, Color3> ColorsAbove => ColorsManager.Gyr1;
 
-        public virtual SortedList<int, Color3> ColorsUnder
-        {
-            get { return ColorsManager.Water; }
-        }
+        public virtual SortedList<int, Color3> ColorsUnder => ColorsManager.Water;
 
-        protected virtual bool IsGrey
-        {
-            get { return false; }
-        }
+        protected virtual bool IsGrey => false;
 
         /// <summary>
         /// not for png
@@ -50,25 +41,13 @@ namespace Logy.Maps.ReliefMaps.Map2D
 
         protected bool LegendNeeded { get; set; }
 
-        private bool LegendToDraw
-        {
-            get { return !IsGrey && LegendNeeded; }
-        }
+        private bool LegendToDraw => !IsGrey && LegendNeeded;
 
-        private int LegendHeight
-        {
-            get { return K > 7 ? (K - 6) * 20 : 20; }
-        }
+        private int LegendHeight => K > 7 ? (K - 6) * 20 : 20;
 
-        protected virtual ImageFormat ImageFormat
-        {
-            get { return ImageFormat.Jpeg; }
-        }
+        protected virtual ImageFormat ImageFormat => ImageFormat.Jpeg;
 
-        public virtual Projection Projection
-        {
-            get { return Projection.Healpix; }
-        }
+        public virtual Projection Projection => Projection.Healpix;
 
         public int YResolution = 2;
         public int Scale = 1;
@@ -86,7 +65,7 @@ namespace Logy.Maps.ReliefMaps.Map2D
             data.Log();
         }
 
-        internal void DrawFrame(Point2[] pixels, DataForMap2D data, Bitmap bmp, int step = 0)
+        internal void DrawFrame(Point2[] pixels, DataForMap2D data, Bitmap bmp, int frame = 0)
         {
             switch (Projection)
             {
@@ -97,7 +76,7 @@ namespace Logy.Maps.ReliefMaps.Map2D
                 case Projection.Equirectangular:
                     foreach (var pixel in pixels)
                     {
-                        var coor = Equirectangular.CoorFromXY(pixel, YResolution, HealpixManager, step);
+                        var coor = Equirectangular.CoorFromXY(pixel, YResolution, HealpixManager, frame);
                         double? altitude;
                         if (Projection == Projection.Healpix2Equirectangular)
                         {
@@ -118,15 +97,15 @@ namespace Logy.Maps.ReliefMaps.Map2D
         private void DrawFrames(Point2[] pixels, DataForMap2D data)
         {
             string bitmap = null;
-            for (var step = 0; step < Frames; step++)
+            for (var frame = 0; frame < Frames; frame++)
             {
                 var bmp = CreateBitmap();
 
-                DrawFrame(pixels, data, bmp, step);
+                DrawFrame(pixels, data, bmp, frame);
 
                 DrawLegend(data, bmp);
 
-                bitmap = SaveBitmap(bmp, data.Colors, data.Accuracy, step);
+                bitmap = SaveBitmap(bmp, data.Colors, data.Accuracy, frame == 0 ? null : (frame.ToString("000") + "_"));
             }
             Process.Start(bitmap);
         }
@@ -213,13 +192,13 @@ namespace Logy.Maps.ReliefMaps.Map2D
             return g;
         }
 
-        protected string SaveBitmap(Bitmap bmp, ColorsManager colors, int accuracy, int step = 0)
+        protected string SaveBitmap(Bitmap bmp, ColorsManager colors, int accuracy, string frame = null)
         {
             if (!Directory.Exists(Dir))
                 Directory.CreateDirectory(Dir);
             var filename = string.Format(
                 "{1}{0}{5}min{4}{3}.{2}",
-                step == 0 ? null : step.ToString("0000") + "_",
+                frame,
                 colors.IsGrey ? "grey" : null,
                 ImageFormat.ToString().ToLower(),
                 LegendToDraw ? null : "_nolegend",

@@ -35,7 +35,7 @@ namespace Logy.Maps.Geometry
         public static double Radius(double varphi)
         {
             var sin2 = Math.Sin(varphi) * Math.Sin(varphi);
-            return BigRadius * Math.Sqrt((1 - E2 * (2 - E2) * sin2) / (1 - E2 * sin2));
+            return BigRadius * Math.Sqrt((1 - (E2 * (2 - E2) * sin2)) / (1 - (E2 * sin2)));
         }
 
         /// <summary>
@@ -44,7 +44,7 @@ namespace Logy.Maps.Geometry
         public static double RadiusRu(double angleFromBigAxis)
         {
             var cos2 = Math.Cos(angleFromBigAxis) * Math.Cos(angleFromBigAxis);
-            return LessRadius / Math.Sqrt(1 - E2 * cos2);
+            return LessRadius / Math.Sqrt(1 - (E2 * cos2));
         }
 
         /// <summary>

@@ -14,8 +14,7 @@ namespace Logy.Maps.ReliefMaps.Meridian.Data
         {
             var aH = EllipsoidAcceleration.Centrifugal(basin);
 
-            //var aV = a * Math.Sin(basin.Theta);
-
+            // var aV = a * Math.Sin(basin.Theta);
             return aH * 1000;
         }
     }

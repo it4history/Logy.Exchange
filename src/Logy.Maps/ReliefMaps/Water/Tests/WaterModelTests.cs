@@ -192,12 +192,12 @@ namespace Logy.Maps.ReliefMaps.Water.Tests
             /*    ̣ 
                _./ \._
                ̃˜˜˜˜˜˜˜ */
-            data.Cycle(); //data.MoveAllWater(); was enough
+            data.DoFrame(); //data.MoveAllWater(); was enough
             Assert.AreEqual(.8, basin.hOQ, .01); /*per .8 to north and south*/
             Assert.IsTrue(data.WasWaterMoved());
-            data.Cycle();
+            data.DoFrame();
 ////            Assert.AreEqual(.8, basin.hOQ, .01); /*per -.16 to north and south*/
-////            data.Cycle();
+////            data.Frame();
             Assert.IsFalse(data.WasWaterMoved());
 
             /*    ̣ 
