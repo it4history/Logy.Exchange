@@ -7,13 +7,14 @@ namespace Logy.Maps.ReliefMaps.World.Ocean.Metrics
     public class SignedDistanceMap : RotationStopMap<BasinSignedDistance>
     {
         [Test]
-        public void Water_ChangeAxis(int i)
+        public void Water_ShiftAxis(int i)
         {
-            Data = new BasinDataBase<BasinSignedDistance>(HealpixManager, false, false
-                //, -200d //, 2000d
-            );
+            Data = new BasinDataBase<BasinSignedDistance>(
+                HealpixManager, 
+                false, 
+                false /*, -200d //, 2000d*/);
 
-            ChangeAxis();
+            ShiftAxis();
         }
     }
 }

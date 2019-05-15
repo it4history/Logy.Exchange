@@ -7,11 +7,16 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
 {
     public class BasinDataBase<T> : WaterMoving<T> where T : Basin3
     {
-        public BasinDataBase(HealpixManager man, bool withRelief = false, bool spheric = false,
-            double? min = null, double? max = null, bool readAllAtStart = false)
+        public BasinDataBase(
+            HealpixManager man, 
+            bool withRelief = false, 
+            bool spheric = false,
+            double? min = null, 
+            double? max = null, 
+            bool readAllAtStart = false)
             : base(man, null, min, max, readAllAtStart)
         {
-            Visual = basin => basin.hOQ;
+            Visual = basin => basin.HeightOQ;
             /// Visual = basin.Visual * 1000;
 
             ColorsMiddle = 0;
@@ -21,8 +26,8 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
                 if (withRelief)
                 {
                     int waterHeight;
-                    var hOQ = GetHeights(basin, (int)basin.rOfEllipse, out waterHeight);
-                    basin.hOQ = hOQ;
+                    var hOQ = GetHeights(basin, (int)basin.RadiusOfEllipse, out waterHeight);
+                    basin.HeightOQ = hOQ;
                     if (waterHeight > 0)
                     {
                         basin.Depth = waterHeight - hOQ;
@@ -37,9 +42,9 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
                     basin.Delta_g_meridian = basin.Delta_g_traverse = 0;
                     if (withRelief)
                     {
-                        var diff = Earth2014Manager.Radius2Add - basin.rOfEllipse;
+                        var diff = Earth2014Manager.Radius2Add - basin.RadiusOfEllipse;
                         basin.Depth += diff;
-                        basin.hOQ -= diff;
+                        basin.HeightOQ -= diff;
                     }
                     basin.InitROfEllipse(HealpixManager, Earth2014Manager.Radius2Add);
                 }
@@ -49,11 +54,11 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
                     var toBasin = PixMan.Pixels[man.Neibors.Get(to, basin)];
                     basin.Neibors[to] = toBasin;
 
-                    basin.froms[(int)to] = basin.GetFromAndFillType(to, toBasin, HealpixManager);
+                    basin.Froms[(int)to] = basin.GetFromAndFillType(to, toBasin, HealpixManager);
 
                     basin.MeanEdges[(int)to] = man.Neibors.MeanBoundary(basin, to);
                 }
-                //basin.CorrectionSurface();
+                /// basin.CorrectionSurface();
                 for (int to = 0; to < 4; to++)
                 {
                     var toBasin = basin.Neibors[to];
@@ -80,17 +85,20 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
                 for (int to = 0; to < 4; to++)
                 {
                     var toBasin = basin.Neibors[to];
-                    var @from = basin.froms[to];
+                    var @from = basin.Froms[to];
                     var koef
                         = .25;
-                    //= basin.Koef[(int)to] / basin.Koef.Sum();
+                    /// = basin.Koef[(int)to] / basin.Koef.Sum();
 
-                    //todo balance deltaH relative to basin.WaterHeight
+                    // todo balance deltaH relative to basin.WaterHeight
                     var height = basin.Hto[to] - toBasin.Hto[@from];
 
-                    var movedFromBasin = Water.PutV(basin, toBasin,
+                    var movedFromBasin = Water.PutV(
+                        basin, 
+                        toBasin,
                         height * koef,
-                        to, @from);
+                        to, 
+                        @from);
                     if (Math.Abs(movedFromBasin) > 0)
                     {
                     }

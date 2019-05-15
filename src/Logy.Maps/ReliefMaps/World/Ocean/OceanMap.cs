@@ -1,5 +1,4 @@
 ﻿#if DEBUG
-using System.IO;
 using Logy.Maps.Projections.Healpix;
 using Logy.Maps.ReliefMaps.Map2D;
 using Logy.Maps.ReliefMaps.World.Ocean.Tests;
@@ -10,27 +9,22 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
     [TestFixture]
     public class OceanMap : RotationStopMap<Basin3>
     {
-        [SetUp]
-        public override void SetUp()
-        {
-            if (Directory.Exists(Dir))
-                Directory.Delete(Dir, true);
-            base.SetUp();
-        }
-
         [Test]
         public void Water_HighBasin()
         {
-            Data = new BasinData(HealpixManager, false, true //true for sphere
-                , -20d//, 200d
+            Data = new BasinData(
+                HealpixManager, 
+                false, 
+                true, /// true for sphere
+                -20d ///, 200d
             );
 
             var h = 500d;
             var p = HealpixManager.GetP(HealpixManager.Nside + 5, HealpixManager.Nside * 2);
             var basin3 = Data.PixMan.Pixels[p];
-            basin3.hOQ = h;
+            basin3.HeightOQ = h;
             Data.PixMan.Pixels[HealpixManager
-                .GetP(HealpixManager.Nside, (int)(HealpixManager.Nside * 2.5))].hOQ = h;
+                .GetP(HealpixManager.Nside, (int)(HealpixManager.Nside * 2.5))].HeightOQ = h;
 
             Data.DoFrames(delegate(int frame) 
             {
@@ -121,7 +115,7 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
                 Visual = basin => basin.r - Earth2014Manager.Radius2Add //*/
             };
 
-            ChangeAxis(); // 45, 90
+            ShiftAxis(); // 45, 90
         }
 
         [Test]

@@ -22,18 +22,18 @@ namespace Logy.Maps.ReliefMaps.Water
                     var coor = HealpixManager.GetCenter<HealCoor>(p);
 
                     int waterHeight;
-                    surfaceHeightAll += GetHeights(coor, (int)basin.rOfEllipse, out waterHeight);
+                    surfaceHeightAll += GetHeights(coor, (int)basin.RadiusOfEllipse, out waterHeight);
                     waterHeightAll += waterHeight;
                 }
 
                 if (waterHeightAll > 0)
                 {
-                    basin.hOQ = 0;
+                    basin.HeightOQ = 0;
                     basin.Depth = waterHeightAll / pixelsInRing;
                 }
                 else
                 {
-                    basin.hOQ = surfaceHeightAll / pixelsInRing;
+                    basin.HeightOQ = surfaceHeightAll / pixelsInRing;
                     basin.Depth = -surfaceHeightAll / pixelsInRing;
                 }
             }

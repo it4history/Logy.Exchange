@@ -9,18 +9,18 @@ namespace Logy.Maps.ReliefMaps.Meridian
     /// </summary>
     public class MeridianCoorFast : MeridianCoor
     {
-        public double lQn2;
+        private double _lengthQn2;
 
-        internal override void PreInit(HealpixManager man)
+        public override void PreInit(HealpixManager man)
         {
             base.PreInit(man);
             var northRingPixel = man.GetCenter(Math.Max(1, P - PixelInRing));
-            lQn2 = (Beta.Value - northRingPixel.Beta.Value) * rOfEllipse / 2;
+            _lengthQn2 = (Beta.Value - northRingPixel.Beta.Value) * RadiusOfEllipse / 2;
         }
 
         public override double Intersect(BasinBase otherBasin)
         {
-            return Math.Tan(Delta_g_meridian) * lQn2;
+            return Math.Tan(Delta_g_meridian) * _lengthQn2;
         }
     }
 }

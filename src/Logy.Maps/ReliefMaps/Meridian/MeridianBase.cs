@@ -16,33 +16,7 @@ namespace Logy.Maps.ReliefMaps.Meridian
         /// </summary>
         public double KQQaxisTan { get; set; }
 
-        internal override void PreInit(HealpixManager man)
-        {
-            base.PreInit(man);
-            KQQaxisTan = Math.Tan(Vartheta);
-        }
-
-        public override double RecalculateDelta_g(bool revert = true)
-        {
-            var aTraverse = base.RecalculateDelta_g(revert);
-            //return basin.Vartheta - Math.Atan(newDeflectionAngleTan);
-            var KQQaxis = Theta - Delta_g_meridian;
-            //return newKQQaxis;
-
-            var newKQQaxisTan =
-                //Triangles.TansSum(basin.ThetaTan, -newDeflectionAngleTan);
-                Math.Tan(KQQaxis);
-            // must be 0
-            //return (basin.KQQaxisTan - newKQQaxisTan)*10000000;
-            KQQaxisTan = newKQQaxisTan;
-
-            return aTraverse;
-        }
-
-        public Point2D Q
-        {
-            get { return new Point2D(r * Math.Sin(Theta), r * Math.Cos(Theta)); }
-        }
+        public Point2D Q => new Point2D(Radius * Math.Sin(Theta), Radius * Math.Cos(Theta));
 
         /// <summary>
         /// fast
@@ -51,19 +25,48 @@ namespace Logy.Maps.ReliefMaps.Meridian
         {
             get
             {
-                var grad_dTan = KQQaxisTan; //Triangles.TansSum(KQQaxisTan, hTan);
+                var grad_dTan = KQQaxisTan; /// Triangles.TansSum(KQQaxisTan, hTan);
 
                 return GetKQ(grad_dTan, Q);
             }
         }
 
+        /// <summary>
+        /// from Q to vertial axis, length of L_vartheta
+        /// </summary>
+        public double R_vartheta => Math.Abs(Radius * Math.Sin(Theta) / Math.Sin(Vartheta));
+
         /// <param name="tanOrCotan">-Pi/2..PI/2 if cotan == false</param>
         public static Line2D GetKQ(double tanOrCotan, Point2D q, bool cotan = false)
         {
-            var K = Math.Abs(tanOrCotan) < Math.Tan(Math.PI / 4)
-                ? new Point2D(0, tanOrCotan * q.X + q.Y)
+            var pointK = Math.Abs(tanOrCotan) < Math.Tan(Math.PI / 4)
+                ? new Point2D(0, (tanOrCotan * q.X) + q.Y)
                 : new Point2D((cotan ? tanOrCotan * q.Y : q.Y / tanOrCotan) + q.X, 0);
-            return new Line2D(K, q);
+            return new Line2D(pointK, q);
+        }
+
+        public override void PreInit(HealpixManager man)
+        {
+            base.PreInit(man);
+            KQQaxisTan = Math.Tan(Vartheta);
+        }
+
+        public override double RecalculateDelta_g(bool revert = true)
+        {
+            var aTraverse = base.RecalculateDelta_g(revert);
+            /// return basin.Vartheta - Math.Atan(newDeflectionAngleTan);
+            var aKQQaxis = Theta - Delta_g_meridian;
+            /// return newKQQaxis;
+
+            var newKQQaxisTan =
+                /// Triangles.TansSum(basin.ThetaTan, -newDeflectionAngleTan);
+                Math.Tan(aKQQaxis);
+
+            // must be 0
+            // return (basin.KQQaxisTan - newKQQaxisTan)*10000000;
+            KQQaxisTan = newKQQaxisTan;
+
+            return aTraverse;
         }
 
         /// <summary>
@@ -78,13 +81,13 @@ namespace Logy.Maps.ReliefMaps.Meridian
 
         #region Love numbers
 
-        const double strangeAngleKoeficient = 1.945;
+        //// const double strangeAngleKoeficient = 1.945;
 
         public double GethTan(double a)
         {
             // error in mydeflectionAngle because I missed gHpure
-            //var mydeflectionAngle = aV / aH;// aH / (gVpure - aV);
-            //diff = Math.Tan(basin.GoodDeflectionAngle) - mydeflectionAngle;
+            // var mydeflectionAngle = aV / aH;// aH / (gVpure - aV);
+            // diff = Math.Tan(basin.GoodDeflectionAngle) - mydeflectionAngle;
             /* strangeAngleKoeficient estimation for k9-k11 is the same: 1.945+-.002
             return basin.Ring == HealpixManager.RingsCount / 2 + 1
                 ? (double?) null //here diff == 0.002
@@ -95,14 +98,13 @@ namespace Logy.Maps.ReliefMaps.Meridian
                    //* basin.r; 
                    / HealpixManager.ThetaPix * 100;//*/
 
-            return Triangles.TansSum(ThetaTan, -KQQaxisTan) * r;
+            return Triangles.TansSum(ThetaTan, -KQQaxisTan) * Radius;
             /*return Math.Abs(basin.KQQaxisTan) < Math.Tan(Math.PI / 4)
                 ? basin.KQQaxisTan
                 : 1 / basin.KQQaxisTan;*/
 
-
-            var gVpureByThetaCos = gVpure / Math.Cos(Theta);
-            return strangeAngleKoeficient / (gVpureByThetaCos / a - ThetaTan); // aH / (gVpure - aV);
+            // var gVpureByThetaCos = gVpure / Math.Cos(Theta);
+            // return strangeAngleKoeficient / (gVpureByThetaCos / a - ThetaTan); // aH / (gVpure - aV);
         }
 
         #endregion
@@ -112,29 +114,21 @@ namespace Logy.Maps.ReliefMaps.Meridian
         /// <summary>
         /// http://hist.tk/hw/—читать_градиент_спокойстви€#далее
         /// </summary>
-        public double WaveHeight(Point2D N, double deltage)
+        public double WaveHeight(Point2D n, double deltage)
         {
-            var Qq = Theta - Math.Atan(N.Y / N.X);
-            var Nq = Math.PI / 2 - Qq + Delta_gq;
+            var aQq = Theta - Math.Atan(n.Y / n.X);
+            var aNq = (Math.PI / 2) - aQq + Delta_gq;
 
-            return Triangles.SinusesTheorem(deltage, N.DistanceTo(O), Nq);
-        }
-
-        /// <summary>
-        /// from Q to vertial axis, length of L_vartheta
-        /// </summary>
-        public double R_vartheta
-        {
-            get { return Math.Abs(r * Math.Sin(Theta) / Math.Sin(Vartheta)); }
+            return Triangles.SinusesTheorem(deltage, n.DistanceTo(O), aNq);
         }
 
         /// <returns>starts with Q(point on ellipsoid)</returns>
         public Line2D L_vartheta()
         {
             var sign = Vartheta >= 0 ? 1 : -1;
-            var QGeodes = new Point2D(
-                0, Q.Y - sign * R_vartheta * Math.Cos(Vartheta));
-            return new Line2D(Q, QGeodes);
+            var aQGeodes = new Point2D(
+                0, Q.Y - (sign * R_vartheta * Math.Cos(Vartheta)));
+            return new Line2D(Q, aQGeodes);
         }
 
         /// <summary>
@@ -143,13 +137,13 @@ namespace Logy.Maps.ReliefMaps.Meridian
         /// </summary>
         public void IntersectGeodesic(MeridianCoor northBasin, out double more, out double less)
         {
-            var lQ = L_vartheta();
-            var lNorth = northBasin.L_vartheta();
-            var M = lQ.IntersectWith(lNorth);
-            var MQ = new Line2D(lQ.StartPoint, M.Value).Length;
-            var MQnorth = new Line2D(lNorth.StartPoint, M.Value).Length;
-            more = r > northBasin.r ? MQ : MQnorth;
-            less = r > northBasin.r ? MQnorth : MQ;
+            var lineQ = L_vartheta();
+            var lineNorth = northBasin.L_vartheta();
+            var pointM = lineQ.IntersectWith(lineNorth);
+            var lengthMQ = new Line2D(lineQ.StartPoint, pointM.Value).Length;
+            var lengthMQnorth = new Line2D(lineNorth.StartPoint, pointM.Value).Length;
+            more = Radius > northBasin.Radius ? lengthMQ : lengthMQnorth;
+            less = Radius > northBasin.Radius ? lengthMQnorth : lengthMQ;
         }
 
         #endregion

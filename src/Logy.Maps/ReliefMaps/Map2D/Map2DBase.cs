@@ -18,14 +18,18 @@ namespace Logy.Maps.ReliefMaps.Map2D
     [TestFixture]
     public abstract class Map2DBase : Map
     {
-        protected int Frames = 1;
-
-        protected virtual DataForMap2D ApproximateData => null;
+        private string _dir;
 
         protected Map2DBase()
         {
             LegendNeeded = true;
         }
+
+        public virtual Projection Projection => Projection.Healpix;
+
+        public int YResolution { get; set; } = 2;
+        public int Scale { get; set; } = 1;
+
         #region colors
         public virtual SortedList<int, Color3> ColorsAbove => ColorsManager.Gyr1;
 
@@ -36,21 +40,26 @@ namespace Logy.Maps.ReliefMaps.Map2D
         /// <summary>
         /// not for png
         /// </summary>
-        protected Brush Background = Brushes.White;
+        protected Brush Background { get; set; } = Brushes.White;
         #endregion
+
+        protected int Frames { get; set; } = 1;
+
+        protected virtual DataForMap2D ApproximateData => null;
+
+        protected string Dir => _dir ?? (_dir = string.Format(
+                                    "{2}\\maps\\{1}_lines{0}",
+                                    YResolution * HealpixManager.Nside,
+                                    GetType().Name,
+                                    Directory.GetCurrentDirectory()));
+
+        protected virtual ImageFormat ImageFormat => ImageFormat.Jpeg;
 
         protected bool LegendNeeded { get; set; }
 
         private bool LegendToDraw => !IsGrey && LegendNeeded;
 
         private int LegendHeight => K > 7 ? (K - 6) * 20 : 20;
-
-        protected virtual ImageFormat ImageFormat => ImageFormat.Jpeg;
-
-        public virtual Projection Projection => Projection.Healpix;
-
-        public int YResolution = 2;
-        public int Scale = 1;
 
         [Test]
         public virtual void Draw()
@@ -94,20 +103,18 @@ namespace Logy.Maps.ReliefMaps.Map2D
             }
         }
 
-        private void DrawFrames(Point2[] pixels, DataForMap2D data)
+        internal Bitmap CreateBitmap()
         {
-            string bitmap = null;
-            for (var frame = 0; frame < Frames; frame++)
+            var bmp = new Bitmap(
+                4 * HealpixManager.Nside * Scale,
+                (YResolution * HealpixManager.Nside * Scale) + (LegendToDraw ? LegendHeight : 0));
+            if (ImageFormat != ImageFormat.Png)
             {
-                var bmp = CreateBitmap();
-
-                DrawFrame(pixels, data, bmp, frame);
-
-                DrawLegend(data, bmp);
-
-                bitmap = SaveBitmap(bmp, data.Colors, data.Accuracy, frame == 0 ? null : (frame.ToString("000") + "_"));
+                var g = GetFont(bmp);
+                g.FillRectangle(Background, 0, 0, bmp.Width, bmp.Height);
+                g.Flush();
             }
-            Process.Start(bitmap);
+            return bmp;
         }
 
         internal void DrawLegend(DataEarth data, Bitmap bmp)
@@ -129,9 +136,9 @@ namespace Logy.Maps.ReliefMaps.Map2D
                         y < LegendHeight - Upbottomedge)
                     {
                         var value = data.Colors.Min +
-                                    (x - left) / (2d * HealpixManager.Nside * Scale) *
-                                    (data.Colors.Max - data.Colors.Min);
-                        var upbottomedge0 = Upbottomedge + (K - 7) * 3;
+                                    ((x - left) / (2d * HealpixManager.Nside * Scale) *
+                                    (data.Colors.Max - data.Colors.Min));
+                        var upbottomedge0 = Upbottomedge + ((K - 7) * 3);
                         if (y > upbottomedge0 + 2 && y < LegendHeight - upbottomedge0 - 1 &&
                             Math.Abs(value - data.Colors.Middle) < (data.Colors.Max - data.Colors.Min) / 50d)
                         {
@@ -151,19 +158,19 @@ namespace Logy.Maps.ReliefMaps.Map2D
             var font = new Font("Tahoma", 8 + (K > 7 ? (K - 7) * 8 : 0));
             var s = data.Colors.Min.ToString("0.#");
             var measure = g.MeasureString(s, font);
-            var sTop = top + 3 + (LegendHeight - 3 - measure.Height) / 2;
+            var stringTop = top + 3 + ((LegendHeight - 3 - measure.Height) / 2);
             var layoutRectangle = new RectangleF(
                 left - 9 - measure.Width,
-                sTop,
+                stringTop,
                 left,
                 top + LegendHeight);
             g.DrawString(s, font, Brushes.Black, layoutRectangle);
 
-            s = string.Format("{0:0.#}{1}", data.Colors.Max, data.Dimension);
+            s = $"{data.Colors.Max:0.#}{data.Dimension}";
             layoutRectangle = new RectangleF(
-                left + 2 * HealpixManager.Nside * Scale + 10,
-                sTop,
-                left + 3 * HealpixManager.Nside * Scale,
+                left + (2 * HealpixManager.Nside * Scale) + 10,
+                stringTop,
+                left + (3 * HealpixManager.Nside * Scale),
                 top + LegendHeight);
             g.DrawString(s, font, Brushes.Black, layoutRectangle);
 
@@ -172,8 +179,8 @@ namespace Logy.Maps.ReliefMaps.Map2D
                 var middle = data.Colors.Middle.ToString("0.#");
                 var measure0 = g.MeasureString(middle, font);
                 var rectangle = new Rectangle(
-                    (int)Math.Round(left0.Value + 2 + ((left0end.Value - left0.Value) - measure0.Width) / 2),
-                    (int)sTop,
+                    (int)Math.Round(left0.Value + 2 + ((left0end.Value - left0.Value - measure0.Width) / 2)),
+                    (int)stringTop,
                     (int)measure0.Width + 1,
                     (int)measure0.Height - 2);
                 g.FillRectangle(Brushes.White, rectangle);
@@ -209,32 +216,20 @@ namespace Logy.Maps.ReliefMaps.Map2D
             return path;
         }
 
-        private string _dir;
-
-        protected string Dir
+        private void DrawFrames(Point2[] pixels, DataForMap2D data)
         {
-            get
+            string bitmap = null;
+            for (var frame = 0; frame < Frames; frame++)
             {
-                return _dir ?? (_dir = string.Format(
-                           "{2}\\maps\\{1}_lines{0}",
-                           YResolution * HealpixManager.Nside,
-                           GetType().Name,
-                           Directory.GetCurrentDirectory()));
-            }
-        }
+                var bmp = CreateBitmap();
 
-        internal Bitmap CreateBitmap()
-        {
-            var bmp = new Bitmap(
-                4 * HealpixManager.Nside * Scale,
-                (YResolution * HealpixManager.Nside * Scale) + (LegendToDraw ? LegendHeight : 0));
-            if (ImageFormat != ImageFormat.Png)
-            {
-                var g = GetFont(bmp);
-                g.FillRectangle(Background, 0, 0, bmp.Width, bmp.Height);
-                g.Flush();
+                DrawFrame(pixels, data, bmp, frame);
+
+                DrawLegend(data, bmp);
+
+                bitmap = SaveBitmap(bmp, data.Colors, data.Accuracy, frame == 0 ? null : (frame.ToString("000") + "_"));
             }
-            return bmp;
+            Process.Start(bitmap);
         }
     }
 }

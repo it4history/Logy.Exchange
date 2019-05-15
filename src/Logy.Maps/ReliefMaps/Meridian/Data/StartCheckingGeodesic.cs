@@ -14,6 +14,16 @@ namespace Logy.Maps.ReliefMaps.Meridian.Data
             ColorsMiddle = 0;
         }
 
+        public override void Log()
+        {
+            // Console.WriteLine(_maxH);
+            // diapazon 7m for k=5, 3.5m for k=6, 1.75m for k=7, 0.88m for k=8 and 0.44m when k=9
+            var diapazon = 7 * Math.Pow(0.5, HealpixManager.K - 5) * 1.1;
+            Assert.LessOrEqual(Colors.Max, diapazon / 2);
+            Assert.GreaterOrEqual(Colors.Min, -diapazon / 2);
+            base.Log();
+        }
+
         public override double? GetAltitude(MeridianCoor basin)
         {
             //// basin.PreInit(HealpixManager);
@@ -27,6 +37,7 @@ namespace Logy.Maps.ReliefMaps.Meridian.Data
 
                 // diapazon 17..22m when k=9 when * r * HealpixManager.ThetaPix 
                 var diffAngle = Math.Abs(Math.Abs(basin.Vartheta) - Math.Abs(northBasin.Vartheta));
+
                 // return diffAngle * r * HealpixManager.ThetaPix;
                 // r * diffAngle is 8.3..11.1km when k=9, is more accurate on equator
                 // return r * diffAngle;
@@ -34,17 +45,21 @@ namespace Logy.Maps.ReliefMaps.Meridian.Data
                 // diapazon 16.5..22.2m for k=9 when * r * HealpixManager.ThetaPix 
                 /*var diffThetaAngle = theta - northBasin.theta;
                 diffThetaAngle = diffThetaAngle > Math.PI ? diffThetaAngle - Math.PI : diffThetaAngle;*/
-                // return diffThetaAngle * r * HealpixManager.ThetaPix;
+                /// return diffThetaAngle * r * HealpixManager.ThetaPix;
 
                 // var Avert = r > northBasin.r ? basin.Am : northBasin.Am;
                 // var AvertLess = r > northBasin.r ? northBasin.Am : basin.Am;
                 var diffAnglePer2 = diffAngle / 2; // results are very the same if diffThetaAngle
-                var MNLess = Triangles.SinusesTheorem(Math.PI / 2 //+ AvertLess
-                    , less, diffAnglePer2);
-                var MNMore = Triangles.SinusesTheorem(Math.PI / 2 //- Avert
-                    , more, diffAnglePer2);
+                var aMNless = Triangles.SinusesTheorem(
+                    Math.PI / 2 /*+ AvertLess*/,
+                    less,
+                    diffAnglePer2);
+                var aMNmore = Triangles.SinusesTheorem(
+                    Math.PI / 2 /*- Avert*/,
+                    more,
+                    diffAnglePer2);
 
-                diff = MNMore - MNLess;
+                diff = aMNmore - aMNless;
             }
             return diff;
         }
@@ -81,16 +96,6 @@ namespace Logy.Maps.ReliefMaps.Meridian.Data
             return Ellipsoid.BigRadius * EllipsoidAcceleration.GWithAOnEquator
                    - r * gPureToCenter;
             */
-        }
-
-        public override void Log()
-        {
-            // Console.WriteLine(_maxH);
-            // diapazon 7m for k=5, 3.5m for k=6, 1.75m for k=7, 0.88m for k=8 and 0.44m when k=9
-            var diapazon = 7 * Math.Pow(0.5, HealpixManager.K - 5) * 1.1;
-            Assert.LessOrEqual(Colors.Max, diapazon / 2);
-            Assert.GreaterOrEqual(Colors.Min, -diapazon / 2);
-            base.Log();
         }
     }
 }

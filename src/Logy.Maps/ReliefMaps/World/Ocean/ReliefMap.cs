@@ -14,9 +14,10 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
         [Test]
         public void Basin()
         {
-            Data = new BasinData(HealpixManager, false, false
-                ///       , -7000d
-            )
+            Data = new BasinData(
+                HealpixManager,
+                false,
+                false /*, -7000d*/)
             {
                 IntegrationEndless = true,
                 /// Visual = basin => basin.WaterHeight
@@ -25,23 +26,29 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
             var p = HealpixManager.GetP(HealpixManager.Nside - 1, HealpixManager.Nside * 1);
             var basin = Data.PixMan.Pixels[p];
             basin.Depth = -500;
-            basin.hOQ = 10000;
+            basin.HeightOQ = 10000;
 
-            Data.DoFrames(delegate (int frame) 
-            {
-                Data.Draw(Bmp, 0, null, YResolution, Scale);
-                SaveBitmap(frame);
-                return 1;
-            }, 600);
+            Data.DoFrames(
+                delegate(int frame)
+                {
+                    Data.Draw(Bmp, 0, null, YResolution, Scale);
+                    SaveBitmap(frame);
+                    return 1;
+                },
+                600);
         }
 
         [Test]
         public void RotationStopped()
         {
-            Data = new BasinData(HealpixManager, true, false
-                ///, -6000d, null
-                , -1000d, 5000d, true
-            )
+            Data = new BasinData(
+                HealpixManager, 
+                true, 
+                false, 
+                /*, -6000d, null*/
+                -1000d, 
+                5000d, 
+                true)
             {
                 SamePolesAndEquatorGravitation = true,
                 IntegrationEndless = true,
@@ -56,28 +63,30 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
             var changeFrames = 15;
 
             var framesCount = 1000; /// 40 for k5
-            Data.DoFrames(delegate(int frame) 
-            {
-                if (frame % changeFrames == 0)
+            Data.DoFrames(
+                delegate(int frame)
                 {
-                    double koef;
-                    if (frame == framesCount / 1.5)
-                        koef = double.MaxValue;
-                    else if ((frame / changeFrames) % 3 == 3 - 1)
-                        koef = 10000;
-                    else
+                    if (frame % changeFrames == 0)
                     {
-                        koef = (K < 8
-                            ? (-100 + frame / changeFrames
-                               * (Data.SamePolesAndEquatorGravitation ? 100 : 2000))
-                            : 500);
+                        double koef;
+                        if (frame == framesCount / 1.5)
+                            koef = double.MaxValue;
+                        else if ((frame / changeFrames) % 3 == 3 - 1)
+                            koef = 10000;
+                        else
+                        {
+                            koef = K < 8
+                                ? -100 + (frame / changeFrames
+                                          * (Data.SamePolesAndEquatorGravitation ? 100 : 2000))
+                                : 500;
+                        }
+                        ChangeRotation(frame - HealpixManager.Nside, koef);
                     }
-                    ChangeRotation(frame - HealpixManager.Nside, koef);
-                }
-                Data.Draw(Bmp, 0, null, YResolution, Scale);
-                SaveBitmap(frame);
-                return 1 + frame / 50 * 10;
-            }, framesCount);
+                    Data.Draw(Bmp, 0, null, YResolution, Scale);
+                    SaveBitmap(frame);
+                    return 1 + (frame / 50 * 10);
+                },
+                framesCount);
         }
     }
 }

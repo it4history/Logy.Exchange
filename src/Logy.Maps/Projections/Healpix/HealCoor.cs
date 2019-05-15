@@ -53,15 +53,9 @@ namespace Logy.Maps.Projections.Healpix
         public int PixelsCountInRing { get; set; }
         #endregion
 
-        public int EastInRing
-        {
-            get { return (PixelInRing == 1 ? P + PixelsCountInRing : P) - 1; }
-        }
+        public int EastInRing => (PixelInRing == 1 ? P + PixelsCountInRing : P) - 1;
 
-        public int WestInRing
-        {
-            get { return (PixelInRing == PixelsCountInRing ? P - PixelsCountInRing : P) + 1; }
-        }
+        public int WestInRing => (PixelInRing == PixelsCountInRing ? P - PixelsCountInRing : P) + 1;
 
         public double Longitude { get { return X; } set { X = value; } }
         public double Latitude { get { return Y; } set { Y = value; } }
@@ -69,7 +63,7 @@ namespace Logy.Maps.Projections.Healpix
         /// <summary>
         /// Pi/2 .. -Pi/2; Pi/2 is North pole
         /// </summary>
-        public double Phi { get { return (Math.PI / 2) - Beta.Value; } }
+        public double Phi => (Math.PI / 2) - Beta.Value;
 
         /* data in spherical geocoordinates!!!
 5 arc-min grids contain 2,160 x 4,320 data points, are 18 MB in size and extend from
@@ -87,7 +81,7 @@ Each grid file contains 10,800 x 21,600 = 233,280,000 records */
             return equirectangular.FullOffset(coor);
         }
 
-        internal virtual void PreInit(HealpixManager man)
+        public virtual void PreInit(HealpixManager man)
         {
             PixelsCountInRing = man.PixelsCountInRing(Ring);
             NorthCap = man.Northcap(Ring);
@@ -98,15 +92,16 @@ Each grid file contains 10,800 x 21,600 = 233,280,000 records */
         {
             var φ1 = Phi;
             var φ2 = coor.Phi;
-            var Δφ = Phi - coor.Phi;
-            var Δλ = Lambda.Value - coor.Lambda.Value;
-            //* haversine formula1 
-            var a = Math.Sin(Δφ / 2) * Math.Sin(Δφ / 2) +
-                    Math.Cos(φ1) * Math.Cos(φ2) *
-                    Math.Sin(Δλ / 2) * Math.Sin(Δλ / 2);
+            var deltaφ = Phi - coor.Phi;
+            var deltaλ = Lambda.Value - coor.Lambda.Value;
+
+            // haversine formula1 
+            var a = (Math.Sin(deltaφ / 2) * Math.Sin(deltaφ / 2)) +
+                    (Math.Cos(φ1) * Math.Cos(φ2) *
+                     Math.Sin(deltaλ / 2) * Math.Sin(deltaλ / 2));
             var c = 2 * Math.Atan2(Math.Sqrt(a), Math.Sqrt(1 - a));
             return c;
-            /*  Spherical Law of Cosines
+            /* Spherical Law of Cosines
 
             var d = Math.Acos(Math.Sin(φ1) * Math.Sin(φ2) + Math.Cos(φ1) * Math.Cos(φ2) * Math.Cos(Δλ));
 

@@ -33,7 +33,7 @@ namespace Logy.Maps.Geometry.Tests
             var coor = new HealCoor(-90, 90);
             var normalCalm = Matrixes.Rotate(coor);
 
-            //todo why angle with opposite sign?
+            // todo why angle with opposite sign?
             var rotation = Matrix3D.RotationAroundYAxis(new Angle(-coor.Phi, AngleUnit.Radians))
                            * Matrix3D.RotationAroundZAxis(new Angle(coor.Lambda.Value, AngleUnit.Radians));
             var normalCalmByMatrix = new UnitVector3D(Matrixes.RotationVector * rotation);

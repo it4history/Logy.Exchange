@@ -1,9 +1,12 @@
-#if DEBUG
+﻿#if DEBUG
 using Logy.Maps.Exchange;
 using NUnit.Framework;
 
 namespace Logy.Maps.ReliefMaps.World.Ocean
 {
+    /// <summary>
+    /// http://hist.tk/hw/Карта_Земли_после_сдвига_полюса_на_17_градусов
+    /// </summary>
     [TestFixture]
     public class ReliefAxis17 : ReliefMap
     {
@@ -17,12 +20,12 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
         [Test]
         public void AxisChange_Slow()
         {
-            SetData(new ChangeAxis(new BasinData(HealpixManager, true)
+            SetData(new ShiftAxis(new BasinData(HealpixManager, true)
             {
                 IntegrationEndless = true,
             }) { Slow = true });
 
-            ChangeAxis(
+            ShiftAxis(
                 2000,
                 frame =>
                 {
@@ -57,7 +60,7 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
                 IntegrationEndless = true,
             };
 
-            ChangeAxis();
+            ShiftAxis();
         }
     }
 }

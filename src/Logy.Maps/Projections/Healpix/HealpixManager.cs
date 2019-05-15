@@ -20,8 +20,8 @@ namespace Logy.Maps.Projections.Healpix
             K = k;
             Nside = 1 << k;
             Npix = 12 * Nside * Nside;
-            EquatorPixelsCount = (2 * Nside - 1) * 4 * Nside;
-            PolarPixelsCount = (4 + 4 * Nside) * Nside / 2;
+            EquatorPixelsCount = ((2 * Nside) - 1) * 4 * Nside;
+            PolarPixelsCount = (4 + (4 * Nside)) * Nside / 2;
             OmegaPix = Math.PI / (3 * Nside * Nside);
             ThetaPix = Math.Sqrt(OmegaPix);
         }
@@ -31,7 +31,7 @@ namespace Logy.Maps.Projections.Healpix
         /// there are 2*Nside-1 equator 
         /// </summary>
         [IgnoreDataMember]
-        public int RingsCount => 4 * Nside - 1;
+        public int RingsCount => (4 * Nside) - 1;
 
         /// <summary>
         /// there are 2*Nside-1 equator rings
@@ -85,6 +85,7 @@ namespace Logy.Maps.Projections.Healpix
                 // South polar cap
                 return false;
             }
+
             // equatorial belt
             return null;
         }
@@ -98,7 +99,7 @@ namespace Logy.Maps.Projections.Healpix
                 case true:
                     return 4 * ring;
                 case false:
-                    return 4 * (4 * Nside - ring);
+                    return 4 * ((4 * Nside) - ring);
                 default:
                     return 4 * Nside;
             }
@@ -117,7 +118,7 @@ namespace Logy.Maps.Projections.Healpix
         /// <returns></returns>
         public T GetCenter<T>(int p) where T : HealCoor
         {
-            var result = (T) Activator.CreateInstance(typeof(T));
+            var result = (T)Activator.CreateInstance(typeof(T));
             result.P = p;
 
             int i, j;
@@ -133,13 +134,13 @@ namespace Logy.Maps.Projections.Healpix
             {
                 // polar cap
                 var ph = (p + 1) / 2d;
-                i = (int) Math.Sqrt(ph - Math.Sqrt((int) ph)) + 1;
+                i = (int)Math.Sqrt(ph - Math.Sqrt((int)ph)) + 1;
                 j = p + 1 - (2 * i * (i - 1));
-                z = 1 - i * i / (3d * Nside * Nside);
+                z = 1 - (i * i / (3d * Nside * Nside));
 
                 if (southPolar)
                 {
-                    j = 4 * i + 1 - j;
+                    j = (4 * i) + 1 - j;
                     z = -z;
                 }
 
@@ -147,16 +148,16 @@ namespace Logy.Maps.Projections.Healpix
 
                 if (southPolar)
                 {
-                    i = 4 * Nside - i;
+                    i = (4 * Nside) - i;
                 }
             }
             else
             {
                 // equatorial belt
-                var p1 = p - 2 * Nside * (Nside - 1);
-                i = (int) (p1 / (4d * Nside)) + Nside;
-                j = p1 % (4 * Nside) + 1;
-                z = (4 / 3d) - 2d * i / (3 * Nside);
+                var p1 = p - (2 * Nside * (Nside - 1));
+                i = (int)(p1 / (4d * Nside)) + Nside;
+                j = (p1 % (4 * Nside)) + 1;
+                z = (4 / 3d) - (2d * i / (3 * Nside));
 
                 result.Lambda = GetLambda(i, j);
             }
@@ -169,13 +170,7 @@ namespace Logy.Maps.Projections.Healpix
             return result;
         }
 
-        private double GetLambda(int i, int j, bool isEquator = true)
-        {
-            double s = isEquator ? (i - Nside + 1) % 2 : 1;
-            return (Math.PI / (2 * (isEquator ? Nside : i))) * (j - s / 2);
-        }
-
-        public int GetP(int ring, int pixelInRing)
+       public int GetP(int ring, int pixelInRing)
         {
             var p = 0;
             for (int r = 1; r <= RingsCount; r++)
@@ -200,16 +195,22 @@ namespace Logy.Maps.Projections.Healpix
             var eq = Northcap(ring) == null;
             var equatorKoef = eq && (K == 0 || ring % 2 == 1) ? 0 : 1;
             var i = PixelsCountInRing(ring) / 2;
-            if (pixelInRing < i || equatorKoef == 1 && pixelInRing == i) // (x > 0)
+            if (pixelInRing < i || (equatorKoef == 1 && pixelInRing == i) /* (x > 0) */)
             {
                 newPixelInRing = i - pixelInRing + equatorKoef;
             }
             else
             {
-                newPixelInRing = 3 * i - pixelInRing + equatorKoef;
+                newPixelInRing = (3 * i) - pixelInRing + equatorKoef;
             }
             ring = newRing;
             pixelInRing = newPixelInRing;
+        }
+
+        private double GetLambda(int i, int j, bool isEquator = true)
+        {
+            double s = isEquator ? (i - Nside + 1) % 2 : 1;
+            return (Math.PI / (2 * (isEquator ? Nside : i))) * (j - (s / 2));
         }
     }
 }

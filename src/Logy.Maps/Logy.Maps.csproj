@@ -65,7 +65,7 @@
     <Compile Include="Exchange\Algorythm.cs" />
     <Compile Include="Exchange\Bundle.cs" />
     <Compile Include="Exchange\Tests\BundleTests.cs" />
-    <Compile Include="Exchange\ChangeAxis.cs" />
+    <Compile Include="Exchange\ShiftAxis.cs" />
     <Compile Include="Exchange\PoleNorth.cs" />
     <Compile Include="gdal\GdalConfiguration.cs" />
     <Compile Include="gdal\Tests\GdalTests.cs" />
@@ -85,6 +85,8 @@
     <Compile Include="ReliefMaps\World\Approximate\Percentage.cs" />
     <Compile Include="ReliefMaps\World\Approximate\PercentageData.cs" />
     <Compile Include="ReliefMaps\World\Ocean\BasinDataBase.cs" />
+    <Compile Include="ReliefMaps\World\Ocean\BasinSignedDistance.cs" />
+    <Compile Include="ReliefMaps\World\Ocean\Metrics\BasinDataDotProduct.cs" />
     <Compile Include="ReliefMaps\World\Ocean\ReliefMap.cs" />
     <Compile Include="ReliefMaps\World\Ocean\Basin3.cs" />
     <Compile Include="ReliefMaps\Meridian\Data\CentrifugalAcceleration.cs" />

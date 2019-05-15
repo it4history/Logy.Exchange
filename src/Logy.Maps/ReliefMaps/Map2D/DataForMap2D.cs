@@ -90,8 +90,9 @@ namespace Logy.Maps.ReliefMaps.Map2D
                     {
                         // slow?
                         var pix = (from pixel in pixels
-                            select new HealCoor(Equirectangular.CoorFromXY(pixel, _map.YResolution, HealpixManager))
-                        ).ToArray();
+                                select new HealCoor(
+                                    Equirectangular.CoorFromXY(pixel, _map.YResolution, HealpixManager)))
+                            .ToArray();
                         colorsManager = InitAltitudes(pix, isGrey);
                     }
                     break;

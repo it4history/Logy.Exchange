@@ -7,9 +7,9 @@ namespace Logy.Maps.ReliefMaps.Basemap
     {
         // to store max and min at least
         [IgnoreDataMember]
-        public ColorsManager Colors;
+        public ColorsManager Colors { get; set; }
 
         [IgnoreDataMember]
-        public string Dimension = "m";
+        public string Dimension { get; set; } = "m";
     }
 }

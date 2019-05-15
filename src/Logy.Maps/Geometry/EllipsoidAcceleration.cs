@@ -96,7 +96,7 @@ namespace Logy.Maps.Geometry
             aTraverse = 0; 
             if (AxisOfRotation == Basin3.Oz)
             {
-                a = Centrifugal(basin.r * Math.Cos(basin.Varphi));
+                a = Centrifugal(basin.Radius * Math.Cos(basin.Varphi));
                 aVertical = a * Math.Sin(basin.Theta);
                 return a * Math.Abs(Math.Cos(basin.Theta));
             }
@@ -122,7 +122,7 @@ namespace Logy.Maps.Geometry
 
         public static double CentrifugalByDotProduct(BasinDotProduct b, double a, Point3D axisEnd, out double aTraverse)
         { 
-            var surfaceCalm = new Plane(b.NormalCalm, b.r);
+            var surfaceCalm = new Plane(b.NormalCalm, b.Radius);
             var pointQonAxisPlane = new Plane(axisEnd, b.Q3, Basin3.O3);
 
             // aSphere direction

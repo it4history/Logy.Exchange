@@ -11,22 +11,22 @@ namespace Logy.Maps.Geometry.Tests
         [Test]
         public void Intersect()
         {
-            var Qnorth = new Point2D(2, 2);
-            var Q = new Point2D(4, 0);
+            var pointQnorth = new Point2D(2, 2);
+            var pointQ = new Point2D(4, 0);
 
-            var QnorthGeodes = new Point2D(0, 0);
-            var QGeodes = new Point2D(0, 4);
+            var pointQnorthGeodes = new Point2D(0, 0);
+            var pointQGeodes = new Point2D(0, 4);
 
-            var M = new Line2D(Qnorth, QnorthGeodes).IntersectWith(new Line2D(Q, QGeodes));
+            var m = new Line2D(pointQnorth, pointQnorthGeodes).IntersectWith(new Line2D(pointQ, pointQGeodes));
 
-            Assert.AreEqual(2, M.Value.X);
-            Assert.AreEqual(2, M.Value.Y);
+            Assert.AreEqual(2, m.Value.X);
+            Assert.AreEqual(2, m.Value.Y);
         }
 
         [Test]
         public void SinusesTheorem()
         {
-            Assert.AreEqual(Math.Sqrt(2), Triangles.SinusesTheorem(Math.PI/4, 2, Math.PI/4), .0000000001);
+            Assert.AreEqual(Math.Sqrt(2), Triangles.SinusesTheorem(Math.PI / 4, 2, Math.PI / 4), .0000000001);
         }
     }
 }

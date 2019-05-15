@@ -19,8 +19,8 @@ namespace Logy.Maps.Projections.Healpix
 
         public T this[Direction direction]
         {
-            get { return _basins[(int) direction]; }
-            set { _basins[(int) direction] = value; }
+            get { return _basins[(int)direction]; }
+            set { _basins[(int)direction] = value; }
         }
 
         /*        public static implicit operator T[] (Neibors<T> neibors) { return neibors._basins; }

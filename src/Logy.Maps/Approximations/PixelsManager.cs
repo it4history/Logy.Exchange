@@ -23,6 +23,6 @@ namespace Logy.Maps.Approximations
             }
         }
 
-        public T[] Pixels { get; private set; }
+        public T[] Pixels { get; }
     }
 }

@@ -64,7 +64,7 @@ namespace Logy.Maps.ReliefMaps.Meridian.Data
             Water.Move(basin, southBasin, NeighborVert.South);
 
             // return (basin.Vartheta < 0 ? Math.PI - basin.Delta_g_meridian : basin.Delta_g_meridian) * 1000;
-            return basin.hOQ;
+            return basin.HeightOQ;
 
             /*if (northBasin != null)
             {

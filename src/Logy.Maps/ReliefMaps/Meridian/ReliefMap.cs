@@ -15,9 +15,7 @@ namespace Logy.Maps.ReliefMaps.Meridian
         [Test]
         public void Relief_WhenRotationStopped()
         {
-            var data = new WaterAndBottomData(HealpixManager
-                ,-3128d, 7336d
-            );
+            var data = new WaterAndBottomData(HealpixManager, -3128d, 7336d);
             Data = data;
             
             ChangeRotation(-HealpixManager.Nside, double.MaxValue);

@@ -131,7 +131,7 @@ namespace Logy.Maps.Projections.Healpix.Tests
             Assert.AreEqual(-135, man.GetCenter(11).X);
             Assert.AreEqual(-L41, man.GetCenter(11).Y, .01);
         }
-
+        
         [Test]
         public void GetCenter_1()
         {

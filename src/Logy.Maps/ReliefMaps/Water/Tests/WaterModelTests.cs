@@ -7,16 +7,34 @@ using NUnit.Framework;
 
 namespace Logy.Maps.ReliefMaps.Water.Tests
 {
+    /// <summary>
+    /// dots  ̣ ․.·˙
+    /// slashes  /／∕⁄̷     \⍀＼
+    /// tilde combining ̰. ̃.    ͠ ͊ ̾   ˷
+    /// </summary>
+    public enum BottomForm
+    {
+        No,
+        Shallow = 1,
+        InDepth = 2,
+        BasinExcited = 3,
+        BasinInDepth = 4,
+        ShallowSouth = 5,
+        NorthBasinInDepth = 6,
+        ReliefLikeWater = 100,
+    }
+
     [TestFixture]
     public class WaterModelTests
     {
-        private MeridianCoor basin;
-        private MeridianCoor northBasin;
-        private MeridianCoor southBasin;
         /// <summary>
         /// in meters
         /// </summary>
         private const int HeightExcitement = 2;
+
+        private MeridianCoor basin;
+        private MeridianCoor northBasin;
+        private MeridianCoor southBasin;
 
         [Test]
         public void Threshhold()
@@ -31,27 +49,27 @@ namespace Logy.Maps.ReliefMaps.Water.Tests
             Assert.AreEqual(.3, new WaterModel(new HealpixManager(9)).Threshhold, .01);
         }
 
-        private MeridianWater<MeridianCoor> GetData(
-            bool fullMeridian = false, 
+        public MeridianWater<MeridianCoor> GetData(
+            bool fullMeridian = false,
             bool excite = false,
             BottomForm bottomForm = BottomForm.No)
         {
-            var man = new HealpixManager(9); //2 is good too
+            var man = new HealpixManager(9); /// 2 is good too
             northBasin = man.GetCenter<MeridianCoor>(0);
             basin = man.GetCenter<MeridianCoor>(4);
             southBasin = man.GetCenter<MeridianCoor>(12);
             var pix = fullMeridian
-                // -.=.=.- 
+                /// -.=.=.- 
                 ? new[] { northBasin, basin, southBasin }
-                // -.=.- 
+                /// -.=.- 
                 : new[] { northBasin, basin };
 
             var data = new MeridianWater<MeridianCoor>(man, pix, false);
             data.GradientAndHeightCrosses();
             if (excite)
             {
-                //data.Water.Move()
-                basin.hOQ = HeightExcitement;
+                // data.Water.Move()
+                basin.HeightOQ = HeightExcitement;
                 data.GradientAndHeightCrosses();
             }
             switch (bottomForm)
@@ -85,7 +103,7 @@ namespace Logy.Maps.ReliefMaps.Water.Tests
                     break;
                 case BottomForm.ReliefLikeWater:
                     foreach (var t in pix)
-                        t.Depth = (int)-t.hOQ;
+                        t.Depth = (int)-t.HeightOQ;
                     break;
             }
             return data;
@@ -110,13 +128,13 @@ namespace Logy.Maps.ReliefMaps.Water.Tests
             Assert.AreEqual(-.16, data.Water.Move(basin, northBasin, NeighborVert.North), .001);
             data.GradientAndHeightCrosses();
             Assert.AreEqual(0, data.Water.Move(basin, northBasin, NeighborVert.North));
-            Assert.AreEqual(1.36, basin.hOQ, .01);
-            Assert.AreEqual(1.28, northBasin.hOQ, .01);
+            Assert.AreEqual(1.36, basin.HeightOQ, .01);
+            Assert.AreEqual(1.28, northBasin.HeightOQ, .01);
 
-            //masses сonservation law
+            // masses сonservation law
             Assert.AreEqual(
                 HeightExcitement,
-                basin.hOQ + northBasin.hOQ * (northBasin.RingArea / basin.RingArea),
+                basin.HeightOQ + (northBasin.HeightOQ * (northBasin.RingArea / basin.RingArea)),
                 .000001);
         }
 
@@ -134,16 +152,14 @@ namespace Logy.Maps.ReliefMaps.Water.Tests
             Assert.AreEqual(.138, data.Water.Move(basin, southBasin, NeighborVert.South), .001);
             data.GradientAndHeightCrosses();
             Assert.AreEqual(0, data.Water.Move(basin, southBasin, NeighborVert.South));
-            Assert.AreEqual(.74, basin.hOQ, .01);
-            Assert.AreEqual(.64, northBasin.hOQ, .01);
-            Assert.AreEqual(.62, southBasin.hOQ, .01);
+            Assert.AreEqual(.74, basin.HeightOQ, .01);
+            Assert.AreEqual(.64, northBasin.HeightOQ, .01);
+            Assert.AreEqual(.62, southBasin.HeightOQ, .01);
 
-            //masses сonservation law
-            Assert.AreEqual(
-                HeightExcitement,
-                basin.hOQ + northBasin.hOQ * (northBasin.RingArea / basin.RingArea)
-                + southBasin.hOQ * (southBasin.RingArea / basin.RingArea),
-                .000001);
+            // masses сonservation law
+            var actual = basin.HeightOQ + (northBasin.HeightOQ * northBasin.RingArea / basin.RingArea)
+                         + (southBasin.HeightOQ * southBasin.RingArea / basin.RingArea);
+            Assert.AreEqual(HeightExcitement, actual, .000001);
         }
 
         [Test]
@@ -192,12 +208,12 @@ namespace Logy.Maps.ReliefMaps.Water.Tests
             /*    ̣ 
                _./ \._
                ̃˜˜˜˜˜˜˜ */
-            data.DoFrame(); //data.MoveAllWater(); was enough
-            Assert.AreEqual(.8, basin.hOQ, .01); /*per .8 to north and south*/
+            data.DoFrame(); /// data.MoveAllWater(); was enough
+            Assert.AreEqual(.8, basin.HeightOQ, .01); /*per .8 to north and south*/
             Assert.IsTrue(data.WasWaterMoved());
             data.DoFrame();
-////            Assert.AreEqual(.8, basin.hOQ, .01); /*per -.16 to north and south*/
-////            data.Frame();
+///            Assert.AreEqual(.8, basin.hOQ, .01); /*per -.16 to north and south*/
+///            data.Frame();
             Assert.IsFalse(data.WasWaterMoved());
 
             /*    ̣ 
@@ -250,23 +266,6 @@ namespace Logy.Maps.ReliefMaps.Water.Tests
                ̃˜˜˜ ˜˜˜ */
             Assert.AreEqual(0, data.Water.Move(basin, northBasin, NeighborVert.North), .001);
         }
-    }
-
-    /// <summary>
-    /// dots  ̣ ․.·˙
-    /// slashes  /／∕⁄̷     \⍀＼
-    /// tilde combining ̰. ̃.    ͠ ͊ ̾   ˷
-    /// </summary>
-    internal enum BottomForm
-    {
-        No,
-        Shallow = 1,
-        InDepth = 2,
-        BasinExcited = 3,
-        BasinInDepth = 4,
-        ShallowSouth = 5,
-        NorthBasinInDepth = 6,
-        ReliefLikeWater = 100,
     }
 }
 #endif

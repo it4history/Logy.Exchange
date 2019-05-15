@@ -10,7 +10,7 @@ namespace Logy.Maps.ReliefMaps.Meridian.Data
 
         public override double? GetAltitude(MeridianCoor basin)
         {
-            return basin.gHpure * 1000;
+            return basin.GHpure * 1000;
         }
     }
 }

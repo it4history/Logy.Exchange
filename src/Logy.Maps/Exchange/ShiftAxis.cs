@@ -1,13 +1,12 @@
 ﻿using System.Collections.Generic;
 using System.Runtime.Serialization;
-using Logy.Maps.ReliefMaps.Water;
 using Logy.Maps.ReliefMaps.World.Ocean;
 
 namespace Logy.Maps.Exchange
 {
-    public class ChangeAxis : Algorythm<Basin3>
+    public class ShiftAxis : Algorythm<Basin3>
     {
-        public ChangeAxis(WaterMoving<Basin3> data) : base(data)
+        public ShiftAxis(BasinData data) : base(data)
         {
         }
 

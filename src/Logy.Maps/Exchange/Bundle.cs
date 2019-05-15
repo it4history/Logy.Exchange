@@ -1,14 +1,18 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
-using Logy.Maps.Projections.Healpix;
+using Logy.Maps.ReliefMaps.Basemap;
 using Logy.Maps.ReliefMaps.Water;
 using Newtonsoft.Json;
 
 namespace Logy.Maps.Exchange
 {
-    public class Bundle<T> where T : HealCoor
+    public class Bundle<T> where T : BasinBase
     {
+        public Bundle()
+        {
+        }
+
         public Bundle(WaterMoving<T> data) : this(new Algorythm<T>(data))
         {
         }
@@ -32,7 +36,7 @@ namespace Logy.Maps.Exchange
 
         public string Serialize()
         {
-            return JsonConvert.SerializeObject(this);
+            return JsonConvert.SerializeObject(this, new JsonSerializerSettings { PreserveReferencesHandling = PreserveReferencesHandling.All });
         }
     }
 }

@@ -29,11 +29,13 @@ namespace Logy.Maps.ReliefMaps.Meridian
                 Data.Draw(Bmp, frame - HealpixManager.Nside, null, YResolution, Scale);
 
                 var times = 0;
-                if (frame - times < -HealpixManager.Nside) //// how many times to call ChangeRotation at the beginning
+                
+                // how many times to call ChangeRotation at the beginning
+                if (frame - times < -HealpixManager.Nside) 
                 {
                     ChangeRotation(frame, 80000);
                 }
-                return 1400; // 1400 for k7
+                return 1400; /// 1400 for k7
             });
         }
 
@@ -44,16 +46,17 @@ namespace Logy.Maps.ReliefMaps.Meridian
         [Test]
         public void Water_RotationStopping()
         {
-            Data = new MeridianWater<MeridianCoor>(HealpixManager); //-3690d, 4185d);
+            Data = new MeridianWater<MeridianCoor>(HealpixManager); /// -3690d, 4185d);
             Data.DoFrames(delegate(int frame) 
             {
                 Data.Draw(Bmp, frame - HealpixManager.Nside, null, YResolution, Scale);
 
-                if (frame % HealpixManager.Nside / 4 == 0) //(îò 23,9 ÷àñîâ äî 26,7), è â ñåðåäèíå âðåìåíè äî 46,2 ÷àñîâ
+                // (îò 23,9 ÷àñîâ äî 26,7), è â ñåðåäèíå âðåìåíè äî 46,2 ÷àñîâ
+                if ((frame % HealpixManager.Nside) / 4 == 0) 
                 {
                     ChangeRotation(frame);
                 }
-                return 110; // 1100 for k9
+                return 110; /// 1100 for k9
             });
         }
 
@@ -65,10 +68,10 @@ namespace Logy.Maps.ReliefMaps.Meridian
         {
             var h = 500d;
             Data = new MeridianWater<MeridianCoor>(HealpixManager, -h, h);
-            Data.PixMan.Pixels[HealpixManager.RingsCount / 4 + 1].hOQ = -h;
-            Data.PixMan.Pixels[HealpixManager.RingsCount / 4 + 2].hOQ = -h;
-            Data.PixMan.Pixels[HealpixManager.RingsCount * 3 / 4 + 1].hOQ = h;
-            Data.PixMan.Pixels[HealpixManager.RingsCount * 3 / 4 + 2].hOQ = h;
+            Data.PixMan.Pixels[(HealpixManager.RingsCount / 4) + 1].HeightOQ = -h;
+            Data.PixMan.Pixels[(HealpixManager.RingsCount / 4) + 2].HeightOQ = -h;
+            Data.PixMan.Pixels[(HealpixManager.RingsCount * 3 / 4) + 1].HeightOQ = h;
+            Data.PixMan.Pixels[(HealpixManager.RingsCount * 3 / 4) + 2].HeightOQ = h;
             Data.ColorsMiddle = 50;
             Data.DoFrames(delegate(int frame)
             {

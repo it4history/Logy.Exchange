@@ -10,27 +10,6 @@ namespace Logy.Maps.ReliefMaps.Basemap
 {
     public abstract class DataEarth2014<T> : DataEarth, IDisposable where T : HealCoor
     {
-        public readonly HealpixManager HealpixManager;
-
-        /// <summary>
-        /// value that treated as splitter for colors
-        /// if null then is (max-min)/2
-        /// </summary>
-        [IgnoreDataMember]
-        public double? ColorsMiddle;
-
-        [IgnoreDataMember]
-        public double? MaxDefault;
-        protected double? MinDefault;
-
-        protected readonly Earth2014Manager
-
-            // physical surface 
-            Relief,
-
-            // relief without water and ice masses 
-            ReliefBed;
-
         protected DataEarth2014(HealpixManager man, double? min = null, double? max = null, bool readAllAtStart = false)
         {
             HealpixManager = man;
@@ -39,6 +18,40 @@ namespace Logy.Maps.ReliefMaps.Basemap
             Relief = new Earth2014Manager(ReliefType, Accuracy, IsReliefShape, readAllAtStart);
             ReliefBed = new Earth2014Manager(ReliefBedType, Accuracy, IsReliefBedShape, readAllAtStart);
         }
+
+        public HealpixManager HealpixManager { get; }
+
+        public virtual int Accuracy => 5;
+
+        /// <summary>
+        /// mainly not ReliefType.Bed
+        /// </summary>
+        [IgnoreDataMember]
+        public virtual ReliefType ReliefType => ReliefType.Sur;
+
+        [IgnoreDataMember]
+        public virtual ReliefType ReliefBedType => ReliefType.Bed;
+
+        /// <summary>
+        /// value that treated as splitter for colors
+        /// if null then is (max-min)/2
+        /// </summary>
+        [IgnoreDataMember]
+        public double? ColorsMiddle { get; set; }
+
+        [IgnoreDataMember]
+        public double? MaxDefault { get; set; }
+        protected double? MinDefault { get; set; }
+
+        // physical surface 
+        protected Earth2014Manager Relief { get; }
+
+        // relief without water and ice masses 
+        protected Earth2014Manager ReliefBed { get; }
+
+        protected virtual bool IsReliefShape => false;
+
+        protected virtual bool IsReliefBedShape => IsReliefShape;
 
         /// <summary>
         /// also sets Colors
@@ -61,19 +74,22 @@ namespace Logy.Maps.ReliefMaps.Basemap
 
         public abstract double? GetAltitude(T basin);
 
-        public int GetHeights(HealCoor coor, int rOfEllipse, out int waterHeight)
+        public int GetHeights(HealCoor coor, int radiusOfEllipse, out int waterHeight)
         {
             var surface = Relief.GetAltitude(coor);
             var hOQ = surface;
             if (IsReliefShape)
+            {
                 // hOQ includes undulation 
-                hOQ += Earth2014Manager.Radius2Add - rOfEllipse;
+                hOQ += Earth2014Manager.Radius2Add - radiusOfEllipse;
+            }
 
             var bed = ReliefBed.GetAltitude(coor);
 
             waterHeight = surface - bed;
-            if (waterHeight > 0) /* lakes in ice are ignored */
+            if (waterHeight > 0) 
             {
+                /* lakes in ice are ignored */
             }
             return hOQ;
         }
@@ -89,30 +105,16 @@ namespace Logy.Maps.ReliefMaps.Basemap
                 foreach (var pixel in basins)
                 {
                     var healCoor = (HealCoor)pixel;
-                    var eqProjection = new Equirectangular(HealpixManager, yResolution);
-                    var point = eqProjection.Offset(healCoor);
+                    var projection = new Equirectangular(HealpixManager, yResolution);
+                    var point = projection.Offset(healCoor);
                     Colors.SetPixelOnBmp(
-                        healCoor.Altitude, 
+                        healCoor.Altitude,
                         bmp,
-                        (int)(point.X + deltaX), 
-                        (int)point.Y, scale);
+                        (int)(point.X + deltaX),
+                        (int)point.Y, 
+                        scale);
                 }
         }
-
-        public virtual int Accuracy => 5;
-
-        /// <summary>
-        /// mainly not ReliefType.Bed
-        /// </summary>
-        [IgnoreDataMember]
-        public virtual ReliefType ReliefType => ReliefType.Sur;
-
-        [IgnoreDataMember]
-        public virtual ReliefType ReliefBedType => ReliefType.Bed;
-
-        protected virtual bool IsReliefShape => false;
-
-        protected virtual bool IsReliefBedShape => IsReliefShape;
 
         public void Dispose()
         {
