@@ -41,7 +41,8 @@ namespace Logy.Maps.ReliefMaps.World.Ocean.Metrics.Tests
         [Test]
         public void Intersect_2()
         {
-            var data = new BasinData(new HealpixManager(2), false, true);
+            var data = new BasinData(new HealpixManager(2)) { Spheric = true };
+            data.OnInit();
             foreach (var basin in data.PixMan.Pixels)
             {
                 foreach (Direction to in Enum.GetValues(typeof(Direction)))

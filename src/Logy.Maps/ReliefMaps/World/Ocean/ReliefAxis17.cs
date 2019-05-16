@@ -20,8 +20,9 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
         [Test]
         public void AxisChange_Slow()
         {
-            SetData(new ShiftAxis(new BasinData(HealpixManager, true)
+            SetData(new ShiftAxis(new BasinData(HealpixManager)
             {
+                WithRelief = true,
                 IntegrationEndless = true,
             }) { Slow = true });
 
@@ -31,7 +32,7 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
                 {
                     switch (K)
                     {
-                        case 7: return 15 + frame / 10;
+                        case 7: return 15 + (frame / 10);
                     }
                     return 15;
                 },
@@ -45,18 +46,17 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
                 });
         }
 
-
         /// <summary>
         /// framesCountBy2 == 100 is not enough for all integration
         /// </summary>
         [Test]
         public void AxisChange_Sharp()
         {
-            Data = new BasinData(HealpixManager, true, false
-                //, -6000d, null
-                //, -1000d, 5000d, true
-            )
+            Data = new BasinData(HealpixManager
+                /*, -6000d, null
+                , -1000d, 5000d, true*/)
             {
+                WithRelief = true,
                 IntegrationEndless = true,
             };
 

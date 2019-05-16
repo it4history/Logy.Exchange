@@ -11,9 +11,9 @@ namespace Logy.Maps.ReliefMaps.Meridian
     {
         private double _lengthQn2;
 
-        public override void PreInit(HealpixManager man)
+        public override void OnInit(HealpixManager man)
         {
-            base.PreInit(man);
+            base.OnInit(man);
             var northRingPixel = man.GetCenter(Math.Max(1, P - PixelInRing));
             _lengthQn2 = (Beta.Value - northRingPixel.Beta.Value) * RadiusOfEllipse / 2;
         }

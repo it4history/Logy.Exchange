@@ -43,9 +43,9 @@ namespace Logy.Maps.ReliefMaps.World.Ocean.Metrics
 
         public Line2D KQ_traverse => MeridianBase.GetKQ(KQQaxisTanCotan_traverse, Q_traverse);
 
-        public override void PreInit(HealpixManager man)
+        public override void OnInit(HealpixManager man)
         {
-            base.PreInit(man);
+            base.OnInit(man);
 
             NormalCalm = new UnitVector3D(new UnitVector3D(-1, 0, 0) * Matrix.Transpose());
 

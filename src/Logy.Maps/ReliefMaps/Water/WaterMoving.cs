@@ -14,19 +14,25 @@ namespace Logy.Maps.ReliefMaps.Water
 {
     public abstract class WaterMoving<T> : DataEarth2014<T> where T : HealCoor
     {
+        private readonly T[] _basins;
         private bool? _isDynamicScale;
         private double _oceanVolume;
 
+        protected WaterMoving() { }
         protected WaterMoving(
             HealpixManager man,
             T[] basins,
             double? min = null,
             double? max = null,
-            bool readAllAtStart = false) : base(man, min, max, readAllAtStart)
+            bool readAllAtStart = false) : base(min, max, readAllAtStart)
         {
-            PixMan = new PixelsManager<T>(man, basins);
-            Water = new WaterModel(man);
+            K = man.K;
+            _basins = basins;
         }
+
+        public bool WithRelief { get; set; }
+
+        public bool Spheric { get; set; }
 
         [IgnoreDataMember]
         public WaterModel Water { get; set; }
@@ -55,7 +61,14 @@ namespace Logy.Maps.ReliefMaps.Water
         public int Frame { get; set; } = -1;
         public int Time { get; set; } = -1;
 
-        protected internal PixelsManager<T> PixMan { get; }
+        protected internal PixelsManager<T> PixMan { get; private set; }
+
+        public override void OnInit()
+        {
+            base.OnInit();
+            PixMan = new PixelsManager<T>(HealpixManager, _basins);
+            Water = new WaterModel(HealpixManager);
+        }
 
         public void DoFrame(bool isDynamicScale = true)
         {

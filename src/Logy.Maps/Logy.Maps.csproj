@@ -61,6 +61,9 @@
     <Reference Include="System.XML" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\..\ProductAssemblyInfo.cs">
+      <Link>Properties\ProductAssemblyInfo.cs</Link>
+    </Compile>
     <Compile Include="Approximations\ApproximationManager.cs" />
     <Compile Include="Exchange\Algorythm.cs" />
     <Compile Include="Exchange\Bundle.cs" />
@@ -84,7 +87,7 @@
     <Compile Include="ReliefMaps\Meridian\ReliefMap.cs" />
     <Compile Include="ReliefMaps\World\Approximate\Percentage.cs" />
     <Compile Include="ReliefMaps\World\Approximate\PercentageData.cs" />
-    <Compile Include="ReliefMaps\World\Ocean\BasinDataBase.cs" />
+    <Compile Include="ReliefMaps\World\Ocean\BasinDataAbstract.cs" />
     <Compile Include="ReliefMaps\World\Ocean\BasinSignedDistance.cs" />
     <Compile Include="ReliefMaps\World\Ocean\Metrics\BasinDataDotProduct.cs" />
     <Compile Include="ReliefMaps\World\Ocean\ReliefMap.cs" />

@@ -12,12 +12,8 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
         [Test]
         public void Water_HighBasin()
         {
-            Data = new BasinData(
-                HealpixManager, 
-                false, 
-                true, /// true for sphere
-                -20d ///, 200d
-            );
+            Data = new BasinData(HealpixManager, -20d /*, 200d*/)
+                { Spheric = true };
 
             var h = 500d;
             var p = HealpixManager.GetP(HealpixManager.Nside + 5, HealpixManager.Nside * 2);
@@ -26,21 +22,21 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
             Data.PixMan.Pixels[HealpixManager
                 .GetP(HealpixManager.Nside, (int)(HealpixManager.Nside * 2.5))].HeightOQ = h;
 
-            Data.DoFrames(delegate(int frame) 
-            {
-                Data.Draw(Bmp, 0, null, YResolution, Scale);
-                Circle(basin3);
-                SaveBitmap(frame);
-                return 1; //240 for k8, 150 for k7, 100 for k6
-            }, 20);
+            Data.DoFrames(
+                delegate(int frame)
+                {
+                    Data.Draw(Bmp, 0, null, YResolution, Scale);
+                    Circle(basin3);
+                    SaveBitmap(frame);
+                    return 1; /// 240 for k8, 150 for k7, 100 for k6
+                },
+                20);
         }
 
         [Test]
         public void Water_Gradient()
         {
-            Data = new BasinData(HealpixManager, false, false //true for sphere
-                , -200d //, 2000d
-            );
+            Data = new BasinData(HealpixManager, -200d /*, 2000d*/);
 
             var p = HealpixManager.GetP(HealpixManager.Nside - 1, HealpixManager.Nside * 1);
             var basin = Data.PixMan.Pixels[p];
@@ -55,60 +51,50 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
             p = HealpixManager.GetP(HealpixManager.Nside + 5, HealpixManager.Nside * 2);
             Data.PixMan.Pixels[p].Delta_g_traverse = .2;
 
-
-            Data.DoFrames(delegate(int frame)
-            {
-                Data.Draw(Bmp, 0, null, YResolution, Scale);
-                Circle(basin);
-                SaveBitmap(frame);
-                return 1;
-            }, 30);
+            Data.DoFrames(
+                delegate(int frame)
+                {
+                    Data.Draw(Bmp, 0, null, YResolution, Scale);
+                    Circle(basin);
+                    SaveBitmap(frame);
+                    return 1;
+                },
+                30);
         }
 
         [Test]
         public void Hto_Spheric()
         {
-            Data = new BasinData(new HealpixManager(2), false, true);
+            Data = new BasinData(new HealpixManager(2)) { Spheric = true };
 
             Data.GradientAndHeightCrosses();
             InitiialHtoRecalc();
 
             var basin0 = Data.PixMan.Pixels[0];
+
             // 44 44 40 40
-            //Assert.AreEqual(644, basin0.InitialHto[0] / 10000, 1);
+            // Assert.AreEqual(644, basin0.InitialHto[0] / 10000, 1);
             Assert.AreEqual(0, basin0.RadiusLine.Direction.AngleTo(basin0.S_q.Normal).Degrees);
 
             var basin5 = Data.PixMan.Pixels[5]; // 5,7: 46 42 40 43  
-            // 14,17: 47 41 40 45
-            // 27,31: 47 41 42 42
+            /// 14,17: 47 41 40 45
+            /// 27,31: 47 41 42 42
 
             ChangeRotation(-HealpixManager.Nside, double.MaxValue);
             Assert.AreEqual(0, basin0.Hto[0]);
 
-            //Data.GradientAndHeightCrosses();
+            // Data.GradientAndHeightCrosses();
             Assert.AreEqual(0, basin0.Hto[0]);
 
             BasinDataTests.DoFrame(Data);
         }
 
-        private void InitiialHtoRecalc()
-        {
-            foreach (var basin in Data.PixMan.Pixels)
-            {
-                for (int to = 0; to < 4; to++)
-                {
-                    basin.InitialHto[(int)to] = 0;
-                    basin.InitialHto[(int)to] = basin.Metric(null, to);
-                }
-            }
-        }
-
         [Test]
         public void Water_ChangeAxis()
         {
-            Data = new BasinData(HealpixManager, false, false
-                //, -2600d, 2700d
-            )
+            Data = new BasinData(
+                HealpixManager
+                /*, -2600d, 2700d*/)
             {
                 /*SamePolesAndEquatorGravitation = true,
                 NoIntegrationFinish = true,
@@ -121,19 +107,31 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
         [Test]
         public void Water_RotationStopped()
         {
-            Data = new BasinData(HealpixManager, false, false
-                // ,-3000d, 3000d
-            );
-            //Data.ColorsMiddle = null;
-
+            Data = new BasinData(
+                HealpixManager
+                /*,-3000d, 3000d*/);
 
             ChangeRotation(-HealpixManager.Nside, double.MaxValue);
-            Data.DoFrames(delegate(int frame) 
+            Data.DoFrames(
+                delegate(int frame)
+                {
+                    Data.Draw(Bmp, 0, null, YResolution, Scale);
+                    SaveBitmap(frame);
+                    return 1;
+                },
+                400);
+        }
+
+        private void InitiialHtoRecalc()
+        {
+            foreach (var basin in Data.PixMan.Pixels)
             {
-                Data.Draw(Bmp, 0, null, YResolution, Scale);
-                SaveBitmap(frame);
-                return 1;
-            }, 400);
+                for (int to = 0; to < 4; to++)
+                {
+                    basin.InitialHto[to] = 0;
+                    basin.InitialHto[to] = basin.Metric(null, to);
+                }
+            }
         }
     }
 }

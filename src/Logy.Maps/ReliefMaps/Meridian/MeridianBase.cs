@@ -45,9 +45,9 @@ namespace Logy.Maps.ReliefMaps.Meridian
             return new Line2D(pointK, q);
         }
 
-        public override void PreInit(HealpixManager man)
+        public override void OnInit(HealpixManager man)
         {
-            base.PreInit(man);
+            base.OnInit(man);
             KQQaxisTan = Math.Tan(Vartheta);
         }
 

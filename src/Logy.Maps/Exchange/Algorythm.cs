@@ -1,6 +1,6 @@
-﻿using Logy.Maps.ReliefMaps.Basemap;
+﻿using System.Runtime.Serialization;
+using Logy.Maps.ReliefMaps.Basemap;
 using Logy.Maps.ReliefMaps.Water;
-using Logy.Maps.ReliefMaps.World.Ocean;
 
 namespace Logy.Maps.Exchange
 {
@@ -8,16 +8,27 @@ namespace Logy.Maps.Exchange
     {
         public Algorythm(WaterMoving<T> data)
         {
-            Data = data;
+            DataAbstract = data;
         }
 
-        public string Name => GetType().Name;
+        /// <summary>
+        /// needed for deserialization
+        /// </summary>
+        protected Algorythm()
+        {
+        }
+
+        public string Name => GetType().AssemblyQualifiedName;
 
         /// <summary>
         /// ocean volume increase from initial, mln cub km
         /// </summary>
         public double Diff { get; set; }
 
-        public WaterMoving<T> Data { get; set; }
+        /// <summary>
+        /// deserialize Data manually
+        /// </summary>
+        [IgnoreDataMember]
+        public WaterMoving<T> DataAbstract { get; protected set; }
     }
 }

@@ -13,10 +13,14 @@ namespace Logy.Maps.ReliefMaps.Map2D
     {
         private readonly Map2DBase _map;
 
-        protected DataForMap2D(Map2DBase map) : base(map.HealpixManager)
+        protected DataForMap2D(Map2DBase map)
         {
             _map = map;
+            K = map.HealpixManager.K;
             ColorsMiddle = 0;
+
+            // do not deserialize descendant classes 
+            OnInit();
         }
 
         /// <summary>

@@ -10,16 +10,37 @@ namespace Logy.Maps.ReliefMaps.Basemap
 {
     public abstract class DataEarth2014<T> : DataEarth, IDisposable where T : HealCoor
     {
-        protected DataEarth2014(HealpixManager man, double? min = null, double? max = null, bool readAllAtStart = false)
+        private readonly bool _readAllAtStart;
+        private int _k;
+        private HealpixManager _healpixManager;
+
+        protected DataEarth2014()
         {
-            HealpixManager = man;
-            MinDefault = min;
-            MaxDefault = max;
-            Relief = new Earth2014Manager(ReliefType, Accuracy, IsReliefShape, readAllAtStart);
-            ReliefBed = new Earth2014Manager(ReliefBedType, Accuracy, IsReliefBedShape, readAllAtStart);
         }
 
-        public HealpixManager HealpixManager { get; }
+        protected DataEarth2014(double? min = null, double? max = null, bool readAllAtStart = false)
+        {
+            MinDefault = min;
+            MaxDefault = max;
+            _readAllAtStart = readAllAtStart;
+        }
+
+        public int K
+        {
+            get
+            {
+                return _k;
+            }
+            set /*dangerous, used for deserialization*/
+            {
+                _k = value;
+                _healpixManager = null;
+            }
+        }
+
+        [IgnoreDataMember]
+        public HealpixManager HealpixManager 
+            => _healpixManager ?? (_healpixManager = new HealpixManager(K));
 
         public virtual int Accuracy => 5;
 
@@ -44,14 +65,20 @@ namespace Logy.Maps.ReliefMaps.Basemap
         protected double? MinDefault { get; set; }
 
         // physical surface 
-        protected Earth2014Manager Relief { get; }
+        protected Earth2014Manager Relief { get; private set; }
 
         // relief without water and ice masses 
-        protected Earth2014Manager ReliefBed { get; }
+        protected Earth2014Manager ReliefBed { get; private set; }
 
         protected virtual bool IsReliefShape => false;
 
         protected virtual bool IsReliefBedShape => IsReliefShape;
+
+        public virtual void OnInit()
+        {
+            Relief = new Earth2014Manager(ReliefType, Accuracy, IsReliefShape, _readAllAtStart);
+            ReliefBed = new Earth2014Manager(ReliefBedType, Accuracy, IsReliefBedShape, _readAllAtStart);
+        }
 
         /// <summary>
         /// also sets Colors

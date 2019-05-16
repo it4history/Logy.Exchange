@@ -9,10 +9,7 @@ namespace Logy.Maps.ReliefMaps.World.Ocean.Metrics
         [Test]
         public void Water_ShiftAxis(int i)
         {
-            Data = new BasinDataBase<BasinSignedDistance>(
-                HealpixManager, 
-                false, 
-                false /*, -200d //, 2000d*/);
+            Data = new BasinDataAbstract<BasinSignedDistance>(HealpixManager/*, -200d //, 2000d*/);
 
             ShiftAxis();
         }

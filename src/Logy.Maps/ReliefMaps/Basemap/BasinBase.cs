@@ -159,9 +159,9 @@ namespace Logy.Maps.ReliefMaps.Basemap
             RingArea = Area * PixelsCountInRing;
         }
 
-        public override void PreInit(HealpixManager man)
+        public override void OnInit(HealpixManager man)
         {
-            base.PreInit(man);
+            base.OnInit(man);
             LambdaSin = Math.Sin(Lambda.Value);
             LambdaMinusPi2Sin = Math.Sin(Lambda.Value - (Math.PI / 2));
             LambdaCos = Math.Cos(Lambda.Value);

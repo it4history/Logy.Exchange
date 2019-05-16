@@ -10,12 +10,18 @@ namespace Logy.Maps.ReliefMaps.Meridian.Data
     {
         protected MeridianData(HealpixManager man, T[] basins) : base(man, basins)
         {
-            Water.IsMeridian = true;
+            OnInit();
         }
 
         protected MeridianData(HealpixManager man, double? min = null, double? max = null) 
             : base(man, GetBasins(man), min, max)
         {
+            OnInit();
+        }
+
+        public override void OnInit()
+        {
+            base.OnInit();
             Water.IsMeridian = true;
         }
 

@@ -168,9 +168,9 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
         public double Atrans { get; set; }
         #endregion
 
-        public override void PreInit(HealpixManager man)
+        public override void OnInit(HealpixManager man)
         {
-            base.PreInit(man);
+            base.OnInit(man);
             Hto = new double[4];
             Volumes = new bool[4];
             Froms = new int[4];

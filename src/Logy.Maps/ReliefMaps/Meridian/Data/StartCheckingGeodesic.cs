@@ -26,7 +26,7 @@ namespace Logy.Maps.ReliefMaps.Meridian.Data
 
         public override double? GetAltitude(MeridianCoor basin)
         {
-            //// basin.PreInit(HealpixManager);
+            //// basin.OnInit(HealpixManager);
 
             double? diff = null;
             var northBasin = GetNorthBasin(basin);

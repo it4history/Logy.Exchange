@@ -9,21 +9,15 @@ namespace Logy.Maps.ReliefMaps.World.Ocean.Metrics
 {
     public class BasinDataDotProduct : WaterMoving<BasinDotProduct>
     {
-        private readonly bool _withRelief;
-        private readonly bool _spheric;
-
         public BasinDataDotProduct(
             HealpixManager man, 
-            bool withRelief = false, 
-            bool spheric = false,
             double? min = null, 
             double? max = null)
             : base(man, null, min, max)
         {
-            _withRelief = withRelief;
-            _spheric = spheric;
             ColorsMiddle = 0;
 
+            OnInit();
             foreach (var basin in PixMan.Pixels)
             {
                 RecalcDelta_g(basin);
@@ -84,7 +78,7 @@ namespace Logy.Maps.ReliefMaps.World.Ocean.Metrics
 
                 /// !basin.SpecNormal = new Line3D(basin.Q3, Point3D.Centroid(bisectors).MirrorAbout(surface)).Direction;
 
-                if (_withRelief)
+                if (WithRelief)
                 {
                     int waterHeight;
                     var heightOQ = GetHeights(basin, (int)basin.RadiusOfEllipse, out waterHeight);
@@ -158,7 +152,7 @@ namespace Logy.Maps.ReliefMaps.World.Ocean.Metrics
 
         internal void RecalcDelta_g(Basin3 basin)
         {
-            if (_spheric)
+            if (Spheric)
             {
                 basin.InitROfEllipse(HealpixManager, Ellipsoid.MeanRadius);
                 basin.Delta_g_meridian = basin.Delta_g_traverse = 0;

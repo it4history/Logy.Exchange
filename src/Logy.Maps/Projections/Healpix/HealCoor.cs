@@ -41,14 +41,14 @@ namespace Logy.Maps.Projections.Healpix
         /// </summary>
         public int PixelInRing { get; set; }
 
-        #region cached in PreInit
+        #region cached in OnInit
         /// <summary>
         /// null if on equator bell
         /// </summary>
         public bool? NorthCap { get; set; }
 
         /// <summary>
-        /// cached from HealpixManager.PixelsCountInRing in PreInit
+        /// cached from HealpixManager.PixelsCountInRing in OnInit
         /// </summary>
         public int PixelsCountInRing { get; set; }
         #endregion
@@ -81,7 +81,7 @@ Each grid file contains 10,800 x 21,600 = 233,280,000 records */
             return equirectangular.FullOffset(coor);
         }
 
-        public virtual void PreInit(HealpixManager man)
+        public virtual void OnInit(HealpixManager man)
         {
             PixelsCountInRing = man.PixelsCountInRing(Ring);
             NorthCap = man.Northcap(Ring);

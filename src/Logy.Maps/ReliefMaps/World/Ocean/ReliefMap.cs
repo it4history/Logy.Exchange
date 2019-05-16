@@ -15,9 +15,8 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
         public void Basin()
         {
             Data = new BasinData(
-                HealpixManager,
-                false,
-                false /*, -7000d*/)
+                HealpixManager
+                /*, -7000d*/)
             {
                 IntegrationEndless = true,
                 /// Visual = basin => basin.WaterHeight
@@ -43,13 +42,12 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
         {
             Data = new BasinData(
                 HealpixManager, 
-                true, 
-                false, 
                 /*, -6000d, null*/
                 -1000d, 
                 5000d, 
                 true)
             {
+                WithRelief = true,
                 SamePolesAndEquatorGravitation = true,
                 IntegrationEndless = true,
                 /// Visual = basin => basin.Depth.Value

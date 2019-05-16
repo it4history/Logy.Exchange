@@ -14,9 +14,9 @@ namespace Logy.Maps.ReliefMaps.Meridian
         /// </summary>
         public override bool[] Volumes { get; set; }
 
-        public override void PreInit(HealpixManager man)
+        public override void OnInit(HealpixManager man)
         {
-            base.PreInit(man);
+            base.OnInit(man);
             Hto = new double[2];
             Volumes = new bool[2];
         }

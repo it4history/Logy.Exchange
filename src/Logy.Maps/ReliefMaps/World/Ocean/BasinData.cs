@@ -2,16 +2,15 @@
 
 namespace Logy.Maps.ReliefMaps.World.Ocean
 {
-    public class BasinData : BasinDataBase<Basin3>
+    public class BasinData : BasinDataAbstract<Basin3>
     {
+        public BasinData() { }
         public BasinData(
             HealpixManager man, 
-            bool withRelief = false, 
-            bool spheric = false,
             double? min = null, 
             double? max = null, 
             bool readAllAtStart = false)
-            : base(man, withRelief, spheric, min, max, readAllAtStart)
+            : base(man, min, max, readAllAtStart)
         {
         }
     }

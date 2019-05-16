@@ -46,7 +46,7 @@ namespace Logy.Maps.ReliefMaps.Map2D
         {
             get
             {
-                return Bundle.Algorithm.Data;
+                return Bundle.Algorithm.DataAbstract;
             }
             set
             {
@@ -54,6 +54,7 @@ namespace Logy.Maps.ReliefMaps.Map2D
                 {
                     if (Directory.Exists(Dir))
                         Directory.Delete(Dir, true);
+                    value.OnInit();
                     Bundle = new Bundle<T>(value);
                 }
                 else
@@ -188,14 +189,15 @@ namespace Logy.Maps.ReliefMaps.Map2D
                     var projection = new Equirectangular(HealpixManager, YResolution);
                     var point = projection.Offset(Data.PixMan.Pixels[HealpixManager.RingsCount / 2]);
                     var algorythm = Bundle.Algorithm as ShiftAxis;
-                    foreach (var axisShiftFrame in algorythm.Poles.Keys)
-                    {
-                        var line = (int)Math.Max(0, point.X + axisShiftFrame);
+                    if (algorythm != null)
+                        foreach (var axisShiftFrame in algorythm.Poles.Keys)
+                        {
+                            var line = (int)Math.Max(0, point.X + axisShiftFrame);
 
-                        if (line < Bmp.Width)
-                            for (var y = -10; y < 0; y++)
-                                Bmp.SetPixel(line, (YResolution * Scale * HealpixManager.Nside) + y, Color.Black);
-                    }
+                            if (line < Bmp.Width)
+                                for (var y = -10; y < 0; y++)
+                                    Bmp.SetPixel(line, (YResolution * Scale * HealpixManager.Nside) + y, Color.Black);
+                        }
                 }
                 return SaveBitmap(Bmp, Data.Colors, Data.Accuracy, $"{frame:00000}_");
             }
