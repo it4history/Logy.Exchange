@@ -65,7 +65,7 @@
       <Link>Properties\ProductAssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="Approximations\ApproximationManager.cs" />
-    <Compile Include="Exchange\Algorythm.cs" />
+    <Compile Include="Exchange\Algorithm.cs" />
     <Compile Include="Exchange\Bundle.cs" />
     <Compile Include="Exchange\Tests\BundleTests.cs" />
     <Compile Include="Exchange\ShiftAxis.cs" />

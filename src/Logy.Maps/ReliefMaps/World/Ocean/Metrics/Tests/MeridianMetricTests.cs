@@ -12,7 +12,7 @@ namespace Logy.Maps.ReliefMaps.World.Ocean.Metrics.Tests
         public void Hto_SameRing()
         {
             var data = new BasinData(new HealpixManager(2)) { Spheric = true };
-            data.OnInit();
+            data.Init();
 
             foreach (var aBasin in data.PixMan.Pixels)
             {
@@ -34,7 +34,7 @@ namespace Logy.Maps.ReliefMaps.World.Ocean.Metrics.Tests
         {
             var man = new HealpixManager(2);
             var data = new BasinData(man) { Spheric = true };
-            data.OnInit();
+            data.Init();
 
             foreach (var aBasin in data.PixMan.Pixels)
             {

@@ -20,7 +20,7 @@ namespace Logy.Maps.ReliefMaps.Map2D
             ColorsMiddle = 0;
 
             // do not deserialize descendant classes 
-            OnInit();
+            Init();
         }
 
         /// <summary>

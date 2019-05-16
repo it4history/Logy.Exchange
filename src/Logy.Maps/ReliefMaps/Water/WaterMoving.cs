@@ -32,6 +32,8 @@ namespace Logy.Maps.ReliefMaps.Water
 
         public bool WithRelief { get; set; }
 
+        public Action<T> GetHeightsExternal { get; set; }
+
         public bool Spheric { get; set; }
 
         [IgnoreDataMember]
@@ -58,14 +60,14 @@ namespace Logy.Maps.ReliefMaps.Water
 
         [IgnoreDataMember]
         public Task RunningTask { get; set; }
-        public int Frame { get; set; } = -1;
-        public int Time { get; set; } = -1;
+        public int Frame { get; set; }
+        public int Time { get; set; }
 
         protected internal PixelsManager<T> PixMan { get; private set; }
 
-        public override void OnInit()
+        public override void Init()
         {
-            base.OnInit();
+            base.Init();
             PixMan = new PixelsManager<T>(HealpixManager, _basins);
             Water = new WaterModel(HealpixManager);
         }
@@ -82,12 +84,11 @@ namespace Logy.Maps.ReliefMaps.Water
         {
             double? previousMax = null;
             double? previousMin = null;
-            Time = 0;
             IsRunning = true;
             var w = width ?? (HealpixManager.Nside * 2);
             RunningTask = Task.Run(() =>
             {
-                for (Frame = 0; Frame < w && IsRunning; Frame++)
+                for (; Frame < w && IsRunning; Frame++)
                 {
                     SetScales();
                     int timeKoef = action(Frame);

@@ -80,7 +80,7 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
             /// 14,17: 47 41 40 45
             /// 27,31: 47 41 42 42
 
-            ChangeRotation(-HealpixManager.Nside, double.MaxValue);
+            ChangeRotation(double.MaxValue, -HealpixManager.Nside);
             Assert.AreEqual(0, basin0.Hto[0]);
 
             // Data.GradientAndHeightCrosses();
@@ -111,7 +111,7 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
                 HealpixManager
                 /*,-3000d, 3000d*/);
 
-            ChangeRotation(-HealpixManager.Nside, double.MaxValue);
+            ChangeRotation(double.MaxValue, -HealpixManager.Nside);
             Data.DoFrames(
                 delegate(int frame)
                 {

@@ -13,5 +13,8 @@ namespace Logy.Maps.Exchange
 
         [DataMember]
         public override double Y { get; set; }
+
+        [DataMember]
+        public double? SiderealDayInSeconds { get; set; }
     }
 }

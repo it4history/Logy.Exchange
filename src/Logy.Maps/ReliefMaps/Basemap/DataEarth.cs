@@ -9,7 +9,6 @@ namespace Logy.Maps.ReliefMaps.Basemap
         [IgnoreDataMember]
         public ColorsManager Colors { get; set; }
 
-        [IgnoreDataMember]
         public string Dimension { get; set; } = "m";
     }
 }

@@ -17,7 +17,7 @@ namespace Logy.Maps.ReliefMaps.World.Ocean.Metrics
         {
             ColorsMiddle = 0;
 
-            OnInit();
+            Init();
             foreach (var basin in PixMan.Pixels)
             {
                 RecalcDelta_g(basin);

@@ -4,9 +4,9 @@ using Logy.Maps.ReliefMaps.Water;
 
 namespace Logy.Maps.Exchange
 {
-    public class Algorythm<T> where T : BasinBase
+    public class Algorithm<T> where T : BasinBase
     {
-        public Algorythm(WaterMoving<T> data)
+        public Algorithm(WaterMoving<T> data)
         {
             DataAbstract = data;
         }
@@ -14,7 +14,7 @@ namespace Logy.Maps.Exchange
         /// <summary>
         /// needed for deserialization
         /// </summary>
-        protected Algorythm()
+        protected Algorithm()
         {
         }
 

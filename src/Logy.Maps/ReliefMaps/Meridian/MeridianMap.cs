@@ -20,7 +20,7 @@ namespace Logy.Maps.ReliefMaps.Meridian
         public void Water_RotationStopped()
         {
             Data = new MeridianWater<MeridianCoor>(HealpixManager); /// -5032d, 5685d); / /integration not finished on 1000, run again!
-            ChangeRotation(-HealpixManager.Nside, double.MaxValue); ///  Ellipsoid.SiderealDayInSeconds*1000);
+            ChangeRotation(double.MaxValue, -HealpixManager.Nside); ///  Ellipsoid.SiderealDayInSeconds*1000);
 
             // must be 10.69km 
             // for k5 is 10.94, k6 10.93, k7 10.9, k8 10.72

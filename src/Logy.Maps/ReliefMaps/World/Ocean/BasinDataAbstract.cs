@@ -23,9 +23,9 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
         [IgnoreDataMember]
         public Func<T, double> Visual => basin => basin.HeightOQ; //// basin.Visual * 1000;
 
-        public override void OnInit()
+        public override void Init()
         {
-            base.OnInit();
+            base.Init();
 
             ColorsMiddle = 0;
 
@@ -72,6 +72,9 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
                     var toBasin = basin.Neibors[to];
                     basin.InitialHto[to] = basin.Metric(toBasin, to, true);
                 }
+
+                // InitialHto calculated on initial geiod heights, or to store InitialHto in json?
+                GetHeightsExternal?.Invoke(basin);
             }
 
             if (WithRelief)

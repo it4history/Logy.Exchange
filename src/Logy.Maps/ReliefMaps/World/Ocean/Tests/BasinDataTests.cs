@@ -13,7 +13,7 @@ namespace Logy.Maps.ReliefMaps.World.Ocean.Tests
         public void HighBasin_31()
         {
             var data = new BasinData(new HealpixManager(2));
-            data.OnInit();
+            data.Init();
             var basin3 = data.PixMan.Pixels[31];
             foreach (var basin in data.PixMan.Pixels)
             {
@@ -41,7 +41,7 @@ namespace Logy.Maps.ReliefMaps.World.Ocean.Tests
         public void HighBasin_62_126_ellipse()
         {
             var data = new BasinDataAbstract<BasinSignedDistance>(new HealpixManager(2));
-            data.OnInit();
+            data.Init();
             data.PixMan.Pixels[45].HeightOQ = 500;
             DoFrame(data);
             

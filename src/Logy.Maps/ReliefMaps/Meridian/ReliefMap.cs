@@ -18,7 +18,7 @@ namespace Logy.Maps.ReliefMaps.Meridian
             var data = new WaterAndBottomData(HealpixManager, -3128d, 7336d);
             Data = data;
             
-            ChangeRotation(-HealpixManager.Nside, double.MaxValue);
+            ChangeRotation(double.MaxValue, -HealpixManager.Nside);
             Data.DoFrames(delegate(int frame) 
             {
                 if (Data.Colors != null)

@@ -15,7 +15,7 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
             LegendNeeded = true;
         }
 
-        protected override int K => 5;
+        protected override int K => 7;
 
         [Test]
         public void AxisChange_Slow()

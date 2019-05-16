@@ -10,15 +10,15 @@ namespace Logy.Maps.Exchange.Tests
     {
         private static readonly string Expected =
             @"{""Algorithms"":[{""Slow"":true,""Poles"":{""-1"":{""X"":0.0,""Y"":90.0}}" +
-            @",""Data"":{""WithRelief"":true,""Spheric"":false,""Frame"":-1,""Time"":-1,""K"":4,""Accuracy"":5}" +
+            @",""Data"":{""WithRelief"":true,""Spheric"":false,""Frame"":0,""Time"":0,""K"":4,""Accuracy"":5}" +
             $@",""Name"":""Logy.Maps.Exchange.ShiftAxis, Logy.Maps, Version={Global.Version}, Culture=neutral, PublicKeyToken=null"",""Diff"":0.0" +
             @"}],""Basins"":{""4"":[{""HeightOQ"":0.0,""Depth"":2371.0,""P"":0}]}}";
-
+            
         [Test]
         public void Serialize()
         {
             var data = new BasinData(new HealpixManager(4)) { WithRelief = true };
-            data.OnInit();
+            data.Init();
             var bundle = new Bundle<Basin3>(new ShiftAxis(data)
             {
                 Slow = true

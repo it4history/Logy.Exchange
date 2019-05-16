@@ -74,7 +74,7 @@ namespace Logy.Maps.ReliefMaps.Basemap
 
         protected virtual bool IsReliefBedShape => IsReliefShape;
 
-        public virtual void OnInit()
+        public virtual void Init()
         {
             Relief = new Earth2014Manager(ReliefType, Accuracy, IsReliefShape, _readAllAtStart);
             ReliefBed = new Earth2014Manager(ReliefBedType, Accuracy, IsReliefBedShape, _readAllAtStart);

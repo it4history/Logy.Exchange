@@ -78,7 +78,7 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
                                           * (Data.SamePolesAndEquatorGravitation ? 100 : 2000))
                                 : 500;
                         }
-                        ChangeRotation(frame - HealpixManager.Nside, koef);
+                        ChangeRotation(koef, frame - HealpixManager.Nside);
                     }
                     Data.Draw(Bmp, 0, null, YResolution, Scale);
                     SaveBitmap(frame);
