@@ -70,13 +70,13 @@ namespace Logy.Maps.ReliefMaps.Map2D
 
         protected override ImageFormat ImageFormat => ImageFormat.Jpeg;
 
-        private string FileName => Path.Combine(Dir, "stats.json");
+        private string StatsFileName => Path.Combine(Dir, "stats.json");
 
         public void SetData(Algorithm<T> algorithm)
         {
-            if (File.Exists(FileName))
+            if (File.Exists(StatsFileName))
             {
-                Bundle = Bundle<T>.Deserialize(File.ReadAllText(FileName));
+                Bundle = Bundle<T>.Deserialize(File.ReadAllText(StatsFileName));
                 if (K != Bundle.Algorithm.DataAbstract.K)
                     throw new ApplicationException($"map needs K {K}");
             }
@@ -90,14 +90,17 @@ namespace Logy.Maps.ReliefMaps.Map2D
             Bmp = CreateBitmap();
         }
 
+        /// <summary>
+        /// TearDown() is not called during debug
+        /// </summary>
         [TearDown]
         public void TearDown()
         {
             Data.IsRunning = false;
             Data.RunningTask.Wait();
-            Process.Start(SaveBitmap(Data.Frame));
+            Process.Start(GetFileName(Data.Colors, FrameToString(Data.Frame - 1)));
             Bundle.Algorithm.Diff = Data.RecheckOcean();
-            using (var file = File.CreateText(FileName))
+            using (var file = File.CreateText(StatsFileName))
             {
                 new JsonSerializer().Serialize(file, Bundle);
             }
@@ -118,6 +121,10 @@ namespace Logy.Maps.ReliefMaps.Map2D
             Data.DoFrames(
                 delegate(int frame)
                 {
+                    Data.Draw(Bmp, 0, null, YResolution, Scale);
+                    Circle(_currentPoleNorth, .03);
+                    SaveBitmap(frame);
+
                     if (frame == 0
                         || (algorithm.Slow && frame % slowFrames() == 0 && poleShift++ < poleShiftsCount))
                     {
@@ -128,10 +135,6 @@ namespace Logy.Maps.ReliefMaps.Map2D
                         };
                         SetPole(newPole, frame);
                     }
-
-                    Data.Draw(Bmp, 0, null, YResolution, Scale);
-                    Circle(_currentPoleNorth, .03);
-                    SaveBitmap(frame);
                     return timeKoefByFrame?.Invoke(frame) ?? 15; // 15 for k4, 80 for k5 of Meridian
                 },
                 framesCount);
@@ -162,30 +165,26 @@ namespace Logy.Maps.ReliefMaps.Map2D
             }
         }
 
-        protected string SaveBitmap(int frame)
+        protected void SaveBitmap(int frame)
         {
-            if (Data.Colors != null)
+            if (K > 3)
             {
-                if (K > 3)
-                {
-                    DrawLegend(Data, Bmp);
+                DrawLegend(Data, Bmp);
 
-                    var projection = new Equirectangular(HealpixManager, YResolution);
-                    var point = projection.Offset(Data.PixMan.Pixels[HealpixManager.RingsCount / 2]);
-                    var algorithm = Bundle.Algorithm as ShiftAxis;
-                    if (algorithm != null)
-                        foreach (var axisShiftFrame in algorithm.Poles.Keys)
-                        {
-                            var line = (int)Math.Max(0, point.X + axisShiftFrame);
+                var projection = new Equirectangular(HealpixManager, YResolution);
+                var point = projection.Offset(Data.PixMan.Pixels[HealpixManager.RingsCount / 2]);
+                var algorithm = Bundle.Algorithm as ShiftAxis;
+                if (algorithm != null)
+                    foreach (var axisShiftFrame in algorithm.Poles.Keys)
+                    {
+                        var line = (int)Math.Max(0, point.X + axisShiftFrame);
 
-                            if (line < Bmp.Width)
-                                for (var y = -10; y < 0; y++)
-                                    Bmp.SetPixel(line, (YResolution * Scale * HealpixManager.Nside) + y, Color.Black);
-                        }
-                }
-                return SaveBitmap(Bmp, Data.Colors, Data.Accuracy, $"{frame:00000}_");
+                        if (line < Bmp.Width)
+                            for (var y = -10; y < 0; y++)
+                                Bmp.SetPixel(line, (YResolution * Scale * HealpixManager.Nside) + y, Color.Black);
+                    }
             }
-            return null;
+            SaveBitmap(Bmp, Data.Colors, FrameToString(frame));
         }
 
         protected void ChangeRotation(double koef = 10000, int? frame = null)
@@ -215,6 +214,11 @@ namespace Logy.Maps.ReliefMaps.Map2D
                         });
                 }
             }
+        }
+
+        private static string FrameToString(int frame)
+        {
+            return $"{frame:00000}";
         }
 
         private void SetPole(PoleNorth newPole, int? frame = null)

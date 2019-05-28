@@ -5,7 +5,7 @@ using NUnit.Framework;
 namespace Logy.Maps.ReliefMaps.World.Ocean
 {
     /// <summary>
-    /// http://hist.tk/hw/Карта_Земли_после_сдвига_полюса_на_17_градусов
+    /// http://hist.tk/ory/Карта_Земли_после_сдвига_полюса_на_17_градусов
     /// </summary>
     [TestFixture]
     public class ReliefAxis17 : ReliefMap
@@ -15,16 +15,18 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
             LegendNeeded = true;
         }
 
-        protected override int K => 7;
+        protected override int K => 5;
 
         [Test]
         public void AxisChange_Slow()
         {
-            SetData(new ShiftAxis(new BasinData(HealpixManager)
+            var data = new BasinData(HealpixManager)
             {
                 WithRelief = true,
                 IntegrationEndless = true,
-            }) { Slow = true });
+            };
+            data.Init();
+            SetData(new ShiftAxis(data) { Slow = true });
 
             ShiftAxis(
                 2000,

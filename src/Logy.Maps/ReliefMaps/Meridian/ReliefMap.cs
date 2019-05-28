@@ -5,7 +5,7 @@ using NUnit.Framework;
 namespace Logy.Maps.ReliefMaps.Meridian
 {
     /// <summary>
-    /// http://hist.tk/hw/Рельеф_Земли_-_усредненный_меридиан
+    /// http://hist.tk/ory/Рельеф_Земли_-_усредненный_меридиан
     /// </summary>
     [TestFixture]
     public class ReliefMap : MeridianMap

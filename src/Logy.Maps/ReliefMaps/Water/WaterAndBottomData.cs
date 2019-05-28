@@ -28,12 +28,12 @@ namespace Logy.Maps.ReliefMaps.Water
 
                 if (waterHeightAll > 0)
                 {
-                    basin.HeightOQ = 0;
+                    basin.Hoq = 0;
                     basin.Depth = waterHeightAll / pixelsInRing;
                 }
                 else
                 {
-                    basin.HeightOQ = surfaceHeightAll / pixelsInRing;
+                    basin.Hoq = surfaceHeightAll / pixelsInRing;
                     basin.Depth = -surfaceHeightAll / pixelsInRing;
                 }
             }

@@ -7,7 +7,7 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
             return
                 -S_q.SignedDistanceTo(toBasin.Q3) /// bad for BasinDataTests.HighBasin_31_sphere 
                 /// S_q.IntersectionWith(toBasin.RadiusRay).DistanceTo(toBasin.Q3)
-                - InitialHto[to]; /// needed for BasinDataTests.HighBasin_31 movedBasins
+                - HtoBase[to]; /// needed for BasinDataTests.HighBasin_31 movedBasins
         }
     }
 }

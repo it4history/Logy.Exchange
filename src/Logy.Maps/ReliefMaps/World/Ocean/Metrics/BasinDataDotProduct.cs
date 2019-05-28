@@ -41,7 +41,7 @@ namespace Logy.Maps.ReliefMaps.World.Ocean.Metrics
 
                     basin.MeanEdges[(int)to] = man.Neibors.MeanBoundary(basin, to);
 
-                    basin.InitialHto[(int)to] = basin.Metric(toBasin, (int)to);
+                    basin.HtoBase[(int)to] = basin.Metric(toBasin, (int)to);
 
                     // !var otherQprojection = toBasin.Q3.ProjectOn(surface);//TraverseCalm);
                     // var dx = toBasin.Qb.X * Math.Sin(basin.Lambda.Value - toBasin.Lambda.Value);
@@ -82,7 +82,7 @@ namespace Logy.Maps.ReliefMaps.World.Ocean.Metrics
                 {
                     int waterHeight;
                     var heightOQ = GetHeights(basin, (int)basin.RadiusOfEllipse, out waterHeight);
-                    basin.HeightOQ = heightOQ;
+                    basin.Hoq = heightOQ;
                     if (waterHeight > 0)
                     {
                         basin.Depth = waterHeight - heightOQ;
@@ -142,12 +142,12 @@ namespace Logy.Maps.ReliefMaps.World.Ocean.Metrics
                     if (Math.Abs(moved) > 0)
                     {
                     }
-                    if (basin.HeightOQ > 1)
+                    if (basin.Hoq > 1)
                     {
                     }
                 }
             }
-            return basin.HasWater() ? basin.HeightOQ : (double?)null;
+            return basin.HasWater() ? basin.Hoq : (double?)null;
         }
 
         internal void RecalcDelta_g(Basin3 basin)

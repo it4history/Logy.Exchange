@@ -8,6 +8,7 @@ namespace Logy.Maps.ReliefMaps.Basemap
 {
     public abstract class BasinBase : HealCoor
     {
+        private double _deltaGMeridian;
         public static Point2D O { get; } = new Point2D(0, 0);
 
         #region static angles
@@ -47,10 +48,10 @@ namespace Logy.Maps.ReliefMaps.Basemap
         #endregion
 
         /// <summary>
-        /// http://hist.tk/hw/Сферический_датум#радиус
+        /// http://hist.tk/ory/Сферический_датум#радиус
         /// r
         /// </summary>
-        public double Radius => HeightOQ + RadiusOfEllipse;
+        public double Radius => Hoq + RadiusOfEllipse;
 
         /// <summary>
         /// geoid surface, may be changed
@@ -74,7 +75,11 @@ namespace Logy.Maps.ReliefMaps.Basemap
         /// <summary>
         /// angle, directed to equator of Oz
         /// </summary>
-        public double Delta_g_meridian { get; set; }
+        public virtual double Delta_g_meridian
+        {
+            get { return _deltaGMeridian; }
+            set { _deltaGMeridian = value; }
+        }
 
         /// <summary>
         /// key - NeighborVert
@@ -93,7 +98,7 @@ namespace Logy.Maps.ReliefMaps.Basemap
         /// may include geoidUndulation
         /// </summary>
         [DataMember]
-        public virtual double HeightOQ
+        public virtual double Hoq
         {
             get;
             /* may influence on many things! like Basin3.S_q */
@@ -112,7 +117,7 @@ namespace Logy.Maps.ReliefMaps.Basemap
         public double? Depth { get; set; }
 
         // h_{water}
-        public double WaterHeight => HeightOQ + Depth.Value;
+        public double WaterHeight => Hoq + Depth.Value;
 
         public double Volume
         {
@@ -145,7 +150,7 @@ namespace Logy.Maps.ReliefMaps.Basemap
         {
             lock (this)
             {
-                HeightOQ += deltaH;
+                Hoq += deltaH;
                 Volumes[direction] = true;
             }
         }

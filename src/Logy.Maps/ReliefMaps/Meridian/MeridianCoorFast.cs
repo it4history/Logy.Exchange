@@ -5,7 +5,7 @@ using Logy.Maps.ReliefMaps.Basemap;
 namespace Logy.Maps.ReliefMaps.Meridian
 {
     /// <summary>
-    /// trying to make faster http://hist.tk/hw/Gradient_and_radius_crosses#lQn
+    /// trying to make faster http://hist.tk/ory/Gradient_and_radius_crosses#lQn
     /// </summary>
     public class MeridianCoorFast : MeridianCoor
     {

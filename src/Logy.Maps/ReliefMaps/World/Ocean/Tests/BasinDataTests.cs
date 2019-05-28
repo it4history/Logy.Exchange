@@ -21,7 +21,7 @@ namespace Logy.Maps.ReliefMaps.World.Ocean.Tests
                     Assert.IsFalse(basin.Volumes[i]);
             }
 
-            basin3.HeightOQ = 500;
+            basin3.Hoq = 500;
 
             // data.Frame();
             DoFrame(data);
@@ -32,7 +32,7 @@ namespace Logy.Maps.ReliefMaps.World.Ocean.Tests
             var movedBasins = 0;
             foreach (var basin in data.PixMan.Pixels)
             {
-                if (basin.HeightOQ > 0) movedBasins++;
+                if (basin.Hoq > 0) movedBasins++;
             }
             Assert.Less(movedBasins, 13);
         }
@@ -42,27 +42,27 @@ namespace Logy.Maps.ReliefMaps.World.Ocean.Tests
         {
             var data = new BasinDataAbstract<BasinSignedDistance>(new HealpixManager(2));
             data.Init();
-            data.PixMan.Pixels[45].HeightOQ = 500;
+            data.PixMan.Pixels[45].Hoq = 500;
             DoFrame(data);
             
             // Assert.AreEqual(99, data.PixMan.Pixels[33].hOQ, 1);
             Assert.AreEqual(
                 99, //// 99 for SignedDistance, 50 for MeanEdge
-                data.PixMan.Pixels[62].HeightOQ, 
+                data.PixMan.Pixels[62].Hoq, 
                 1);
             Assert.AreEqual(
                 203, //// 203 for SignedDistance, 298 for MeanEdge
-                data.PixMan.Pixels[45].HeightOQ, 
+                data.PixMan.Pixels[45].Hoq, 
                 1);
 
             // Assert.AreEqual(99, data.PixMan.Pixels[77].hOQ, 1);
             DoFrame(data);
 
             data = new BasinDataAbstract<BasinSignedDistance>(new HealpixManager(2));
-            data.PixMan.Pixels[126].HeightOQ = 500;
+            data.PixMan.Pixels[126].Hoq = 500;
             DoFrame(data);
-            Assert.AreEqual(50, data.PixMan.Pixels[110].HeightOQ, 1);
-            Assert.AreEqual(99, data.PixMan.Pixels[142].HeightOQ, 1); //// 99 for SignedDistance, 50 for MeanEdge
+            Assert.AreEqual(50, data.PixMan.Pixels[110].Hoq, 1);
+            Assert.AreEqual(99, data.PixMan.Pixels[142].Hoq, 1); //// 99 for SignedDistance, 50 for MeanEdge
         }
 
         internal static void DoFrame<T>(WaterMoving<T> data) where T : BasinBase
@@ -71,8 +71,8 @@ namespace Logy.Maps.ReliefMaps.World.Ocean.Tests
             data.DoFrame();
             foreach (var basin in data.PixMan.Pixels)
             {
-                if (basin.HeightOQ != 0)
-                    Console.WriteLine("{0} {1:#.#}", basin.P, basin.HeightOQ);
+                if (basin.Hoq != 0)
+                    Console.WriteLine("{0} {1:#.#}", basin.P, basin.Hoq);
             }
         }
     }

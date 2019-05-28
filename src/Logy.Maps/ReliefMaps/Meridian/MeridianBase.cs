@@ -10,7 +10,7 @@ namespace Logy.Maps.ReliefMaps.Meridian
     {
         /// <summary>
         /// top face intersects axis Y in point Ky with angle KyQQy
-        /// tan of Theta-delta_g (angle KyQQy from http://hist.tk/hw/file:Gradient_spheric.png)
+        /// tan of Theta-delta_g (angle KyQQy from http://hist.tk/ory/file:Gradient_spheric.png)
         /// 
         /// fortunately KyQQy == Pi/2 on equator
         /// </summary>
@@ -112,7 +112,7 @@ namespace Logy.Maps.ReliefMaps.Meridian
         #region geocentric
 
         /// <summary>
-        /// http://hist.tk/hw/—читать_градиент_спокойстви€#далее
+        /// http://hist.tk/ory/—читать_градиент_спокойстви€#далее
         /// </summary>
         public double WaveHeight(Point2D n, double deltage)
         {

@@ -10,7 +10,7 @@ namespace Logy.Maps.Exchange
         {
         }
 
-        public ShiftAxis(BasinData data) : base(data)
+        public ShiftAxis(BasinData dataInited) : base(dataInited)
         {
         }
 

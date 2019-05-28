@@ -15,7 +15,7 @@ namespace Logy.Maps.Exchange
         {
         }
 
-        public Bundle(WaterMoving<T> data) : this(new Algorithm<T>(data))
+        public Bundle(WaterMoving<T> dataInited) : this(new Algorithm<T>(dataInited))
         {
         }
 
@@ -27,7 +27,7 @@ namespace Logy.Maps.Exchange
         }
 
         /// <summary>
-        /// not List because of Deserialization
+        /// not List because of deserialization
         /// </summary>
         public ArrayList Algorithms { get; } = new ArrayList();
 
@@ -53,9 +53,13 @@ namespace Logy.Maps.Exchange
             data.GetHeightsExternal =
                 (basin) =>
                 {
-                    var externalBasin = bundle.Basins[data.K][basin.P];
-                    basin.HeightOQ = externalBasin.HeightOQ;
-                    basin.Depth = externalBasin.Depth;
+                    var bundleBasin = bundle.Basins[data.K];
+                    if (basin.P < bundleBasin.Length)
+                    {
+                        var externalBasin = bundleBasin[basin.P];
+                        basin.Hoq = externalBasin.Hoq;
+                        basin.Depth = externalBasin.Depth;
+                    }
                 };
             bundle.Algorithm.DataAbstract.Init();
             return bundle;

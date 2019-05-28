@@ -46,7 +46,7 @@ namespace Logy.Maps.ReliefMaps.Meridian.Data
             var southBasin = GetSouthBasin(basin);
 
             // return basin.Vartheta;// KQQaxisTan;
-            /* диапазон 1,8м для k8, 1м для k9 http://hist.tk/hw/file:Deltah_Q-h_Q_s.png
+            /* диапазон 1,8м для k8, 1м для k9 http://hist.tk/ory/file:Deltah_Q-h_Q_s.png
             var hQ = northBasin.Intersect(basin);
             return basin.Altitude = basin.Hto[0] - hQ;//*/
 
@@ -64,7 +64,7 @@ namespace Logy.Maps.ReliefMaps.Meridian.Data
             Water.Move(basin, southBasin, NeighborVert.South);
 
             // return (basin.Vartheta < 0 ? Math.PI - basin.Delta_g_meridian : basin.Delta_g_meridian) * 1000;
-            return basin.HeightOQ;
+            return basin.Hoq;
 
             /*if (northBasin != null)
             {

@@ -21,7 +21,7 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
         public override ReliefType ReliefBedType => ReliefType.Tbi;
 
         [IgnoreDataMember]
-        public Func<T, double> Visual => basin => basin.HeightOQ; //// basin.Visual * 1000;
+        public Func<T, double> Visual => basin => basin.Hoq; //// basin.Visual * 1000;
 
         public override void Init()
         {
@@ -35,7 +35,7 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
                 {
                     int waterHeight;
                     var hOQ = GetHeights(basin, (int)basin.RadiusOfEllipse, out waterHeight);
-                    basin.HeightOQ = hOQ;
+                    basin.Hoq = hOQ;
                     if (waterHeight > 0)
                     {
                         basin.Depth = waterHeight - hOQ;
@@ -52,7 +52,7 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
                     {
                         var diff = Earth2014Manager.Radius2Add - basin.RadiusOfEllipse;
                         basin.Depth += diff;
-                        basin.HeightOQ -= diff;
+                        basin.Hoq -= diff;
                     }
                     basin.InitROfEllipse(HealpixManager, Earth2014Manager.Radius2Add);
                 }
@@ -70,10 +70,10 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
                 for (int to = 0; to < 4; to++)
                 {
                     var toBasin = basin.Neibors[to];
-                    basin.InitialHto[to] = basin.Metric(toBasin, to, true);
+                    basin.HtoBase[to] = basin.Metric(toBasin, to, true);
                 }
 
-                // InitialHto calculated on initial geiod heights, or to store InitialHto in json?
+                // HtoBase calculated on initial geiod heights, or to store HtoBase in json?
                 GetHeightsExternal?.Invoke(basin);
             }
 

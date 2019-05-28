@@ -6,7 +6,7 @@ namespace Logy.Maps.ReliefMaps.Meridian
 {
     /// <summary>
     /// http://logy.gq/lw/WOS_Solution#start
-    /// http://hist.tk/hw/%D0%9C%D0%B5%D1%80%D0%B8%D0%B4%D0%B8%D0%B0%D0%BD%D0%BD%D0%B0%D1%8F_%D0%BF%D1%80%D0%BE%D0%B5%D0%BA%D1%86%D0%B8%D1%8F_-_%D0%B2%D0%BE%D0%B4%D0%B0
+    /// http://hist.tk/ory/%D0%9C%D0%B5%D1%80%D0%B8%D0%B4%D0%B8%D0%B0%D0%BD%D0%BD%D0%B0%D1%8F_%D0%BF%D1%80%D0%BE%D0%B5%D0%BA%D1%86%D0%B8%D1%8F_-_%D0%B2%D0%BE%D0%B4%D0%B0
     /// </summary>
     [TestFixture]
     public class MeridianMap : RotationStopMap<MeridianCoor>
@@ -14,7 +14,7 @@ namespace Logy.Maps.ReliefMaps.Meridian
         protected override int K => 7;
 
         /// <summary>
-        /// http://hist.tk/hw/Меридианная_проекция_-_вода#третий_пример
+        /// http://hist.tk/ory/Меридианная_проекция_-_вода#третий_пример
         /// </summary>
         [Test]
         public void Water_RotationStopped()
@@ -40,7 +40,7 @@ namespace Logy.Maps.ReliefMaps.Meridian
         }
 
         /// <summary>
-        /// http://hist.tk/hw/Меридианная_проекция_-_вода#второй_пример
+        /// http://hist.tk/ory/Меридианная_проекция_-_вода#второй_пример
         /// slow, near 30 minutes
         /// </summary>
         [Test]
@@ -68,10 +68,10 @@ namespace Logy.Maps.ReliefMaps.Meridian
         {
             var h = 500d;
             Data = new MeridianWater<MeridianCoor>(HealpixManager, -h, h);
-            Data.PixMan.Pixels[(HealpixManager.RingsCount / 4) + 1].HeightOQ = -h;
-            Data.PixMan.Pixels[(HealpixManager.RingsCount / 4) + 2].HeightOQ = -h;
-            Data.PixMan.Pixels[(HealpixManager.RingsCount * 3 / 4) + 1].HeightOQ = h;
-            Data.PixMan.Pixels[(HealpixManager.RingsCount * 3 / 4) + 2].HeightOQ = h;
+            Data.PixMan.Pixels[(HealpixManager.RingsCount / 4) + 1].Hoq = -h;
+            Data.PixMan.Pixels[(HealpixManager.RingsCount / 4) + 2].Hoq = -h;
+            Data.PixMan.Pixels[(HealpixManager.RingsCount * 3 / 4) + 1].Hoq = h;
+            Data.PixMan.Pixels[(HealpixManager.RingsCount * 3 / 4) + 2].Hoq = h;
             Data.ColorsMiddle = 50;
             Data.DoFrames(delegate(int frame)
             {
@@ -81,7 +81,7 @@ namespace Logy.Maps.ReliefMaps.Meridian
         }
 
         /// <summary>
-        /// http://hist.tk/hw/file:Gravity_sphere_hor.png
+        /// http://hist.tk/ory/file:Gravity_sphere_hor.png
         /// </summary>
         [Test]
         public void Gravity_sphere_hor()
@@ -92,7 +92,7 @@ namespace Logy.Maps.ReliefMaps.Meridian
         }
 
         /// <summary>
-        /// http://hist.tk/hw/file:CentrifugalAcceleration_sphere_hor.png
+        /// http://hist.tk/ory/file:CentrifugalAcceleration_sphere_hor.png
         /// </summary>
         [Test]
         public void CentrifugalAcceleration_sphere_hor()

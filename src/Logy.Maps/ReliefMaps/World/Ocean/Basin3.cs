@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Runtime.Serialization;
 using Logy.Maps.Geometry;
 using Logy.Maps.Projections.Healpix;
 using Logy.Maps.ReliefMaps.Basemap;
@@ -24,21 +25,22 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
         private Point3D _q3;
 
         private Plane _s_q;
+        private double _deltaGTraverse;
 
         public static Point3D O3 { get; } = new Point3D(0, 0, 0);
         public static UnitVector3D Oz { get; } = new UnitVector3D(0, 0, 1);
 
         public static Point3D OzEnd => Oz.ToPoint3D();
 
-        public override double HeightOQ
+        public override double Hoq
         {
             get
             {
-                return base.HeightOQ;
+                return base.Hoq;
             }
             internal set
             {
-                base.HeightOQ = value;
+                base.Hoq = value;
                 _actualQ3 = false;
             }
         }
@@ -140,14 +142,49 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
         public Matrix<double> Matrix { get; set; }
 
         public Ray3D[] MeanEdges { get; set; }
-        public double[] InitialHto { get; set; }
+
+        /// <summary>
+        /// was named InitialHto
+        /// </summary>
+        //// [DataMember]
+        public double[] HtoBase { get; set; }
 
         /// <summary>
         /// angle, directed to East
         /// </summary>
-        public double Delta_g_traverse { get; set; }
+        public double Delta_g_traverse
+        {
+            get
+            {
+                return _deltaGTraverse;
+            }
+            set
+            {
+                _deltaGTraverse = value;
+                _normal = null;
+            }
+        }
+        public override double Delta_g_meridian
+        {
+            get
+            {
+                return base.Delta_g_meridian;
+            }
+            set
+            {
+                base.Delta_g_meridian = value;
+                _normal = null;
+            }
+        }
 
+        /// <summary>
+        /// set _normal = null;
+        /// </summary>
         public double Delta_s_meridian { get; set; }
+
+        /// <summary>
+        /// set _normal = null;
+        /// </summary>
         public double Delta_s_traverse { get; set; }
 
         #region reserved
@@ -156,14 +193,14 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
         /// <summary>
         /// in Rotation Axis plane
         /// as a rule from north to south
-        /// http://hist.tk/hw/Радиус_Земли#меридианный
+        /// http://hist.tk/ory/Радиус_Земли#меридианный
         /// </summary>
         public double Am { get; set; }
 
         /// <summary>
         /// perpendicular to Rotation Axis plane that holds ν prime vertical radius of curvature
         /// as a rule from west to east
-        /// http://hist.tk/hw/Радиус_Земли#Transverse
+        /// http://hist.tk/ory/Радиус_Земли#Transverse
         /// </summary>
         public double Atrans { get; set; }
         #endregion
@@ -175,7 +212,7 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
             Volumes = new bool[4];
             Froms = new int[4];
             MeanEdges = new Ray3D[4];
-            InitialHto = new double[4];
+            HtoBase = new double[4];
 
             // todo why angle with opposite sign?
             var rotation = Matrix3D.RotationAroundYAxis(new Angle(-Phi, AngleUnit.Radians))
@@ -213,7 +250,6 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
         {
             var aTraverse = base.RecalculateDelta_g(false);
             Delta_g_traverse = Math.Atan(aTraverse / GVpure);
-            _normal = null;
             return 0;
         }
 
@@ -221,7 +257,7 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
         public virtual double Metric(Basin3 toBasin, int to, bool initial = false)
         {
             return (initial ? S_geiod : S_q).IntersectionWith(MeanEdges[to]).DistanceTo(O3) /*MeanEdge metric*/
-                   - InitialHto[to]; /// needed for BasinDataTests.HighBasin_31
+                   - HtoBase[to]; /// needed for BasinDataTests.HighBasin_31
         }
 
         /// <summary>

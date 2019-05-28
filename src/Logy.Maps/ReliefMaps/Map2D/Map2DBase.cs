@@ -199,26 +199,30 @@ namespace Logy.Maps.ReliefMaps.Map2D
             return g;
         }
 
-        protected string SaveBitmap(Bitmap bmp, ColorsManager colors, int accuracy, string frame = null)
+        protected string GetFileName(ColorsManager colors, string frame = null)
         {
-            if (!Directory.Exists(Dir))
-                Directory.CreateDirectory(Dir);
             var filename = string.Format(
-                "{1}{0}{5}min{4}{3}.{2}",
+                "{1}{0}{4}{3}.{2}",
                 frame,
                 colors.IsGrey ? "grey" : null,
                 ImageFormat.ToString().ToLower(),
                 LegendToDraw ? null : "_nolegend",
-                Projection == Projection.Equirectangular ? "_noHEALPix" : null,
-                accuracy);
-            var path = Path.Combine(Dir, filename);
-            bmp.Save(path, ImageFormat);
-            return path;
+                Projection == Projection.Equirectangular ? "_noHEALPix" : null);
+            return Path.Combine(Dir, filename);
+        }
+
+        protected string SaveBitmap(Bitmap bmp, ColorsManager colors, string frame = null)
+        {
+            if (!Directory.Exists(Dir))
+                Directory.CreateDirectory(Dir);
+            var fileName = GetFileName(colors, frame);
+            bmp.Save(fileName, ImageFormat);
+            return fileName;
         }
 
         private void DrawFrames(Point2[] pixels, DataForMap2D data)
         {
-            string bitmap = null;
+            string fileName = null;
             for (var frame = 0; frame < Frames; frame++)
             {
                 var bmp = CreateBitmap();
@@ -227,9 +231,9 @@ namespace Logy.Maps.ReliefMaps.Map2D
 
                 DrawLegend(data, bmp);
 
-                bitmap = SaveBitmap(bmp, data.Colors, data.Accuracy, frame == 0 ? null : (frame.ToString("000") + "_"));
+                fileName = SaveBitmap(bmp, data.Colors, frame == 0 ? null : $"{frame:000}_{data.Accuracy}min");
             }
-            Process.Start(bitmap);
+            Process.Start(fileName);
         }
     }
 }

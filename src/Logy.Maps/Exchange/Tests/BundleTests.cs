@@ -9,10 +9,10 @@ namespace Logy.Maps.Exchange.Tests
     public class BundleTests
     {
         private static readonly string Expected =
-            @"{""Algorithms"":[{""Slow"":true,""Poles"":{""-1"":{""X"":0.0,""Y"":90.0}}" +
-            @",""Data"":{""WithRelief"":true,""Spheric"":false,""Frame"":0,""Time"":0,""K"":4,""Accuracy"":5}" +
+            @"{""Algorithms"":[{""Slow"":true,""Poles"":{""-1"":{""X"":0.0,""Y"":90.0,""SiderealDayInSeconds"":null}}" +
+            @",""Data"":{""WithRelief"":true,""Spheric"":false,""Frame"":0,""Time"":0,""TimeStep"":1,""Max"":null,""Min"":null,""K"":4,""Accuracy"":5,""Dimension"":""m""}" +
             $@",""Name"":""Logy.Maps.Exchange.ShiftAxis, Logy.Maps, Version={Global.Version}, Culture=neutral, PublicKeyToken=null"",""Diff"":0.0" +
-            @"}],""Basins"":{""4"":[{""HeightOQ"":0.0,""Depth"":2371.0,""P"":0}]}}";
+            @"}],""Basins"":{""4"":[{""Hoq"":0.0,""Depth"":2371.0,""P"":0}]}}";
             
         [Test]
         public void Serialize()

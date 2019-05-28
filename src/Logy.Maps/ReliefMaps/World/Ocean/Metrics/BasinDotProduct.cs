@@ -33,7 +33,7 @@ namespace Logy.Maps.ReliefMaps.World.Ocean.Metrics
         public UnitVector3D NormalCalm { get; set; }
 
         /// <summary>
-        /// tan of Delta_g_traverse (angle KyQQy from http://hist.tk/hw/file:Gradient_traverse.png)
+        /// tan of Delta_g_traverse (angle KyQQy from http://hist.tk/ory/file:Gradient_traverse.png)
         /// </summary>
         public double KQQaxisTanCotan_traverse { get; set; }
 

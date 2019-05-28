@@ -32,6 +32,7 @@ namespace Logy.Maps.ReliefMaps.Water
 
         public bool WithRelief { get; set; }
 
+        [IgnoreDataMember]
         public Action<T> GetHeightsExternal { get; set; }
 
         public bool Spheric { get; set; }
@@ -62,6 +63,9 @@ namespace Logy.Maps.ReliefMaps.Water
         public Task RunningTask { get; set; }
         public int Frame { get; set; }
         public int Time { get; set; }
+        public int TimeStep { get; set; } = 1;
+        public double? Max { get; set; }
+        public double? Min { get; set; }
 
         protected internal PixelsManager<T> PixMan { get; private set; }
 
@@ -75,6 +79,8 @@ namespace Logy.Maps.ReliefMaps.Water
         public void DoFrame(bool isDynamicScale = true)
         {
             GradientAndHeightCrosses();
+            
+            // todo calculate Max..Min only for time that will be drawn
             MoveAllWater(isDynamicScale);
         }
 
@@ -82,30 +88,27 @@ namespace Logy.Maps.ReliefMaps.Water
         /// <param name="width">if (width == 1) then 2 frames: -1 and 0</param>
         public void DoFrames(Func<int, int> action, int? width = null)
         {
-            double? previousMax = null;
-            double? previousMin = null;
             IsRunning = true;
             var w = width ?? (HealpixManager.Nside * 2);
             RunningTask = Task.Run(() =>
             {
                 for (; Frame < w && IsRunning; Frame++)
                 {
-                    SetScales();
-                    int timeKoef = action(Frame);
-
                     // viscosity = i < 0 ? .6 : .4;// .6 - .2 * i / (2 * w);
-                    for (var step = 0; step < timeKoef; step++)
+                    for (var step = 0; step < TimeStep; step++)
                     {
                         DoFrame(IsDynamicScale);
                     }
-                    Time += timeKoef;
+                    Time += TimeStep;
+                    SetScales();
+                    TimeStep = action(Frame);
 
                     if (IsDynamicScale)
                     {
-                        if (previousMin.HasValue && previousMax.HasValue)
-                            if (Colors.Min < previousMin || Colors.Max > previousMax)
+                        if (Min.HasValue && Max.HasValue)
+                            if (Colors.Min < Min || Colors.Max > Max)
                             {
-                                if (Colors.Max < previousMax)
+                                if (Colors.Max < Max)
                                 {
                                     Console.WriteLine("wag detected");
                                 }
@@ -120,8 +123,8 @@ namespace Logy.Maps.ReliefMaps.Water
                                         break;
                                     }
                             }
-                        previousMax = Colors.Max;
-                        previousMin = Colors.Min;
+                        Max = Colors.Max;
+                        Min = Colors.Min;
                     }
                 }
             });
@@ -172,7 +175,7 @@ namespace Logy.Maps.ReliefMaps.Water
 
         /// <summary>
         /// пересечения градиента с радиусами (высотами тазиков)
-        /// http://hist.tk/hw/Gradient_and_height_crosses
+        /// http://hist.tk/ory/Gradient_and_height_crosses
         /// </summary>
         internal virtual void GradientAndHeightCrosses()
         {
@@ -204,7 +207,7 @@ namespace Logy.Maps.ReliefMaps.Water
 
         private void SetScales()
         {
-            Colors?.SetScales(
+            Colors.SetScales(
                 new SortedList<int, Color3>
                 {
                     { 0, ColorsManager.WaterBorder },

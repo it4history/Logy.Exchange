@@ -90,7 +90,7 @@ namespace Logy.Maps.ReliefMaps.Meridian.Data
             //  is 2m for k=8; 1m for k=9
             var diffMeters = Math.Abs(R_vartheta - northBasin.R_vartheta);
             //return diffMeters;
-            //equiRadius may be calculated by http://hist.tk/hw/Числа_Лава or by http://hist.tk/hw/Коэффициент_упругости
+            //equiRadius may be calculated by http://hist.tk/ory/Числа_Лава or by http://hist.tk/ory/Коэффициент_упругости
             //var diff = equiRadius - r;
             return (EllipsoidAcceleration.GOnPoles - gPureToCenter - aFromCenter)*r;
             return Ellipsoid.BigRadius * EllipsoidAcceleration.GWithAOnEquator

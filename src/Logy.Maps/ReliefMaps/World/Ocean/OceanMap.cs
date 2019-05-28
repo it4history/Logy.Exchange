@@ -17,16 +17,16 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
 
             var h = 500d;
             var p = HealpixManager.GetP(HealpixManager.Nside + 5, HealpixManager.Nside * 2);
-            var basin3 = Data.PixMan.Pixels[p];
-            basin3.HeightOQ = h;
+            var basin = Data.PixMan.Pixels[p];
+            basin.Hoq = h;
             Data.PixMan.Pixels[HealpixManager
-                .GetP(HealpixManager.Nside, (int)(HealpixManager.Nside * 2.5))].HeightOQ = h;
+                .GetP(HealpixManager.Nside, (int)(HealpixManager.Nside * 2.5))].Hoq = h;
 
             Data.DoFrames(
                 delegate(int frame)
                 {
                     Data.Draw(Bmp, 0, null, YResolution, Scale);
-                    Circle(basin3);
+                    Circle(basin);
                     SaveBitmap(frame);
                     return 1; /// 240 for k8, 150 for k7, 100 for k6
                 },
@@ -128,8 +128,8 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
             {
                 for (int to = 0; to < 4; to++)
                 {
-                    basin.InitialHto[to] = 0;
-                    basin.InitialHto[to] = basin.Metric(null, to);
+                    basin.HtoBase[to] = 0;
+                    basin.HtoBase[to] = basin.Metric(null, to);
                 }
             }
         }

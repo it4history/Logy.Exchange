@@ -69,7 +69,7 @@ namespace Logy.Maps.ReliefMaps.Water.Tests
             if (excite)
             {
                 // data.Water.Move()
-                basin.HeightOQ = HeightExcitement;
+                basin.Hoq = HeightExcitement;
                 data.GradientAndHeightCrosses();
             }
             switch (bottomForm)
@@ -103,7 +103,7 @@ namespace Logy.Maps.ReliefMaps.Water.Tests
                     break;
                 case BottomForm.ReliefLikeWater:
                     foreach (var t in pix)
-                        t.Depth = (int)-t.HeightOQ;
+                        t.Depth = (int)-t.Hoq;
                     break;
             }
             return data;
@@ -114,7 +114,7 @@ namespace Logy.Maps.ReliefMaps.Water.Tests
         {
             var water = GetData().Water;
             var hQ = northBasin.Intersect(basin);
-            /* диапазон 1,8м для k8, 1м для k9 http://hist.tk/hw/file:Deltah_Q-h_Q_s.png */
+            /* диапазон 1,8м для k8, 1м для k9 http://hist.tk/ory/file:Deltah_Q-h_Q_s.png */
             Assert.Less(Math.Abs(basin.Hto[0] - hQ), water.Threshhold);
             Assert.AreEqual(0, water.Move(basin, northBasin, NeighborVert.North));
         }
@@ -128,13 +128,13 @@ namespace Logy.Maps.ReliefMaps.Water.Tests
             Assert.AreEqual(-.16, data.Water.Move(basin, northBasin, NeighborVert.North), .001);
             data.GradientAndHeightCrosses();
             Assert.AreEqual(0, data.Water.Move(basin, northBasin, NeighborVert.North));
-            Assert.AreEqual(1.36, basin.HeightOQ, .01);
-            Assert.AreEqual(1.28, northBasin.HeightOQ, .01);
+            Assert.AreEqual(1.36, basin.Hoq, .01);
+            Assert.AreEqual(1.28, northBasin.Hoq, .01);
 
             // masses сonservation law
             Assert.AreEqual(
                 HeightExcitement,
-                basin.HeightOQ + (northBasin.HeightOQ * (northBasin.RingArea / basin.RingArea)),
+                basin.Hoq + (northBasin.Hoq * (northBasin.RingArea / basin.RingArea)),
                 .000001);
         }
 
@@ -152,13 +152,13 @@ namespace Logy.Maps.ReliefMaps.Water.Tests
             Assert.AreEqual(.138, data.Water.Move(basin, southBasin, NeighborVert.South), .001);
             data.GradientAndHeightCrosses();
             Assert.AreEqual(0, data.Water.Move(basin, southBasin, NeighborVert.South));
-            Assert.AreEqual(.74, basin.HeightOQ, .01);
-            Assert.AreEqual(.64, northBasin.HeightOQ, .01);
-            Assert.AreEqual(.62, southBasin.HeightOQ, .01);
+            Assert.AreEqual(.74, basin.Hoq, .01);
+            Assert.AreEqual(.64, northBasin.Hoq, .01);
+            Assert.AreEqual(.62, southBasin.Hoq, .01);
 
             // masses сonservation law
-            var actual = basin.HeightOQ + (northBasin.HeightOQ * northBasin.RingArea / basin.RingArea)
-                         + (southBasin.HeightOQ * southBasin.RingArea / basin.RingArea);
+            var actual = basin.Hoq + (northBasin.Hoq * northBasin.RingArea / basin.RingArea)
+                         + (southBasin.Hoq * southBasin.RingArea / basin.RingArea);
             Assert.AreEqual(HeightExcitement, actual, .000001);
         }
 
@@ -209,7 +209,7 @@ namespace Logy.Maps.ReliefMaps.Water.Tests
                _./ \._
                ̃˜˜˜˜˜˜˜ */
             data.DoFrame(); /// data.MoveAllWater(); was enough
-            Assert.AreEqual(.8, basin.HeightOQ, .01); /*per .8 to north and south*/
+            Assert.AreEqual(.8, basin.Hoq, .01); /*per .8 to north and south*/
             Assert.IsTrue(data.WasWaterMoved());
             data.DoFrame();
 ///            Assert.AreEqual(.8, basin.hOQ, .01); /*per -.16 to north and south*/

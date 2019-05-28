@@ -31,7 +31,7 @@ namespace Logy.Maps.Geometry
         /// <summary>
         /// Hirt_Rexer2015_Earth2014.pdf
         /// </summary>
-        /// <param name="varphi">http://hist.tk/hw/Широта#геоцентрическая</param>
+        /// <param name="varphi">http://hist.tk/ory/Широта#геоцентрическая</param>
         public static double Radius(double varphi)
         {
             var sin2 = Math.Sin(varphi) * Math.Sin(varphi);
@@ -50,9 +50,9 @@ namespace Logy.Maps.Geometry
         /// <summary>
         /// conversion from spherical to ellipsoid
         /// 
-        /// http://hist.tk/hw/Claessens,_S.J._2006
+        /// http://hist.tk/ory/Claessens,_S.J._2006
         /// </summary>
-        /// <returns>Math.Tan(theta), http://hist.tk/hw/co-latitude#geocentric</returns>
+        /// <returns>Math.Tan(theta), http://hist.tk/ory/co-latitude#geocentric</returns>
         public static double CalcThetaTan(double beta)
         {
             return Ratio * Math.Tan(beta);
@@ -66,7 +66,7 @@ namespace Logy.Maps.Geometry
 
         /// <returns>
         /// varphi
-        /// http://hist.tk/hw/Широта#геоцентрическая
+        /// http://hist.tk/ory/Широта#геоцентрическая
         /// on equator varphi == 0 
         /// in sourth hemisphere varphi < 0
         /// </returns>

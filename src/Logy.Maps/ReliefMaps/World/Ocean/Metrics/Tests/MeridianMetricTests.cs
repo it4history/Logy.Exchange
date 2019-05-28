@@ -16,7 +16,7 @@ namespace Logy.Maps.ReliefMaps.World.Ocean.Metrics.Tests
 
             foreach (var aBasin in data.PixMan.Pixels)
             {
-                Assert.AreEqual(0, aBasin.HeightOQ);
+                Assert.AreEqual(0, aBasin.Hoq);
             }
             data.GradientAndHeightCrosses();
 
@@ -38,7 +38,7 @@ namespace Logy.Maps.ReliefMaps.World.Ocean.Metrics.Tests
 
             foreach (var aBasin in data.PixMan.Pixels)
             {
-                Assert.AreEqual(0, aBasin.HeightOQ);
+                Assert.AreEqual(0, aBasin.Hoq);
             }
             data.GradientAndHeightCrosses();
 
@@ -52,7 +52,7 @@ namespace Logy.Maps.ReliefMaps.World.Ocean.Metrics.Tests
                     !(from n in basin.Neibors.Cast<Basin3>()
                         where n == aBasin
                         select n).Any())
-                    Assert.AreEqual(0, aBasin.HeightOQ);
+                    Assert.AreEqual(0, aBasin.Hoq);
             }
 
             basin = data.PixMan.Pixels[63];

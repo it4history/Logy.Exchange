@@ -25,7 +25,7 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
             var p = HealpixManager.GetP(HealpixManager.Nside - 1, HealpixManager.Nside * 1);
             var basin = Data.PixMan.Pixels[p];
             basin.Depth = -500;
-            basin.HeightOQ = 10000;
+            basin.Hoq = 10000;
 
             Data.DoFrames(
                 delegate(int frame)
