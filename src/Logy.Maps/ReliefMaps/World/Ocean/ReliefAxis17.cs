@@ -25,19 +25,10 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
                 WithRelief = true,
                 IntegrationEndless = true,
             };
-            data.Init();
-            SetData(new ShiftAxis(data) { Slow = true });
+            SetData(new ShiftAxis(data) { Slow = true }, true);
 
             ShiftAxis(
                 2000,
-                frame =>
-                {
-                    switch (K)
-                    {
-                        case 7: return 15 + (frame / 10);
-                    }
-                    return 15;
-                },
                 () =>
                 {
                     switch (K)
@@ -45,6 +36,14 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
                         case 7: return 60;
                     }
                     return 10;
+                },
+                frame =>
+                {
+                    switch (K)
+                    {
+                        case 7: return 15 + (frame / 10);
+                    }
+                    return 15;
                 });
         }
 

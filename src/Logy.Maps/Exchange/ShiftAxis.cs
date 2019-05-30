@@ -1,10 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Linq;
 using System.Runtime.Serialization;
 using Logy.Maps.ReliefMaps.World.Ocean;
 
 namespace Logy.Maps.Exchange
 {
-    public class ShiftAxis : Algorithm<Basin3>
+    public class ShiftAxis : ShiftAxisGeneric<Basin3> 
     {
         public ShiftAxis()
         {
@@ -19,20 +20,41 @@ namespace Logy.Maps.Exchange
 
         public bool Slow { get; set; }
 
-        /// <summary>
-        /// key - frame
-        /// </summary>
-        public Dictionary<int, PoleNorth> Poles { get; set; } = new Dictionary<int, PoleNorth>
-        {
-            {
-                -1, new PoleNorth { X = 0, Y = 90 }
-            }
-        };
-
         public BasinData Data
         {
             get { return (BasinData)DataAbstract; }
             set { DataAbstract = value; }
+        }
+
+        public void Shift(
+            int framesCount, 
+            Func<int> slowFrames = null,
+            Action<int> onFrame = null,
+            Func<int, int> timeStepByFrame = null)
+        {
+            SetPole(Poles.Values.Last());
+
+            var poleShiftsCount = 10;
+            var poleShift = Slow ? Poles.Count : poleShiftsCount;
+
+            Data.DoFrames(
+                delegate (int frame)
+                {
+                    onFrame?.Invoke(frame);
+
+                    if (frame == 0
+                        || (Slow && frame % slowFrames() == 0 && poleShift++ < poleShiftsCount))
+                    {
+                        var newPole = new PoleNorth
+                        {
+                            X = DesiredPoleNorth.X, //// * slowFrame / slowFramesCount
+                            Y = 90 - ((90 - DesiredPoleNorth.Y) * poleShift / poleShiftsCount)
+                        };
+                        SetPole(newPole, frame);
+                    }
+                    return timeStepByFrame?.Invoke(frame) ?? 15; // 15 for k4, 80 for k5 of Meridian
+                },
+                framesCount);
         }
     }
 }

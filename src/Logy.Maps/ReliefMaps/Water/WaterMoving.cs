@@ -84,9 +84,9 @@ namespace Logy.Maps.ReliefMaps.Water
             MoveAllWater(isDynamicScale);
         }
 
-        /// <param name="action">parameter is frame counted from 0</param>
+        /// <param name="onFrame">parameter is frame counted from 0</param>
         /// <param name="width">if (width == 1) then 2 frames: -1 and 0</param>
-        public void DoFrames(Func<int, int> action, int? width = null)
+        public void DoFrames(Func<int, int> onFrame, int? width = null)
         {
             IsRunning = true;
             var w = width ?? (HealpixManager.Nside * 2);
@@ -101,7 +101,7 @@ namespace Logy.Maps.ReliefMaps.Water
                     }
                     Time += TimeStep;
                     SetScales();
-                    TimeStep = action(Frame);
+                    TimeStep = onFrame(Frame);
 
                     if (IsDynamicScale)
                     {

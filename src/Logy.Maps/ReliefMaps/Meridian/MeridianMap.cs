@@ -1,4 +1,5 @@
-﻿using Logy.Maps.ReliefMaps.Map2D;
+﻿using Logy.Maps.Exchange;
+using Logy.Maps.ReliefMaps.Map2D;
 using Logy.Maps.ReliefMaps.Meridian.Data;
 using NUnit.Framework;
 
@@ -19,8 +20,11 @@ namespace Logy.Maps.ReliefMaps.Meridian
         [Test]
         public void Water_RotationStopped()
         {
-            Data = new MeridianWater<MeridianCoor>(HealpixManager); /// -5032d, 5685d); / /integration not finished on 1000, run again!
-            ChangeRotation(double.MaxValue, -HealpixManager.Nside); ///  Ellipsoid.SiderealDayInSeconds*1000);
+            var algorithm = new ShiftAxisGeneric<MeridianCoor>(
+                new MeridianWater<MeridianCoor>(HealpixManager) /// -5032d, 5685d); / /integration not finished on 1000, run again!
+            );
+            SetData(algorithm);
+            algorithm.ChangeRotation(-HealpixManager.Nside); ///  Ellipsoid.SiderealDayInSeconds*1000);
 
             // must be 10.69km 
             // for k5 is 10.94, k6 10.93, k7 10.9, k8 10.72
@@ -33,9 +37,14 @@ namespace Logy.Maps.ReliefMaps.Meridian
                 // how many times to call ChangeRotation at the beginning
                 if (frame - times < -HealpixManager.Nside) 
                 {
-                    ChangeRotation(frame, 80000);
+                    algorithm.ChangeRotation(frame, 80000);
                 }
-                return 1400; /// 1400 for k7
+                switch (K)
+                {
+                    default:
+                    case 6: return 100;
+                    case 7: return 1400;
+                }
             });
         }
 
@@ -46,17 +55,27 @@ namespace Logy.Maps.ReliefMaps.Meridian
         [Test]
         public void Water_RotationStopping()
         {
-            Data = new MeridianWater<MeridianCoor>(HealpixManager); /// -3690d, 4185d);
+            var algorithm = new ShiftAxisGeneric<MeridianCoor>(
+                new MeridianWater<MeridianCoor>(HealpixManager) ///, -2523d, 5208d)
+            );
+            SetData(algorithm);
+
             Data.DoFrames(delegate(int frame) 
             {
                 Data.Draw(Bmp, frame - HealpixManager.Nside, null, YResolution, Scale);
 
-                // (îò 23,9 ÷àñîâ äî 26,7), è â ñåðåäèíå âðåìåíè äî 46,2 ÷àñîâ
+                // (от 23,9 часов до 26,7), и в середине времени до 46,2 часов
                 if ((frame % HealpixManager.Nside) / 4 == 0) 
                 {
-                    ChangeRotation(frame);
+                    algorithm.ChangeRotation(frame, 10000);
                 }
-                return 110; /// 1100 for k9
+                switch (K)
+                {
+                    default:
+                    case 6: return 130;
+                    case 7: return 300;
+                    case 9: return 1100;
+                }
             });
         }
 

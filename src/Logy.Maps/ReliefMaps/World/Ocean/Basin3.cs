@@ -207,18 +207,18 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
 
         public override void OnInit(HealpixManager man)
         {
+            // todo why angle with opposite sign?
+            var rotation = Matrix3D.RotationAroundYAxis(new Angle(-Phi, AngleUnit.Radians))
+                           * Matrix3D.RotationAroundZAxis(new Angle(Lambda.Value, AngleUnit.Radians));
+            Matrix = rotation.Transpose();
+
             base.OnInit(man);
+
             Hto = new double[4];
             Volumes = new bool[4];
             Froms = new int[4];
             MeanEdges = new Ray3D[4];
             HtoBase = new double[4];
-
-            // todo why angle with opposite sign?
-            var rotation = Matrix3D.RotationAroundYAxis(new Angle(-Phi, AngleUnit.Radians))
-                           * Matrix3D.RotationAroundZAxis(new Angle(Lambda.Value, AngleUnit.Radians));
-
-            Matrix = rotation.Transpose();
         }
 
         public override void WaterReset()

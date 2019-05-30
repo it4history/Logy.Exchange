@@ -3,16 +3,11 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
-using System.Linq;
 using Logy.Maps.Exchange;
-using Logy.Maps.Geometry;
 using Logy.Maps.Projections;
 using Logy.Maps.Projections.Healpix;
 using Logy.Maps.ReliefMaps.Basemap;
 using Logy.Maps.ReliefMaps.Water;
-using Logy.Maps.ReliefMaps.World.Ocean;
-using MathNet.Spatial.Euclidean;
-using MathNet.Spatial.Units;
 using Newtonsoft.Json;
 using NUnit.Framework;
 
@@ -20,8 +15,7 @@ namespace Logy.Maps.ReliefMaps.Map2D
 {
     public class RotationStopMap<T> : Map2DBase where T : BasinBase
     {
-        private const double Pole2BasinAccuranceDegrees = 1.5;
-        private T _currentPoleNorth;
+        private bool _jsonNeeded;
 
         public RotationStopMap()
         {
@@ -72,8 +66,10 @@ namespace Logy.Maps.ReliefMaps.Map2D
 
         private string StatsFileName => Path.Combine(Dir, "stats.json");
 
-        public void SetData(Algorithm<T> algorithm)
+        public void SetData(Algorithm<T> algorithm, bool jsonNeeded = false)
         {
+            _jsonNeeded = jsonNeeded;
+            algorithm.DataAbstract.Init();
             if (File.Exists(StatsFileName))
             {
                 Bundle = Bundle<T>.Deserialize(File.ReadAllText(StatsFileName));
@@ -98,49 +94,39 @@ namespace Logy.Maps.ReliefMaps.Map2D
         {
             Data.IsRunning = false;
             Data.RunningTask.Wait();
-            Process.Start(GetFileName(Data.Colors, FrameToString(Data.Frame - 1)));
-            Bundle.Algorithm.Diff = Data.RecheckOcean();
-            using (var file = File.CreateText(StatsFileName))
+
+            if (_jsonNeeded)
             {
-                new JsonSerializer().Serialize(file, Bundle);
+                Bundle.Algorithm.Diff = Data.RecheckOcean();
+                using (var file = File.CreateText(StatsFileName))
+                {
+                    new JsonSerializer().Serialize(file, Bundle);
+                }
             }
+            else
+                SaveBitmap(Data.Frame - 1);
+            Process.Start(GetFileName(Data.Colors, FrameToString(Data.Frame - 1)));
         }
 
         public void ShiftAxis(
             int framesCount = 200, /* for k6 */
-            Func<int, int> timeKoefByFrame = null,
-            Func<int> slowFrames = null)
+            Func<int> slowFrames = null,
+            Func<int, int> timeStepByFrame = null)
         {
             var algorithm = Bundle.Algorithm as ShiftAxis;
-
-            SetPole(algorithm.Poles.Values.Last());
-
-            var poleShiftsCount = 10;
-            var poleShift = algorithm.Slow ? algorithm.Poles.Count : poleShiftsCount;
-
-            Data.DoFrames(
-                delegate(int frame)
+            algorithm.Shift(
+                framesCount,
+                slowFrames,
+                delegate (int frame)
                 {
                     Data.Draw(Bmp, 0, null, YResolution, Scale);
-                    Circle(_currentPoleNorth, .03);
+                    Circle(algorithm.CurrentPoleBasin, .03);
                     SaveBitmap(frame);
-
-                    if (frame == 0
-                        || (algorithm.Slow && frame % slowFrames() == 0 && poleShift++ < poleShiftsCount))
-                    {
-                        var newPole = new PoleNorth
-                        {
-                            X = algorithm.DesiredPoleNorth.X, //// * slowFrame / slowFramesCount
-                            Y = 90 - ((90 - algorithm.DesiredPoleNorth.Y) * poleShift / poleShiftsCount)
-                        };
-                        SetPole(newPole, frame);
-                    }
-                    return timeKoefByFrame?.Invoke(frame) ?? 15; // 15 for k4, 80 for k5 of Meridian
                 },
-                framesCount);
+                timeStepByFrame);
         }
 
-        protected void Circle(T basin, double r = .2)
+        protected void Circle(HealCoor basin, double r = .2)
         {
             if (basin != null)
             {
@@ -173,7 +159,7 @@ namespace Logy.Maps.ReliefMaps.Map2D
 
                 var projection = new Equirectangular(HealpixManager, YResolution);
                 var point = projection.Offset(Data.PixMan.Pixels[HealpixManager.RingsCount / 2]);
-                var algorithm = Bundle.Algorithm as ShiftAxis;
+                var algorithm = Bundle.Algorithm as ShiftAxisGeneric<T>;
                 if (algorithm != null)
                     foreach (var axisShiftFrame in algorithm.Poles.Keys)
                     {
@@ -187,68 +173,9 @@ namespace Logy.Maps.ReliefMaps.Map2D
             SaveBitmap(Bmp, Data.Colors, FrameToString(frame));
         }
 
-        protected void ChangeRotation(double koef = 10000, int? frame = null)
-        {
-            if ((koef > 0 && EllipsoidAcceleration.SiderealDayInSeconds < double.MaxValue / 2)
-                || -koef < EllipsoidAcceleration.SiderealDayInSeconds)
-            {
-                EllipsoidAcceleration.SiderealDayInSeconds += koef;
-                foreach (var basin in Data.PixMan.Pixels)
-                {
-                    if (Data.SamePolesAndEquatorGravitation)
-                        basin.GHpure = 0;
-                    basin.RecalculateDelta_g();
-                }
-
-                var algorithm = Bundle.Algorithm as ShiftAxis;
-                if (frame.HasValue && algorithm != null)
-                {
-                    var lastPole = algorithm.Poles.Values.Last();
-                    algorithm?.Poles.Add(
-                        frame.Value,
-                        new PoleNorth
-                        {
-                            X = lastPole.X,
-                            Y = lastPole.X,
-                            SiderealDayInSeconds = EllipsoidAcceleration.SiderealDayInSeconds
-                        });
-                }
-            }
-        }
-
         private static string FrameToString(int frame)
         {
             return $"{frame:00000}";
-        }
-
-        private void SetPole(PoleNorth newPole, int? frame = null)
-        {
-            EllipsoidAcceleration.AxisOfRotation =
-                Basin3.Oz
-                    .Rotate(
-                        new UnitVector3D(0, 1, 0),
-                        new Angle(90 - newPole.Y, AngleUnit.Degrees))
-                    .Rotate(
-                        new UnitVector3D(0, 0, 1),
-                        new Angle(newPole.X, AngleUnit.Degrees));
-
-            foreach (var b in Data.PixMan.Pixels)
-            {
-                if (Math.Abs(b.X - newPole.X) < Pole2BasinAccuranceDegrees && Math.Abs(b.Y - newPole.Y) < Pole2BasinAccuranceDegrees)
-                {
-                    _currentPoleNorth = b;
-                    break;
-                }
-            }
-
-            // InitiialHtoRecalc();
-            ChangeRotation(0);
-
-            if (frame.HasValue)
-            {
-                var algorithm = Bundle.Algorithm as ShiftAxis;
-                algorithm?.Poles.Add(frame.Value, newPole);
-            }
         }
     }
 }

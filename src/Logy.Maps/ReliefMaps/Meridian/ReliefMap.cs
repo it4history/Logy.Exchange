@@ -1,4 +1,5 @@
 ﻿using System.Drawing;
+using Logy.Maps.Exchange;
 using Logy.Maps.ReliefMaps.Water;
 using NUnit.Framework;
 
@@ -15,10 +16,10 @@ namespace Logy.Maps.ReliefMaps.Meridian
         [Test]
         public void Relief_WhenRotationStopped()
         {
-            var data = new WaterAndBottomData(HealpixManager, -3128d, 7336d);
-            Data = data;
-            
-            ChangeRotation(double.MaxValue, -HealpixManager.Nside);
+            var algorithm = new ShiftAxisGeneric<MeridianCoor>(
+                new WaterAndBottomData(HealpixManager, -3128d, 7336d));
+            SetData(algorithm);
+            algorithm.ChangeRotation(-HealpixManager.Nside);
             Data.DoFrames(delegate(int frame) 
             {
                 if (Data.Colors != null)

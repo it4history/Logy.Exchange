@@ -1,4 +1,5 @@
 ﻿#if DEBUG
+using Logy.Maps.Exchange;
 using Logy.Maps.Projections.Healpix;
 using Logy.Maps.ReliefMaps.Map2D;
 using Logy.Maps.ReliefMaps.World.Ocean.Tests;
@@ -65,7 +66,8 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
         [Test]
         public void Hto_Spheric()
         {
-            Data = new BasinData(new HealpixManager(2)) { Spheric = true };
+            var algorithm = new ShiftAxis(new BasinData(new HealpixManager(2)));
+            SetData(algorithm);
 
             Data.GradientAndHeightCrosses();
             InitiialHtoRecalc();
@@ -80,7 +82,7 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
             /// 14,17: 47 41 40 45
             /// 27,31: 47 41 42 42
 
-            ChangeRotation(double.MaxValue, -HealpixManager.Nside);
+            algorithm.ChangeRotation(-HealpixManager.Nside);
             Assert.AreEqual(0, basin0.Hto[0]);
 
             // Data.GradientAndHeightCrosses();
@@ -107,11 +109,9 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
         [Test]
         public void Water_RotationStopped()
         {
-            Data = new BasinData(
-                HealpixManager
-                /*,-3000d, 3000d*/);
-
-            ChangeRotation(double.MaxValue, -HealpixManager.Nside);
+            var algorithm = new ShiftAxis(new BasinData(HealpixManager/*,-3000d, 3000d*/));
+            SetData(algorithm);
+            algorithm.ChangeRotation(-HealpixManager.Nside);
             Data.DoFrames(
                 delegate(int frame)
                 {

@@ -1,4 +1,5 @@
 #if DEBUG
+using Logy.Maps.Exchange;
 using NUnit.Framework;
 
 namespace Logy.Maps.ReliefMaps.World.Ocean
@@ -40,23 +41,25 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
         [Test]
         public void RotationStopped()
         {
-            Data = new BasinData(
-                HealpixManager, 
-                /*, -6000d, null*/
-                -1000d, 
-                5000d, 
-                true)
-            {
-                WithRelief = true,
-                SamePolesAndEquatorGravitation = true,
-                IntegrationEndless = true,
-                /// Visual = basin => basin.Depth.Value
-                /// Visual = basin => basin.r - Earth2014Manager.Radius2Add //*/
-            };
+            var algorithm = new ShiftAxis(
+                new BasinData(
+                    HealpixManager,
+                    /*, -6000d, null*/
+                    -1000d,
+                    5000d,
+                    true)
+                {
+                    WithRelief = true,
+                    SamePolesAndEquatorGravitation = true,
+                    IntegrationEndless = true,
+                    /// Visual = basin => basin.Depth.Value
+                    /// Visual = basin => basin.r - Earth2014Manager.Radius2Add //*/
+                });
+            SetData(algorithm);
 
             // 1000 does nothing when !SamePolesAndEquatorGravitation 
             if (Data.SamePolesAndEquatorGravitation)
-                ChangeRotation(-1 - HealpixManager.Nside, -2000);
+                algorithm.ChangeRotation(-1 - HealpixManager.Nside, -2000);
 
             var changeFrames = 15;
 
@@ -78,7 +81,7 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
                                           * (Data.SamePolesAndEquatorGravitation ? 100 : 2000))
                                 : 500;
                         }
-                        ChangeRotation(koef, frame - HealpixManager.Nside);
+                        algorithm.ChangeRotation(frame - HealpixManager.Nside, koef);
                     }
                     Data.Draw(Bmp, 0, null, YResolution, Scale);
                     SaveBitmap(frame);
