@@ -2,9 +2,9 @@
 
 namespace Logy.Maps.ReliefMaps.Meridian.Data
 {
-    public class Gravity : CentrifugalAcceleration
+    public class GravityChecking : CentrifugalAcceleration
     {
-        public Gravity(HealpixManager man) : base(man)
+        public GravityChecking(HealpixManager man) : base(man)
         {
         }
 

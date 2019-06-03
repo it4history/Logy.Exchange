@@ -52,10 +52,10 @@ namespace Logy.Maps.ReliefMaps.Water
         /// <returns>some volume moved from basin</returns>
         public double PutV(BasinBase basin, BasinBase toBasin, double height, int to, int from)
         {
-            if (Math.Abs(height) > Threshhold)
+            // must be transaction
+            if (!toBasin.Volumes[from] && !basin.Volumes[to])
             {
-                // must be transaction
-                if (!toBasin.Volumes[from] && !basin.Volumes[to])
+                if (Math.Abs(height) > Threshhold)
                 {
                     var k = IsMeridian ? basin.RingArea / toBasin.RingArea : 1;
                     var v = Viscosity * height;

@@ -20,9 +20,9 @@ namespace Logy.Maps.ReliefMaps.Meridian
         [Test]
         public void Water_RotationStopped()
         {
+            // integration not finished on 1000, run again!
             var algorithm = new ShiftAxisGeneric<MeridianCoor>(
-                new MeridianWater<MeridianCoor>(HealpixManager) /// -5032d, 5685d); / /integration not finished on 1000, run again!
-            );
+                new MeridianWater<MeridianCoor>(HealpixManager/*, -5032d, 5685d*/));
             SetData(algorithm);
             algorithm.ChangeRotation(-HealpixManager.Nside); ///  Ellipsoid.SiderealDayInSeconds*1000);
 
@@ -56,8 +56,7 @@ namespace Logy.Maps.ReliefMaps.Meridian
         public void Water_RotationStopping()
         {
             var algorithm = new ShiftAxisGeneric<MeridianCoor>(
-                new MeridianWater<MeridianCoor>(HealpixManager) ///, -2523d, 5208d)
-            );
+                new MeridianWater<MeridianCoor>(HealpixManager/*, -2523d, 5208d*/));
             SetData(algorithm);
 
             Data.DoFrames(delegate(int frame) 
@@ -105,7 +104,7 @@ namespace Logy.Maps.ReliefMaps.Meridian
         [Test]
         public void Gravity_sphere_hor()
         {
-            Data = new Gravity(HealpixManager);
+            Data = new GravityChecking(HealpixManager);
             Data.MoveAllWater();
             Data.Draw(Bmp, 0, null, YResolution, Scale);
         }

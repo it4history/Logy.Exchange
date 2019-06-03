@@ -83,7 +83,7 @@ namespace Logy.Maps.ReliefMaps.Meridian.Data
             }*/
         }
 
-        internal override void GradientAndHeightCrosses()
+        public override void GradientAndHeightCrosses()
         {
             foreach (var basin in PixMan.Pixels)
             {

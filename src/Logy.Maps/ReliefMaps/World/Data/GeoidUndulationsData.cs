@@ -13,10 +13,7 @@ namespace Logy.Maps.ReliefMaps.World.Data
             ColorsMiddle = -22;
         }
 
-        public override int Accuracy
-        {
-            get { return 1; }
-        }
+        public override int Accuracy => 1;
 
         public override double? GetAltitude(HealCoor basin)
         {

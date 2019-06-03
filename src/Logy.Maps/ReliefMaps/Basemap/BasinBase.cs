@@ -75,6 +75,7 @@ namespace Logy.Maps.ReliefMaps.Basemap
         /// <summary>
         /// angle, directed to equator of Oz
         /// </summary>
+        [DataMember]
         public virtual double Delta_g_meridian
         {
             get { return _deltaGMeridian; }
@@ -101,7 +102,7 @@ namespace Logy.Maps.ReliefMaps.Basemap
         public virtual double Hoq
         {
             get;
-            /* may influence on many things! like Basin3.S_q */
+            /* may influence on many things! like S_q, Qb, Q3 of Basin3 */
             internal set;
         }
 
@@ -146,7 +147,7 @@ namespace Logy.Maps.ReliefMaps.Basemap
         }
 
         /// <param name="deltaH">!= 0</param>
-        public virtual void WaterIn(double deltaH, int direction)
+        public void WaterIn(double deltaH, int direction)
         {
             lock (this)
             {

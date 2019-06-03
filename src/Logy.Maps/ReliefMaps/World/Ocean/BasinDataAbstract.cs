@@ -21,7 +21,7 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
         public override ReliefType ReliefBedType => ReliefType.Tbi;
 
         [IgnoreDataMember]
-        public Func<T, double> Visual => basin => basin.Hoq; //// basin.Visual * 1000;
+        public Func<T, double> Visual => basin => basin.Hoq; //// basin.Altitude * 1000;
 
         public override void Init()
         {
@@ -72,14 +72,28 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
                     var toBasin = basin.Neibors[to];
                     basin.HtoBase[to] = basin.Metric(toBasin, to, true);
                 }
-
-                // HtoBase calculated on initial geiod heights, or to store HtoBase in json?
-                GetHeightsExternal?.Invoke(basin);
             }
 
             if (WithRelief)
             {
                 CheckOcean();
+            }
+        }
+
+        public override void GradientAndHeightCrosses()
+        {
+            foreach (var basin in PixMan.Pixels)
+            {
+                basin.WaterReset();
+                if (basin.HasWater())
+                {
+                    for (int to = 0; to < 4; to++)
+                    {
+                        var toBasin = basin.Neibors[to];
+                        var hto = basin.Metric(toBasin, to);
+                        basin.Hto[to] = hto;
+                    }
+                }
             }
         }
 
@@ -110,23 +124,6 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
                 }
             }
             return basin.HasWater() ? Visual(basin) : (double?)null; // basin.hOQ;
-        }
-
-        internal override void GradientAndHeightCrosses()
-        {
-            foreach (var basin in PixMan.Pixels)
-            {
-                basin.WaterReset();
-                if (basin.HasWater())
-                {
-                    for (int to = 0; to < 4; to++)
-                    {
-                        var toBasin = basin.Neibors[to];
-                        var hto = basin.Metric(toBasin, to);
-                        basin.Hto[to] = hto;
-                    }
-                }
-            }
         }
     }
 }

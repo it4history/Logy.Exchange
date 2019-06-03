@@ -4,6 +4,10 @@ using Logy.MwAgent.Sphere;
 
 namespace Logy.Maps.Projections.Healpix
 {
+    /// <summary>
+    /// create this object by HealpixManager.GetCenter() 
+    ///  to fill P, Beta(Y is more acurate), Lambda(X is more acurate), Ring, PixelInRing
+    /// </summary>
     /// [DataContract(Namespace = UrlsManager.Namespace)]
     public class HealCoor : Coor
     {
@@ -29,6 +33,9 @@ namespace Logy.Maps.Projections.Healpix
         [DataMember]
         public int P { get; set; }
 
+        /// <summary>
+        /// visual
+        /// </summary>
         public double? Altitude { get; set; }
 
         /// <summary>
@@ -81,6 +88,10 @@ Each grid file contains 10,800 x 21,600 = 233,280,000 records */
             return equirectangular.FullOffset(coor);
         }
 
+        /// <summary>
+        /// P, Beta, Lambda, Ring, PixelInRing should be filled
+        /// </summary>
+        /// <param name="man"></param>
         public virtual void OnInit(HealpixManager man)
         {
             PixelsCountInRing = man.PixelsCountInRing(Ring);

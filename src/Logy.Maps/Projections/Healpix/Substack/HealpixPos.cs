@@ -1,4 +1,4 @@
-namespace Logy.Maps.Healpix.Substack
+namespace Logy.Maps.Projections.Healpix.Substack
 {
     /// <summary>
     /// for https://github.com/substack/healpix

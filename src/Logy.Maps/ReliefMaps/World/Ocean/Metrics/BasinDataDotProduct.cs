@@ -159,7 +159,7 @@ namespace Logy.Maps.ReliefMaps.World.Ocean.Metrics
             }
         }
 
-        internal override void GradientAndHeightCrosses()
+        public override void GradientAndHeightCrosses()
         {
             foreach (var basin in PixMan.Pixels)
             {

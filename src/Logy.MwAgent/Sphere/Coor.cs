@@ -79,7 +79,7 @@ namespace Logy.MwAgent.Sphere
         /// from 0 to PI, 0 corresponds to North pole
         /// 
         /// spherical
-        /// http://hist.tk/hw/Reduced_co-latitude
+        /// http://hist.tk/ory/Reduced_co-latitude
         /// </summary>
         public double? Beta
         {

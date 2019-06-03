@@ -116,7 +116,7 @@ namespace Logy.Maps.Geometry
             aTraverse = -a * aOnSurface[1];
             aVertical = Math.Abs(a * aOnSurface[0]);
             var aMerid = (b.Vartheta < 0 ? 1 : -1) * a * aOnSurface[2];
-            b.Visual = aVertical;
+            b.Altitude = aVertical;
             return aMerid;
         }
 
@@ -189,8 +189,8 @@ namespace Logy.Maps.Geometry
                 }
             }
 
-            b.Visual = aTraverse;
-            b.Visual = aMeridian;
+            b.Altitude = aTraverse;
+            b.Altitude = aMeridian;
             return aMeridian;
         }
 

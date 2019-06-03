@@ -8,28 +8,16 @@ namespace Logy.Maps.ReliefMaps.World.Approximate
 {
     public class GeoidUndulations : Map2DBase
     {
-        public override Projection Projection
-        {
-            get
-            {
-                return Projection.Healpix; // Healpix2Equirectangular // Equirectangular
-            }
-        }
+        public override Projection Projection => Projection.Healpix; // Healpix2Equirectangular // Equirectangular
 
-        public override SortedList<int, Color3> ColorsAbove
+        public override SortedList<int, Color3> ColorsAbove => new SortedList<int, Color3>
         {
-            get
-            {
-                return new SortedList<int, Color3>
-                {
-                    { 0, new Color3(80, 173, 173) },
-                    { 10, new Color3(Color.Green) },
-                    { 70, new Color3(Color.Yellow) },
-                    { 80, new Color3(Color.SandyBrown) },
-                    { 100, new Color3(Color.Red) },
-                };
-            }
-        }
+            { 0, new Color3(80, 173, 173) },
+            { 10, new Color3(Color.Green) },
+            { 70, new Color3(Color.Yellow) },
+            { 80, new Color3(Color.SandyBrown) },
+            { 100, new Color3(Color.Red) },
+        };
 
         /*protected override SortedList<int, Color3> ColorsUnder
         {
@@ -39,14 +27,8 @@ namespace Logy.Maps.ReliefMaps.World.Approximate
             }
         }*/
 
-        protected override int K
-        {
-            get { return 9; }
-        }
+        protected override int K => 9;
 
-        protected override DataForMap2D ApproximateData
-        {
-            get { return new GeoidUndulationsData(this); }
-        }
+        protected override DataForMap2D ApproximateData => new GeoidUndulationsData(this);
     }
 }

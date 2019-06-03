@@ -92,9 +92,11 @@ namespace Logy.Maps.ReliefMaps.Map2D
         [TearDown]
         public void TearDown()
         {
-            Data.IsRunning = false;
-            Data.RunningTask.Wait();
-
+            if (Data.IsRunning)
+            {
+                Data.IsRunning = false;
+                Data.RunningTask.Wait();
+            }
             if (_jsonNeeded)
             {
                 Bundle.Algorithm.Diff = Data.RecheckOcean();
@@ -104,8 +106,8 @@ namespace Logy.Maps.ReliefMaps.Map2D
                 }
             }
             else
-                SaveBitmap(Data.Frame - 1);
-            Process.Start(GetFileName(Data.Colors, FrameToString(Data.Frame - 1)));
+                SaveBitmap(Data.Frame);
+            Process.Start(GetFileName(Data.Colors, FrameToString(Data.Frame)));
         }
 
         public void ShiftAxis(
@@ -117,7 +119,7 @@ namespace Logy.Maps.ReliefMaps.Map2D
             algorithm.Shift(
                 framesCount,
                 slowFrames,
-                delegate (int frame)
+                delegate(int frame)
                 {
                     Data.Draw(Bmp, 0, null, YResolution, Scale);
                     Circle(algorithm.CurrentPoleBasin, .03);

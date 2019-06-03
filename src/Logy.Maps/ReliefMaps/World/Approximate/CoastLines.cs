@@ -6,24 +6,12 @@ namespace Logy.Maps.ReliefMaps.World.Approximate
 {
     public class CoastLines : Map2DBase
     {
-        public override Projection Projection
-        {
-            get { return Projection.Equirectangular; }
-        }
+        public override Projection Projection => Projection.Equirectangular;
 
-        protected override bool IsGrey
-        {
-            get { return true; }
-        }
+        protected override bool IsGrey => true;
 
-        protected override ImageFormat ImageFormat
-        {
-            get { return ImageFormat.Gif; }
-        }
+        protected override ImageFormat ImageFormat => ImageFormat.Gif;
 
-        protected override DataForMap2D ApproximateData
-        {
-            get { return new CoastLinesData(this); }
-        }
+        protected override DataForMap2D ApproximateData => new CoastLinesData(this);
     }
 }
