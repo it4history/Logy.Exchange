@@ -150,15 +150,6 @@ namespace Logy.Maps.ReliefMaps.World.Ocean.Metrics
             return basin.HasWater() ? basin.Hoq : (double?)null;
         }
 
-        internal void RecalcDelta_g(Basin3 basin)
-        {
-            if (Spheric)
-            {
-                basin.InitROfEllipse(HealpixManager, Ellipsoid.MeanRadius);
-                basin.Delta_g_meridian = basin.Delta_g_traverse = 0;
-            }
-        }
-
         public override void GradientAndHeightCrosses()
         {
             foreach (var basin in PixMan.Pixels)
@@ -307,6 +298,15 @@ namespace Logy.Maps.ReliefMaps.World.Ocean.Metrics
                     .5 * (east.Qb.Y + west.Qb.Y));
             }
             return basin.Intersect(inter);
+        }
+
+        private void RecalcDelta_g(Basin3 basin)
+        {
+            if (Spheric)
+            {
+                basin.InitROfEllipse(HealpixManager, Ellipsoid.MeanRadius);
+                basin.Delta_g_meridian = basin.Delta_g_traverse = 0;
+            }
         }
     }
 }

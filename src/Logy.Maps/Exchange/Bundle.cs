@@ -4,8 +4,10 @@ using System.Collections.Generic;
 using System.Runtime.Serialization;
 using Logy.Maps.ReliefMaps.Basemap;
 using Logy.Maps.ReliefMaps.Water;
+using Logy.Maps.ReliefMaps.World.Ocean;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using NUnit.Framework;
 
 namespace Logy.Maps.Exchange
 {
@@ -39,7 +41,7 @@ namespace Logy.Maps.Exchange
         /// </summary>
         public Dictionary<int, T[]> Basins { get; } = new Dictionary<int, T[]>();
 
-        public static Bundle<T> Deserialize(string json)
+        public static Bundle<T> Deserialize(string json, bool ignoreNewBasins = false)
         {
             var bundle = JsonConvert.DeserializeObject<Bundle<T>>(json);
             for (var i = 0; i < bundle.Algorithms.Count; i++)
@@ -49,19 +51,35 @@ namespace Logy.Maps.Exchange
                     algorithmInJson.ToString(),
                     Type.GetType(algorithmInJson["Name"].ToString()));
             }
+            bundle.Algorithm.Init();
+
             var data = bundle.Algorithm.DataAbstract;
-            data.GetHeightsExternal =
-                (basin) =>
+            foreach (var bundleBasinBase in bundle.Basins[data.K])
+            {
+                var bundleBasin = bundleBasinBase as Basin3;
+                var basin = data.PixMan.Pixels[bundleBasin.P] as Basin3;
+                if (bundleBasin.P < data.PixMan.Pixels.Length)
                 {
-                    var bundleBasin = bundle.Basins[data.K];
-                    if (basin.P < bundleBasin.Length)
-                    {
-                        var externalBasin = bundleBasin[basin.P];
-                        basin.Hoq = externalBasin.Hoq;
-                        basin.Depth = externalBasin.Depth;
-                    }
-                };
-            bundle.Algorithm.DataAbstract.Init();
+                    var jsonDelta_g_meridian = bundleBasin.Delta_g_meridian;
+                    /*bundleBasin.Y = basin.Y;
+                    bundleBasin.X = basin.X;
+                    bundleBasin.Ring = basin.Ring;
+                    bundleBasin.PixelInRing = basin.PixelInRing;
+
+                    // OnInit corrupts HtoBase
+                    // bundleBasin.OnInit(bundle.Algorithm.DataAbstract.HealpixManager);
+                    // bundleBasin.Delta_g_meridian = jsonDelta_g_meridian; /// OnInit corrupts it*/
+
+                    basin.Hoq = bundleBasin.Hoq;
+                    basin.Delta_g_meridian = jsonDelta_g_meridian;
+                    basin.Delta_g_traverse = bundleBasin.Delta_g_traverse;
+
+                    Assert.IsTrue(basin.Depth == bundleBasin.Depth
+                                  && basin.WaterHeight == bundleBasin.WaterHeight);
+                }
+            }
+            if (!ignoreNewBasins)
+                bundle.Basins[data.HealpixManager.K] = data.PixMan.Pixels;
             return bundle;
         }
 

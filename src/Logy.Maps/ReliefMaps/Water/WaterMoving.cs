@@ -8,6 +8,8 @@ using Logy.Maps.Approximations;
 using Logy.Maps.Coloring;
 using Logy.Maps.Projections.Healpix;
 using Logy.Maps.ReliefMaps.Basemap;
+using Logy.Maps.ReliefMaps.World.Ocean;
+using MathNet.Spatial.Euclidean;
 using NUnit.Framework;
 
 namespace Logy.Maps.ReliefMaps.Water
@@ -32,9 +34,6 @@ namespace Logy.Maps.ReliefMaps.Water
 
         public bool WithRelief { get; set; }
 
-        [IgnoreDataMember]
-        public Action<T> GetHeightsExternal { get; set; }
-
         public bool Spheric { get; set; }
 
         [IgnoreDataMember]
@@ -50,10 +49,8 @@ namespace Logy.Maps.ReliefMaps.Water
         /// <summary>
         /// maybe value decreases but not increases
         /// </summary>
-        [IgnoreDataMember]
         public bool IntegrationEndless { get; set; }
 
-        [IgnoreDataMember]
         public bool SamePolesAndEquatorGravitation { get; set; }
 
         [IgnoreDataMember]
@@ -61,7 +58,8 @@ namespace Logy.Maps.ReliefMaps.Water
 
         [IgnoreDataMember]
         public Task RunningTask { get; set; }
-        public int Frame { get; set; }
+
+        public int Frame { get; set; } = -1;
         public int Time { get; set; }
         public int TimeStep { get; set; } = 1;
         public double? Max { get; set; }
@@ -85,24 +83,82 @@ namespace Logy.Maps.ReliefMaps.Water
         }
 
         /// <param name="onFrame">parameter is frame counted from 0</param>
-        /// <param name="width">if (width == 1) then 2 frames: -1 and 0</param>
-        public void DoFrames(Func<int, int> onFrame, int? width = null)
+        /// <param name="tillFrame">if (tillFrame==0) then will be one frame 0</param>
+        public void DoFrames(Func<int, int> onFrame, int? tillFrame = null)
         {
             IsRunning = true;
-            var w = width ?? (HealpixManager.Nside * 2);
+            var w = tillFrame ?? (HealpixManager.Nside * 2);
             RunningTask = Task.Run(() =>
             {
-                for (; Frame < w && IsRunning; Frame++)
+                while (Frame < w && IsRunning)
                 {
+                    Frame++;
+
                     // viscosity = i < 0 ? .6 : .4;// .6 - .2 * i / (2 * w);
                     for (var step = 0; step < TimeStep; step++)
                     {
+                        /* private static Basin3[] was;
+                        if (Frame == 6)
+                        {
+                            var basinBad = (PixMan.Pixels[0] as Basin3);
+                            var normal = basinBad.Normal;
+                            var q3 = basinBad.Q3;
+                            if (step == 0)
+                            {
+                                if (was != null)
+                                {
+                                    GradientAndHeightCrosses();
+                                }
+                            }
+                            if (step == 1)
+                            {
+                                if (was == null)
+                                {
+                                    was = new Basin3[PixMan.Pixels.Length];
+                                    for (var index = 0; index < was.Length; index++)
+                                    {
+                                        var basin = PixMan.Pixels[index] as Basin3;
+                                        was[index] = new Basin3
+                                        {
+                                            Hoq = basin.Hoq,
+                                            Altitude = basin.Altitude,
+                                            Delta_g_meridian =basin.Delta_g_meridian,
+                                            Delta_g_traverse = basin.Delta_g_traverse,
+                                            _normal = basin.Normal,
+                                            _q3 = new Point3D(basin.Q3.ToVector()),
+                                            _actualQ3 = true
+                                        };
+                                        was[index].Hto = new double[4];
+                                        basin.Hto.CopyTo(was[index].Hto, 0);
+                                        was[index].MeanEdges = new Ray3D[4];
+                                        basin.MeanEdges.CopyTo(was[index].MeanEdges, 0);
+                                    }
+                                }
+                                else
+                                {
+                                    for (var index = 0; index < was.Length; index++)
+                                    {
+                                        var basin = PixMan.Pixels[index] as Basin3;
+                                        var basinWas = was[index];
+                                        if (basinWas.Hoq != basin.Hoq
+                                            //|| basinWas.Altitude != basin.Altitude
+                                            || basinWas.Hto[0] != basin.Hto[0]
+                                            || basinWas.Hto[1] != basin.Hto[1]
+                                            || basinWas.Hto[2] != basin.Hto[2]
+                                            || basinWas.Hto[3] != basin.Hto[3]
+                                            || basinWas.Normal != basin.Normal
+                                            || basinWas.Q3 != basin.Q3
+                                        )
+                                        {
+                                        }
+                                    }
+                                }
+                            }
+                        }*/
                         DoFrame(IsDynamicScale);
                     }
                     Time += TimeStep;
                     SetScales();
-                    TimeStep = onFrame(Frame);
-
                     if (IsDynamicScale)
                     {
                         if (Min.HasValue && Max.HasValue)
@@ -126,6 +182,7 @@ namespace Logy.Maps.ReliefMaps.Water
                         Max = Colors.Max;
                         Min = Colors.Min;
                     }
+                    TimeStep = onFrame(Frame);
                 }
             });
             RunningTask.Wait();
@@ -177,7 +234,7 @@ namespace Logy.Maps.ReliefMaps.Water
         /// пересечения градиента с радиусами (высотами тазиков)
         /// http://hist.tk/ory/Gradient_and_height_crosses
         /// </summary>
-        internal virtual void GradientAndHeightCrosses()
+        public virtual void GradientAndHeightCrosses()
         {
         }
 
@@ -191,7 +248,8 @@ namespace Logy.Maps.ReliefMaps.Water
             else
                 foreach (var basin in PixMan.Pixels)
                 {
-                    basin.Altitude = GetAltitude(basin);
+                    // basin.Altitude = 
+                        GetAltitude(basin);
                 }
         }
 

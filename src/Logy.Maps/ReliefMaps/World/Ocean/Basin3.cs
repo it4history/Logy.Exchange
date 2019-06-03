@@ -24,7 +24,8 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
         /// </summary>
         private Point3D _q3;
 
-        private Plane _s_q;
+        private Plane? _s_q;
+
         private double _deltaGTraverse;
 
         public static Point3D O3 { get; } = new Point3D(0, 0, 0);
@@ -42,6 +43,7 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
             {
                 base.Hoq = value;
                 _actualQ3 = false;
+                _s_q = null;
             }
         }
 
@@ -83,7 +85,7 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
 
         public Ray3D RadiusRay => new Ray3D(O3, RadiusLine.Direction);
 
-        public UnitVector3D Normal
+        public UnitVector3D? Normal
         {
             get
             {
@@ -101,23 +103,29 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
                 }
                 return _normal.Value;
             }
+            private set
+            {
+                _normal = value;
+                _s_q = null;
+            }
         }
 
         /// <summary>
         /// Top face; surface; plane
+        /// used in metrics
         /// </summary>
         public Plane S_q
         {
             get
             {
-                if (_normal == null || !_actualQ3)
+                if (_s_q == null)
                 {
-                    _s_q = new Plane(Normal, Q3); // Q3 and not r - tested in BasinTests
+                    _s_q = new Plane(Normal.Value, Q3); // Q3 and not r - tested in BasinTests
                 }
-                return _s_q;
+                return _s_q.Value;
             }
         }
-        public Plane S_geiod => new Plane(Normal, Qgeiod);
+        public Plane S_geiod => new Plane(Normal.Value, Qgeiod);
 
         public Neibors<Basin3> Neibors { get; } = new Neibors<Basin3>(new Basin3[4]);
 
@@ -152,6 +160,7 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
         /// <summary>
         /// angle, directed to East
         /// </summary>
+        [DataMember]
         public double Delta_g_traverse
         {
             get
@@ -161,7 +170,7 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
             set
             {
                 _deltaGTraverse = value;
-                _normal = null;
+                Normal = null;
             }
         }
         public override double Delta_g_meridian
@@ -173,7 +182,7 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
             set
             {
                 base.Delta_g_meridian = value;
-                _normal = null;
+                Normal = null;
             }
         }
 
@@ -188,8 +197,6 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
         public double Delta_s_traverse { get; set; }
 
         #region reserved
-        public double Visual { get; set; }
-
         /// <summary>
         /// in Rotation Axis plane
         /// as a rule from north to south
@@ -273,10 +280,10 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
             var correctionVector = new UnitVector3D((correctionVector1 + correctionVector2).ToVector()) * Matrix;
             var k = 20;
 
-            Visual =
+            Altitude =
             Delta_s_meridian = -(Vartheta < 0 ? 1 : -1) * correctionVector[2] / k;
             Delta_s_traverse = -correctionVector[1] / k; 
-            _normal = null;
+            Normal = null;
         }
     }
 }

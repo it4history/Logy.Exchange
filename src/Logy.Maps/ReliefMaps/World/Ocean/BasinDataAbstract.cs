@@ -85,14 +85,13 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
             foreach (var basin in PixMan.Pixels)
             {
                 basin.WaterReset();
-                if (basin.HasWater())
+                /// should be commented if (basin.HasWater())
+
+                for (int to = 0; to < 4; to++)
                 {
-                    for (int to = 0; to < 4; to++)
-                    {
-                        var toBasin = basin.Neibors[to];
-                        var hto = basin.Metric(toBasin, to);
-                        basin.Hto[to] = hto;
-                    }
+                    var toBasin = basin.Neibors[to];
+                    var hto = basin.Metric(toBasin, to);
+                    basin.Hto[to] = hto;
                 }
             }
         }

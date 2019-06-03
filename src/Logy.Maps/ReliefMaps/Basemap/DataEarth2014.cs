@@ -91,8 +91,10 @@ namespace Logy.Maps.ReliefMaps.Basemap
             double? min = MinDefault, max = MaxDefault;
             foreach (var basin in basins)
             {
+                basin.Altitude = null;
                 var altitude = GetAltitude(basin);
-                basin.Altitude = altitude; // not needed for Projection.Equirectangular
+                if (basin.Altitude == null)
+                    basin.Altitude = altitude; // not needed for Projection.Equirectangular
                 if (altitude.HasValue)
                 {
                     CheckMaxMin(altitude.Value, ref min, ref max);

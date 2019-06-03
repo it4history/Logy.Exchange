@@ -21,8 +21,9 @@ namespace Logy.Maps.Exchange
         public ShiftAxisGeneric(WaterMoving<T> dataInited) : base(dataInited)
         {
         }
+
         /// <summary>
-        /// key - frame
+        /// key - frame when pole used
         /// </summary>
         public Dictionary<int, PoleNorth> Poles { get; set; } = new Dictionary<int, PoleNorth>
         {
@@ -34,18 +35,25 @@ namespace Logy.Maps.Exchange
         [IgnoreDataMember]
         public T CurrentPoleBasin { get; set; }
 
+        public override void Init()
+        {
+            SetPole(Poles.Values.First());
+            base.Init();
+        }
+
         public void ChangeRotation(int? frame = null, double koef = double.MaxValue)
         {
             if ((koef > 0 && EllipsoidAcceleration.SiderealDayInSeconds < double.MaxValue / 2)
                 || -koef < EllipsoidAcceleration.SiderealDayInSeconds)
             {
                 EllipsoidAcceleration.SiderealDayInSeconds += koef;
-                foreach (var basin in DataAbstract.PixMan.Pixels)
-                {
-                    if (DataAbstract.SamePolesAndEquatorGravitation)
-                        basin.GHpure = 0;
-                    basin.RecalculateDelta_g();
-                }
+                if (DataAbstract.PixMan != null)
+                    foreach (var basin in DataAbstract.PixMan.Pixels)
+                    {
+                        if (DataAbstract.SamePolesAndEquatorGravitation)
+                            basin.GHpure = 0;
+                        basin.RecalculateDelta_g();
+                    }
 
                 if (frame.HasValue)
                 {
@@ -73,15 +81,16 @@ namespace Logy.Maps.Exchange
                         new UnitVector3D(0, 0, 1),
                         new Angle(newPole.X, AngleUnit.Degrees));
 
-            foreach (var b in DataAbstract.PixMan.Pixels)
-            {
-                if (Math.Abs(b.X - newPole.X) < Pole2BasinAccuranceDegrees &&
-                    Math.Abs(b.Y - newPole.Y) < Pole2BasinAccuranceDegrees)
+            if (DataAbstract.PixMan != null)
+                foreach (var b in DataAbstract.PixMan.Pixels)
                 {
-                    CurrentPoleBasin = b;
-                    break;
+                    if (Math.Abs(b.X - newPole.X) < Pole2BasinAccuranceDegrees &&
+                        Math.Abs(b.Y - newPole.Y) < Pole2BasinAccuranceDegrees)
+                    {
+                        CurrentPoleBasin = b;
+                        break;
+                    }
                 }
-            }
 
             // InitiialHtoRecalc();
             ChangeRotation(null, 0);

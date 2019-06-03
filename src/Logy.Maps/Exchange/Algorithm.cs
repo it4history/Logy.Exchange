@@ -32,5 +32,10 @@ namespace Logy.Maps.Exchange
         /// </summary>
         [IgnoreDataMember]
         public WaterMoving<T> DataAbstract { get; protected set; }
+
+        public virtual void Init()
+        {
+            DataAbstract.Init();
+        }
     }
 }
