@@ -34,20 +34,19 @@ namespace Logy.Maps.Exchange
         {
             /* SetPole() calculates Delta_g_meridian and Delta_g_traverse 
                on moment Data.Frame but json might be serialized in other moment
-               with other Hoq, Radius and therefore other Delta_g, Q3, S_q
-            // var pole = Poles.Values.Last();
-            // SetPole(pole); */
+               with other Hoq, Radius and therefore other Delta_g, Q3, S_q 
+            the command SetPole(Poles.Values.Last()); is not accurate because Delta_g depends on Hoq a bit! via a Basin3.Q3 in Centrifugal() */
 
             var poleShiftsCount = 10;
             var poleShift = Slow
-                ? Poles.Count(pole => pole.Key < Data.Frame || Data.Frame == -1)
+                ? Poles.Count //(pole => Data.Frame == -1 || Data.Frame > pole.Key)
                 : poleShiftsCount;
 
             Data.DoFrames(
                 delegate(int frame)
                 {
                     if (frame == 0
-                        || (Slow && frame % slowFrames() == 0 && poleShift++ < poleShiftsCount))
+                        || (Slow && frame % slowFrames() == 0 && poleShift < poleShiftsCount))
                     {
                         var newPole = new PoleNorth
                         {
@@ -55,6 +54,7 @@ namespace Logy.Maps.Exchange
                             Y = 90 - ((90 - DesiredPoleNorth.Y) * poleShift / poleShiftsCount)
                         };
                         SetPole(newPole, frame + 1); /// will be applied on next DoFrame()
+                        poleShift++;
                     }
                     onFrame?.Invoke(frame);
                     return timeStepByFrame?.Invoke(frame) ?? 15; // 15 for k4, 80 for k5 of Meridian

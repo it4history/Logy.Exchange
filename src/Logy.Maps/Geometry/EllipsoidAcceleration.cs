@@ -103,7 +103,7 @@ namespace Logy.Maps.Geometry
 
             var b = (Basin3)basin;
             var axisEnd = AxisOfRotation.ToPoint3D();
-            var axisOrtohonal = new Line3D(Basin3.O3, axisEnd).LineTo(b.Q3, false);
+            var axisOrtohonal = new Line3D(Basin3.O3, axisEnd).LineTo(b.Q3, false); // Qgeiod may be used instead of Q3
             a = Centrifugal(axisOrtohonal.Length);
 
             return CentrifugalByMatrix(b, a, axisOrtohonal, out aTraverse, out aVertical);
@@ -116,7 +116,6 @@ namespace Logy.Maps.Geometry
             aTraverse = -a * aOnSurface[1];
             aVertical = Math.Abs(a * aOnSurface[0]);
             var aMerid = (b.Vartheta < 0 ? 1 : -1) * a * aOnSurface[2];
-            b.Altitude = aVertical;
             return aMerid;
         }
 
@@ -189,8 +188,8 @@ namespace Logy.Maps.Geometry
                 }
             }
 
-            b.Altitude = aTraverse;
-            b.Altitude = aMeridian;
+            // b.Altitude = aTraverse;
+            // b.Altitude = aMeridian;
             return aMeridian;
         }
 

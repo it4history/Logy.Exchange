@@ -51,7 +51,7 @@ namespace Logy.Maps.ReliefMaps.Map2D
                 if (Bundle == null)
                 {
                     if (Directory.Exists(Dir))
-                        Directory.Delete(Dir, true);
+                        Directory.Delete(Dir);
                     value.Init();
                     Bundle = new Bundle<T>(value);
                 }
@@ -132,7 +132,7 @@ namespace Logy.Maps.ReliefMaps.Map2D
         {
             if (basin != null)
             {
-                var width = .03; /// .05 for k4
+                var width = K > 5 ? .03 : 0.05;
                 foreach (var pixel in Data.PixMan.Pixels)
                 {
                     var healCoor = (HealCoor)pixel;

@@ -41,35 +41,6 @@ namespace Logy.Maps.Exchange
             base.Init();
         }
 
-        public void ChangeRotation(int? frame = null, double koef = double.MaxValue)
-        {
-            if ((koef > 0 && EllipsoidAcceleration.SiderealDayInSeconds < double.MaxValue / 2)
-                || -koef < EllipsoidAcceleration.SiderealDayInSeconds)
-            {
-                EllipsoidAcceleration.SiderealDayInSeconds += koef;
-                if (DataAbstract.PixMan != null)
-                    foreach (var basin in DataAbstract.PixMan.Pixels)
-                    {
-                        if (DataAbstract.SamePolesAndEquatorGravitation)
-                            basin.GHpure = 0;
-                        basin.RecalculateDelta_g();
-                    }
-
-                if (frame.HasValue)
-                {
-                    var lastPole = Poles.Values.Last();
-                    Poles.Add(
-                        frame.Value,
-                        new PoleNorth
-                        {
-                            X = lastPole.X,
-                            Y = lastPole.X,
-                            SiderealDayInSeconds = EllipsoidAcceleration.SiderealDayInSeconds
-                        });
-                }
-            }
-        }
-
         public void SetPole(PoleNorth newPole, int? frame = null)
         {
             EllipsoidAcceleration.AxisOfRotation =
@@ -98,6 +69,35 @@ namespace Logy.Maps.Exchange
             if (frame.HasValue)
             {
                 Poles.Add(frame.Value, newPole);
+            }
+        }
+
+        public void ChangeRotation(int? frame = null, double koef = double.MaxValue)
+        {
+            if ((koef > 0 && EllipsoidAcceleration.SiderealDayInSeconds < double.MaxValue / 2)
+                || -koef < EllipsoidAcceleration.SiderealDayInSeconds)
+            {
+                EllipsoidAcceleration.SiderealDayInSeconds += koef;
+                if (DataAbstract.PixMan != null)
+                    foreach (var basin in DataAbstract.PixMan.Pixels)
+                    {
+                        if (DataAbstract.SamePolesAndEquatorGravitation)
+                            basin.GHpure = 0;
+                        basin.RecalculateDelta_g();
+                    }
+
+                if (frame.HasValue)
+                {
+                    var lastPole = Poles.Values.Last();
+                    Poles.Add(
+                        frame.Value,
+                        new PoleNorth
+                        {
+                            X = lastPole.X,
+                            Y = lastPole.X,
+                            SiderealDayInSeconds = EllipsoidAcceleration.SiderealDayInSeconds
+                        });
+                }
             }
         }
     }

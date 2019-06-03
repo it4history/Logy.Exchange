@@ -104,6 +104,9 @@ namespace Logy.Maps.ReliefMaps.Basemap
             return Colors;
         }
 
+        /// <summary>
+        /// either return altitude or fill basin.Altitude
+        /// </summary>
         public abstract double? GetAltitude(T basin);
 
         public int GetHeights(HealCoor coor, int radiusOfEllipse, out int waterHeight)
@@ -134,18 +137,22 @@ namespace Logy.Maps.ReliefMaps.Basemap
             int scale = 1)
         {
             if (basins != null && Colors != null)
+            {
+                var projection = new Equirectangular(HealpixManager, yResolution);
                 foreach (var pixel in basins)
                 {
                     var healCoor = (HealCoor)pixel;
-                    var projection = new Equirectangular(HealpixManager, yResolution);
                     var point = projection.Offset(healCoor);
+                    if (healCoor.Altitude == null)
+                    { }
                     Colors.SetPixelOnBmp(
                         healCoor.Altitude,
                         bmp,
                         (int)(point.X + deltaX),
-                        (int)point.Y, 
+                        (int)point.Y,
                         scale);
                 }
+            }
         }
 
         public void Dispose()
