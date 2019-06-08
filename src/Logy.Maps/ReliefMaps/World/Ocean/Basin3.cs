@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Linq;
-using System.Runtime.Serialization;
 using Logy.Maps.Geometry;
 using Logy.Maps.Projections.Healpix;
 using Logy.Maps.ReliefMaps.Basemap;
@@ -12,21 +11,21 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
 {
     public class Basin3 : BasinBase
     {
+        private double _deltaGTraverse;
+
         /// <summary>
-        /// nulled when gradients changed
+        /// nulled when gradient changed
         /// </summary>
         private UnitVector3D? _normal;
-
-        private bool _actualQ3;
 
         /// <summary>
         /// depends on hOQ only from r
         /// </summary>
         private Point3D _q3;
 
-        private Plane? _s_q;
+        private bool _actualQ3;
 
-        private double _deltaGTraverse;
+        private Plane? _s_q;
 
         public static Point3D O3 { get; } = new Point3D(0, 0, 0);
         public static UnitVector3D Oz { get; } = new UnitVector3D(0, 0, 1);
@@ -47,7 +46,7 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
             }
         }
 
-        public Point2D Qb
+        public Point2D Qmeridian
         {
             get { return new Point2D(Radius * BetaSin, Radius * BetaCos); }
             set { }
@@ -59,7 +58,7 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
             {
                 if (!_actualQ3)
                 {
-                    var qb = Qb;
+                    var qb = Qmeridian;
                     _q3 = new Point3D(
                         LambdaMinusPi2Sin * qb.X,
                         LambdaSin * qb.X,
@@ -69,11 +68,16 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
                 return _q3;
             }
         }
+
+        /// <summary>
+        /// depends on AxisOfRotation
+        /// </summary>
         public Point3D Qgeiod
         {
             get
             {
-                var x = RadiusOfEllipse * BetaSin;
+                var paleoRadius = Ellipsoid.RadiusPaleo(this);
+                var x = paleoRadius * BetaSin;
                 return new Point3D(
                     LambdaMinusPi2Sin * x,
                     LambdaSin * x,
@@ -125,6 +129,7 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
                 return _s_q.Value;
             }
         }
+
         public Plane S_geiod => new Plane(Normal.Value, Qgeiod);
 
         public Neibors<Basin3> Neibors { get; } = new Neibors<Basin3>(new Basin3[4]);
@@ -154,13 +159,11 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
         /// <summary>
         /// was named InitialHto
         /// </summary>
-        //// [DataMember]
         public double[] HtoBase { get; set; }
 
         /// <summary>
         /// angle, directed to East
         /// </summary>
-        [DataMember]
         public double Delta_g_traverse
         {
             get

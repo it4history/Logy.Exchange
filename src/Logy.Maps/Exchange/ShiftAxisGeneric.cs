@@ -25,10 +25,10 @@ namespace Logy.Maps.Exchange
         /// <summary>
         /// key - frame when pole used
         /// </summary>
-        public Dictionary<int, PoleNorth> Poles { get; set; } = new Dictionary<int, PoleNorth>
+        public Dictionary<int, Datum> Poles { get; set; } = new Dictionary<int, Datum>
         {
             {
-                -1, new PoleNorth { X = 0, Y = 90 }
+                -1, Datum.Normal
             }
         };
 
@@ -41,16 +41,9 @@ namespace Logy.Maps.Exchange
             base.Init();
         }
 
-        public void SetPole(PoleNorth newPole, int? frame = null)
+        public void SetPole(Datum newPole, int? frame = null)
         {
-            EllipsoidAcceleration.AxisOfRotation =
-                Basin3.Oz
-                    .Rotate(
-                        new UnitVector3D(0, 1, 0),
-                        new Angle(90 - newPole.Y, AngleUnit.Degrees))
-                    .Rotate(
-                        new UnitVector3D(0, 0, 1),
-                        new Angle(newPole.X, AngleUnit.Degrees));
+            Ellipsoid.CurrentPole = newPole;
 
             if (DataAbstract.PixMan != null)
                 foreach (var b in DataAbstract.PixMan.Pixels)
@@ -74,10 +67,10 @@ namespace Logy.Maps.Exchange
 
         public void ChangeRotation(int? frame = null, double koef = double.MaxValue)
         {
-            if ((koef > 0 && EllipsoidAcceleration.SiderealDayInSeconds < double.MaxValue / 2)
-                || -koef < EllipsoidAcceleration.SiderealDayInSeconds)
+            if ((koef > 0 && Ellipsoid.CurrentPole.SiderealDayInSeconds < double.MaxValue / 2)
+                || -koef < Ellipsoid.CurrentPole.SiderealDayInSeconds)
             {
-                EllipsoidAcceleration.SiderealDayInSeconds += koef;
+                Ellipsoid.CurrentPole.SiderealDayInSeconds += koef;
                 if (DataAbstract.PixMan != null)
                     foreach (var basin in DataAbstract.PixMan.Pixels)
                     {
@@ -91,11 +84,11 @@ namespace Logy.Maps.Exchange
                     var lastPole = Poles.Values.Last();
                     Poles.Add(
                         frame.Value,
-                        new PoleNorth
+                        new Datum
                         {
                             X = lastPole.X,
                             Y = lastPole.X,
-                            SiderealDayInSeconds = EllipsoidAcceleration.SiderealDayInSeconds
+                            SiderealDayInSeconds = Ellipsoid.CurrentPole.SiderealDayInSeconds
                         });
                 }
             }

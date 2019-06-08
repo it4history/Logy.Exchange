@@ -8,6 +8,7 @@ using NUnit.Framework;
 namespace Logy.Maps.ReliefMaps.World.Ocean
 {
     [TestFixture]
+    [Category(Slow)]
     public class OceanMap : RotationStopMap<Basin3>
     {
         [Test]
@@ -70,7 +71,7 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
             SetData(algorithm);
 
             Data.GradientAndHeightCrosses();
-            InitiialHtoRecalc();
+            InitialHtoRecalc();
 
             var basin0 = Data.PixMan.Pixels[0];
 
@@ -122,7 +123,7 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
                 400);
         }
 
-        private void InitiialHtoRecalc()
+        private void InitialHtoRecalc()
         {
             foreach (var basin in Data.PixMan.Pixels)
             {

@@ -83,7 +83,7 @@ namespace Logy.Maps.ReliefMaps.World.Ocean.Metrics
             var vectorQt = new Vector2D(
                 other.Q.X * Math.Cos(Lambda.Value - otherBasin.Lambda.Value),
                 other.Q.Y);
-            Beta_traverse = vectorQt.AngleTo(Qb.ToVector2D()).Radians; /*or Q?*/
+            Beta_traverse = vectorQt.AngleTo(Qmeridian.ToVector2D()).Radians; /*or Q?*/
             return Triangles.SinusesTheorem(
                        (Math.PI / 2) + Delta_g_meridian,
                        Radius,

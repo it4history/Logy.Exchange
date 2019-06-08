@@ -291,11 +291,11 @@ namespace Logy.Maps.ReliefMaps.World.Ocean.Metrics
                 {
                 };
                 var lambda = (east.Lambda + west.Lambda).Value / 2;
-                inter.Qb = new Point2D(
-                    (.5 * (east.Qb.X + west.Qb.X)
+                inter.Qmeridian = new Point2D(
+                    (.5 * (east.Qmeridian.X + west.Qmeridian.X)
                      /* correct projection */
                      * Math.Cos(basin.Lambda.Value)) - lambda,
-                    .5 * (east.Qb.Y + west.Qb.Y));
+                    .5 * (east.Qmeridian.Y + west.Qmeridian.Y));
             }
             return basin.Intersect(inter);
         }

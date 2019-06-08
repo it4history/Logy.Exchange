@@ -1,4 +1,5 @@
 ﻿using System;
+using Logy.MwAgent.Sphere;
 
 namespace Logy.Maps.Geometry
 {
@@ -28,14 +29,22 @@ namespace Logy.Maps.Geometry
 
         protected static readonly double E2 = 1 - ((LessRadius * LessRadius) / (BigRadius * BigRadius));
 
+        public static Datum CurrentPole { get; set; } = Datum.Normal;
+
         /// <summary>
         /// Hirt_Rexer2015_Earth2014.pdf
         /// </summary>
         /// <param name="varphi">http://hist.tk/ory/Широта#геоцентрическая</param>
         public static double Radius(double varphi)
         {
-            var sin2 = Math.Sin(varphi) * Math.Sin(varphi);
+            var varphiSin = Math.Sin(varphi);
+            var sin2 = varphiSin * varphiSin;
             return BigRadius * Math.Sqrt((1 - (E2 * (2 - E2) * sin2)) / (1 - (E2 * sin2)));
+        }
+        public static double RadiusPaleo(Coor coor)
+        {
+            var theta = CurrentPole.AxisOfRotation.AngleTo(Datum.Cartesian(coor)).Radians;
+            return Radius(Math.PI / 2 - theta);
         }
 
         /// <summary>

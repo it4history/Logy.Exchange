@@ -13,6 +13,7 @@ using NUnit.Framework;
 
 namespace Logy.Maps.ReliefMaps.Map2D
 {
+    [Category(Slow)]
     public class RotationStopMap<T> : Map2DBase where T : BasinBase
     {
         private bool _jsonNeeded;
@@ -51,7 +52,7 @@ namespace Logy.Maps.ReliefMaps.Map2D
                 if (Bundle == null)
                 {
                     if (Directory.Exists(Dir))
-                        Directory.Delete(Dir);
+                        Array.ForEach(Directory.GetFiles(Dir), File.Delete);
                     value.Init();
                     Bundle = new Bundle<T>(value);
                 }
@@ -132,7 +133,7 @@ namespace Logy.Maps.ReliefMaps.Map2D
         {
             if (basin != null)
             {
-                var width = K > 5 ? .03 : 0.05;
+                var width = K > 5 ? .03 : .06;
                 foreach (var pixel in Data.PixMan.Pixels)
                 {
                     var healCoor = (HealCoor)pixel;

@@ -75,7 +75,6 @@ namespace Logy.Maps.ReliefMaps.Basemap
         /// <summary>
         /// angle, directed to equator of Oz
         /// </summary>
-        [DataMember]
         public virtual double Delta_g_meridian
         {
             get { return _deltaGMeridian; }

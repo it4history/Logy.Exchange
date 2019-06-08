@@ -18,6 +18,8 @@ namespace Logy.Maps.ReliefMaps.Map2D
     [TestFixture]
     public abstract class Map2DBase : Map
     {
+        public const string Slow = "Slow maps generation into files";
+
         private string _dir;
 
         protected Map2DBase()
@@ -62,6 +64,7 @@ namespace Logy.Maps.ReliefMaps.Map2D
         private int LegendHeight => K > 7 ? (K - 6) * 20 : 20;
 
         [Test]
+        [Category(Slow)]
         public virtual void Draw()
         {
             var data = ApproximateData;

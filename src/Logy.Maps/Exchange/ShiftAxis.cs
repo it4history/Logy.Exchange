@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Runtime.Serialization;
+using Logy.Maps.Geometry;
 using Logy.Maps.ReliefMaps.World.Ocean;
 
 namespace Logy.Maps.Exchange
@@ -16,7 +17,7 @@ namespace Logy.Maps.Exchange
         }
 
         [IgnoreDataMember]
-        public PoleNorth DesiredPoleNorth { get; set; } = new PoleNorth { X = -40, Y = 73 };
+        public Datum DesiredDatum { get; set; } = new Datum { X = -40, Y = 73 };
 
         public bool Slow { get; set; }
 
@@ -33,14 +34,15 @@ namespace Logy.Maps.Exchange
             Func<int, int> timeStepByFrame = null)
         {
             /* SetPole() calculates Delta_g_meridian and Delta_g_traverse 
-               on moment Data.Frame but json might be serialized in other moment
-               with other Hoq, Radius and therefore other Delta_g, Q3, S_q 
-            the command SetPole(Poles.Values.Last()); is not accurate because Delta_g depends on Hoq a bit! via a Basin3.Q3 in Centrifugal() */
+               on moment Data.Frame but 
+               for 2) calc method http://hist.tk/ory/Способ_расчета_центробежного_ускорения
+                  json might be serialized in other moment
+                  with other Hoq, Radius and therefore other Delta_g, Q3, S_q, 
+                  so SetPole() will not be accurate if Delta_g depends on Hoq via a Basin3.Q3 in EllipsoidAcceleration.Centrifugal() */
+            SetPole(Poles.Values.Last()); 
 
             var poleShiftsCount = 10;
-            var poleShift = Slow
-                ? Poles.Count //(pole => Data.Frame == -1 || Data.Frame > pole.Key)
-                : poleShiftsCount;
+            var poleShift = Slow ? Poles.Count : poleShiftsCount;
 
             Data.DoFrames(
                 delegate(int frame)
@@ -48,10 +50,10 @@ namespace Logy.Maps.Exchange
                     if (frame == 0
                         || (Slow && frame % slowFrames() == 0 && poleShift < poleShiftsCount))
                     {
-                        var newPole = new PoleNorth
+                        var newPole = new Datum
                         {
-                            X = DesiredPoleNorth.X, /// * slowFrame / slowFramesCount
-                            Y = 90 - ((90 - DesiredPoleNorth.Y) * poleShift / poleShiftsCount)
+                            X = DesiredDatum.X, /// * slowFrame / slowFramesCount
+                            Y = 90 - ((90 - DesiredDatum.Y) * poleShift / poleShiftsCount)
                         };
                         SetPole(newPole, frame + 1); /// will be applied on next DoFrame()
                         poleShift++;

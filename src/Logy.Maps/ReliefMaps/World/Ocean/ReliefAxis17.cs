@@ -8,6 +8,7 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
     /// http://hist.tk/ory/Карта_Земли_после_сдвига_полюса_на_17_градусов
     /// </summary>
     [TestFixture]
+    [Category(Slow)]
     public class ReliefAxis17 : ReliefMap
     {
         public ReliefAxis17()
@@ -15,7 +16,7 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
             LegendNeeded = true;
         }
 
-        protected override int K => 5;
+        protected override int K => 7;
 
         [Test]
         public void AxisChange_Slow()

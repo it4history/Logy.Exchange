@@ -190,7 +190,7 @@ namespace Logy.Maps.ReliefMaps.Water
 
         public override void Draw(
             Bitmap bmp, 
-            double deltaX = 0, 
+            double deltaX = 0,  
             IEnumerable basins = null,
             int yResolution = 2, 
             int scale = 1)

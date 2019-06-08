@@ -6,7 +6,6 @@ namespace Logy.Maps.Wos.Tests
     [TestFixture]
     public class WosManagerTests
     {
-        [Test]
         public void DoWork()
         {
             WosManager.DoWork();

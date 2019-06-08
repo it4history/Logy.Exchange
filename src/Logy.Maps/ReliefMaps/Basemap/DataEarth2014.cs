@@ -143,8 +143,6 @@ namespace Logy.Maps.ReliefMaps.Basemap
                 {
                     var healCoor = (HealCoor)pixel;
                     var point = projection.Offset(healCoor);
-                    if (healCoor.Altitude == null)
-                    { }
                     Colors.SetPixelOnBmp(
                         healCoor.Altitude,
                         bmp,

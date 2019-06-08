@@ -6,6 +6,7 @@ namespace Logy.MwAgent.Sphere
 {
     /// <summary>
     /// point on sphere
+    /// by default X == -180, Y == 90
     /// </summary>
     [DataContract(Namespace = UrlsManager.Namespace)]
     public class Coor : Point2
@@ -21,7 +22,6 @@ namespace Logy.MwAgent.Sphere
         public Coor(Coor original) : base(original)
         {
             Precision = original.Precision;
-            Globe = original.Globe;
         }
 
         public Coor(string original) : base(original)
@@ -88,8 +88,6 @@ namespace Logy.MwAgent.Sphere
         }
 
         public double? Precision { get; set; }
-
-        public string Globe { get; set; }
 
         #region metrics
         public double Sum
