@@ -5,9 +5,6 @@ using System.Runtime.Serialization;
 using Logy.Maps.Geometry;
 using Logy.Maps.ReliefMaps.Basemap;
 using Logy.Maps.ReliefMaps.Water;
-using Logy.Maps.ReliefMaps.World.Ocean;
-using MathNet.Spatial.Euclidean;
-using MathNet.Spatial.Units;
 
 namespace Logy.Maps.Exchange
 {
@@ -38,7 +35,21 @@ namespace Logy.Maps.Exchange
         public override void Init()
         {
             SetPole(Poles.Values.First());
+
             base.Init();
+        }
+
+        public override void OnDeserialize()
+        {
+            /* SetPole() calculates Delta_g_meridian and Delta_g_traverse 
+               on moment Data.Frame but 
+               for 2) calc method http://hist.tk/ory/Способ_расчета_центробежного_ускорения
+                  json might be serialized in other moment
+                  with other Hoq, Radius and therefore other Delta_g, Q3, S_q, 
+                  so SetPole() will not be accurate if Delta_g depends on Hoq via a Basin3.Q3 in EllipsoidAcceleration.Centrifugal() */
+            SetPole(Poles.Values.Last());
+
+            base.OnDeserialize();
         }
 
         public void SetPole(Datum newPole, int? frame = null)

@@ -77,7 +77,7 @@ namespace Logy.Maps.ReliefMaps.Basemap
         /// <summary>
         /// moved out constructor to enable deserialization
         /// </summary>
-        public virtual void Init()
+        public virtual void Init(bool full = true)
         {
             Relief = new Earth2014Manager(ReliefType, Accuracy, IsReliefShape, _readAllAtStart);
             ReliefBed = new Earth2014Manager(ReliefBedType, Accuracy, IsReliefBedShape, _readAllAtStart);

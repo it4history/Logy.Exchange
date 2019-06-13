@@ -1,4 +1,5 @@
 ﻿#if DEBUG
+using System.Reflection;
 using Logy.Maps.Projections.Healpix;
 using Logy.Maps.ReliefMaps.World.Ocean;
 using NUnit.Framework;
@@ -12,7 +13,7 @@ namespace Logy.Maps.Exchange.Tests
             @"{""Algorithms"":[{""Slow"":true" +
             @",""Data"":{""WithRelief"":true,""Spheric"":false,""IntegrationEndless"":false,""SamePolesAndEquatorGravitation"":false,""Frame"":-1,""Time"":0,""TimeStep"":1,""Max"":null,""Min"":null,""K"":4,""Accuracy"":5,""Dimension"":""m""}" +
             @",""Poles"":{""-1"":{""SiderealDayInSeconds"":86164.100637,""X"":-180.0,""Y"":90.0}}" +
-            $@",""Name"":""Logy.Maps.Exchange.ShiftAxis, Logy.Maps, Version={Global.Version}, Culture=neutral, PublicKeyToken=null"",""Diff"":0.0" +
+            $@",""Name"":""Logy.Maps.Exchange.ShiftAxis, Logy.Maps, Version={Assembly.GetExecutingAssembly().GetName().Version}, Culture=neutral, PublicKeyToken=null"",""Diff"":0.0" +
             @"}],""Basins"":{""4"":[{""Hoq"":0.0,""Depth"":2371.0,""P"":0}]}}";
             
         [Test]
@@ -57,7 +58,7 @@ namespace Logy.Maps.Exchange.Tests
             string json5 = null;
             algorithm.Shift(
                 6,
-                () => 2,
+                (frame) => 2,
                 delegate(int frame)
                 {
                     if (frame == 5)
@@ -75,7 +76,7 @@ namespace Logy.Maps.Exchange.Tests
             }
 
             var algorithm5 = bundle5.Algorithm as ShiftAxis;
-            algorithm5.Shift(6, () => 2);
+            algorithm5.Shift(6, (frame) => 2);
 
             var restoredAndRun = bundle5.Serialize();
             Assert.AreEqual(jsonLast, restoredAndRun);

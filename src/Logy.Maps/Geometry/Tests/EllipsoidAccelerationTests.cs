@@ -25,6 +25,7 @@ namespace Logy.Maps.Geometry.Tests
             _basin31 = man.GetCenter<Basin3>(31);
             _basin77 = man.GetCenter<Basin3>(77);
             _basin95 = man.GetCenter<Basin3>(95);
+            Ellipsoid.CurrentPole = Datum.Normal;
         }
 
         [TearDown]
@@ -74,7 +75,7 @@ namespace Logy.Maps.Geometry.Tests
         public void Centrifugal_aMeridian_BugOfCone()
         {
             double a, aTraverse, aVertical;
-            Ellipsoid.CurrentPole = new Datum{ X = 0, Y = 0 }; /// AxisOfRotation = new UnitVector3D(1, 0, 0);
+            Ellipsoid.CurrentPole = new Datum { X = 0, Y = 0 }; /// AxisOfRotation = new UnitVector3D(1, 0, 0);
             Assert.AreEqual(-.003, EllipsoidAcceleration.Centrifugal(_basin77, out a, out aTraverse, out aVertical), .001);
             Assert.AreEqual(.017, a, .01);
             Assert.AreEqual(.017, aTraverse, .001);

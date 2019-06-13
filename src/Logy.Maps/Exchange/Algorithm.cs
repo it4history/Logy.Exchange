@@ -21,7 +21,7 @@ namespace Logy.Maps.Exchange
         public string Name => GetType().AssemblyQualifiedName;
 
         /// <summary>
-        /// ocean volume increase from initial, mln cub km
+        /// ocean volume increase from initial frame 0, million cub km
         /// </summary>
         public double Diff { get; set; }
 
@@ -36,6 +36,10 @@ namespace Logy.Maps.Exchange
         public virtual void Init()
         {
             DataAbstract.Init();
+        }
+
+        public virtual void OnDeserialize()
+        {
         }
     }
 }

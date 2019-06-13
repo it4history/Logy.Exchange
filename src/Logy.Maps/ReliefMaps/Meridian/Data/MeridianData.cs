@@ -19,9 +19,9 @@ namespace Logy.Maps.ReliefMaps.Meridian.Data
             Init();
         }
 
-        public override void Init()
+        public override void Init(bool full = true)
         {
-            base.Init();
+            base.Init(full);
             Water.IsMeridian = true;
         }
 

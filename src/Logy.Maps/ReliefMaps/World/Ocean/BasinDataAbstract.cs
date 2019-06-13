@@ -21,62 +21,65 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
         public override ReliefType ReliefBedType => ReliefType.Tbi;
 
         [IgnoreDataMember]
-        public Func<T, double> Visual => basin => basin.Hoq; //// basin.Altitude * 1000;
+        public Func<T, double> Visual { get; set; } = basin => basin.Hoq; //// basin.Altitude * 1000;
 
-        public override void Init()
+        public override void Init(bool full = true)
         {
-            base.Init();
+            base.Init(full);
 
             ColorsMiddle = 0;
 
-            foreach (var basin in PixMan.Pixels)
+            if (full)
             {
-                if (WithRelief)
+                foreach (var basin in PixMan.Pixels)
                 {
-                    int waterHeight;
-                    var hOQ = GetHeights(basin, (int)basin.RadiusOfEllipse, out waterHeight);
-                    basin.Hoq = hOQ;
-                    if (waterHeight > 0)
-                    {
-                        basin.Depth = waterHeight - hOQ;
-                    }
-                    else
-                    {
-                        basin.Depth = -hOQ;
-                    }
-                }
-                if (Spheric)
-                {
-                    basin.Delta_g_meridian = basin.Delta_g_traverse = 0;
                     if (WithRelief)
                     {
-                        var diff = Earth2014Manager.Radius2Add - basin.RadiusOfEllipse;
-                        basin.Depth += diff;
-                        basin.Hoq -= diff;
+                        int waterHeight;
+                        var hOQ = GetHeights(basin, (int)basin.RadiusOfEllipse, out waterHeight);
+                        basin.Hoq = hOQ;
+                        if (waterHeight > 0)
+                        {
+                            basin.Depth = waterHeight - hOQ;
+                        }
+                        else
+                        {
+                            basin.Depth = -hOQ;
+                        }
                     }
-                    basin.InitROfEllipse(HealpixManager, Earth2014Manager.Radius2Add);
+                    if (Spheric)
+                    {
+                        basin.Delta_g_meridian = basin.Delta_g_traverse = 0;
+                        if (WithRelief)
+                        {
+                            var diff = Earth2014Manager.Radius2Add - basin.RadiusOfEllipse;
+                            basin.Depth += diff;
+                            basin.Hoq -= diff;
+                        }
+                        basin.InitROfEllipse(HealpixManager, Earth2014Manager.Radius2Add);
+                    }
+
+                    foreach (Direction to in Enum.GetValues(typeof(Direction)))
+                    {
+                        var toBasin = PixMan.Pixels[HealpixManager.Neibors.Get(to, basin)];
+                        basin.Neibors[to] = toBasin;
+
+                        basin.Froms[(int)to] = basin.GetFromAndFillType(to, toBasin, HealpixManager);
+
+                        basin.MeanEdges[(int)to] = HealpixManager.Neibors.MeanBoundary(basin, to);
+                    }
+                    /// basin.CorrectionSurface();
+                    for (int to = 0; to < 4; to++)
+                    {
+                        var toBasin = basin.Neibors[to];
+                        basin.HtoBase[to] = basin.Metric(toBasin, to, true);
+                    }
                 }
 
-                foreach (Direction to in Enum.GetValues(typeof(Direction)))
+                if (WithRelief)
                 {
-                    var toBasin = PixMan.Pixels[HealpixManager.Neibors.Get(to, basin)];
-                    basin.Neibors[to] = toBasin;
-
-                    basin.Froms[(int)to] = basin.GetFromAndFillType(to, toBasin, HealpixManager);
-
-                    basin.MeanEdges[(int)to] = HealpixManager.Neibors.MeanBoundary(basin, to);
+                    CheckOcean();
                 }
-                /// basin.CorrectionSurface();
-                for (int to = 0; to < 4; to++)
-                {
-                    var toBasin = basin.Neibors[to];
-                    basin.HtoBase[to] = basin.Metric(toBasin, to, true);
-                }
-            }
-
-            if (WithRelief)
-            {
-                CheckOcean();
             }
         }
 
@@ -103,26 +106,29 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
                 for (int to = 0; to < 4; to++)
                 {
                     var toBasin = basin.Neibors[to];
-                    var @from = basin.Froms[to];
-                    var koef
-                        = .25;
-                    /// = basin.Koef[(int)to] / basin.Koef.Sum();
 
-                    // todo balance deltaH relative to basin.WaterHeight
-                    var height = basin.Hto[to] - toBasin.Hto[@from];
-
-                    var movedFromBasin = Water.PutV(
-                        basin, 
-                        toBasin,
-                        height * koef,
-                        to, 
-                        @from);
-                    if (Math.Abs(movedFromBasin) > 0)
+                    // null for maps that only visualize
+                    if (toBasin != null)
                     {
+                        var @from = basin.Froms[to];
+                        var koef
+                            = .25;
+                        /// = basin.Koef[(int)to] / basin.Koef.Sum();
+
+                        // todo balance deltaH relative to basin.WaterHeight
+                        var height = basin.Hto[to] - toBasin.Hto[@from];
+
+                        Water.PutV(
+                            basin,
+                            toBasin,
+                            height * koef,
+                            to,
+                            @from);
                     }
                 }
+                return Visual(basin); // basin.hOQ;
             }
-            return basin.HasWater() ? Visual(basin) : (double?)null; // basin.hOQ;
+            return null;
         }
     }
 }

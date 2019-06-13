@@ -18,7 +18,7 @@ namespace Logy.Maps.ReliefMaps.Map2D
     [TestFixture]
     public abstract class Map2DBase : Map
     {
-        public const string Slow = "Slow maps generation into files";
+        public const string Slow = "Slow maps saved into files";
 
         private string _dir;
 

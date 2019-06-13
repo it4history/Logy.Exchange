@@ -44,7 +44,7 @@ namespace Logy.Maps.Geometry
         public static double RadiusPaleo(Coor coor)
         {
             var theta = CurrentPole.AxisOfRotation.AngleTo(Datum.Cartesian(coor)).Radians;
-            return Radius(Math.PI / 2 - theta);
+            return Radius((Math.PI / 2) - theta);
         }
 
         /// <summary>

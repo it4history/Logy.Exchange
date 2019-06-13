@@ -41,7 +41,7 @@ namespace Logy.Maps.Exchange
         /// </summary>
         public Dictionary<int, T[]> Basins { get; } = new Dictionary<int, T[]>();
 
-        public static Bundle<T> Deserialize(string json, bool ignoreNewBasins = false)
+        public static Bundle<T> Deserialize(string json, bool ignoreNewBasins = false, bool initFull = true)
         {
             var bundle = JsonConvert.DeserializeObject<Bundle<T>>(json);
             for (var i = 0; i < bundle.Algorithms.Count; i++)
@@ -51,12 +51,15 @@ namespace Logy.Maps.Exchange
                     algorithmInJson.ToString(),
                     Type.GetType(algorithmInJson["Name"].ToString()));
             }
-            bundle.Algorithm.Init();
+            if (initFull)
+                bundle.Algorithm.Init();
+            else
+                bundle.Algorithm.DataAbstract.Init(false);
 
             var data = bundle.Algorithm.DataAbstract;
-            foreach (var bundleBasinBase in bundle.Basins[data.K])
+            for (var p = 0; p < bundle.Basins[data.K].Length; p++)
             {
-                var bundleBasin = bundleBasinBase as Basin3;
+                var bundleBasin = bundle.Basins[data.K][p] as Basin3;
                 var basin = data.PixMan.Pixels[bundleBasin.P] as Basin3;
                 if (bundleBasin.P < data.PixMan.Pixels.Length)
                 {
@@ -70,9 +73,11 @@ namespace Logy.Maps.Exchange
                     // bundleBasin.OnInit(bundle.Algorithm.DataAbstract.HealpixManager);
                     // bundleBasin.Delta_g_meridian = jsonDelta_g_meridian; /// OnInit corrupts it*/
 
-                    basin.Hoq = bundleBasin.Hoq;
                     basin.Delta_g_meridian = jsonDelta_g_meridian;
                     basin.Delta_g_traverse = bundleBasin.Delta_g_traverse;
+
+                    basin.Hoq = bundleBasin.Hoq;
+                    basin.Depth = bundleBasin.Depth;
 
                     Assert.IsTrue(basin.Depth == bundleBasin.Depth
                                   && basin.WaterHeight == bundleBasin.WaterHeight);
@@ -80,6 +85,9 @@ namespace Logy.Maps.Exchange
             }
             if (!ignoreNewBasins)
                 bundle.Basins[data.HealpixManager.K] = data.PixMan.Pixels;
+
+            bundle.Algorithm.OnDeserialize();
+
             return bundle;
         }
 

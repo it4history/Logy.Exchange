@@ -65,20 +65,30 @@ namespace Logy.Maps.ReliefMaps.Map2D
 
         protected override ImageFormat ImageFormat => ImageFormat.Jpeg;
 
-        private string StatsFileName => Path.Combine(Dir, "stats.json");
-
-        public void SetData(Algorithm<T> algorithm, bool jsonNeeded = false)
+        /// <summary>
+        /// like a constructor
+        /// </summary>
+        public void SetData(Algorithm<T> algorithm, bool jsonNeeded = false, bool initFull = true)
         {
             _jsonNeeded = jsonNeeded;
-            algorithm.DataAbstract.Init();
-            if (File.Exists(StatsFileName))
+            if (File.Exists(StatsFileName()))
             {
-                Bundle = Bundle<T>.Deserialize(File.ReadAllText(StatsFileName));
-                if (K != Bundle.Algorithm.DataAbstract.K)
+                Bundle = Bundle<T>.Deserialize(File.ReadAllText(StatsFileName()), false, initFull);
+                var dataInJson = Bundle.Algorithm.DataAbstract;
+                if (K != dataInJson.K)
                     throw new ApplicationException($"map needs K {K}");
+                var dataInCode = algorithm.DataAbstract;
+                if (dataInCode != null)
+                {
+                    if (dataInCode.WithRelief != dataInJson.WithRelief)
+                        throw new ApplicationException("data WithRelief mismatch");
+                }
             }
             else
+            {
+                algorithm.DataAbstract.Init();
                 Bundle = new Bundle<T>(algorithm);
+            }
         }
 
         [SetUp]
@@ -100,39 +110,51 @@ namespace Logy.Maps.ReliefMaps.Map2D
             }
             if (_jsonNeeded)
             {
-                Bundle.Algorithm.Diff = Data.RecheckOcean();
-                using (var file = File.CreateText(StatsFileName))
-                {
-                    new JsonSerializer().Serialize(file, Bundle);
-                }
+                SaveJson();
             }
             else
+            {
+                // for meridian maps mainly
                 SaveBitmap(Data.Frame);
+            }
             Process.Start(GetFileName(Data.Colors, FrameToString(Data.Frame)));
         }
 
         public void ShiftAxis(
             int framesCount = 200, /* for k6 */
-            Func<int> slowFrames = null,
+            Func<int, int> slowFrames = null,
             Func<int, int> timeStepByFrame = null)
         {
             var algorithm = Bundle.Algorithm as ShiftAxis;
+            var lastTimeOfSaveJson = algorithm.DataAbstract.Time;
             algorithm.Shift(
                 framesCount,
                 slowFrames,
                 delegate(int frame)
                 {
-                    Data.Draw(Bmp, 0, null, YResolution, Scale);
-                    Circle(algorithm.CurrentPoleBasin, .03);
-                    SaveBitmap(frame);
+                    Draw(algorithm.CurrentPoleBasin, .03);
+                    SaveBitmap(algorithm.DataAbstract.Frame);
+                    var time = algorithm.DataAbstract.Time;
+                    if (_jsonNeeded && time > lastTimeOfSaveJson + 5000)
+                    {
+                        SaveJson(frame);
+                        lastTimeOfSaveJson = time;
+                    }
                 },
                 timeStepByFrame);
         }
 
-        protected void Circle(HealCoor basin, double r = .2)
+        protected static string FrameToString(int? frame)
+        {
+            return frame.HasValue ? $"{frame:00000}" : null;
+        }
+
+        protected void Draw(HealCoor basin = null, double r = .2)
         {
             if (basin != null)
             {
+                Data.Draw(Bmp, 0, null, YResolution, Scale);
+
                 var width = K > 5 ? .03 : .06;
                 foreach (var pixel in Data.PixMan.Pixels)
                 {
@@ -176,9 +198,18 @@ namespace Logy.Maps.ReliefMaps.Map2D
             SaveBitmap(Bmp, Data.Colors, FrameToString(frame));
         }
 
-        private static string FrameToString(int frame)
+        private string StatsFileName(int? frame = null)
         {
-            return $"{frame:00000}";
+            return Path.Combine(Dir, $"stats{FrameToString(frame)}.json");
+        }
+
+        private void SaveJson(int? frame = null)
+        {
+            Bundle.Algorithm.Diff = Data.RecheckOcean();
+            using (var file = File.CreateText(StatsFileName(frame)))
+            {
+                new JsonSerializer().Serialize(file, Bundle);
+            }
         }
     }
 }

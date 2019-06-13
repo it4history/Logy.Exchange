@@ -8,7 +8,6 @@ using NUnit.Framework;
 namespace Logy.Maps.ReliefMaps.World.Ocean
 {
     [TestFixture]
-    [Category(Slow)]
     public class OceanMap : RotationStopMap<Basin3>
     {
         [Test]
@@ -28,7 +27,7 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
                 delegate(int frame)
                 {
                     Data.Draw(Bmp, 0, null, YResolution, Scale);
-                    Circle(basin);
+                    Draw(basin);
                     SaveBitmap(frame);
                     return 1; /// 240 for k8, 150 for k7, 100 for k6
                 },
@@ -57,7 +56,7 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
                 delegate(int frame)
                 {
                     Data.Draw(Bmp, 0, null, YResolution, Scale);
-                    Circle(basin);
+                    Draw(basin);
                     SaveBitmap(frame);
                     return 1;
                 },

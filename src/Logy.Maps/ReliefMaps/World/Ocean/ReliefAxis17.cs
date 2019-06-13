@@ -8,7 +8,6 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
     /// http://hist.tk/ory/Карта_Земли_после_сдвига_полюса_на_17_градусов
     /// </summary>
     [TestFixture]
-    [Category(Slow)]
     public class ReliefAxis17 : ReliefMap
     {
         public ReliefAxis17()
@@ -18,6 +17,12 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
 
         protected override int K => 7;
 
+        /// <summary>
+        /// bug of Logy.Maps.Exchange.Bundle: 
+        /// 1. save maps till 500 frame; 
+        /// 2. restart from json; 
+        /// 3. min at 501 frame is -1221.1, but must be -1221.2
+        /// </summary>
         [Test]
         public void AxisChange_Slow()
         {
@@ -30,11 +35,12 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
 
             ShiftAxis(
                 2000,
-                () =>
+                (frame) =>
                 {
                     switch (K)
                     {
-                        case 7: return 60;
+                        // to make second shift "Y":86.6 on frame 5 and following on frame 61, 121 etc
+                        case 7: return frame == 4 ? 4 : 60;
                     }
                     return 10;
                 },
@@ -46,6 +52,22 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
                     }
                     return 15;
                 });
+        }
+
+        /// <summary>
+        /// http://hist.tk/ory/Рельеф_после_сдвига_полюса_на_17_градусов
+        /// </summary>
+        [Test]
+        public void RelativePaleogeoid()
+        {
+            SetData(new ShiftAxis { Slow = true }, false, false);
+
+            var algorithm = Bundle.Algorithm as ShiftAxis;
+            algorithm.Data.Frame++;
+            algorithm.Data.Visual = basin => basin.WaterHeight;
+            algorithm.Data.MoveAllWater();
+            algorithm.Data.SetScales();
+            Draw(algorithm.CurrentPoleBasin, .03);
         }
 
         /// <summary>

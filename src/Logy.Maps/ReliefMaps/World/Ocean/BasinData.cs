@@ -13,5 +13,10 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
             : base(man, min, max, readAllAtStart)
         {
         }
+
+        public override double? GetAltitude(Basin3 basin)
+        {
+            return base.GetAltitude(basin);
+        }
     }
 }

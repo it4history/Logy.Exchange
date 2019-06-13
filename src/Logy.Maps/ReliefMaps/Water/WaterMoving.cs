@@ -8,8 +8,6 @@ using Logy.Maps.Approximations;
 using Logy.Maps.Coloring;
 using Logy.Maps.Projections.Healpix;
 using Logy.Maps.ReliefMaps.Basemap;
-using Logy.Maps.ReliefMaps.World.Ocean;
-using MathNet.Spatial.Euclidean;
 using NUnit.Framework;
 
 namespace Logy.Maps.ReliefMaps.Water
@@ -67,9 +65,9 @@ namespace Logy.Maps.ReliefMaps.Water
 
         protected internal PixelsManager<T> PixMan { get; private set; }
 
-        public override void Init()
+        public override void Init(bool full = true)
         {
-            base.Init();
+            base.Init(full);
             PixMan = new PixelsManager<T>(HealpixManager, _basins);
             Water = new WaterModel(HealpixManager);
         }
@@ -230,6 +228,23 @@ namespace Logy.Maps.ReliefMaps.Water
             return diff;
         }
 
+        public void SetScales()
+        {
+            Colors.SetScales(
+                new SortedList<int, Color3>
+                {
+                    { 0, ColorsManager.WaterBorder },
+                    { 25, new Color3(Color.Yellow) },
+                    { 50, new Color3(Color.SandyBrown) },
+                    { 100, new Color3(Color.Red) },
+                },
+                new SortedList<int, Color3>
+                {
+                    { 0, ColorsManager.WaterBorder },
+                    { 100, ColorsManager.DarkBlue },
+                });
+        }
+
         /// <summary>
         /// пересечения градиента с радиусами (высотами тазиков)
         /// http://hist.tk/ory/Gradient_and_height_crosses
@@ -248,8 +263,8 @@ namespace Logy.Maps.ReliefMaps.Water
             else
                 foreach (var basin in PixMan.Pixels)
                 {
-                    // basin.Altitude = 
-                        GetAltitude(basin);
+                    // basin.Altitude =  is needed for meridian maps
+                    basin.Altitude = GetAltitude(basin);
                 }
         }
 
@@ -261,23 +276,6 @@ namespace Logy.Maps.ReliefMaps.Water
         protected double ToMilCumKm(double oceanVolume)
         {
             return oceanVolume / (1000000000 * 1000000d);
-        }
-
-        private void SetScales()
-        {
-            Colors.SetScales(
-                new SortedList<int, Color3>
-                {
-                    { 0, ColorsManager.WaterBorder },
-                    { 25, new Color3(Color.Yellow) },
-                    { 50, new Color3(Color.SandyBrown) },
-                    { 100, new Color3(Color.Red) },
-                },
-                new SortedList<int, Color3>
-                {
-                    { 0, ColorsManager.WaterBorder },
-                    { 100, ColorsManager.DarkBlue },
-                });
         }
     }
 }
