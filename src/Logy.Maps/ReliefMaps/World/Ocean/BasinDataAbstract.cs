@@ -1,5 +1,6 @@
 using System;
 using System.Runtime.Serialization;
+using Logy.Maps.Earth2014;
 using Logy.Maps.Projections.Healpix;
 using Logy.Maps.ReliefMaps.Water;
 
@@ -56,7 +57,7 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
                             basin.Depth += diff;
                             basin.Hoq -= diff;
                         }
-                        basin.InitROfEllipse(HealpixManager, Earth2014Manager.Radius2Add);
+                        basin.InitROfEllipse(HealpixManager);
                     }
 
                     foreach (Direction to in Enum.GetValues(typeof(Direction)))

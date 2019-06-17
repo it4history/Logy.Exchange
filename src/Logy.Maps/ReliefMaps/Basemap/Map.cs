@@ -11,9 +11,6 @@ namespace Logy.Maps.ReliefMaps.Basemap
             HealpixManager = new HealpixManager(K);
         }
 
-        protected virtual int K
-        {
-            get { return 6; }
-        }
+        protected virtual int K => 6;
     }
 }

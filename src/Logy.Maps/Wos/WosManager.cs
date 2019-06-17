@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading;
+using Logy.Maps.Earth2014;
 using Logy.Maps.Projections.Healpix;
 
 namespace Logy.Maps.Wos

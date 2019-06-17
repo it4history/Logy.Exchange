@@ -12,6 +12,6 @@ namespace Logy.Maps.ReliefMaps.World.Approximate
 
         protected override ImageFormat ImageFormat => ImageFormat.Gif;
 
-        protected override DataForMap2D ApproximateData => new CoastLinesData(this);
+        protected override DataForMap2D MapData => new CoastLinesData(this);
     }
 }

@@ -29,7 +29,7 @@ namespace Logy.Maps.Geometry
 
         protected static readonly double E2 = 1 - ((LessRadius * LessRadius) / (BigRadius * BigRadius));
 
-        public static Datum CurrentPole { get; set; } = Datum.Normal;
+        public static Datum CurrentDatum { get; set; } = Datum.Normal;
 
         /// <summary>
         /// Hirt_Rexer2015_Earth2014.pdf
@@ -43,7 +43,7 @@ namespace Logy.Maps.Geometry
         }
         public static double RadiusPaleo(Coor coor)
         {
-            var theta = CurrentPole.AxisOfRotation.AngleTo(Datum.Cartesian(coor)).Radians;
+            var theta = CurrentDatum.AxisOfRotation.AngleTo(Datum.Cartesian(coor)).Radians;
             return Radius((Math.PI / 2) - theta);
         }
 

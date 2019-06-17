@@ -8,7 +8,6 @@ namespace Logy.Maps.ReliefMaps.Meridian
     /// <summary>
     /// http://hist.tk/ory/Рельеф_Земли_-_усредненный_меридиан
     /// </summary>
-    [TestFixture]
     public class ReliefMap : MeridianMap
     {
         protected override int K => 6;

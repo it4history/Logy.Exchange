@@ -14,6 +14,6 @@ namespace Logy.Maps.ReliefMaps.World.Approximate
 
         protected override int K => 8;
 
-        protected override DataForMap2D ApproximateData => new WorldAltitudesData(this);
+        protected override DataForMap2D MapData => new WorldAltitudesData(this);
     }
 }

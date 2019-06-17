@@ -6,7 +6,7 @@ namespace Logy.Maps.ReliefMaps.World.Approximate
 {
     public class PercentageData : DataForMap2D
     {
-        private int _percentageOfLand = 50;
+        private double _percentageOfLand = .50;
         private double _landPixelsCount;
 
         public PercentageData(Map2DBase map) : base(map)
@@ -20,7 +20,7 @@ namespace Logy.Maps.ReliefMaps.World.Approximate
                 _landPixelsCount++;
 
             var middle = HealpixManager.Npix / 2d;
-            return Math.Abs(basin.P - middle) <= middle * _percentageOfLand / 100d ? 1 : 0;
+            return Math.Abs(basin.P - middle) <= middle * _percentageOfLand ? 1 : 0;
         }
 
         public override void Log()

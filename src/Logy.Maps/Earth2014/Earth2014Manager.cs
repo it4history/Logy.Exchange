@@ -4,7 +4,7 @@ using System.IO;
 using Logy.Maps.Projections.Healpix;
 using Logy.MwAgent.Sphere;
 
-namespace Logy.Maps
+namespace Logy.Maps.Earth2014
 {
     public class Earth2014Manager : IDisposable
     {

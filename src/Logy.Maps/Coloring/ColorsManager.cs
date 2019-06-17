@@ -109,7 +109,7 @@ namespace Logy.Maps.Coloring
                 .Sum(); // for 3 and more points incorrect ->   / deltas.Count; 
         }
 
-        public void SetScales(SortedList<int, Color3> above, SortedList<int, Color3> under)
+        public void SetColorLists(SortedList<int, Color3> above, SortedList<int, Color3> under)
         {
             _above = above;
             _under = under;

@@ -8,6 +8,7 @@ using Logy.Maps.Approximations;
 using Logy.Maps.Coloring;
 using Logy.Maps.Projections.Healpix;
 using Logy.Maps.ReliefMaps.Basemap;
+using Logy.Maps.ReliefMaps.Map2D;
 using NUnit.Framework;
 
 namespace Logy.Maps.ReliefMaps.Water
@@ -156,7 +157,7 @@ namespace Logy.Maps.ReliefMaps.Water
                         DoFrame(IsDynamicScale);
                     }
                     Time += TimeStep;
-                    SetScales();
+                    SetColorLists();
                     if (IsDynamicScale)
                     {
                         if (Min.HasValue && Max.HasValue)
@@ -187,13 +188,14 @@ namespace Logy.Maps.ReliefMaps.Water
         }
 
         public override void Draw(
-            Bitmap bmp, 
-            double deltaX = 0,  
+            Bitmap bmp,
+            double deltaX = 0,
             IEnumerable basins = null,
-            int yResolution = 2, 
-            int scale = 1)
+            int yResolution = 2,
+            int scale = 1,
+            Projection projection = Projection.Healpix)
         {
-            base.Draw(bmp, deltaX, PixMan.Pixels, yResolution, scale);
+            base.Draw(bmp, deltaX, PixMan.Pixels, yResolution, scale, projection);
             Log();
         }
 
@@ -228,9 +230,9 @@ namespace Logy.Maps.ReliefMaps.Water
             return diff;
         }
 
-        public void SetScales()
+        public void SetColorLists()
         {
-            Colors.SetScales(
+            Colors.SetColorLists(
                 new SortedList<int, Color3>
                 {
                     { 0, ColorsManager.WaterBorder },

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Runtime.Serialization;
+using Logy.Maps.Earth2014;
 using Logy.Maps.Geometry;
 using Logy.Maps.Projections.Healpix;
 using MathNet.Spatial.Euclidean;
@@ -57,6 +58,8 @@ namespace Logy.Maps.ReliefMaps.Basemap
         /// geoid surface, may be changed
         /// </summary>
         public double RadiusOfEllipse { get; private set; }
+        public bool RadiusSpheric { get; private set; }
+
         public double RingArea { get; private set; }
         public double Area { get; private set; }
 
@@ -156,11 +159,13 @@ namespace Logy.Maps.ReliefMaps.Basemap
         }
         #endregion
 
-        public void InitROfEllipse(HealpixManager man, double newR)
+        /// <param name="newR">null for spheric Earth</param>
+        public void InitROfEllipse(HealpixManager man, double? newR = null)
         {
-            RadiusOfEllipse = newR;
+            RadiusOfEllipse = newR ?? Earth2014Manager.Radius2Add;
+            RadiusSpheric = newR == null;
 
-            Area = newR * newR * man.OmegaPix;
+            Area = RadiusOfEllipse * RadiusOfEllipse * man.OmegaPix;
             RingArea = Area * PixelsCountInRing;
         }
 

@@ -1,5 +1,6 @@
 ﻿#if DEBUG
 using Logy.Maps.Exchange;
+using Logy.Maps.Geometry;
 using Logy.Maps.Projections.Healpix;
 using Logy.Maps.ReliefMaps.Map2D;
 using Logy.Maps.ReliefMaps.World.Ocean.Tests;
@@ -7,7 +8,6 @@ using NUnit.Framework;
 
 namespace Logy.Maps.ReliefMaps.World.Ocean
 {
-    [TestFixture]
     public class OceanMap : RotationStopMap<Basin3>
     {
         [Test]
@@ -20,14 +20,14 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
             var p = HealpixManager.GetP(HealpixManager.Nside + 5, HealpixManager.Nside * 2);
             var basin = Data.PixMan.Pixels[p];
             basin.Hoq = h;
+            Ellipsoid.CurrentDatum.PoleBasin = basin;
             Data.PixMan.Pixels[HealpixManager
                 .GetP(HealpixManager.Nside, (int)(HealpixManager.Nside * 2.5))].Hoq = h;
 
             Data.DoFrames(
                 delegate(int frame)
                 {
-                    Data.Draw(Bmp, 0, null, YResolution, Scale);
-                    Draw(basin);
+                    Draw();
                     SaveBitmap(frame);
                     return 1; /// 240 for k8, 150 for k7, 100 for k6
                 },
@@ -42,6 +42,7 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
             var p = HealpixManager.GetP(HealpixManager.Nside - 1, HealpixManager.Nside * 1);
             var basin = Data.PixMan.Pixels[p];
             basin.Delta_g_meridian = -.2;
+            Ellipsoid.CurrentDatum.PoleBasin = basin;
 
             p = HealpixManager.GetP(HealpixManager.Nside * 2, HealpixManager.Nside * 2);
             Data.PixMan.Pixels[p].Delta_g_meridian = .2;
@@ -55,8 +56,7 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
             Data.DoFrames(
                 delegate(int frame)
                 {
-                    Data.Draw(Bmp, 0, null, YResolution, Scale);
-                    Draw(basin);
+                    Draw();
                     SaveBitmap(frame);
                     return 1;
                 },

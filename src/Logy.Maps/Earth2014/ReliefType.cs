@@ -1,4 +1,4 @@
-namespace Logy.Maps
+namespace Logy.Maps.Earth2014
 {
     /// <summary>
     /// http://ddfe.curtin.edu.au/models/Earth2014/readme_earth2014.dat

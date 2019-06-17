@@ -4,7 +4,6 @@ using NUnit.Framework;
 
 namespace Logy.Maps.ReliefMaps.Map2D.Tests
 {
-    [TestFixture]
     public class OptimizationTests : RotationStopMap<MeridianCoorFast>
     {
         [Test]

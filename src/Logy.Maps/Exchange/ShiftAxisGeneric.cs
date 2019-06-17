@@ -5,6 +5,7 @@ using System.Runtime.Serialization;
 using Logy.Maps.Geometry;
 using Logy.Maps.ReliefMaps.Basemap;
 using Logy.Maps.ReliefMaps.Water;
+using Logy.Maps.ReliefMaps.World.Ocean;
 
 namespace Logy.Maps.Exchange
 {
@@ -29,9 +30,6 @@ namespace Logy.Maps.Exchange
             }
         };
 
-        [IgnoreDataMember]
-        public T CurrentPoleBasin { get; set; }
-
         public override void Init()
         {
             SetPole(Poles.Values.First());
@@ -54,7 +52,7 @@ namespace Logy.Maps.Exchange
 
         public void SetPole(Datum newPole, int? frame = null)
         {
-            Ellipsoid.CurrentPole = newPole;
+            Ellipsoid.CurrentDatum = newPole;
 
             if (DataAbstract.PixMan != null)
                 foreach (var b in DataAbstract.PixMan.Pixels)
@@ -62,7 +60,7 @@ namespace Logy.Maps.Exchange
                     if (Math.Abs(b.X - newPole.X) < Pole2BasinAccuranceDegrees &&
                         Math.Abs(b.Y - newPole.Y) < Pole2BasinAccuranceDegrees)
                     {
-                        CurrentPoleBasin = b;
+                        Ellipsoid.CurrentDatum.PoleBasin = b;
                         break;
                     }
                 }
@@ -78,10 +76,10 @@ namespace Logy.Maps.Exchange
 
         public void ChangeRotation(int? frame = null, double koef = double.MaxValue)
         {
-            if ((koef > 0 && Ellipsoid.CurrentPole.SiderealDayInSeconds < double.MaxValue / 2)
-                || -koef < Ellipsoid.CurrentPole.SiderealDayInSeconds)
+            if ((koef > 0 && Ellipsoid.CurrentDatum.SiderealDayInSeconds < double.MaxValue / 2)
+                || -koef < Ellipsoid.CurrentDatum.SiderealDayInSeconds)
             {
-                Ellipsoid.CurrentPole.SiderealDayInSeconds += koef;
+                Ellipsoid.CurrentDatum.SiderealDayInSeconds += koef;
                 if (DataAbstract.PixMan != null)
                     foreach (var basin in DataAbstract.PixMan.Pixels)
                     {
@@ -99,7 +97,7 @@ namespace Logy.Maps.Exchange
                         {
                             X = lastPole.X,
                             Y = lastPole.X,
-                            SiderealDayInSeconds = Ellipsoid.CurrentPole.SiderealDayInSeconds
+                            SiderealDayInSeconds = Ellipsoid.CurrentDatum.SiderealDayInSeconds
                         });
                 }
             }

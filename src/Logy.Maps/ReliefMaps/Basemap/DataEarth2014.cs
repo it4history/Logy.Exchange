@@ -3,8 +3,12 @@ using System.Collections;
 using System.Drawing;
 using System.Runtime.Serialization;
 using Logy.Maps.Coloring;
+using Logy.Maps.Earth2014;
+using Logy.Maps.Geometry;
 using Logy.Maps.Projections;
 using Logy.Maps.Projections.Healpix;
+using Logy.Maps.ReliefMaps.Map2D;
+using Logy.MwAgent.Sphere;
 
 namespace Logy.Maps.ReliefMaps.Basemap
 {
@@ -134,21 +138,63 @@ namespace Logy.Maps.ReliefMaps.Basemap
             double deltaX = 0, 
             IEnumerable basins = null, 
             int yResolution = 2, 
-            int scale = 1)
+            int scale = 1, 
+            Projection projection = Projection.Healpix)
         {
             if (basins != null && Colors != null)
             {
-                var projection = new Equirectangular(HealpixManager, yResolution);
+                Point2 previousPoint = null;
+                HealCoor previousCoor = null;
+                var equirectangular = new Equirectangular(HealpixManager, yResolution);
                 foreach (var pixel in basins)
                 {
                     var healCoor = (HealCoor)pixel;
-                    var point = projection.Offset(healCoor);
+                    var point = equirectangular.Offset(healCoor);
                     Colors.SetPixelOnBmp(
                         healCoor.Altitude,
                         bmp,
                         (int)(point.X + deltaX),
                         (int)point.Y,
                         scale);
+
+                    if (projection == Projection.Healpix2EquirectangularFast
+                        && previousPoint != null
+                        && (int)previousPoint.Y == (int)point.Y
+                        && (int)previousPoint.X > (int)point.X)
+                    {
+                        var segments = Math.Min(previousPoint.X - point.X, 4); // 4 segments produce 3 points
+                        var segmentLength = (previousPoint.X - point.X) / segments;
+                        for (var i = 1; i < segments; i++)
+                        {
+                            var approximateAltitude = healCoor.Altitude * (segments - i) / segments
+                                                      + previousCoor.Altitude * i / segments;
+                            Colors.SetPixelOnBmp(
+                                approximateAltitude,
+                                bmp,
+                                (int)(point.X + deltaX + i * segmentLength),
+                                (int)point.Y,
+                                scale);
+                        }
+                    }
+                    previousPoint = point;
+                    previousCoor = healCoor;
+
+                    if (Ellipsoid.CurrentDatum.PoleBasin != null)
+                    {
+                        var r = K == 7 ? .01 : K == 6 ? .03 : .2;
+                        var width = K > 5 ? .03 : .06;
+                        var dist = Ellipsoid.CurrentDatum.PoleBasin.DistanceTo(healCoor);
+                        if (Colors != null
+                            && dist >= r - width && dist <= r + width)
+                        {
+                            Colors.SetPixelOnBmp(
+                                Color.FromArgb(255, 174, 201),
+                                bmp,
+                                (int)point.X,
+                                (int)point.Y,
+                                scale);
+                        }
+                    }
                 }
             }
         }

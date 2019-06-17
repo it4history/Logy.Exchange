@@ -3,7 +3,7 @@ using Logy.Maps.Projections.Healpix;
 using Logy.MwAgent.Sphere;
 using NUnit.Framework;
 
-namespace Logy.Maps.Tests
+namespace Logy.Maps.Earth2014.Tests
 {
     [TestFixture]
     public class Earth2014ManagerTests

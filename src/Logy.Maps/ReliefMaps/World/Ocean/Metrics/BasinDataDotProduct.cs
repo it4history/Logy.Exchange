@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using Logy.Maps.Earth2014;
 using Logy.Maps.Geometry;
 using Logy.Maps.Projections.Healpix;
 using Logy.Maps.ReliefMaps.Water;
@@ -304,7 +305,7 @@ namespace Logy.Maps.ReliefMaps.World.Ocean.Metrics
         {
             if (Spheric)
             {
-                basin.InitROfEllipse(HealpixManager, Ellipsoid.MeanRadius);
+                basin.InitROfEllipse(HealpixManager); /// Ellipsoid.MeanRadius
                 basin.Delta_g_meridian = basin.Delta_g_traverse = 0;
             }
         }

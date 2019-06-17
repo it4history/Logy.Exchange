@@ -11,6 +11,9 @@ namespace Logy.Maps.ReliefMaps.Map2D
 {
     public abstract class DataForMap2D : DataEarth2014<HealCoor>
     {
+        /// <summary>
+        /// bad design
+        /// </summary>
         private readonly Map2DBase _map;
 
         protected DataForMap2D(Map2DBase map)
@@ -41,6 +44,7 @@ namespace Logy.Maps.ReliefMaps.Map2D
             switch (_map.Projection)
             {
                 case Projection.Healpix:
+                case Projection.Healpix2EquirectangularFast:
                 case Projection.Healpix2Equirectangular:
                     ApproxMan = new ApproximationManager(HealpixManager);
                     break;
@@ -49,6 +53,7 @@ namespace Logy.Maps.ReliefMaps.Map2D
             switch (_map.Projection)
             {
                 case Projection.Healpix:
+                case Projection.Healpix2EquirectangularFast:
                     return ApproxMan.Pixels;
                 case Projection.Healpix2Equirectangular:
                 case Projection.Equirectangular:
@@ -85,6 +90,7 @@ namespace Logy.Maps.ReliefMaps.Map2D
             switch (_map.Projection)
             {
                 case Projection.Healpix:
+                case Projection.Healpix2EquirectangularFast:
                 case Projection.Healpix2Equirectangular: /*mean min, nax will be calculated later  */
                     colorsManager = InitAltitudes(ApproxMan.Pixels, isGrey);
                     break;
@@ -101,7 +107,7 @@ namespace Logy.Maps.ReliefMaps.Map2D
                     }
                     break;
             }
-            colorsManager.SetScales(_map.ColorsAbove, _map.ColorsUnder);
+            colorsManager.SetColorLists(_map.ColorsAbove, _map.ColorsUnder);
         }
     }
 }

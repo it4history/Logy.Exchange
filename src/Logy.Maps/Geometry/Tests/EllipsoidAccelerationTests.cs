@@ -25,13 +25,13 @@ namespace Logy.Maps.Geometry.Tests
             _basin31 = man.GetCenter<Basin3>(31);
             _basin77 = man.GetCenter<Basin3>(77);
             _basin95 = man.GetCenter<Basin3>(95);
-            Ellipsoid.CurrentPole = Datum.Normal;
+            Ellipsoid.CurrentDatum = Datum.Normal;
         }
 
         [TearDown]
         public void TearDown()
         {
-            Ellipsoid.CurrentPole = Datum.Normal;
+            Ellipsoid.CurrentDatum = Datum.Normal;
         }
 
         [Test]
@@ -59,7 +59,7 @@ namespace Logy.Maps.Geometry.Tests
             Assert.AreEqual(0, aTraverse);
             Assert.AreEqual(.0339, aVertical, .0001);
 
-            Ellipsoid.CurrentPole = new Datum { X = 0, Y = 0 }; /// AxisOfRotation = new UnitVector3D(1, 0, 0);
+            Ellipsoid.CurrentDatum = new Datum { X = 0, Y = 0 }; /// AxisOfRotation = new UnitVector3D(1, 0, 0);
             Assert.AreEqual(-.003, EllipsoidAcceleration.Centrifugal(_basin0, out a, out aTraverse, out aVertical), .001);
             Assert.AreEqual(.034, a, .01);
             Assert.AreEqual(-.003, aTraverse, .001);
@@ -75,13 +75,13 @@ namespace Logy.Maps.Geometry.Tests
         public void Centrifugal_aMeridian_BugOfCone()
         {
             double a, aTraverse, aVertical;
-            Ellipsoid.CurrentPole = new Datum { X = 0, Y = 0 }; /// AxisOfRotation = new UnitVector3D(1, 0, 0);
+            Ellipsoid.CurrentDatum = new Datum { X = 0, Y = 0 }; /// AxisOfRotation = new UnitVector3D(1, 0, 0);
             Assert.AreEqual(-.003, EllipsoidAcceleration.Centrifugal(_basin77, out a, out aTraverse, out aVertical), .001);
             Assert.AreEqual(.017, a, .01);
             Assert.AreEqual(.017, aTraverse, .001);
             Assert.AreEqual(.0174, aVertical, .0001);
 
-            Ellipsoid.CurrentPole = new Datum { X = 90, Y = 0 }; /// AxisOfRotation = new UnitVector3D(0, 1, 0);
+            Ellipsoid.CurrentDatum = new Datum { X = 90, Y = 0 }; /// AxisOfRotation = new UnitVector3D(0, 1, 0);
             Assert.AreEqual(-.003, EllipsoidAcceleration.Centrifugal(_basin77, out a, out aTraverse, out aVertical), .001);
             Assert.AreEqual(.017, a, .01);
             Assert.AreEqual(-.017, aTraverse, .001);
@@ -96,7 +96,7 @@ namespace Logy.Maps.Geometry.Tests
         public void Centrifugal_Y()
         {
             double a, aTraverse, aVertical;
-            Ellipsoid.CurrentPole = new Datum { X = 90, Y = 0 }; /// AxisOfRotation = new UnitVector3D(0, 1, 0);
+            Ellipsoid.CurrentDatum = new Datum { X = 90, Y = 0 }; /// AxisOfRotation = new UnitVector3D(0, 1, 0);
             Assert.AreEqual(-.003, EllipsoidAcceleration.Centrifugal(_basin0, out a, out aTraverse, out aVertical), .001);
             Assert.AreEqual(.034, a, .01);
             Assert.AreEqual(.003, aTraverse, .001);

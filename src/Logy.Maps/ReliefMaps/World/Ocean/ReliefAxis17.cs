@@ -7,7 +7,6 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
     /// <summary>
     /// http://hist.tk/ory/Карта_Земли_после_сдвига_полюса_на_17_градусов
     /// </summary>
-    [TestFixture]
     public class ReliefAxis17 : ReliefMap
     {
         public ReliefAxis17()
@@ -52,22 +51,6 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
                     }
                     return 15;
                 });
-        }
-
-        /// <summary>
-        /// http://hist.tk/ory/Рельеф_после_сдвига_полюса_на_17_градусов
-        /// </summary>
-        [Test]
-        public void RelativePaleogeoid()
-        {
-            SetData(new ShiftAxis { Slow = true }, false, false);
-
-            var algorithm = Bundle.Algorithm as ShiftAxis;
-            algorithm.Data.Frame++;
-            algorithm.Data.Visual = basin => basin.WaterHeight;
-            algorithm.Data.MoveAllWater();
-            algorithm.Data.SetScales();
-            Draw(algorithm.CurrentPoleBasin, .03);
         }
 
         /// <summary>

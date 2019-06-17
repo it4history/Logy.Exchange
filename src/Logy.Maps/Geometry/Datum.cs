@@ -1,4 +1,5 @@
 ﻿using System.Runtime.Serialization;
+using Logy.Maps.Projections.Healpix;
 using Logy.Maps.ReliefMaps.World.Ocean;
 using Logy.MwAgent.Sphere;
 using MathNet.Numerics.LinearAlgebra;
@@ -63,6 +64,8 @@ namespace Logy.Maps.Geometry
                 Calc();
             }
         }
+
+        public HealCoor PoleBasin { get; set; }
         #endregion
 
         public UnitVector3D AxisOfRotation => _axisOfRotation;

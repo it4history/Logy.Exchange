@@ -5,7 +5,6 @@ using System.Drawing.Imaging;
 using System.IO;
 using Logy.Maps.Exchange;
 using Logy.Maps.Projections;
-using Logy.Maps.Projections.Healpix;
 using Logy.Maps.ReliefMaps.Basemap;
 using Logy.Maps.ReliefMaps.Water;
 using Newtonsoft.Json;
@@ -37,7 +36,7 @@ namespace Logy.Maps.ReliefMaps.Map2D
 
         public Bitmap Bmp { get; set; }
 
-        public Bundle<T> Bundle { get; private set; }
+        public Bundle<T> Bundle { get; protected set; }
 
         public override Projection Projection => Projection.Healpix;
 
@@ -65,15 +64,20 @@ namespace Logy.Maps.ReliefMaps.Map2D
 
         protected override ImageFormat ImageFormat => ImageFormat.Jpeg;
 
+        public string StatsFileName(int? frame = null)
+        {
+            return Path.Combine(Dir, $"stats{FrameToString(frame)}.json");
+        }
+
         /// <summary>
         /// like a constructor
         /// </summary>
-        public void SetData(Algorithm<T> algorithm, bool jsonNeeded = false, bool initFull = true)
+        public void SetData(Algorithm<T> algorithm, bool jsonNeeded = false)
         {
             _jsonNeeded = jsonNeeded;
             if (File.Exists(StatsFileName()))
             {
-                Bundle = Bundle<T>.Deserialize(File.ReadAllText(StatsFileName()), false, initFull);
+                Bundle = Bundle<T>.Deserialize(File.ReadAllText(StatsFileName()));
                 var dataInJson = Bundle.Algorithm.DataAbstract;
                 if (K != dataInJson.K)
                     throw new ApplicationException($"map needs K {K}");
@@ -132,7 +136,7 @@ namespace Logy.Maps.ReliefMaps.Map2D
                 slowFrames,
                 delegate(int frame)
                 {
-                    Draw(algorithm.CurrentPoleBasin, .03);
+                    Draw();
                     SaveBitmap(algorithm.DataAbstract.Frame);
                     var time = algorithm.DataAbstract.Time;
                     if (_jsonNeeded && time > lastTimeOfSaveJson + 5000)
@@ -144,36 +148,14 @@ namespace Logy.Maps.ReliefMaps.Map2D
                 timeStepByFrame);
         }
 
+        public override void Draw()
+        {
+            Data.Draw(Bmp, 0, null, YResolution, Scale, Projection);
+        }
+
         protected static string FrameToString(int? frame)
         {
             return frame.HasValue ? $"{frame:00000}" : null;
-        }
-
-        protected void Draw(HealCoor basin = null, double r = .2)
-        {
-            if (basin != null)
-            {
-                Data.Draw(Bmp, 0, null, YResolution, Scale);
-
-                var width = K > 5 ? .03 : .06;
-                foreach (var pixel in Data.PixMan.Pixels)
-                {
-                    var healCoor = (HealCoor)pixel;
-                    var dist = basin.DistanceTo(healCoor);
-                    if (Data.Colors != null
-                        && dist >= r - width && dist <= r + width)
-                    {
-                        var projection = new Equirectangular(HealpixManager, YResolution);
-                        var point = projection.Offset(healCoor);
-                        Data.Colors.SetPixelOnBmp(
-                            Color.FromArgb(255, 174, 201), 
-                            Bmp,
-                            (int)point.X, 
-                            (int)point.Y, 
-                            Scale);
-                    }
-                }
-            }
         }
 
         protected void SaveBitmap(int frame)
@@ -196,11 +178,6 @@ namespace Logy.Maps.ReliefMaps.Map2D
                     }
             }
             SaveBitmap(Bmp, Data.Colors, FrameToString(frame));
-        }
-
-        private string StatsFileName(int? frame = null)
-        {
-            return Path.Combine(Dir, $"stats{FrameToString(frame)}.json");
         }
 
         private void SaveJson(int? frame = null)

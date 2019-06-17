@@ -4,7 +4,6 @@ using NUnit.Framework;
 
 namespace Logy.Maps.ReliefMaps.World.Ocean
 {
-    [TestFixture]
     public class ReliefMap : OceanMap
     {
         public ReliefMap()

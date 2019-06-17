@@ -19,6 +19,6 @@ namespace Logy.Maps.ReliefMaps.World.Approximate
             { 100, new Color3(ColorsManager.Land) },
         };
 
-        protected override DataForMap2D ApproximateData => new PercentageData(this);
+        protected override DataForMap2D MapData => new PercentageData(this);
     }
 }

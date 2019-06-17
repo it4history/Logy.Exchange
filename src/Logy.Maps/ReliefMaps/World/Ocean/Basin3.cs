@@ -76,12 +76,12 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
         {
             get
             {
-                var paleoRadius = Ellipsoid.RadiusPaleo(this);
+                var paleoRadius = RadiusSpheric ? RadiusOfEllipse : Ellipsoid.RadiusPaleo(this);
                 var x = paleoRadius * BetaSin;
                 return new Point3D(
                     LambdaMinusPi2Sin * x,
                     LambdaSin * x,
-                    RadiusOfEllipse * BetaCos);
+                    paleoRadius * BetaCos);
             }
         }
 

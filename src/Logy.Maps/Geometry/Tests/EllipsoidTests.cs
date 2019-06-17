@@ -11,7 +11,7 @@ namespace Logy.Maps.Geometry.Tests
         [TearDown]
         public void TearDown()
         {
-            Ellipsoid.CurrentPole = Datum.Normal;
+            Ellipsoid.CurrentDatum = Datum.Normal;
         }
 
         [Test]
@@ -25,7 +25,7 @@ namespace Logy.Maps.Geometry.Tests
         public void RadiusPaleo()
         {
             Assert.AreEqual(Ellipsoid.LessRadius, Ellipsoid.RadiusPaleo(new Coor()));
-            Ellipsoid.CurrentPole = new Datum { Y = 0 };
+            Ellipsoid.CurrentDatum = new Datum { Y = 0 };
             Assert.AreEqual(Ellipsoid.BigRadius, Ellipsoid.RadiusPaleo(new Coor()));
         }
     }

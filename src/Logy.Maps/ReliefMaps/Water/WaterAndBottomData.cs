@@ -1,3 +1,4 @@
+using Logy.Maps.Earth2014;
 using Logy.Maps.Projections.Healpix;
 using Logy.Maps.ReliefMaps.Meridian;
 using Logy.Maps.ReliefMaps.Meridian.Data;

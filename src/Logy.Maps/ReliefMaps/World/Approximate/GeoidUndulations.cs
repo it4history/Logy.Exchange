@@ -19,16 +19,8 @@ namespace Logy.Maps.ReliefMaps.World.Approximate
             { 100, new Color3(Color.Red) },
         };
 
-        /*protected override SortedList<int, Color3> ColorsUnder
-        {
-            get
-            {
-                return null; //ColorsManager.Water; 
-            }
-        }*/
-
         protected override int K => 9;
 
-        protected override DataForMap2D ApproximateData => new GeoidUndulationsData(this);
+        protected override DataForMap2D MapData => new GeoidUndulationsData(this);
     }
 }

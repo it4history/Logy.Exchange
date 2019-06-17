@@ -29,6 +29,9 @@ namespace Logy.Maps.ReliefMaps.Map2D
 
         public virtual Projection Projection => Projection.Healpix;
 
+        /// <summary>
+        /// practical values 2, 3, 4
+        /// </summary>
         public int YResolution { get; set; } = 2;
         public int Scale { get; set; } = 1;
 
@@ -47,7 +50,7 @@ namespace Logy.Maps.ReliefMaps.Map2D
 
         protected int Frames { get; set; } = 1;
 
-        protected virtual DataForMap2D ApproximateData => null;
+        protected virtual DataForMap2D MapData => null;
 
         protected string Dir => _dir ?? (_dir = string.Format(
                                     "{2}\\maps\\{1}_lines{0}",
@@ -67,22 +70,48 @@ namespace Logy.Maps.ReliefMaps.Map2D
         [Category(Slow)]
         public virtual void Draw()
         {
-            var data = ApproximateData;
+            var data = MapData;
             var pixels = data.Basins();
 
             data.InitPoints(pixels, IsGrey);
 
-            DrawFrames(pixels, data);
+            string fileName = null;
+            for (var frame = 0; frame < Frames; frame++)
+            {
+                var bmp = CreateBitmap();
+
+                DrawFrame(pixels, data, bmp, frame);
+
+                DrawLegend(data, bmp);
+
+                fileName = SaveBitmap(bmp, data.Colors, frame == 0 ? null : $"{frame:000}_{data.Accuracy}min");
+            }
+            Process.Start(fileName);
 
             data.Log();
         }
 
-        internal void DrawFrame(Point2[] pixels, DataForMap2D data, Bitmap bmp, int frame = 0)
+        protected Bitmap CreateBitmap()
+        {
+            var bmp = new Bitmap(
+                4 * HealpixManager.Nside * Scale,
+                (YResolution * HealpixManager.Nside * Scale) + (LegendToDraw ? LegendHeight : 0));
+            if (ImageFormat != ImageFormat.Png)
+            {
+                var g = GetFont(bmp);
+                g.FillRectangle(Background, 0, 0, bmp.Width, bmp.Height);
+                g.Flush();
+            }
+            return bmp;
+        }
+
+        protected void DrawFrame(Point2[] pixels, DataForMap2D data, Bitmap bmp, int frame = 0)
         {
             switch (Projection)
             {
                 case Projection.Healpix:
-                    data.Draw(bmp, 0, pixels, YResolution);
+                case Projection.Healpix2EquirectangularFast:
+                    data.Draw(bmp, 0, pixels, YResolution, Scale, Projection);
                     break;
                 case Projection.Healpix2Equirectangular:
                 case Projection.Equirectangular:
@@ -106,21 +135,7 @@ namespace Logy.Maps.ReliefMaps.Map2D
             }
         }
 
-        internal Bitmap CreateBitmap()
-        {
-            var bmp = new Bitmap(
-                4 * HealpixManager.Nside * Scale,
-                (YResolution * HealpixManager.Nside * Scale) + (LegendToDraw ? LegendHeight : 0));
-            if (ImageFormat != ImageFormat.Png)
-            {
-                var g = GetFont(bmp);
-                g.FillRectangle(Background, 0, 0, bmp.Width, bmp.Height);
-                g.Flush();
-            }
-            return bmp;
-        }
-
-        internal void DrawLegend(DataEarth data, Bitmap bmp)
+        protected void DrawLegend(DataEarth data, Bitmap bmp)
         {
             if (!LegendToDraw)
                 return;
@@ -221,22 +236,6 @@ namespace Logy.Maps.ReliefMaps.Map2D
             var fileName = GetFileName(colors, frame);
             bmp.Save(fileName, ImageFormat);
             return fileName;
-        }
-
-        private void DrawFrames(Point2[] pixels, DataForMap2D data)
-        {
-            string fileName = null;
-            for (var frame = 0; frame < Frames; frame++)
-            {
-                var bmp = CreateBitmap();
-
-                DrawFrame(pixels, data, bmp, frame);
-
-                DrawLegend(data, bmp);
-
-                fileName = SaveBitmap(bmp, data.Colors, frame == 0 ? null : $"{frame:000}_{data.Accuracy}min");
-            }
-            Process.Start(fileName);
         }
     }
 }
