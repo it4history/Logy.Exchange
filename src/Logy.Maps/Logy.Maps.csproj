@@ -178,12 +178,6 @@
     <None Include="Earth2014\Earth2014Shape_minus_6371000m.SUR2014.5min.geod.bin" />
     <None Include="Earth2014\Earth2014Shape_minus_6371000m.TBI2014.5min.geod.bin" />
     <None Include="Earth2014\MSK2014_landtypes.1min.geod.bin" />
-    <None Include="Exchange\Naturalearth\110m.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Exchange\Naturalearth\50m.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
