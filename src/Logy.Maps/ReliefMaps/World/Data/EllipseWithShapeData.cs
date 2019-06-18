@@ -1,4 +1,4 @@
-using Logy.Maps.Earth2014;
+using Logy.Maps.Exchange.Earth2014;
 using Logy.Maps.ReliefMaps.Map2D;
 
 namespace Logy.Maps.ReliefMaps.World.Data

@@ -6,9 +6,9 @@ namespace Logy.Maps.Exchange
 {
     public class Algorithm<T> where T : BasinBase
     {
-        public Algorithm(WaterMoving<T> data)
+        public Algorithm(WaterMoving<T> dataInited)
         {
-            DataAbstract = data;
+            DataAbstract = dataInited;
         }
 
         /// <summary>

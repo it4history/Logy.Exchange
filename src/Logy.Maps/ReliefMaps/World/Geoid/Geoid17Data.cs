@@ -11,7 +11,7 @@ using Logy.MwAgent.Sphere;
 using Newtonsoft.Json;
 using Point = System.Drawing.Point;
 
-namespace Logy.Maps.ReliefMaps.World.Ocean
+namespace Logy.Maps.ReliefMaps.World.Geoid
 {
     public class Geoid17Data : DataForMap2D
     {
@@ -63,7 +63,6 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
                 }
             }
             g.Flush();
-
         }
 
         private static void DrawPolygon(Polygon polygon, Equirectangular equirectangular, Graphics g)
@@ -80,30 +79,7 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
             g.DrawLines(new Pen(Color.Blue), points);
         }
 
-        /*
-                    var topo = JsonConvert.DeserializeObject<Topology>(File.ReadAllText(NeManager.Filepath));
-                    var collection = (GeometryCollection)topo.Objects[0].Geometry;
-                    foreach (var geometryObject in collection.Geometries)
-                    {
-                        var multiPolygon = geometryObject as TopoJSONMultiPolygon;
-                        if (multiPolygon != null)
-                        {
-                            for (var i = 0; i < multiPolygon.Coordinates.Count; i++)
-                            {
-                                var polygon = multiPolygon.Coordinates[i];
-                                DrawPolygon(g, topo, polygon, multiPolygon.ArcIdx[i][0], equirectangular, scale);
-                            }
-                        }
-                        else
-                        {
-                            var polygon = (TopoJSONPolygon)geometryObject;
-                            DrawPolygon(g, topo, polygon, polygon.ArcIdx[0], equirectangular, scale);
-                        }
-                    }
-                    g.Flush();
-                }
-
-                private void DrawPolygon(Graphics g, Topology topo, TopoJSONPolygon polygon, List<int> arcs, Equirectangular equirectangular, int scale)
+        /*      private void DrawPolygon(Graphics g, Topology topo, TopoJSONPolygon polygon, List<int> arcs, Equirectangular equirectangular, int scale)
                 {
                     //var points = new Point[polygon.Coordinates.Count-1];
                     //polygon.ArcIdx
@@ -139,16 +115,11 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
                             indexToCheckArc = i + topo.Arcs[arcIndexAtPolygon].Positions.Count;
                         }
 
-
                         var coor = new Coor { X = position.Longitude, Y = position.Latitude };
                         var point = equirectangular.Offset(coor);
-                        //if (coor.X > -175 && Math.Abs(coor.Y) < 80)
-                        {
-                            points.Add(new Point((int)point.X, (int)point.Y));
-                        }
+                        points.Add(new Point((int)point.X, (int)point.Y));
                     }
                     if (points.Count>1)
-                    g.DrawLines(new Pen(Color.Blue), points.ToArray());
-                    */
+                        g.DrawLines(new Pen(Color.Blue), points.ToArray());                    */
     }
 }

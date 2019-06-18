@@ -1,6 +1,6 @@
 using System;
 using System.Runtime.Serialization;
-using Logy.Maps.Earth2014;
+using Logy.Maps.Exchange.Earth2014;
 using Logy.Maps.Projections.Healpix;
 using Logy.Maps.ReliefMaps.Water;
 

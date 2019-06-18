@@ -4,7 +4,7 @@ using System.IO;
 using Logy.Maps.Projections.Healpix;
 using Logy.MwAgent.Sphere;
 
-namespace Logy.Maps.Earth2014
+namespace Logy.Maps.Exchange.Earth2014
 {
     public class Earth2014Manager : IDisposable
     {
@@ -120,7 +120,7 @@ namespace Logy.Maps.Earth2014
                     _accuracyMin,
                     _reliefType.ToString().ToUpper(),
                     _shape ? "Shape_minus_6371000m" : string.Empty);
-                return Path.Combine("earth2014", fileName);
+                return Path.Combine("Exchange\\Earth2014", fileName);
             }
         }
 

@@ -66,6 +66,9 @@
     <Compile Include="Approximations\ApproximationManager.cs" />
     <Compile Include="Exchange\Algorithm.cs" />
     <Compile Include="Exchange\Bundle.cs" />
+    <Compile Include="Exchange\Earth2014\Earth2014Manager.cs" />
+    <Compile Include="Exchange\Earth2014\ReliefType.cs" />
+    <Compile Include="Exchange\Earth2014\Tests\Earth2014ManagerTests.cs" />
     <Compile Include="Exchange\GeoJson\GeoJsonManager.cs" />
     <Compile Include="Exchange\Naturalearth\NeManager.cs" />
     <Compile Include="Exchange\Naturalearth\Tests\NeManagerTests.cs" />
@@ -93,8 +96,8 @@
     <Compile Include="ReliefMaps\World\Approximate\PercentageData.cs" />
     <Compile Include="ReliefMaps\World\Ocean\BasinDataAbstract.cs" />
     <Compile Include="ReliefMaps\World\Ocean\BasinSignedDistance.cs" />
-    <Compile Include="ReliefMaps\World\Ocean\Geoid17.cs" />
-    <Compile Include="ReliefMaps\World\Ocean\Geoid17Data.cs" />
+    <Compile Include="ReliefMaps\World\Geoid\Geoid17.cs" />
+    <Compile Include="ReliefMaps\World\Geoid\Geoid17Data.cs" />
     <Compile Include="ReliefMaps\World\Ocean\Metrics\BasinDataDotProduct.cs" />
     <Compile Include="ReliefMaps\World\Ocean\ReliefMap.cs" />
     <Compile Include="ReliefMaps\World\Ocean\Basin3.cs" />
@@ -149,35 +152,17 @@
     <Compile Include="ReliefMaps\World\Ocean\Metrics\Tests\MeridianMetricTests.cs" />
     <Compile Include="ReliefMaps\World\Ocean\ReliefAxis17.cs" />
     <Compile Include="SortUtils.cs" />
-    <Compile Include="Earth2014\ReliefType.cs" />
     <Compile Include="Tests\SortUtilsTests.cs" />
-    <Compile Include="Earth2014\Tests\Earth2014ManagerTests.cs" />
-    <Compile Include="Earth2014\Earth2014Manager.cs" />
     <Compile Include="Wos\Tests\WosManagerTests.cs" />
     <Compile Include="Wos\Water.cs" />
     <Compile Include="Wos\WosManager.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
-    <None Include="Earth2014\Earth2014.TBI2014.5min.geod.bin">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Earth2014\Earth2014Shape_minus_6371000m.BED2014.5min.geod.bin">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Earth2014\Earth2014.BED2014.5min.geod.bin">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Earth2014\Earth2014.BED2014.1min.geod.bin" />
-    <None Include="Earth2014\Earth2014.ICE2014.5min.geod.bin" />
-    <None Include="Earth2014\Earth2014.RET2014.5min.geod.bin" />
-    <None Include="Earth2014\Earth2014.SUR2014.5min.geod.bin">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Earth2014\Earth2014Shape_minus_6371000m.RET2014.5min.geod.bin" />
-    <None Include="Earth2014\Earth2014Shape_minus_6371000m.SUR2014.5min.geod.bin" />
-    <None Include="Earth2014\Earth2014Shape_minus_6371000m.TBI2014.5min.geod.bin" />
-    <None Include="Earth2014\MSK2014_landtypes.1min.geod.bin" />
+    <None Include="Exchange\Earth2014\Earth2014.BED2014.5min.geod.bin" />
+    <None Include="Exchange\Earth2014\Earth2014.SUR2014.5min.geod.bin" />
+    <None Include="Exchange\Earth2014\Earth2014.TBI2014.5min.geod.bin" />
+    <None Include="Exchange\Earth2014\Earth2014Shape_minus_6371000m.BED2014.5min.geod.bin" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>

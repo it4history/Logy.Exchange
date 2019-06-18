@@ -1,5 +1,5 @@
 using System;
-using Logy.Maps.Earth2014;
+using Logy.Maps.Exchange.Earth2014;
 using Logy.Maps.Geometry;
 using Logy.Maps.Projections.Healpix;
 using Logy.Maps.ReliefMaps.Map2D;

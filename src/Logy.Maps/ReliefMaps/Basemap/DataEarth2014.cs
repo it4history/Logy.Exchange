@@ -3,7 +3,7 @@ using System.Collections;
 using System.Drawing;
 using System.Runtime.Serialization;
 using Logy.Maps.Coloring;
-using Logy.Maps.Earth2014;
+using Logy.Maps.Exchange.Earth2014;
 using Logy.Maps.Geometry;
 using Logy.Maps.Projections;
 using Logy.Maps.Projections.Healpix;
