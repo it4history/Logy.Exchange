@@ -1,4 +1,4 @@
-namespace Logy.Maps.ReliefMaps.World.Ocean
+namespace Logy.Maps.ReliefMaps.World.Ocean.Metrics
 {
     public class BasinSignedDistance : Basin3
     {

@@ -2,6 +2,7 @@
 using Logy.Maps.Projections.Healpix;
 using Logy.Maps.ReliefMaps.Basemap;
 using Logy.Maps.ReliefMaps.Water;
+using Logy.Maps.ReliefMaps.World.Ocean.Metrics;
 using NUnit.Framework;
 
 namespace Logy.Maps.ReliefMaps.World.Ocean.Tests

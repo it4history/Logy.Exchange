@@ -3,7 +3,7 @@ using Logy.Maps.Projections.Healpix;
 using Logy.Maps.ReliefMaps.Map2D;
 using Logy.Maps.ReliefMaps.World.Data;
 
-namespace Logy.Maps.ReliefMaps.World.Approximate
+namespace Logy.Maps.ReliefMaps.World
 {
     public class CoastLines : Map2DBase<HealCoor>
     {

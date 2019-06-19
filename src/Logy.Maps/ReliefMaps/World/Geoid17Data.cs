@@ -1,35 +1,27 @@
 using System.Collections;
 using System.Drawing;
-using System.IO;
-using GeoJSON.Net.Feature;
 using GeoJSON.Net.Geometry;
-using Logy.Maps.Exchange.Naturalearth;
 using Logy.Maps.Projections;
-using Logy.Maps.Projections.Healpix;
 using Logy.Maps.ReliefMaps.Map2D;
+using Logy.Maps.ReliefMaps.World.Ocean;
 using Logy.MwAgent.Sphere;
-using Newtonsoft.Json;
 using Point = System.Drawing.Point;
 
-namespace Logy.Maps.ReliefMaps.World.Geoid
+namespace Logy.Maps.ReliefMaps.Geoid
 {
-    public class Geoid17Data : DataForMap2D
+    public class Geoid17Data : DataForMap2D<Basin3>
     {
-        public Geoid17Data(Map2DBase map) : base(map)
+        private readonly Basin3[] _jsonPixels;
+
+        public Geoid17Data(Map2DBase<Basin3> map, Basin3[] jsonPixels) : base(map)
         {
+            _jsonPixels = jsonPixels;
         }
 
-        public override double? GetAltitude(HealCoor basin)
+        public override double? GetAltitude(Basin3 basin)
         {
-            /*var surface = Relief.GetAltitude(basin);
-
-            if (surface > 0 && surface < 20)
-            {
-                // lakes in ice are ignored
-                return 1;
-            }*/
-
-            return 0;
+            var jsonBasin = _jsonPixels[basin.P];
+            return jsonBasin.HasWater() ? jsonBasin.Radius - basin.RadiusOfEllipse : (double?)null;
         }
 
         public override void Draw(
@@ -40,8 +32,10 @@ namespace Logy.Maps.ReliefMaps.World.Geoid
             int scale = 1,
             Projection projection = Projection.Healpix)
         {
+            SetColorLists();
             base.Draw(bmp, deltaX, basins, yResolution, scale, projection);
 
+            /*
             var g = Graphics.FromImage(bmp);
             var equirectangular = new Equirectangular(HealpixManager, yResolution);
 
@@ -51,9 +45,8 @@ namespace Logy.Maps.ReliefMaps.World.Geoid
                 var multiPolygon = feature.Geometry as MultiPolygon;
                 if (multiPolygon != null)
                 {
-                    for (var i = 0; i < multiPolygon.Coordinates.Count; i++)
+                    foreach (var polygon in multiPolygon.Coordinates)
                     {
-                        var polygon = multiPolygon.Coordinates[i];
                         DrawPolygon(polygon, equirectangular, g);
                     }
                 }
@@ -63,6 +56,7 @@ namespace Logy.Maps.ReliefMaps.World.Geoid
                 }
             }
             g.Flush();
+            */
         }
 
         private static void DrawPolygon(Polygon polygon, Equirectangular equirectangular, Graphics g)
