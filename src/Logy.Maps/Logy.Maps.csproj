@@ -96,8 +96,8 @@
     <Compile Include="ReliefMaps\World\Data\PercentageData.cs" />
     <Compile Include="ReliefMaps\World\Ocean\BasinDataAbstract.cs" />
     <Compile Include="ReliefMaps\World\Ocean\Metrics\BasinSignedDistance.cs" />
-    <Compile Include="ReliefMaps\World\Geoid17.cs" />
-    <Compile Include="ReliefMaps\World\Geoid17Data.cs" />
+    <Compile Include="ReliefMaps\Geoid\Geoid17.cs" />
+    <Compile Include="ReliefMaps\Geoid\Geoid17Data.cs" />
     <Compile Include="ReliefMaps\World\Ocean\Metrics\BasinDataDotProduct.cs" />
     <Compile Include="ReliefMaps\World\Ocean\ReliefMap.cs" />
     <Compile Include="ReliefMaps\World\Ocean\Basin3.cs" />
