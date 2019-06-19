@@ -2,14 +2,14 @@
 using Logy.Maps.Projections.Healpix;
 using Logy.Maps.ReliefMaps.Map2D;
 
-namespace Logy.Maps.ReliefMaps.World.Approximate
+namespace Logy.Maps.ReliefMaps.World.Data
 {
-    public class PercentageData : DataForMap2D
+    public class PercentageData : DataForMap2D<HealCoor>
     {
         private double _percentageOfLand = .50;
         private double _landPixelsCount;
 
-        public PercentageData(Map2DBase map) : base(map)
+        public PercentageData(Map2DBase<HealCoor> map) : base(map)
         {
         }
 

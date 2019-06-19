@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Runtime.Serialization;
 using Logy.Maps.Coloring;
@@ -14,6 +15,10 @@ namespace Logy.Maps.ReliefMaps.Basemap
 {
     public abstract class DataEarth2014<T> : DataEarth, IDisposable where T : HealCoor
     {
+        /// <summary>
+        /// are packed into PixMan in Init()
+        /// </summary>
+        private readonly T[] _basins;
         private readonly bool _readAllAtStart;
         private int _k;
         private HealpixManager _healpixManager;
@@ -22,8 +27,9 @@ namespace Logy.Maps.ReliefMaps.Basemap
         {
         }
 
-        protected DataEarth2014(double? min = null, double? max = null, bool readAllAtStart = false)
+        protected DataEarth2014(T[] basins, double? min = null, double? max = null, bool readAllAtStart = false)
         {
+            _basins = basins;
             MinDefault = min;
             MaxDefault = max;
             _readAllAtStart = readAllAtStart;
@@ -64,6 +70,11 @@ namespace Logy.Maps.ReliefMaps.Basemap
         [IgnoreDataMember]
         public double? ColorsMiddle { get; set; }
 
+        /// <summary>
+        /// not needed for Projection.Equirectangular
+        /// </summary>
+        protected internal PixelsManager<T> PixMan { get; private set; }
+
         [IgnoreDataMember]
         public double? MaxDefault { get; set; }
         protected double? MinDefault { get; set; }
@@ -83,6 +94,7 @@ namespace Logy.Maps.ReliefMaps.Basemap
         /// </summary>
         public virtual void Init(bool full = true)
         {
+            PixMan = new PixelsManager<T>(HealpixManager, _basins);
             Relief = new Earth2014Manager(ReliefType, Accuracy, IsReliefShape, _readAllAtStart);
             ReliefBed = new Earth2014Manager(ReliefBedType, Accuracy, IsReliefBedShape, _readAllAtStart);
         }
@@ -197,6 +209,23 @@ namespace Logy.Maps.ReliefMaps.Basemap
                     }
                 }
             }
+        }
+
+        public void SetColorLists()
+        {
+            Colors.SetColorLists(
+                new SortedList<int, Color3>
+                {
+                    { 0, ColorsManager.WaterBorder },
+                    { 25, new Color3(Color.Yellow) },
+                    { 50, new Color3(Color.SandyBrown) },
+                    { 100, new Color3(Color.Red) },
+                },
+                new SortedList<int, Color3>
+                {
+                    { 0, ColorsManager.WaterBorder },
+                    { 100, ColorsManager.DarkBlue },
+                });
         }
 
         public void Dispose()

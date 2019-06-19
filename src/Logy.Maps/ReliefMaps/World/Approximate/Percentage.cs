@@ -1,10 +1,12 @@
 ﻿using System.Collections.Generic;
 using Logy.Maps.Coloring;
+using Logy.Maps.Projections.Healpix;
 using Logy.Maps.ReliefMaps.Map2D;
+using Logy.Maps.ReliefMaps.World.Data;
 
 namespace Logy.Maps.ReliefMaps.World.Approximate
 {
-    public class Percentage : Map2DBase
+    public class Percentage : Map2DBase<HealCoor>
     {
         public Percentage()
         {
@@ -19,6 +21,6 @@ namespace Logy.Maps.ReliefMaps.World.Approximate
             { 100, new Color3(ColorsManager.Land) },
         };
 
-        protected override DataForMap2D MapData => new PercentageData(this);
+        protected override DataForMap2D<HealCoor> MapData => new PercentageData(this);
     }
 }

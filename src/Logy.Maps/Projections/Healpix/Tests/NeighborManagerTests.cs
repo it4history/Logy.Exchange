@@ -1,6 +1,5 @@
 ﻿#if DEBUG
 using System;
-using Logy.Maps.Approximations;
 using Logy.Maps.ReliefMaps.World.Ocean;
 using NUnit.Framework;
 

@@ -10,6 +10,8 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
 {
     public class OceanMap : RotationStopMap<Basin3>
     {
+        protected override int K => 5;
+
         [Test]
         public void Water_HighBasin()
         {
@@ -94,7 +96,7 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
         [Test]
         public void Water_ChangeAxis()
         {
-            Data = new BasinData(
+            var data = new BasinData(
                 HealpixManager
                 /*, -2600d, 2700d*/)
             {
@@ -102,7 +104,7 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
                 NoIntegrationFinish = true,
                 Visual = basin => basin.r - Earth2014Manager.Radius2Add //*/
             };
-
+            SetData(new ShiftAxis(data));
             ShiftAxis(); // 45, 90
         }
 

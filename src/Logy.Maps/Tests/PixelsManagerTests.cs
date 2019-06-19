@@ -1,19 +1,18 @@
 ﻿#if DEBUG
 using Logy.Maps.Projections.Healpix;
 using Logy.Maps.Projections.Healpix.Tests;
-using Logy.MwAgent.DotNetWikiBot.Wikidata;
 using Logy.MwAgent.Sphere;
 using NUnit.Framework;
 
-namespace Logy.Maps.Approximations.Tests
+namespace Logy.Maps.Tests
 {
     [TestFixture]
-    public class ApproximationManagerTests
+    public class PixelsManagerTests
     {
         [Test]
         public void GetMeanAltitude()
         {
-            var man = new ApproximationManager(new HealpixManager(0));
+            var man = new PixelsManager<HealCoor>(new HealpixManager(0));
             foreach (var pixel in man.Pixels)
             {
                 pixel.Altitude = pixel.P;
@@ -43,7 +42,7 @@ namespace Logy.Maps.Approximations.Tests
         [Test]
         public void GetMeanDeltas()
         {
-            var man = new ApproximationManager(new HealpixManager(3));
+            var man = new PixelsManager<HealCoor>(new HealpixManager(3));
             Assert.AreEqual(7, man.GetMeanDeltas(new Coor { X = 0, Y = 41.8 }), 1);
             Assert.AreEqual(7, man.GetMeanDeltas(new Coor { X = 0, Y = 42 }), 1);
 

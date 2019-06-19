@@ -3,9 +3,9 @@ using Logy.Maps.ReliefMaps.Map2D;
 
 namespace Logy.Maps.ReliefMaps.World.Data
 {
-    public class CoastLinesData : DataForMap2D
+    public class CoastLinesData : DataForMap2D<HealCoor>
     {
-        public CoastLinesData(Map2DBase map) : base(map)
+        public CoastLinesData(Map2DBase<HealCoor> map) : base(map)
         {
         }
 

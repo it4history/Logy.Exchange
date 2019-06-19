@@ -1,12 +1,13 @@
 ﻿using System.Collections.Generic;
 using System.Drawing;
 using Logy.Maps.Coloring;
+using Logy.Maps.Projections.Healpix;
 using Logy.Maps.ReliefMaps.Map2D;
 using Logy.Maps.ReliefMaps.World.Data;
 
 namespace Logy.Maps.ReliefMaps.World.Approximate
 {
-    public class GeoidUndulations : Map2DBase
+    public class GeoidUndulations : Map2DBase<HealCoor>
     {
         public override Projection Projection => Projection.Healpix; // Healpix2Equirectangular // Equirectangular
 
@@ -21,6 +22,6 @@ namespace Logy.Maps.ReliefMaps.World.Approximate
 
         protected override int K => 9;
 
-        protected override DataForMap2D MapData => new GeoidUndulationsData(this);
+        protected override DataForMap2D<HealCoor> MapData => new GeoidUndulationsData(this);
     }
 }

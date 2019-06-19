@@ -1,11 +1,8 @@
 ﻿using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.Drawing;
 using System.Runtime.Serialization;
 using System.Threading.Tasks;
-using Logy.Maps.Approximations;
-using Logy.Maps.Coloring;
 using Logy.Maps.Projections.Healpix;
 using Logy.Maps.ReliefMaps.Basemap;
 using Logy.Maps.ReliefMaps.Map2D;
@@ -15,7 +12,6 @@ namespace Logy.Maps.ReliefMaps.Water
 {
     public abstract class WaterMoving<T> : DataEarth2014<T> where T : HealCoor
     {
-        private readonly T[] _basins;
         private bool? _isDynamicScale;
         private double _oceanVolume;
 
@@ -25,10 +21,9 @@ namespace Logy.Maps.ReliefMaps.Water
             T[] basins,
             double? min = null,
             double? max = null,
-            bool readAllAtStart = false) : base(min, max, readAllAtStart)
+            bool readAllAtStart = false) : base(basins, min, max, readAllAtStart)
         {
             K = man.K;
-            _basins = basins;
         }
 
         public bool WithRelief { get; set; }
@@ -64,12 +59,9 @@ namespace Logy.Maps.ReliefMaps.Water
         public double? Max { get; set; }
         public double? Min { get; set; }
 
-        protected internal PixelsManager<T> PixMan { get; private set; }
-
         public override void Init(bool full = true)
         {
             base.Init(full);
-            PixMan = new PixelsManager<T>(HealpixManager, _basins);
             Water = new WaterModel(HealpixManager);
         }
 
@@ -224,27 +216,11 @@ namespace Logy.Maps.ReliefMaps.Water
 
         public double RecheckOcean()
         {
+            // todo ошибка округений возможно возникает из-за измененния RadiusOfEllipse 
             var newOceanVolume = GetOceanVolume();
             var diff = newOceanVolume - _oceanVolume;
             Console.WriteLine("initial ocean: {0:.##}; increased on: {1}", _oceanVolume, diff);
             return diff;
-        }
-
-        public void SetColorLists()
-        {
-            Colors.SetColorLists(
-                new SortedList<int, Color3>
-                {
-                    { 0, ColorsManager.WaterBorder },
-                    { 25, new Color3(Color.Yellow) },
-                    { 50, new Color3(Color.SandyBrown) },
-                    { 100, new Color3(Color.Red) },
-                },
-                new SortedList<int, Color3>
-                {
-                    { 0, ColorsManager.WaterBorder },
-                    { 100, ColorsManager.DarkBlue },
-                });
         }
 
         /// <summary>

@@ -13,7 +13,7 @@ using NUnit.Framework;
 namespace Logy.Maps.ReliefMaps.Map2D
 {
     [Category(Slow)]
-    public class RotationStopMap<T> : Map2DBase where T : BasinBase
+    public class RotationStopMap<T> : Map2DBase<T> where T : BasinBase
     {
         private bool _jsonNeeded;
 

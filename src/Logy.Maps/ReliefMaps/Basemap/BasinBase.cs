@@ -3,6 +3,7 @@ using System.Runtime.Serialization;
 using Logy.Maps.Exchange.Earth2014;
 using Logy.Maps.Geometry;
 using Logy.Maps.Projections.Healpix;
+using Logy.Maps.ReliefMaps.World.Ocean;
 using MathNet.Spatial.Euclidean;
 
 namespace Logy.Maps.ReliefMaps.Basemap
@@ -59,6 +60,13 @@ namespace Logy.Maps.ReliefMaps.Basemap
         /// </summary>
         public double RadiusOfEllipse { get; private set; }
         public bool RadiusSpheric { get; private set; }
+        /// <summary>
+        /// for stabilized accelerations new geoid may be obtained
+        /// in such case its surface is modelled by this RadiusOfNewGeoid
+        ///   ideal is to get mathematic formula for new geoid
+        /// </summary>
+        public double NewGeoidRadius { get; private set; }
+        public SurfaceType NewGeoidSurfaceType { get; private set; }
 
         public double RingArea { get; private set; }
         public double Area { get; private set; }
@@ -190,7 +198,9 @@ namespace Logy.Maps.ReliefMaps.Basemap
             var varphi = (Math.PI / 2) - Theta;
             /// end of new
 
-            InitROfEllipse(man, Ellipsoid.Radius(varphi));
+            InitROfEllipse(
+                man,
+                Ellipsoid.CurrentDatum.AxisOfRotation == Basin3.Oz ? Ellipsoid.Radius(varphi) : Ellipsoid.RadiusPaleo(this));
             Vartheta = Ellipsoid.CalcVarTheta(thetaTan);
 
             // vertical to ellipsoid surface

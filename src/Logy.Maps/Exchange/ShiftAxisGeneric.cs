@@ -52,7 +52,7 @@ namespace Logy.Maps.Exchange
         {
             Ellipsoid.CurrentDatum = newPole;
 
-            if (DataAbstract.PixMan != null)
+            if (DataAbstract?.PixMan != null)
                 foreach (var b in DataAbstract.PixMan.Pixels)
                 {
                     if (Math.Abs(b.X - newPole.X) < Pole2BasinAccuranceDegrees &&
@@ -78,7 +78,7 @@ namespace Logy.Maps.Exchange
                 || -koef < Ellipsoid.CurrentDatum.SiderealDayInSeconds)
             {
                 Ellipsoid.CurrentDatum.SiderealDayInSeconds += koef;
-                if (DataAbstract.PixMan != null)
+                if (DataAbstract?.PixMan != null)
                     foreach (var basin in DataAbstract.PixMan.Pixels)
                     {
                         if (DataAbstract.SamePolesAndEquatorGravitation)

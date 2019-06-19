@@ -7,14 +7,18 @@ using NUnit.Framework;
 
 namespace Logy.Maps.ReliefMaps.World.Data
 {
-    public class GeoidUndulationsData : EllipseWithShapeData
+    public class GeoidUndulationsData : DataForMap2D<HealCoor>
     {
-        public GeoidUndulationsData(Map2DBase map) : base(map)
+        public GeoidUndulationsData(Map2DBase<HealCoor> map) : base(map)
         {
             ColorsMiddle = -22;
         }
 
         public override int Accuracy => 1;
+
+        public override ReliefType ReliefType => ReliefType.Bed;
+
+        protected override bool IsReliefBedShape => true;
 
         public override double? GetAltitude(HealCoor basin)
         {

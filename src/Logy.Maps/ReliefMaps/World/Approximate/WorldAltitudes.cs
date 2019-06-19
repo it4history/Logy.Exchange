@@ -1,11 +1,12 @@
-﻿using Logy.Maps.ReliefMaps.Map2D;
+﻿using Logy.Maps.Projections.Healpix;
+using Logy.Maps.ReliefMaps.Map2D;
 using Logy.Maps.ReliefMaps.World.Data;
 
 namespace Logy.Maps.ReliefMaps.World.Approximate
 {
-    public class Altitudes : Map2DBase
+    public class WorldAltitudes : Map2DBase<HealCoor>
     {
-        public Altitudes()
+        public WorldAltitudes()
         {
             Frames = 1;
         }
@@ -14,6 +15,6 @@ namespace Logy.Maps.ReliefMaps.World.Approximate
 
         protected override int K => 8;
 
-        protected override DataForMap2D MapData => new WorldAltitudesData(this);
+        protected override DataForMap2D<HealCoor> MapData => new WorldAltitudesData(this);
     }
 }

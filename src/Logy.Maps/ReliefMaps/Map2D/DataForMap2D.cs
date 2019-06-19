@@ -1,6 +1,5 @@
 using System;
 using System.Linq;
-using Logy.Maps.Approximations;
 using Logy.Maps.Coloring;
 using Logy.Maps.Projections;
 using Logy.Maps.Projections.Healpix;
@@ -9,32 +8,21 @@ using Logy.MwAgent.Sphere;
 
 namespace Logy.Maps.ReliefMaps.Map2D
 {
-    public abstract class DataForMap2D : DataEarth2014<HealCoor>
+    public abstract class DataForMap2D<T> : DataEarth2014<T> where T : HealCoor
     {
         /// <summary>
         /// bad design
         /// </summary>
-        private readonly Map2DBase _map;
+        private readonly Map2DBase<T> _map;
 
-        protected DataForMap2D(Map2DBase map)
+        protected DataForMap2D(Map2DBase<T> map)
         {
             _map = map;
             K = map.HealpixManager.K;
-            ColorsMiddle = 0;
 
             // do not deserialize descendant classes 
             Init();
         }
-
-        /// <summary>
-        /// stores Altitudes
-        /// 
-        /// created for Projection.Healpix2Equirectangular and Projection.Healpix
-        /// used mainly for Projection.Healpix2Equirectangular
-        /// 
-        /// trying not to put this field into DataEarth2014
-        /// </summary>
-        public ApproximationManager ApproxMan { get; set; }
 
         /// <summary>
         /// order is determined
@@ -45,16 +33,7 @@ namespace Logy.Maps.ReliefMaps.Map2D
             {
                 case Projection.Healpix:
                 case Projection.Healpix2EquirectangularFast:
-                case Projection.Healpix2Equirectangular:
-                    ApproxMan = new ApproximationManager(HealpixManager);
-                    break;
-            }
-
-            switch (_map.Projection)
-            {
-                case Projection.Healpix:
-                case Projection.Healpix2EquirectangularFast:
-                    return ApproxMan.Pixels;
+                    return PixMan.Pixels;
                 case Projection.Healpix2Equirectangular:
                 case Projection.Equirectangular:
                     var height = _map.YResolution * HealpixManager.Nside;
@@ -92,7 +71,7 @@ namespace Logy.Maps.ReliefMaps.Map2D
                 case Projection.Healpix:
                 case Projection.Healpix2EquirectangularFast:
                 case Projection.Healpix2Equirectangular: /*mean min, nax will be calculated later  */
-                    colorsManager = InitAltitudes(ApproxMan.Pixels, isGrey);
+                    colorsManager = InitAltitudes(PixMan.Pixels, isGrey);
                     break;
                 case Projection.Equirectangular: /*min and max may not be precalculated*/
                     double? min = MinDefault, max = MaxDefault;
@@ -100,7 +79,8 @@ namespace Logy.Maps.ReliefMaps.Map2D
                     {
                         // slow?
                         var pix = (from pixel in pixels
-                                select new HealCoor(
+                                select (T)Activator.CreateInstance(
+                                    typeof(HealCoor),
                                     Equirectangular.CoorFromXY(pixel, _map.YResolution, HealpixManager)))
                             .ToArray();
                         colorsManager = InitAltitudes(pix, isGrey);

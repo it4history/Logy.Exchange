@@ -16,7 +16,7 @@ using NUnit.Framework;
 namespace Logy.Maps.ReliefMaps.Map2D
 {
     [TestFixture]
-    public abstract class Map2DBase : Map
+    public abstract class Map2DBase<T> : Map where T : HealCoor
     {
         public const string Slow = "Slow maps saved into files";
 
@@ -50,7 +50,7 @@ namespace Logy.Maps.ReliefMaps.Map2D
 
         protected int Frames { get; set; } = 1;
 
-        protected virtual DataForMap2D MapData => null;
+        protected virtual DataForMap2D<T> MapData => null;
 
         protected string Dir => _dir ?? (_dir = string.Format(
                                     "{2}\\maps\\{1}_lines{0}",
@@ -105,7 +105,7 @@ namespace Logy.Maps.ReliefMaps.Map2D
             return bmp;
         }
 
-        protected void DrawFrame(Point2[] pixels, DataForMap2D data, Bitmap bmp, int frame = 0)
+        protected void DrawFrame(Point2[] pixels, DataForMap2D<T> data, Bitmap bmp, int frame = 0)
         {
             switch (Projection)
             {
@@ -121,12 +121,12 @@ namespace Logy.Maps.ReliefMaps.Map2D
                         double? altitude;
                         if (Projection == Projection.Healpix2Equirectangular)
                         {
-                            var deltas = data.ApproxMan.GetDeltas(coor);
-                            altitude = data.ApproxMan.GetMeanAltitude(deltas);
+                            var deltas = data.PixMan.GetDeltas(coor);
+                            altitude = data.PixMan.GetMeanAltitude(deltas);
                             data.CheckMaxMin(altitude);
                         }
                         else
-                            altitude = data.GetAltitude(new HealCoor(coor));
+                            altitude = data.GetAltitude((T)Activator.CreateInstance(typeof(HealCoor), coor));
 
                         if (altitude.HasValue)
                             data.Colors.SetPixelOnBmp(altitude.Value, bmp, pixel, Scale);

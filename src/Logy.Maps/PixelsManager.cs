@@ -5,15 +5,32 @@ using Logy.Maps.Coloring;
 using Logy.Maps.Projections.Healpix;
 using Logy.MwAgent.Sphere;
 
-namespace Logy.Maps.Approximations
+namespace Logy.Maps
 {
-    public class ApproximationManager : PixelsManager<HealCoor>
+    public class PixelsManager<T> where T : HealCoor
     {
+        protected readonly HealpixManager HealpixManager;
+
         private const double PrecisionGrad = .01;
 
-        public ApproximationManager(HealpixManager healpixManager) : base(healpixManager)
+        public PixelsManager(HealpixManager healpixManager, T[] pix = null)
         {
+            HealpixManager = healpixManager;
+            if (pix == null)
+            {
+                Pixels = new T[healpixManager.Npix];
+                for (var p = 0; p < healpixManager.Npix; p++)
+                {
+                    Pixels[p] = healpixManager.GetCenter<T>(p);
+                }
+            }
+            else
+            {
+                Pixels = pix;
+            }
         }
+
+        public T[] Pixels { get; }
 
         public double GetMeanAltitude(KeyValuePair<int, double>[] deltas)
         {

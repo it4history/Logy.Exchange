@@ -3,10 +3,11 @@ using Logy.Maps.ReliefMaps.Map2D;
 
 namespace Logy.Maps.ReliefMaps.World.Data
 {
-    public class WorldAltitudesData : DataForMap2D
+    public class WorldAltitudesData : DataForMap2D<HealCoor>
     {
-        public WorldAltitudesData(Map2DBase map) : base(map)
+        public WorldAltitudesData(Map2DBase<HealCoor> map) : base(map)
         {
+            ColorsMiddle = 0;
         }
 
         public override double? GetAltitude(HealCoor basin)
