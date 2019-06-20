@@ -10,7 +10,9 @@ namespace Logy.Maps.ReliefMaps.Meridian
     /// </summary>
     public class ReliefMap : MeridianMap
     {
-        protected override int K => 6;
+        public ReliefMap() : base(6)
+        {
+        }
 
         [Test]
         public void Relief_WhenRotationStopped()

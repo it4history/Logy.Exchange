@@ -11,7 +11,7 @@ using NUnit.Framework;
 
 namespace Logy.Maps.Exchange
 {
-    public class Bundle<T> where T : BasinBase
+    public class Bundle<T> where T : BasinAbstract
     {
         public Bundle()
         {
@@ -60,6 +60,10 @@ namespace Logy.Maps.Exchange
             for (var p = 0; p < bundle.Basins[data.K].Length; p++)
             {
                 var bundleBasin = bundle.Basins[data.K][p] as Basin3;
+
+                // init P if it was not serialized
+                if (bundleBasin.P == 0)
+                    bundleBasin.P = p;
                 var basin = data.PixMan.Pixels[bundleBasin.P] as Basin3;
                 if (bundleBasin.P < data.PixMan.Pixels.Length)
                 {
@@ -77,10 +81,10 @@ namespace Logy.Maps.Exchange
                     basin.Delta_g_traverse = bundleBasin.Delta_g_traverse;
 
                     basin.Hoq = bundleBasin.Hoq;
+                    /* Depth may not be serialized
                     basin.Depth = bundleBasin.Depth;
-
                     Assert.IsTrue(basin.Depth == bundleBasin.Depth
-                                  && basin.WaterHeight == bundleBasin.WaterHeight);
+                                  && basin.WaterHeight == bundleBasin.WaterHeight); */
                 }
             }
             if (!ignoreNewBasins)

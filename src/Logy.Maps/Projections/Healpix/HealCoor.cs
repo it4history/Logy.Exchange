@@ -30,7 +30,7 @@ namespace Logy.Maps.Projections.Healpix
         /// <summary>
         /// from 0 to Npix-1
         /// </summary>
-        [DataMember]
+        /// after deserialization determine P by position in an array [DataMember]
         public int P { get; set; }
 
         /// <summary>

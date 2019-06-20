@@ -6,11 +6,12 @@ namespace Logy.Maps.ReliefMaps.Basemap
     {
         public readonly HealpixManager HealpixManager;
 
-        protected Map()
+        protected Map(int k)
         {
-            HealpixManager = new HealpixManager(K);
+            K = k;
+            HealpixManager = new HealpixManager(k);
         }
 
-        protected virtual int K => 6;
+        protected int K { get; }
     }
 }

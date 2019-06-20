@@ -7,7 +7,7 @@ using Logy.Maps.ReliefMaps.Water;
 
 namespace Logy.Maps.Exchange
 {
-    public class ShiftAxisGeneric<T> : Algorithm<T> where T : BasinBase
+    public class ShiftAxisGeneric<T> : Algorithm<T> where T : BasinAbstract
     {
         private const double Pole2BasinAccuranceDegrees = 1.5;
         public ShiftAxisGeneric()

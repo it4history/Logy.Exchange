@@ -9,7 +9,7 @@ using MathNet.Spatial.Units;
 
 namespace Logy.Maps.ReliefMaps.World.Ocean
 {
-    public class Basin3 : BasinBase
+    public class Basin3 : BasinAbstract
     {
         private double _deltaGTraverse;
 

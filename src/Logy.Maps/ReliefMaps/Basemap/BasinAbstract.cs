@@ -8,7 +8,7 @@ using MathNet.Spatial.Euclidean;
 
 namespace Logy.Maps.ReliefMaps.Basemap
 {
-    public abstract class BasinBase : HealCoor
+    public abstract class BasinAbstract : HealCoor
     {
         private double _deltaGMeridian;
         public static Point2D O { get; } = new Point2D(0, 0);
@@ -60,13 +60,6 @@ namespace Logy.Maps.ReliefMaps.Basemap
         /// </summary>
         public double RadiusOfEllipse { get; private set; }
         public bool RadiusSpheric { get; private set; }
-        /// <summary>
-        /// for stabilized accelerations new geoid may be obtained
-        /// in such case its surface is modelled by this RadiusOfNewGeoid
-        ///   ideal is to get mathematic formula for new geoid
-        /// </summary>
-        public double NewGeoidRadius { get; private set; }
-        public SurfaceType NewGeoidSurfaceType { get; private set; }
 
         public double RingArea { get; private set; }
         public double Area { get; private set; }
@@ -124,7 +117,7 @@ namespace Logy.Maps.ReliefMaps.Basemap
         /// 
         /// int? is not enough when geoidUndulation included
         /// </summary>
-        [DataMember]
+        /// let be serealized if really needed [DataMember]
         public double? Depth { get; set; }
 
         // h_{water}
@@ -236,7 +229,7 @@ namespace Logy.Maps.ReliefMaps.Basemap
         /// <summary>
         /// maybe rudiment
         /// </summary>
-        public virtual double Intersect(BasinBase otherBasin)
+        public virtual double Intersect(BasinAbstract otherBasin)
         {
             return 0;
         }

@@ -9,12 +9,10 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
     /// </summary>
     public class ReliefAxis17 : ReliefMap
     {
-        public ReliefAxis17()
+        public ReliefAxis17(int k = 7) : base(7)
         {
             LegendNeeded = true;
         }
-
-        protected override int K => 7;
 
         /// <summary>
         /// bug of Logy.Maps.Exchange.Bundle: 

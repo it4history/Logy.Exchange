@@ -6,7 +6,7 @@ using MathNet.Spatial.Euclidean;
 
 namespace Logy.Maps.ReliefMaps.Meridian
 {
-    public abstract class MeridianBase : BasinBase
+    public abstract class MeridianAbstract : BasinAbstract
     {
         /// <summary>
         /// top face intersects axis Y in point Ky with angle KyQQy
@@ -73,9 +73,9 @@ namespace Logy.Maps.ReliefMaps.Meridian
         /// todo do not use DistanceTo, return Point2D instead of double
         /// be careful with points
         /// </summary>
-        public override double Intersect(BasinBase otherBasin)
+        public override double Intersect(BasinAbstract otherBasin)
         {
-            var other = (MeridianBase)otherBasin;
+            var other = (MeridianAbstract)otherBasin;
             return KQ.IntersectWith(OQ(other.Q)).Value.DistanceTo(other.Q);
         }
 

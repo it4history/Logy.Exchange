@@ -11,7 +11,9 @@ namespace Logy.Maps.ReliefMaps.Meridian
     /// </summary>
     public class MeridianMap : RotationStopMap<MeridianCoor>
     {
-        protected override int K => 7;
+        public MeridianMap(int k = 7) : base(k)
+        {
+        }
 
         /// <summary>
         /// http://hist.tk/ory/Меридианная_проекция_-_вода#третий_пример

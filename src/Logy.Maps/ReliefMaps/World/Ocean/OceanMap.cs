@@ -10,7 +10,9 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
 {
     public class OceanMap : RotationStopMap<Basin3>
     {
-        protected override int K => 5;
+        public OceanMap(int k = 5) : base(k)
+        {
+        }
 
         [Test]
         public void Water_HighBasin()

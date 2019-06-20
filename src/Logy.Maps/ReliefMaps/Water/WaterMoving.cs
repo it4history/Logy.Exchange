@@ -202,7 +202,7 @@ namespace Logy.Maps.ReliefMaps.Water
             var oceanVolume = 0d;
             foreach (var basin in PixMan.Pixels)
             {
-                oceanVolume += (basin as BasinBase).Volume;
+                oceanVolume += (basin as BasinAbstract).Volume;
             }
             return ToMilCumKm(oceanVolume);
         }

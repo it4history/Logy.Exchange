@@ -2,7 +2,7 @@ using Logy.Maps.Projections.Healpix;
 
 namespace Logy.Maps.ReliefMaps.Meridian
 {
-    public class MeridianCoor : MeridianBase
+    public class MeridianCoor : MeridianAbstract
     {
         /// <summary>
         /// key - NeighborVert, relative to otherBasin.Q

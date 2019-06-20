@@ -74,7 +74,7 @@ namespace Logy.Maps.Geometry
             return gWithAOnEquator * (1 + (.0053024 * sin * sin) - (.0000059 * sin2a * sin2a));
         }
 
-        public static double Centrifugal(BasinBase basin)
+        public static double Centrifugal(BasinAbstract basin)
         {
             double a, aTraverse, aVertical;
             return Centrifugal(basin, out a, out aTraverse, out aVertical);
@@ -84,7 +84,7 @@ namespace Logy.Maps.Geometry
         /// <param name="aTraverse"></param>
         /// <param name="aVertical">projected value to the sphere normal, > 0</param>
         /// <returns>aMeridian,  directed to equator of OZ</returns>
-        public static double Centrifugal(BasinBase basin, out double a, out double aTraverse, out double aVertical)
+        public static double Centrifugal(BasinAbstract basin, out double a, out double aTraverse, out double aVertical)
         {
             aTraverse = 0; 
             if (CurrentDatum.AxisOfRotation == Basin3.Oz)

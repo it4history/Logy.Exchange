@@ -6,7 +6,7 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
 {
     public class ReliefMap : OceanMap
     {
-        public ReliefMap()
+        public ReliefMap(int k) : base(k)
         {
             LegendNeeded = false;
         }

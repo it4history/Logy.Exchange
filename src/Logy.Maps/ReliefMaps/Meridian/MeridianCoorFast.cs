@@ -18,7 +18,7 @@ namespace Logy.Maps.ReliefMaps.Meridian
             _lengthQn2 = (Beta.Value - northRingPixel.Beta.Value) * RadiusOfEllipse / 2;
         }
 
-        public override double Intersect(BasinBase otherBasin)
+        public override double Intersect(BasinAbstract otherBasin)
         {
             return Math.Tan(Delta_g_meridian) * _lengthQn2;
         }

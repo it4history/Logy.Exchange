@@ -13,22 +13,22 @@ using NUnit.Framework;
 namespace Logy.Maps.ReliefMaps.Map2D
 {
     [Category(Slow)]
-    public class RotationStopMap<T> : Map2DBase<T> where T : BasinBase
+    public class RotationStopMap<T> : Map2DBase<T> where T : BasinAbstract
     {
         private bool _jsonNeeded;
 
-        public RotationStopMap()
+        public RotationStopMap(int k = 6) : base(k)
         {
-            if (K < 7)
+            if (k < 7)
             {
                 YResolution = 3;
-                Scale = (7 - K) * 3;
-                /*if (K < 5)
+                Scale = (7 - k) * 3;
+                /*if (k < 5)
                 {
                     Scale += 7 - 5;
                 }*/
             }
-            if (K == 7)
+            if (k == 7)
             {
                 Scale = 2;
             }
@@ -59,8 +59,6 @@ namespace Logy.Maps.ReliefMaps.Map2D
                     throw new ApplicationException("Bundle already set");
             }
         }
-
-        protected override int K => 6;
 
         protected override ImageFormat ImageFormat => ImageFormat.Jpeg;
 

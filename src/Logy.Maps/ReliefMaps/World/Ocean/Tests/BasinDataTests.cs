@@ -66,7 +66,7 @@ namespace Logy.Maps.ReliefMaps.World.Ocean.Tests
             Assert.AreEqual(99, data.PixMan.Pixels[142].Hoq, 1); //// 99 for SignedDistance, 50 for MeanEdge
         }
 
-        internal static void DoFrame<T>(WaterMoving<T> data) where T : BasinBase
+        internal static void DoFrame<T>(WaterMoving<T> data) where T : BasinAbstract
         {
             Console.WriteLine("---------");
             data.DoFrame();

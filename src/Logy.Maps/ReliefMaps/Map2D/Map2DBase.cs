@@ -22,7 +22,7 @@ namespace Logy.Maps.ReliefMaps.Map2D
 
         private string _dir;
 
-        protected Map2DBase()
+        protected Map2DBase(int k = 6) : base(k)
         {
             LegendNeeded = true;
         }

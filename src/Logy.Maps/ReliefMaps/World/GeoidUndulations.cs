@@ -9,6 +9,10 @@ namespace Logy.Maps.ReliefMaps.World
 {
     public class GeoidUndulations : Map2DBase<HealCoor>
     {
+        public GeoidUndulations(int k = 9) : base(k)
+        {
+        }
+
         public override Projection Projection => Projection.Healpix; // Healpix2Equirectangular // Equirectangular
 
         public override SortedList<int, Color3> ColorsAbove => new SortedList<int, Color3>
@@ -19,8 +23,6 @@ namespace Logy.Maps.ReliefMaps.World
             { 80, new Color3(Color.SandyBrown) },
             { 100, new Color3(Color.Red) },
         };
-
-        protected override int K => 9;
 
         protected override DataForMap2D<HealCoor> MapData => new GeoidUndulationsData(this);
     }

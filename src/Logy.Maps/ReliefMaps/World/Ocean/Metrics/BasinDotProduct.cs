@@ -41,7 +41,7 @@ namespace Logy.Maps.ReliefMaps.World.Ocean.Metrics
 
         public double Lambda_meridian { get; set; }
 
-        public Line2D KQ_traverse => MeridianBase.GetKQ(KQQaxisTanCotan_traverse, Q_traverse);
+        public Line2D KQ_traverse => MeridianAbstract.GetKQ(KQQaxisTanCotan_traverse, Q_traverse);
 
         public override void OnInit(HealpixManager man)
         {
@@ -77,9 +77,9 @@ namespace Logy.Maps.ReliefMaps.World.Ocean.Metrics
             // Qt.Length;
         }
 
-        public override double Intersect(BasinBase otherBasin)
+        public override double Intersect(BasinAbstract otherBasin)
         {
-            var other = (MeridianBase)otherBasin;
+            var other = (MeridianAbstract)otherBasin;
             var vectorQt = new Vector2D(
                 other.Q.X * Math.Cos(Lambda.Value - otherBasin.Lambda.Value),
                 other.Q.Y);
