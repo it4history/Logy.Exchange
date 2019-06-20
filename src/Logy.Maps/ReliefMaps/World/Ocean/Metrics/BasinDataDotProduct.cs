@@ -38,7 +38,7 @@ namespace Logy.Maps.ReliefMaps.World.Ocean.Metrics
                     var toBasin = PixMan.Pixels[man.Neibors.Get(to, basin)];
                     basin.Neibors[to] = toBasin;
 
-                    basin.Froms[(int)to] = basin.GetFromAndFillType(to, toBasin, HealpixManager);
+                    basin.Opposites[(int)to] = basin.GetFromAndFillType(to, toBasin, HealpixManager);
 
                     basin.MeanEdges[(int)to] = man.Neibors.MeanBoundary(basin, to);
 
@@ -123,7 +123,7 @@ namespace Logy.Maps.ReliefMaps.World.Ocean.Metrics
                 {
                     var toBasin = basin.Neibors[to];
 
-                    var @from = basin.Froms[(int)to];
+                    var @from = basin.Opposites[(int)to];
                     var koef
                         = .25;
                     /// = basin.Koef[(int)to] / basin.Koef.Sum();
@@ -241,13 +241,13 @@ namespace Logy.Maps.ReliefMaps.World.Ocean.Metrics
                             || (basin.Ring == HealpixManager.RingsCount && vert == NeighborVert.South)
                             || basin.Type == to)
                         {
-                            basin.Froms[(int)to] = (int)NeighborManager.GetOppositeHor(to);
+                            basin.Opposites[(int)to] = (int)NeighborManager.GetOppositeHor(to);
                             heightToVer = 0;
                         }
                         else
                         {
                             var from = NeighborManager.GetOpposite(to);
-                            basin.Froms[(int)to] = (int)from;
+                            basin.Opposites[(int)to] = (int)from;
                             heightToVer = basin.Hto[(int)vert] -
                                      toBasin.Hto[1 - (int)vert];
 

@@ -1,4 +1,5 @@
-﻿using Logy.Maps.ReliefMaps.Map2D;
+﻿using Logy.Maps.ReliefMaps.Basemap;
+using Logy.Maps.ReliefMaps.Map2D;
 using NUnit.Framework;
 
 namespace Logy.Maps.ReliefMaps.World.Ocean.Metrics

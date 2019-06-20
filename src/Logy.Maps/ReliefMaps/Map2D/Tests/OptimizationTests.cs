@@ -1,3 +1,4 @@
+#if DEBUG
 using Logy.Maps.ReliefMaps.Meridian;
 using Logy.Maps.ReliefMaps.Meridian.Data;
 using NUnit.Framework;
@@ -18,3 +19,4 @@ namespace Logy.Maps.ReliefMaps.Map2D.Tests
         }
     }
 }
+#endif

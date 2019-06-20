@@ -3,8 +3,9 @@ using System.Runtime.Serialization;
 using Logy.Maps.Exchange.Earth2014;
 using Logy.Maps.Projections.Healpix;
 using Logy.Maps.ReliefMaps.Water;
+using Logy.Maps.ReliefMaps.World.Ocean;
 
-namespace Logy.Maps.ReliefMaps.World.Ocean
+namespace Logy.Maps.ReliefMaps.Basemap
 {
     public class BasinDataAbstract<T> : WaterMoving<T> where T : Basin3
     {
@@ -65,7 +66,7 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
                         var toBasin = PixMan.Pixels[HealpixManager.Neibors.Get(to, basin)];
                         basin.Neibors[to] = toBasin;
 
-                        basin.Froms[(int)to] = basin.GetFromAndFillType(to, toBasin, HealpixManager);
+                        basin.Opposites[(int)to] = basin.GetFromAndFillType(to, toBasin, HealpixManager);
 
                         basin.MeanEdges[(int)to] = HealpixManager.Neibors.MeanBoundary(basin, to);
                     }
@@ -111,20 +112,20 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
                     // null for maps that only visualize
                     if (toBasin != null)
                     {
-                        var @from = basin.Froms[to];
+                        var from = basin.Opposites[to];
                         var koef
                             = .25;
                         /// = basin.Koef[(int)to] / basin.Koef.Sum();
 
                         // todo balance deltaH relative to basin.WaterHeight
-                        var height = basin.Hto[to] - toBasin.Hto[@from];
+                        var height = basin.Hto[to] - toBasin.Hto[from];
 
                         Water.PutV(
                             basin,
                             toBasin,
                             height * koef,
                             to,
-                            @from);
+                            from);
                     }
                 }
                 return Visual(basin); // basin.hOQ;

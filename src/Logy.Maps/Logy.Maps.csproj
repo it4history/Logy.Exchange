@@ -68,6 +68,7 @@
     <Compile Include="Exchange\Earth2014\Earth2014Manager.cs" />
     <Compile Include="Exchange\Earth2014\ReliefType.cs" />
     <Compile Include="Exchange\Earth2014\Tests\Earth2014ManagerTests.cs" />
+    <Compile Include="Exchange\gdal\GdalConfiguration.cs" />
     <Compile Include="Exchange\GeoJson\GeoJsonManager.cs" />
     <Compile Include="Exchange\Naturalearth\NeManager.cs" />
     <Compile Include="Exchange\Naturalearth\Tests\NeManagerTests.cs" />
@@ -75,8 +76,6 @@
     <Compile Include="Exchange\Tests\BundleTests.cs" />
     <Compile Include="Exchange\ShiftAxis.cs" />
     <Compile Include="Geometry\Datum.cs" />
-    <Compile Include="Exchange\gdal\GdalConfiguration.cs" />
-    <Compile Include="Exchange\gdal\Tests\GdalTests.cs" />
     <Compile Include="Coloring\Color3.cs" />
     <Compile Include="Geometry\Matrixes.cs" />
     <Compile Include="Geometry\Tests\MatrixesTests.cs" />
@@ -85,9 +84,11 @@
     <Compile Include="Projections\Healpix\NeighborManager.cs" />
     <Compile Include="Projections\Healpix\Tests\HealCoorTests.cs" />
     <Compile Include="Projections\Healpix\Tests\NeighborManagerTests.cs" />
-    <Compile Include="ReliefMaps\Geoid\BasinNew.cs" />
+    <Compile Include="ReliefMaps\Geoid\BasinOfGeoid.cs" />
     <Compile Include="ReliefMaps\Basemap\DataEarth.cs" />
     <Compile Include="ReliefMaps\Geoid\Geoid.cs" />
+    <Compile Include="ReliefMaps\Geoid\Polygon.cs" />
+    <Compile Include="ReliefMaps\Geoid\Tests\GeoidTests.cs" />
     <Compile Include="ReliefMaps\SurfaceType.cs" />
     <Compile Include="ReliefMaps\Map2D\Tests\OptimizationTests.cs" />
     <Compile Include="ReliefMaps\Map2D\RotationStopMap.cs" />
@@ -96,7 +97,7 @@
     <Compile Include="ReliefMaps\Meridian\ReliefMap.cs" />
     <Compile Include="ReliefMaps\World\Percentage.cs" />
     <Compile Include="ReliefMaps\World\Data\PercentageData.cs" />
-    <Compile Include="ReliefMaps\World\Ocean\BasinDataAbstract.cs" />
+    <Compile Include="ReliefMaps\Basemap\BasinDataAbstract.cs" />
     <Compile Include="ReliefMaps\World\Ocean\Metrics\BasinSignedDistance.cs" />
     <Compile Include="ReliefMaps\Geoid\Geoid17.cs" />
     <Compile Include="ReliefMaps\Geoid\Geoid17Data.cs" />

@@ -1,4 +1,5 @@
 ﻿using Logy.Maps.Projections.Healpix;
+using Logy.Maps.ReliefMaps.Basemap;
 
 namespace Logy.Maps.ReliefMaps.World.Ocean
 {

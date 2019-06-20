@@ -28,7 +28,7 @@ namespace Logy.Maps.ReliefMaps.Geoid
         public void Relative()
         {
             var reliefAxis17 = new ReliefAxis17(5);
-            var bundle = Bundle<BasinNew>.Deserialize(
+            var bundle = Bundle<BasinOfGeoid>.Deserialize(
                 File.ReadAllText(reliefAxis17.StatsFileName()));
 
             Geoid.Obtain(bundle.Algorithm.DataAbstract);

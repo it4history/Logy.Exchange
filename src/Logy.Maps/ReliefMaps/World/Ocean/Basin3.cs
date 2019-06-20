@@ -150,11 +150,11 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
         /// is not too correct for pole closest rings
         /// </summary>
         public Direction? Type { get; set; }
-
-        public int[] Froms { get; set; }
-        public Matrix<double> Matrix { get; set; }
+        public int[] Opposites { get; set; }
 
         public Ray3D[] MeanEdges { get; set; }
+
+        public Matrix<double> Matrix { get; set; }
 
         /// <summary>
         /// was named InitialHto
@@ -226,7 +226,7 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
 
             Hto = new double[4];
             Volumes = new bool[4];
-            Froms = new int[4];
+            Opposites = new int[4];
             MeanEdges = new Ray3D[4];
             HtoBase = new double[4];
         }

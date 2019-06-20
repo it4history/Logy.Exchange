@@ -2,9 +2,7 @@ namespace Logy.Maps.ReliefMaps
 {
     public enum SurfaceType
     {
-        WorldOcean,
-        InnerWater,
-        Land,
-        Ice
+        Water,
+        Solid, /// what about ice, sand, rock; land?
     }
 }

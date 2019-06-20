@@ -1,4 +1,3 @@
-#if DEBUG
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -239,4 +238,3 @@ namespace Logy.Maps.ReliefMaps.Map2D
         }
     }
 }
-#endif

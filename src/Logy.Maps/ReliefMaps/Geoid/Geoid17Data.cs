@@ -59,7 +59,7 @@ namespace Logy.Maps.ReliefMaps.Geoid
             */
         }
 
-        private static void DrawPolygon(Polygon polygon, Equirectangular equirectangular, Graphics g)
+        private static void DrawPolygon(GeoJSON.Net.Geometry.Polygon polygon, Equirectangular equirectangular, Graphics g)
         {
             var positions = polygon.Coordinates[0].Coordinates;
             var points = new Point[positions.Count];
