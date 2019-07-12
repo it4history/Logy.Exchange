@@ -70,7 +70,7 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
         }
 
         /// <summary>
-        /// depends on AxisOfRotation
+        /// may depend on AxisOfRotation
         /// </summary>
         public Point3D Qgeiod
         {
@@ -264,9 +264,14 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
         }
 
         /// <param name="to">Direction</param>
+        public double Metric(int to, bool initial = false)
+        {
+            return Metric(Neibors[to], to, initial);
+        }
         public virtual double Metric(Basin3 toBasin, int to, bool initial = false)
         {
-            return (initial ? S_geiod : S_q).IntersectionWith(MeanEdges[to]).DistanceTo(O3) /*MeanEdge metric*/
+            /* MeanEdge metric */
+            return (initial ? S_geiod : S_q).IntersectionWith(MeanEdges[to]).DistanceTo(O3) 
                    - HtoBase[to]; /// needed for BasinDataTests.HighBasin_31
         }
 

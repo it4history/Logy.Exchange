@@ -56,7 +56,7 @@ namespace Logy.Maps.ReliefMaps.Basemap
         public double Radius => Hoq + RadiusOfEllipse;
 
         /// <summary>
-        /// geoid surface, may be changed
+        /// geoid surface set by a mathematical formula
         /// </summary>
         public double RadiusOfEllipse { get; private set; }
         public bool RadiusSpheric { get; private set; }
@@ -91,7 +91,7 @@ namespace Logy.Maps.ReliefMaps.Basemap
         public abstract double[] Hto { get; set; }
 
         /// <summary>
-        /// whether water was moved during MeridianData.Frame(...)
+        /// whether water was moved during WaterMoving.Frame(...)
         /// </summary>
         public abstract bool[] Volumes { get; set; }
 

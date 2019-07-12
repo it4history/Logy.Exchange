@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Logy.Maps.ReliefMaps.Water;
 using Logy.Maps.ReliefMaps.World.Ocean;
 using MathNet.Spatial.Euclidean;
 
@@ -13,8 +14,9 @@ namespace Logy.Maps.ReliefMaps.Geoid
 
         public Plane GeoidSurfaceForSolid { get; private set; }
 
-        public bool FillNewGeoid(double waterThreshhold)
+        public bool FillNewGeoid(WaterModel model)
         {
+            if (P==19){ }
             var froms = new Dictionary<int, BasinOfGeoid>();
             for (var from = 0; from < 4; from++)
             {
@@ -34,8 +36,8 @@ namespace Logy.Maps.ReliefMaps.Geoid
             {
                 if (fromWater != null)
                 {
-                    var height = Hto[water.Key] - fromWater.Hto[fromWaterTo];
-                    var threshholded = Math.Abs(height) > waterThreshhold;
+                    var height = Metric(water.Key) - fromWater.Metric(fromWaterTo);
+                    var threshholded = Math.Abs(height) * WaterModel.Koef > model.Threshhold;
                     if (threshholded)
                         return false;
                     
@@ -55,7 +57,9 @@ namespace Logy.Maps.ReliefMaps.Geoid
                 var fromSolid = solid.Value;
                 if (fromSolid == null)
                 {
-                    SetGeoid(null, fromWater.S_q.IntersectionWith(fromWater.MeanEdges[fromWaterTo]));
+                    var diff = HtoBase[water.Key] - fromWater.HtoBase[fromWaterTo];
+                    var ray = fromWater.MeanEdges[fromWaterTo];
+                    SetGeoid(null, fromWater.S_q.IntersectionWith(ray) + diff * ray.Direction);
                 }
                 else
                 {
@@ -73,12 +77,14 @@ namespace Logy.Maps.ReliefMaps.Geoid
             if (solidPoint != null)
             {
                 GeoidSurfaceForSolid = new Plane(Normal.Value, solidPoint.Value);
-                GeoidRadius = GeoidSurfaceForSolid.IntersectionWith(RadiusRay).DistanceTo(O3);
+                var q_geoid = GeoidSurfaceForSolid.IntersectionWith(RadiusRay);
+                GeoidRadius = q_geoid.DistanceTo(O3);
             }
             else
             {
                 GeoidRadius = Radius;
             }
+
             Polygon = polygon ?? new Polygon
             {
                 SurfaceType = HasWater() ? SurfaceType.Water : SurfaceType.Solid

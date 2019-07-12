@@ -7,6 +7,8 @@ namespace Logy.Maps.ReliefMaps.Water
 {
     public class WaterModel
     {
+        public const double Koef = .25;
+
         // when Viscosity greater then water is more liquid
         // if > 1 then water is autoliquied
         // if == 0 then water is solid

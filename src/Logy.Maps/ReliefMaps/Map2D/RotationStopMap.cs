@@ -17,7 +17,10 @@ namespace Logy.Maps.ReliefMaps.Map2D
     {
         private bool _jsonNeeded;
 
-        public RotationStopMap(int k = 6) : base(k)
+        public RotationStopMap() : this(6)
+        {
+        }
+        public RotationStopMap(int k) : base(k)
         {
             if (k < 7)
             {

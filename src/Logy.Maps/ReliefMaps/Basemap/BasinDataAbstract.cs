@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Runtime.Serialization;
 using Logy.Maps.Exchange.Earth2014;
 using Logy.Maps.Projections.Healpix;
@@ -73,8 +73,7 @@ namespace Logy.Maps.ReliefMaps.Basemap
                     /// basin.CorrectionSurface();
                     for (int to = 0; to < 4; to++)
                     {
-                        var toBasin = basin.Neibors[to];
-                        basin.HtoBase[to] = basin.Metric(toBasin, to, true);
+                        basin.HtoBase[to] = basin.Metric(to, true);
                     }
                 }
 
@@ -87,11 +86,13 @@ namespace Logy.Maps.ReliefMaps.Basemap
 
         public override void GradientAndHeightCrosses()
         {
+            // todo SignedDistance may be accelerated twice by calcing Hto for neibors only once; take basin.Volumes into account 
             foreach (var basin in PixMan.Pixels)
             {
                 basin.WaterReset();
-                /// should be commented if (basin.HasWater())
-
+                
+                /* should be commented if (basin.HasWater()
+                 * because solid contour may get water */
                 for (int to = 0; to < 4; to++)
                 {
                     var toBasin = basin.Neibors[to];
@@ -113,17 +114,15 @@ namespace Logy.Maps.ReliefMaps.Basemap
                     if (toBasin != null)
                     {
                         var from = basin.Opposites[to];
-                        var koef
-                            = .25;
-                        /// = basin.Koef[(int)to] / basin.Koef.Sum();
 
-                        // todo balance deltaH relative to basin.WaterHeight
+                        /* bug http://hist.tk/ory/Искажение_начала_перетекания 
+                         * may be fixed by balancing deltaH (of WaterIn method) relative to basin.WaterHeight */
                         var height = basin.Hto[to] - toBasin.Hto[from];
 
                         Water.PutV(
                             basin,
                             toBasin,
-                            height * koef,
+                            height * WaterModel.Koef,
                             to,
                             from);
                     }

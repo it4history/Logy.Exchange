@@ -11,7 +11,10 @@ namespace Logy.Maps.ReliefMaps.Meridian
     /// </summary>
     public class MeridianMap : RotationStopMap<MeridianCoor>
     {
-        public MeridianMap(int k = 7) : base(k)
+        public MeridianMap() : this(7)
+        {
+        }
+        public MeridianMap(int k) : base(k)
         {
         }
 

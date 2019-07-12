@@ -210,8 +210,11 @@ namespace Logy.Maps.ReliefMaps.Water
         public void CheckOcean()
         {
             _oceanVolume = GetOceanVolume();
-            Assert.GreaterOrEqual(_oceanVolume, 1330);
-            Assert.LessOrEqual(_oceanVolume, 1340);
+            if (K > 3)
+            {
+                Assert.GreaterOrEqual(_oceanVolume, 1330);
+                Assert.LessOrEqual(_oceanVolume, 1340);
+            }
         }
 
         public double RecheckOcean()

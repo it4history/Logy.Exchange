@@ -26,7 +26,7 @@ namespace Logy.Maps.ReliefMaps.Geoid
                 }
                 else
                 {
-                    if (!basin.FillNewGeoid(data.Water.Threshhold))
+                    if (!basin.FillNewGeoid(data.Water))
                         throw new ApplicationException("cannot fill");
                 }
             }

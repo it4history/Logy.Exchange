@@ -80,6 +80,7 @@
     <Compile Include="Geometry\Matrixes.cs" />
     <Compile Include="Geometry\Tests\MatrixesTests.cs" />
     <Compile Include="Geometry\Tests\DatumTests.cs" />
+    <Compile Include="Geometry\Tests\MathNetPoint3DTests.cs" />
     <Compile Include="Projections\Healpix\Neibors.cs" />
     <Compile Include="Projections\Healpix\NeighborManager.cs" />
     <Compile Include="Projections\Healpix\Tests\HealCoorTests.cs" />
@@ -154,7 +155,7 @@
     <Compile Include="ReliefMaps\World\Ocean\Metrics\Tests\MeridianMetricTests.cs" />
     <Compile Include="ReliefMaps\World\Ocean\ReliefAxis17.cs" />
     <Compile Include="SortUtils.cs" />
-    <Compile Include="Tests\SortUtilsTests.cs" />
+    <Compile Include="Tests\SortedListAndDictionaryTests.cs" />
     <Compile Include="Wos\Tests\WosManagerTests.cs" />
     <Compile Include="Wos\Water.cs" />
     <Compile Include="Wos\WosManager.cs" />

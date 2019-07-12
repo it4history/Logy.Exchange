@@ -10,7 +10,10 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
 {
     public class OceanMap : RotationStopMap<Basin3>
     {
-        public OceanMap(int k = 5) : base(k)
+        public OceanMap() : this(5)
+        {
+        }
+        public OceanMap(int k) : base(k)
         {
         }
 

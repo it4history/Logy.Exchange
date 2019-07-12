@@ -9,7 +9,10 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
     /// </summary>
     public class ReliefAxis17 : ReliefMap
     {
-        public ReliefAxis17(int k = 7) : base(7)
+        public ReliefAxis17() : this(7)
+        {
+        }
+        public ReliefAxis17(int k) : base(k)
         {
             LegendNeeded = true;
         }

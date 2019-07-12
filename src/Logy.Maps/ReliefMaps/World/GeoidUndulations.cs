@@ -9,7 +9,7 @@ namespace Logy.Maps.ReliefMaps.World
 {
     public class GeoidUndulations : Map2DBase<HealCoor>
     {
-        public GeoidUndulations(int k = 9) : base(k)
+        public GeoidUndulations() : base(9)
         {
         }
 
