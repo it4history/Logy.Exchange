@@ -70,11 +70,8 @@ namespace Logy.Maps.ReliefMaps.Basemap
 
                         basin.MeanEdges[(int)to] = HealpixManager.Neibors.MeanBoundary(basin, to);
                     }
-                    /// basin.CorrectionSurface();
-                    for (int to = 0; to < 4; to++)
-                    {
-                        basin.HtoBase[to] = basin.Metric(to, true);
-                    }
+
+                    basin.InitMetrics();
                 }
 
                 if (WithRelief)

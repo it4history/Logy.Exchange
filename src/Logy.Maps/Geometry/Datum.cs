@@ -5,6 +5,7 @@ using Logy.MwAgent.Sphere;
 using MathNet.Numerics.LinearAlgebra;
 using MathNet.Spatial.Euclidean;
 using MathNet.Spatial.Units;
+using Newtonsoft.Json;
 
 namespace Logy.Maps.Geometry
 {
@@ -35,6 +36,7 @@ namespace Logy.Maps.Geometry
         /// from -180 to 180, 180 corresponds to East on the right
         /// </summary>
         [DataMember]
+        [JsonProperty("X")]
         public override double X
         {
             get
@@ -52,6 +54,7 @@ namespace Logy.Maps.Geometry
         /// from -90 to 90, 90 corresponds to North pole
         /// </summary>
         [DataMember]
+        [JsonProperty("Y")]
         public override double Y
         {
             get

@@ -70,14 +70,14 @@ namespace Logy.Maps.ReliefMaps.Basemap
         [IgnoreDataMember]
         public double? ColorsMiddle { get; set; }
 
+        [IgnoreDataMember]
+        public double? MaxDefault { get; set; }
+        internal double? MinDefault { get; set; }
+
         /// <summary>
         /// not needed for Projection.Equirectangular
         /// </summary>
         protected internal PixelsManager<T> PixMan { get; private set; }
-
-        [IgnoreDataMember]
-        public double? MaxDefault { get; set; }
-        protected double? MinDefault { get; set; }
 
         // physical surface 
         protected Earth2014Manager Relief { get; private set; }
@@ -178,12 +178,12 @@ namespace Logy.Maps.ReliefMaps.Basemap
                         var segmentLength = (previousPoint.X - point.X) / segments;
                         for (var i = 1; i < segments; i++)
                         {
-                            var approximateAltitude = healCoor.Altitude * (segments - i) / segments
-                                                      + previousCoor.Altitude * i / segments;
+                            var approximateAltitude = (healCoor.Altitude * (segments - i) / segments)
+                                                      + (previousCoor.Altitude * i / segments);
                             Colors.SetPixelOnBmp(
                                 approximateAltitude,
                                 bmp,
-                                (int)(point.X + deltaX + i * segmentLength),
+                                (int)(point.X + deltaX + (i * segmentLength)),
                                 (int)point.Y,
                                 scale);
                         }
@@ -193,8 +193,8 @@ namespace Logy.Maps.ReliefMaps.Basemap
 
                     if (Ellipsoid.CurrentDatum.PoleBasin != null)
                     {
-                        var r = K == 7 ? .01 : K == 6 ? .03 : .2;
-                        var width = K > 5 ? .03 : .06;
+                        var r = K == 7 ? 0.01 : (K == 6 ? 0.03 : 0.2);
+                        var width = K > 5 ? 0.03 : 0.06;
                         var dist = Ellipsoid.CurrentDatum.PoleBasin.DistanceTo(healCoor);
                         if (Colors != null
                             && dist >= r - width && dist <= r + width)

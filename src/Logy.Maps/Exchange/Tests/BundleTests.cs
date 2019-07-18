@@ -14,7 +14,7 @@ namespace Logy.Maps.Exchange.Tests
             @",""Data"":{""WithRelief"":true,""Spheric"":false,""IntegrationEndless"":false,""SamePolesAndEquatorGravitation"":false,""Frame"":-1,""Time"":0,""TimeStep"":1,""Max"":null,""Min"":null,""K"":4,""Accuracy"":5,""Dimension"":""m""}" +
             @",""Poles"":{""-1"":{""SiderealDayInSeconds"":86164.100637,""X"":-180.0,""Y"":90.0}}" +
             $@",""Name"":""Logy.Maps.Exchange.ShiftAxis, Logy.Maps, Version={Assembly.GetExecutingAssembly().GetName().Version}, Culture=neutral, PublicKeyToken=null"",""Diff"":0.0" +
-            @"}],""Basins"":{""4"":[{""Hoq"":0.0,""Depth"":2371.0,""P"":0}]}}";
+            @"}],""Basins"":{""4"":[{""Hoq"":0.0}]}}";
             
         [Test]
         public void Serialize()

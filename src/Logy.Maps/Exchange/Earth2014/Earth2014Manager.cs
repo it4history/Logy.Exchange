@@ -120,7 +120,7 @@ namespace Logy.Maps.Exchange.Earth2014
                     _accuracyMin,
                     _reliefType.ToString().ToUpper(),
                     _shape ? "Shape_minus_6371000m" : string.Empty);
-                return Path.Combine("Exchange\\Earth2014", fileName);
+                return Path.Combine($"Exchange{Path.DirectorySeparatorChar}Earth2014", fileName);
             }
         }
 

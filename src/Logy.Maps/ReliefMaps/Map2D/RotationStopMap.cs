@@ -122,7 +122,7 @@ namespace Logy.Maps.ReliefMaps.Map2D
                 // for meridian maps mainly
                 SaveBitmap(Data.Frame);
             }
-            Process.Start(GetFileName(Data.Colors, FrameToString(Data.Frame)));
+            OpenPicture(GetFileName(Data.Colors, FrameToString(Data.Frame)));
         }
 
         public void ShiftAxis(

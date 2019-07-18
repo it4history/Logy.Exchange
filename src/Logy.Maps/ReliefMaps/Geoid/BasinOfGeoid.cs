@@ -14,9 +14,15 @@ namespace Logy.Maps.ReliefMaps.Geoid
 
         public Plane GeoidSurfaceForSolid { get; private set; }
 
+        /*public Ray3D[] GeoidRays { get; set; }
+
+        public override void InitMetrics()
+        {
+            base.InitMetrics();
+        }*/
+
         public bool FillNewGeoid(WaterModel model)
         {
-            if (P==19){ }
             var froms = new Dictionary<int, BasinOfGeoid>();
             for (var from = 0; from < 4; from++)
             {
@@ -55,11 +61,14 @@ namespace Logy.Maps.ReliefMaps.Geoid
                 var solid = froms.FirstOrDefault(
                     f => f.Value.Polygon.SurfaceType == SurfaceType.Solid);
                 var fromSolid = solid.Value;
+                if (P == 8)
+                {
+                }
                 if (fromSolid == null)
                 {
                     var diff = HtoBase[water.Key] - fromWater.HtoBase[fromWaterTo];
                     var ray = fromWater.MeanEdges[fromWaterTo];
-                    SetGeoid(null, fromWater.S_q.IntersectionWith(ray) + diff * ray.Direction);
+                    SetGeoid(null, fromWater.S_q.IntersectionWith(ray) + (diff * ray.Direction));
                 }
                 else
                 {

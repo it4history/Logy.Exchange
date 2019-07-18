@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Runtime.Serialization;
 using Logy.MwAgent.Sphere;
+using Newtonsoft.Json;
 
 namespace Logy.Maps.Projections.Healpix
 {
@@ -64,8 +65,17 @@ namespace Logy.Maps.Projections.Healpix
 
         public int WestInRing => (PixelInRing == PixelsCountInRing ? P - PixelsCountInRing : P) + 1;
 
-        public double Longitude { get { return X; } set { X = value; } }
-        public double Latitude { get { return Y; } set { Y = value; } }
+        /// <summary>
+        /// Longitude
+        /// </summary>
+        [JsonIgnore]
+        public override double X { get { return base.X; } set { base.X = value; } }
+
+        /// <summary>
+        /// Latitude
+        /// </summary>
+        [JsonIgnore]
+        public override double Y { get { return base.Y; } set { base.Y = value; } }
 
         /// <summary>
         /// Pi/2 .. -Pi/2; Pi/2 is North pole

@@ -31,18 +31,18 @@ namespace Logy.Maps.Projections.Tests
         [Test]
         public void OffsetEarth2014()
         {
-            var coor = new HealCoor { Latitude = -89.9917, Longitude = -179.9917 };
+            var coor = new HealCoor { Y = -89.9917, X = -179.9917 };
             
             Assert.AreEqual(0, coor.Offset()); 
 
             var allRecords = 10800 * 21600; // 233280000;
-            coor = new HealCoor { Latitude = 0, Longitude = 0 };
+            coor = new HealCoor { Y = 0, X = 0 };
 
             // not accurate transforming
             Assert.AreEqual(allRecords / 2d, coor.Offset(), 11000);
 
             // not accurate transforming
-            coor = new HealCoor { Latitude = 89.9917, Longitude = 179.9917 };
+            coor = new HealCoor { Y = 89.9917, X = 179.9917 };
             Assert.AreEqual(allRecords - 1, coor.Offset());
         }
     }

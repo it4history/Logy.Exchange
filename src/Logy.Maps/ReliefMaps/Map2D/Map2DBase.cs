@@ -9,6 +9,7 @@ using Logy.Maps.Coloring;
 using Logy.Maps.Projections;
 using Logy.Maps.Projections.Healpix;
 using Logy.Maps.ReliefMaps.Basemap;
+using Logy.MwAgent.DotNetWikiBot;
 using Logy.MwAgent.Sphere;
 using NUnit.Framework;
 
@@ -52,10 +53,11 @@ namespace Logy.Maps.ReliefMaps.Map2D
         protected virtual DataForMap2D<T> MapData => null;
 
         protected string Dir => _dir ?? (_dir = string.Format(
-                                    "{2}\\maps\\{1}_lines{0}",
+                                    "{2}{3}maps{3}{1}_lines{0}",
                                     YResolution * HealpixManager.Nside,
                                     GetType().Name,
-                                    Directory.GetCurrentDirectory()));
+                                    Directory.GetCurrentDirectory(),
+                                    Path.DirectorySeparatorChar));
 
         protected virtual ImageFormat ImageFormat => ImageFormat.Jpeg;
 
@@ -64,6 +66,15 @@ namespace Logy.Maps.ReliefMaps.Map2D
         private bool LegendToDraw => !IsGrey && LegendNeeded;
 
         private int LegendHeight => K > 7 ? (K - 6) * 20 : 20;
+
+        public static void OpenPicture(string name)
+        {
+            if (Bot.IsRunningOnMono)
+                Process.Start(
+                new ProcessStartInfo("xdg-open", name) { UseShellExecute = false });
+            else
+                Process.Start(name);
+        }
 
         [Test]
         [Category(Slow)]
@@ -85,7 +96,7 @@ namespace Logy.Maps.ReliefMaps.Map2D
 
                 fileName = SaveBitmap(bmp, data.Colors, frame == 0 ? null : $"{frame:000}_{data.Accuracy}min");
             }
-            Process.Start(fileName);
+            OpenPicture(fileName);
 
             data.Log();
         }

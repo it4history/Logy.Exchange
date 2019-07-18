@@ -19,14 +19,11 @@ namespace Logy.Maps.Coloring
         /// <summary>
         /// from 0 to 255
         /// </summary>
-        public double R { get; private set; }
-        public double G { get; private set; }
-        public double B { get; private set; }
+        public double R { get; }
+        public double G { get; }
+        public double B { get; }
 
-        public double Sum
-        {
-            get { return R + G + B; }
-        }
+        public double Sum => R + G + B;
 
         public static Color3 operator -(Color3 a, Color3 b)
         {

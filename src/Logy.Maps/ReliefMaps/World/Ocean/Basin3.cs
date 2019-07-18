@@ -71,6 +71,7 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
 
         /// <summary>
         /// may depend on AxisOfRotation
+        /// ignores internal waters, marks only Mean sea level
         /// </summary>
         public Point3D Qgeiod
         {
@@ -130,6 +131,9 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
             }
         }
 
+        /// <summary>
+        /// Mean sea level
+        /// </summary>
         public Plane S_geiod => new Plane(Normal.Value, Qgeiod);
 
         public Neibors<Basin3> Neibors { get; } = new Neibors<Basin3>(new Basin3[4]);
@@ -152,14 +156,13 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
         public Direction? Type { get; set; }
         public int[] Opposites { get; set; }
 
-        public Ray3D[] MeanEdges { get; set; }
-
         public Matrix<double> Matrix { get; set; }
 
         /// <summary>
         /// was named InitialHto
         /// </summary>
         public double[] HtoBase { get; set; }
+        public Ray3D[] MeanEdges { get; set; }
 
         /// <summary>
         /// angle, directed to East
@@ -261,6 +264,15 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
             var aTraverse = base.RecalculateDelta_g(false);
             Delta_g_traverse = Math.Atan(aTraverse / GVpure);
             return 0;
+        }
+
+        public virtual void InitMetrics()
+        {
+            /// CorrectionSurface();
+            for (int to = 0; to < 4; to++)
+            {
+                HtoBase[to] = Metric(to, true);
+            }
         }
 
         /// <param name="to">Direction</param>
