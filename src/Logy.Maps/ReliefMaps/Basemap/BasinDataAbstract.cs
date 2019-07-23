@@ -67,11 +67,9 @@ namespace Logy.Maps.ReliefMaps.Basemap
                         basin.Neibors[to] = toBasin;
 
                         basin.Opposites[(int)to] = basin.GetFromAndFillType(to, toBasin, HealpixManager);
-
-                        basin.MeanEdges[(int)to] = HealpixManager.Neibors.MeanBoundary(basin, to);
                     }
 
-                    basin.InitMetrics();
+                    basin.InitMetrics(HealpixManager.Neibors);
                 }
 
                 if (WithRelief)

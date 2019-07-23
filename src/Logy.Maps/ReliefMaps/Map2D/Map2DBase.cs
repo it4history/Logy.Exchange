@@ -96,9 +96,8 @@ namespace Logy.Maps.ReliefMaps.Map2D
 
                 fileName = SaveBitmap(bmp, data.Colors, frame == 0 ? null : $"{frame:000}_{data.Accuracy}min");
             }
-            OpenPicture(fileName);
-
             data.Log();
+            OpenPicture(fileName);
         }
 
         protected Bitmap CreateBitmap()
@@ -184,27 +183,27 @@ namespace Logy.Maps.ReliefMaps.Map2D
 
             var g = GetFont(bmp);
             var font = new Font("Tahoma", 8 + (K > 7 ? (K - 7) * 8 : 0));
-            var s = data.Colors.Min.ToString("0.#");
-            var measure = g.MeasureString(s, font);
+            var smin = data.Colors.Min.ToString("0.#");
+            var measure = g.MeasureString(smin, font);
             var stringTop = top + 3 + ((LegendHeight - 3 - measure.Height) / 2);
             var layoutRectangle = new RectangleF(
                 left - 9 - measure.Width,
                 stringTop,
                 left,
                 top + LegendHeight);
-            g.DrawString(s, font, Brushes.Black, layoutRectangle);
+            g.DrawString(smin, font, Brushes.Black, layoutRectangle);
 
-            s = $"{data.Colors.Max:0.#}{data.Dimension}";
+            var smax = data.Colors.Max.ToString("0.#");
             layoutRectangle = new RectangleF(
                 left + (2 * HealpixManager.Nside * Scale) + 10,
                 stringTop,
                 left + (3 * HealpixManager.Nside * Scale),
                 top + LegendHeight);
-            g.DrawString(s, font, Brushes.Black, layoutRectangle);
+            g.DrawString(smax + data.Dimension, font, Brushes.Black, layoutRectangle);
 
-            if (left0.HasValue)
+            var middle = data.Colors.Middle.ToString("0.#");
+            if (left0.HasValue && middle != smin && middle != smax)
             {
-                var middle = data.Colors.Middle.ToString("0.#");
                 var measure0 = g.MeasureString(middle, font);
                 var rectangle = new Rectangle(
                     (int)Math.Round(left0.Value + 2 + ((left0end.Value - left0.Value - measure0.Width) / 2)),

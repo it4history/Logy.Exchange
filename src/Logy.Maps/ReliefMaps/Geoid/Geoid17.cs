@@ -34,7 +34,7 @@ namespace Logy.Maps.ReliefMaps.Geoid
         }
 
         /// <summary>
-        ///     http://hist.tk/ory/Рельеф_после_сдвига_полюса_на_17_градусов
+        /// http://hist.tk/ory/Рельеф_после_сдвига_полюса_на_17_градусов
         /// </summary>
         [Test]
         public void RelativePaleogeoid()

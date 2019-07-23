@@ -14,8 +14,6 @@ namespace Logy.Maps.ReliefMaps.World.Data
             ColorsMiddle = -22;
         }
 
-        public override int Accuracy => 1;
-
         public override ReliefType ReliefType => ReliefType.Bed;
 
         protected override bool IsReliefBedShape => true;

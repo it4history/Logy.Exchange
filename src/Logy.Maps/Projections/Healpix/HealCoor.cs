@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Runtime.Serialization;
 using Logy.MwAgent.Sphere;
 using Newtonsoft.Json;
 
@@ -12,6 +11,9 @@ namespace Logy.Maps.Projections.Healpix
     /// [DataContract(Namespace = UrlsManager.Namespace)]
     public class HealCoor : Coor
     {
+        private static readonly Equirectangular Equirectangular1 = new Equirectangular(1);
+        private static readonly Equirectangular Equirectangular5 = new Equirectangular(5);
+
         /// <summary>
         /// in degrees
         /// amazingly X of HealCoor is preserved, it is not X of Point2; the same with Y
@@ -93,7 +95,7 @@ for 1 arc-min The first record is the South-West corner (-89.9917 deg latitude,
 Each grid file contains 10,800 x 21,600 = 233,280,000 records */
         public int Offset(int accuracyMin = 1)
         {
-            var equirectangular = new Equirectangular(accuracyMin);
+            var equirectangular = accuracyMin == 1 ? Equirectangular1 : Equirectangular5;
             var coor = new Coor { X = X, Y = -Y };
             return equirectangular.FullOffset(coor);
         }

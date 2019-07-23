@@ -266,8 +266,12 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
             return 0;
         }
 
-        public virtual void InitMetrics()
+        public virtual void InitMetrics(NeighborManager neibors)
         {
+            foreach (Direction to in Enum.GetValues(typeof(Direction)))
+            {
+                MeanEdges[(int)to] = neibors.MeanBoundary(this, to);
+            }
             /// CorrectionSurface();
             for (int to = 0; to < 4; to++)
             {

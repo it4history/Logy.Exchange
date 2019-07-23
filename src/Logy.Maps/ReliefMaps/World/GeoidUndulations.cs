@@ -24,6 +24,7 @@ namespace Logy.Maps.ReliefMaps.World
             { 100, new Color3(Color.Red) },
         };
 
-        protected override DataForMap2D<HealCoor> MapData => new GeoidUndulationsData(this);
+        protected override DataForMap2D<HealCoor> MapData 
+            => new GeoidUndulationsData(this) { Accuracy = 1 };
     }
 }

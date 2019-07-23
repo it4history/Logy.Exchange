@@ -52,7 +52,7 @@ namespace Logy.Maps.ReliefMaps.Basemap
         public HealpixManager HealpixManager 
             => _healpixManager ?? (_healpixManager = new HealpixManager(K));
 
-        public virtual int Accuracy => 5;
+        public int Accuracy { get; set; } = 5;
 
         /// <summary>
         /// mainly not ReliefType.Bed
@@ -228,7 +228,7 @@ namespace Logy.Maps.ReliefMaps.Basemap
                 });
         }
 
-        public void Dispose()
+        public virtual void Dispose()
         {
             Relief.Dispose();
             ReliefBed.Dispose();

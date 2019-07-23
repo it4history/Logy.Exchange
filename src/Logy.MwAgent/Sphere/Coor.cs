@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Runtime.Serialization;
 using AppConfiguration;
+using Newtonsoft.Json;
 
 namespace Logy.MwAgent.Sphere
 {
@@ -31,7 +32,7 @@ namespace Logy.MwAgent.Sphere
         /// <summary>
         /// from -180 to 180, 180 corresponds to East on the right
         /// </summary>
-        /// [JsonProperty("Longitude")]
+        [JsonProperty("Longitude")]
         public override double X
         {
             get { return base.X - 180; }
@@ -41,7 +42,7 @@ namespace Logy.MwAgent.Sphere
         /// <summary>
         /// from -90 to 90, 90 corresponds to North pole
         /// </summary>
-        /// [JsonProperty("Latitude")]
+        [JsonProperty("Latitude")]
         public override double Y
         {
             get { return 90 - base.Y; }
