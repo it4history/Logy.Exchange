@@ -86,7 +86,6 @@
     <Compile Include="Projections\Healpix\NeighborManager.cs" />
     <Compile Include="Projections\Healpix\Tests\HealCoorTests.cs" />
     <Compile Include="Projections\Healpix\Tests\NeighborManagerTests.cs" />
-    <Compile Include="ReliefMaps\Basemap\Tests\DataEarth2014Tests.cs" />
     <Compile Include="ReliefMaps\Geoid\BasinOfGeoid.cs" />
     <Compile Include="ReliefMaps\Basemap\DataEarth.cs" />
     <Compile Include="ReliefMaps\Geoid\Geoid.cs" />
