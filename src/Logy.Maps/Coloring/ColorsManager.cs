@@ -70,7 +70,7 @@ namespace Logy.Maps.Coloring
 
         public double NormalKoef => 255 / (Max - Min);
 
-        public bool IsGrey { get; private set; }
+        public bool IsGrey { get; }
         public Color DefaultColor { get; set; } = Land;
 
         /// <param name="nearestIndex">may be in next ring and may be == maxIndex</param>
@@ -180,6 +180,8 @@ namespace Logy.Maps.Coloring
         
         private Color3 FindNearestColor(double indexPercent, SortedList<int, Color3> colors)
         {
+            if (colors.Count == 1)
+                return colors[0];
             indexPercent *= 100;
             if (indexPercent > 100)
                 indexPercent = 100;

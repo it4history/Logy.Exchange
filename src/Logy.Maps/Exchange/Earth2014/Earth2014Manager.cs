@@ -115,11 +115,13 @@ namespace Logy.Maps.Exchange.Earth2014
             /// get { return Path.Combine("earth2014", "Earth2014Shape_minus_6371000m.BED2014.5min.geod.bin"); }
             get
             {
-                var fileName = string.Format(
-                    "Earth2014{2}.{1}2014.{0}min.geod.bin",
-                    _accuracyMin,
-                    _reliefType.ToString().ToUpper(),
-                    _shape ? "Shape_minus_6371000m" : string.Empty);
+                var fileName = _reliefType == ReliefType.Mask
+                    ? "MSK2014_landtypes.1min.geod.bin"
+                    : string.Format(
+                        "Earth2014{2}.{1}2014.{0}min.geod.bin",
+                        _accuracyMin,
+                        _reliefType.ToString().ToUpper(),
+                        _shape ? "Shape_minus_6371000m" : string.Empty);
                 return Path.Combine($"Exchange{Path.DirectorySeparatorChar}Earth2014", fileName);
             }
         }
