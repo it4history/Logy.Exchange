@@ -42,13 +42,13 @@ namespace Logy.Maps.Metrics.Tests
         [Test]
         public void Intersect_2()
         {
-            var data = new BasinData(new HealpixManager(2)) { Spheric = true };
+            var data = new OceanData(new HealpixManager(2)) { Spheric = true };
             data.Init();
             foreach (var basin in data.PixMan.Pixels)
             {
                 foreach (Direction to in Enum.GetValues(typeof(Direction)))
                 {
-                    var toBasin = basin.Neibors[to];
+                    var toBasin = basin.Neighbors[to];
                     var from0to1 = basin.S_q.AbsoluteDistanceTo(toBasin.Q3);
                     var from1to0 = toBasin.S_q.AbsoluteDistanceTo(basin.Q3);
                     Assert.AreEqual(from1to0, from0to1, from1to0 / 100);

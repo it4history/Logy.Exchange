@@ -69,7 +69,7 @@ namespace Logy.Maps.ReliefMaps.Map2D
 
         public static void OpenPicture(string name)
         {
-            if (Bot.IsRunningOnMono)
+            if (Site.IsRunningOnMono)
                 Process.Start(
                 new ProcessStartInfo("xdg-open", name) { UseShellExecute = false });
             else

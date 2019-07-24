@@ -1,5 +1,4 @@
 using Logy.Maps.Projections.Healpix;
-using Logy.Maps.ReliefMaps.Basemap;
 using MathNet.Spatial.Euclidean;
 using NUnit.Framework;
 
@@ -11,7 +10,7 @@ namespace Logy.Maps.ReliefMaps.Geoid.Tests
         [Test]
         public void NormalDatumUnderSolidAndOtherPolygons()
         {
-            var data = new BasinDataAbstract<BasinOfGeoid>(new HealpixManager(5))
+            var data = new GeoidData(new HealpixManager(5))
             {
                 WithRelief = true,
                 Accuracy = 1
@@ -31,11 +30,10 @@ namespace Logy.Maps.ReliefMaps.Geoid.Tests
                     Assert.AreEqual(expected, geoidSurfaceForEdge.ToString().Substring(0, expected.Length));
                 }
 
-                if (basin.Polygon.SurfaceType == SurfaceType.Solid)
-                  Assert.AreEqual(
-                      basin.GeoidRadius, 
-                      basin.RadiusOfEllipse, 
-                      data.Water.Threshhold * (data.K < 3 ? 2.1 : 1));
+                Assert.AreEqual(
+                    basin.RadiusGeoid,
+                    basin.RadiusOfEllipse,
+                    data.Water.Threshhold * (data.K < 3 ? 2.1 : 1));
             }
         }
 

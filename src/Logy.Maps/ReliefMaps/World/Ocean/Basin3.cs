@@ -1,8 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Logy.Maps.Geometry;
 using Logy.Maps.Projections.Healpix;
 using Logy.Maps.ReliefMaps.Basemap;
+using Logy.Maps.ReliefMaps.Geoid;
+using Logy.Maps.ReliefMaps.Water;
 using MathNet.Numerics.LinearAlgebra;
 using MathNet.Spatial.Euclidean;
 using MathNet.Spatial.Units;
@@ -26,6 +29,8 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
         private bool _actualQ3;
 
         private Plane? _s_q;
+
+        private Polygon<Basin3> _polygon;
 
         public static Point3D O3 { get; } = new Point3D(0, 0, 0);
         public static UnitVector3D Oz { get; } = new UnitVector3D(0, 0, 1);
@@ -136,7 +141,7 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
         /// </summary>
         public Plane S_geiod => new Plane(Normal.Value, Qgeiod);
 
-        public Neibors<Basin3> Neibors { get; } = new Neibors<Basin3>(new Basin3[4]);
+        public Neighbors<Basin3> Neighbors { get; } = new Neighbors<Basin3>(new Basin3[4]);
 
         /// <summary>
         /// key - NeighborVert (DirectionType ?)
@@ -202,6 +207,42 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
         /// </summary>
         public double Delta_s_traverse { get; set; }
 
+        public Polygon<Basin3> Polygon
+        {
+            get
+            {
+                return _polygon;
+            }
+            set
+            {
+                /*if (value != null)
+                {
+                    if (!value.Basins.Contains(this))
+                    {
+                        value.Basins.Add(this);
+                    }
+                }
+                else
+                {
+                    if (_polygon != null)
+                    {
+                        if (_polygon.Basins.Contains(this))
+                        {
+                            _polygon.Basins.Remove(this);
+                        }
+                    }
+                }*/
+                _polygon = value;
+            }
+        }
+
+        /// <summary>
+        /// for what geoid?
+        /// </summary>
+        public Plane GeoidSurface { get; set; }
+
+        public double RadiusGeoid { get; set; }
+
         #region reserved
         /// <summary>
         /// in Rotation Axis plane
@@ -266,23 +307,10 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
             return 0;
         }
 
-        public virtual void InitMetrics(NeighborManager neibors)
-        {
-            foreach (Direction to in Enum.GetValues(typeof(Direction)))
-            {
-                MeanEdges[(int)to] = neibors.MeanBoundary(this, to);
-            }
-            /// CorrectionSurface();
-            for (int to = 0; to < 4; to++)
-            {
-                HtoBase[to] = Metric(to, true);
-            }
-        }
-
         /// <param name="to">Direction</param>
         public double Metric(int to, bool initial = false)
         {
-            return Metric(Neibors[to], to, initial);
+            return Metric(Neighbors[to], to, initial);
         }
         public virtual double Metric(Basin3 toBasin, int to, bool initial = false)
         {
@@ -294,7 +322,7 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
         /// <summary>
         /// MeanEdges are required
         /// </summary>
-        internal void CorrectionSurface()
+        public void CorrectionSurface()
         {
             var points = (from edge in MeanEdges select edge.Direction.ToPoint3D()).ToArray();
 
@@ -305,9 +333,172 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
             var k = 20;
 
             Altitude =
-            Delta_s_meridian = -(Vartheta < 0 ? 1 : -1) * correctionVector[2] / k;
-            Delta_s_traverse = -correctionVector[1] / k; 
+                Delta_s_meridian = -(Vartheta < 0 ? 1 : -1) * correctionVector[2] / k;
+            Delta_s_traverse = -correctionVector[1] / k;
             Normal = null;
+        }
+
+        public bool FillNewGeoid(WaterModel model)
+        {
+            var froms = new Dictionary<int, Basin3>();
+            for (var from = 0; from < 4; from++)
+            {
+                var fromBasin1 = Neighbors[from];
+                if (fromBasin1.Polygon != null && fromBasin1.P < P)
+                {
+                    froms.Add(from, fromBasin1);
+                }
+            }
+
+            var water = froms.FirstOrDefault(f => !IsSolid(f.Value.Polygon.SurfaceType));
+            var solid = froms.FirstOrDefault(f => IsSolid(f.Value.Polygon.SurfaceType));
+
+            var fromWater = water.Value;
+            var fromWaterTo = Opposites[water.Key];
+            if (HasWater())
+            {
+                if (fromWater == null)
+                {
+                    if (froms.Count == 0)
+                    {
+                        SetPolygon(SurfaceType.WorldOcean, solid);
+                    }
+                    else
+                    {
+                        if (Disbalance(froms, model, false))
+                            return false;
+
+                        var diff = Radius - RadiusFromNeighbor(solid);
+                        SetPolygon(
+                            Math.Abs(diff) > model.Threshhold ? SurfaceType.Lake : SurfaceType.WorldOcean,
+                            solid);
+                    }
+                }
+                else
+                {
+                    if (Disbalance(froms, model))
+                        return false;
+
+                    var height = Metric(water.Key) - fromWater.Metric(fromWaterTo);
+
+                    // if border of this. inner basin is thiner than a pixel
+                    var thisHigherThanWater = height > 0 && WaterHeight < height;
+                    var thisLowerThanWater = height < 0 && fromWater.WaterHeight < -height;
+                    if (thisHigherThanWater || thisLowerThanWater)
+                    {
+                        SetPolygon(
+                            Math.Abs(RadiusFromNeighbor(water) - Radius) < model.Threshhold
+                                ? SurfaceType.WorldOcean
+                                : SurfaceType.Lake,
+                            water);
+                    }
+                    else
+                    {
+                        /* if rivers have slope then Threshhold is multiplied * 1.5; */
+                        var diff = Math.Abs(height) * WaterModel.Koef;
+                        if (diff > model.Threshhold)
+                        {
+                            if (solid.Value != null && water.Value.Polygon.SurfaceType == SurfaceType.Lake)
+                            {
+                                // there are issues on lakes borders maybe because of geoid undulations in Earth2014
+                                if (diff > model.Threshhold * 10)
+                                    return false;
+                            }
+                            else
+                                return false;
+                        }
+
+                        SetPolygon(fromWater.Polygon.SurfaceType, water, false);
+                    }
+                }
+            }
+            else
+            { /* !HasWater() */
+                if (solid.Value == null)
+                {
+                    if (fromWater == null)
+                    {
+                        throw new ApplicationException("first basin must have water to know geoid radius");
+                    }
+
+                    if (Disbalance(froms, model))
+                        return false;
+
+                    SetPolygon(SurfaceType.Solid, water);
+                }
+                else
+                {
+                    if (Disbalance(froms, model, false))
+                        return false;
+
+                    SetPolygon(SurfaceType.Solid, solid, false);
+                }
+            }
+            return true;
+        }
+
+        public void SetPolygon(SurfaceType surfaceType, KeyValuePair<int, Basin3> from, bool newPolygon = true)
+        {
+            switch (surfaceType)
+            {
+                case SurfaceType.WorldOcean:
+                    GeoidSurface = S_q;
+                    RadiusGeoid = Radius;
+                    break;
+                case SurfaceType.Lake:
+                case SurfaceType.Solid:
+                    RadiusFromNeighbor(from, true);
+                    break;
+            }
+            Polygon = newPolygon ? new Polygon<Basin3>(surfaceType, this, from.Value) : from.Value.Polygon;
+        }
+
+        /// <param name="fromPair">for solid should have actual Value.GeoidSurface</param>
+        /// <param name="set">may set to this. solid basin</param>
+        public double RadiusFromNeighbor(KeyValuePair<int, Basin3> fromPair, bool set = false)
+        {
+            var fromTo = Opposites[fromPair.Key];
+            var diff = HtoBase[fromPair.Key] - fromPair.Value.HtoBase[fromTo];
+            var ray = fromPair.Value.MeanEdges[fromTo];
+
+            var fromGeoidSurface = fromPair.Value.GeoidSurface;
+            var geoidPoint = fromGeoidSurface.IntersectionWith(ray) + (diff * ray.Direction);
+
+            var geoidSurface = new Plane(Normal.Value, geoidPoint);
+            var q_geoid = geoidSurface.IntersectionWith(RadiusRay);
+            var geoidRadius = q_geoid.DistanceTo(O3);
+            if (set)
+            {
+                GeoidSurface = geoidSurface;
+                RadiusGeoid = geoidRadius;
+            }
+            return geoidRadius;
+        }
+
+        private static bool IsSolid(SurfaceType surfaceType)
+        {
+            return surfaceType == SurfaceType.Solid;
+        }
+
+        private static bool IsSurfaceTypeNeeded(bool waterSurfaceType, KeyValuePair<int, Basin3> f)
+        {
+            return (waterSurfaceType && !IsSolid(f.Value.Polygon.SurfaceType))
+                   || (!waterSurfaceType && IsSolid(f.Value.Polygon.SurfaceType));
+        }
+
+        private bool Disbalance(Dictionary<int, Basin3> froms, WaterModel model, bool waterSurfaceType = true)
+        {
+            var from = froms.FirstOrDefault(f => IsSurfaceTypeNeeded(waterSurfaceType, f));
+            foreach (var fromOther in froms.Where(f => IsSurfaceTypeNeeded(waterSurfaceType, f)
+                                                       && f.Value != from.Value))
+            {
+                var diffWaters = RadiusFromNeighbor(from) - RadiusFromNeighbor(fromOther);
+                if (Math.Abs(diffWaters) > model.Threshhold)
+                {
+                    return true;
+                }
+            }
+            return false;
         }
     }
 }

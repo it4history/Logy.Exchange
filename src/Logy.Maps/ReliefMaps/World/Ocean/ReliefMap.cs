@@ -14,7 +14,7 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
         [Test]
         public void Basin()
         {
-            Data = new BasinData(
+            Data = new OceanData(
                 HealpixManager
                 /*, -7000d*/)
             {
@@ -41,7 +41,7 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
         public void RotationStopped()
         {
             var algorithm = new ShiftAxis(
-                new BasinData(
+                new OceanData(
                     HealpixManager,
                     /*, -6000d, null*/
                     -1000d,

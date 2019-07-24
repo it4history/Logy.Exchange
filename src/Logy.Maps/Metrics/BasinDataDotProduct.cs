@@ -35,12 +35,12 @@ namespace Logy.Maps.Metrics
                 /// !var xAxis = xyPlane.IntersectionWith(surface);
                 foreach (Direction to in Enum.GetValues(typeof(Direction)))
                 {
-                    var toBasin = PixMan.Pixels[man.Neibors.Get(to, basin)];
-                    basin.Neibors[to] = toBasin;
+                    var toBasin = PixMan.Pixels[man.Neighbors.Get(to, basin)];
+                    basin.Neighbors[to] = toBasin;
 
                     basin.Opposites[(int)to] = basin.GetFromAndFillType(to, toBasin, HealpixManager);
 
-                    basin.MeanEdges[(int)to] = man.Neibors.MeanBoundary(basin, to);
+                    basin.MeanEdges[(int)to] = man.Neighbors.MeanBoundary(basin, to);
 
                     basin.HtoBase[(int)to] = basin.Metric(toBasin, (int)to);
 
@@ -99,7 +99,7 @@ namespace Logy.Maps.Metrics
             {
                 foreach (Direction to in Enum.GetValues(typeof(Direction)))
                 {
-                    var toBasin = (BasinDotProduct)basin.Neibors[to];
+                    var toBasin = (BasinDotProduct)basin.Neighbors[to];
                     basin.Koef2[(int)to] = basin.Koef[(int)to] * toBasin.Koef[(int)NeighborManager.GetOpposite(to)];
                 }
             }
@@ -121,7 +121,7 @@ namespace Logy.Maps.Metrics
                 }
                 foreach (Direction to in Enum.GetValues(typeof(Direction)))
                 {
-                    var toBasin = basin.Neibors[to];
+                    var toBasin = basin.Neighbors[to];
 
                     var @from = basin.Opposites[(int)to];
                     var koef
@@ -160,7 +160,7 @@ namespace Logy.Maps.Metrics
                 {
                     for (int to = 0; to < 4; to++)
                     {
-                        var toBasin = basin.Neibors[to];
+                        var toBasin = basin.Neighbors[to];
                         var hto = basin.Metric(toBasin, to);
                         basin.Hto[(int)to] = hto;
 
@@ -179,11 +179,11 @@ namespace Logy.Maps.Metrics
                         basin.Hto[(int) NeighborVert.South] = GetHto(basin, NeighborVert.South);
                     }
                     basin.Hto[2 + (int)NeighborHor.East]
-                        = (basin.IntersectTraverse(basin.Neibors[Direction.Ne])
-                           + basin.IntersectTraverse(basin.Neibors[Direction.Se])) / 2;
+                        = (basin.IntersectTraverse(basin.Neighbors[Direction.Ne])
+                           + basin.IntersectTraverse(basin.Neighbors[Direction.Se])) / 2;
                     basin.Hto[2 + (int)NeighborHor.West]
-                        = (basin.IntersectTraverse(basin.Neibors[Direction.Nw])
-                           + basin.IntersectTraverse(basin.Neibors[Direction.Sw])) / 2;*/
+                        = (basin.IntersectTraverse(basin.Neighbors[Direction.Nw])
+                           + basin.IntersectTraverse(basin.Neighbors[Direction.Sw])) / 2;*/
                 }
             }
         }
@@ -203,7 +203,7 @@ namespace Logy.Maps.Metrics
                     var normLengths = new double[4];
                     foreach (Direction to in Enum.GetValues(typeof(Direction)))
                     {
-                        var toBasin = basin.Neibors[to];
+                        var toBasin = basin.Neighbors[to];
                         var deltaBeta = (basin.Beta - toBasin.Beta).Value;
                         var deltaLambda = (basin.Lambda - toBasin.Lambda).Value * basin.BetaSin; /// *2;
 
@@ -226,7 +226,7 @@ namespace Logy.Maps.Metrics
                     // todo exclude second calculaton of the same pair, set and look on basin.Volumes
                     foreach (Direction to in Enum.GetValues(typeof(Direction)))
                     {
-                        var toBasin = basin.Neibors[to];
+                        var toBasin = basin.Neighbors[to];
                         double heightToVer;
 
                         var hor = NeighborManager.GetHor(to);
@@ -270,8 +270,8 @@ namespace Logy.Maps.Metrics
             Basin3 inter;
             /*if (basin.Type.HasValue && NeighborManager.GetVert(basin.Type.Value) == direction) 
             {
-                var neibor = basin.Neibors[NeighborManager.GetOppositeHor(basin.Type.Value)];
-                inter = neibor;
+                var neighbor = basin.Neighbors[NeighborManager.GetOppositeHor(basin.Type.Value)];
+                inter = neighbor;
             }
             else*/
             {
@@ -279,13 +279,13 @@ namespace Logy.Maps.Metrics
                 Basin3 west;
                 if (direction == NeighborVert.North)
                 {
-                    east = basin.Neibors[Direction.Ne];
-                    west = basin.Neibors[Direction.Nw];
+                    east = basin.Neighbors[Direction.Ne];
+                    west = basin.Neighbors[Direction.Nw];
                 }
                 else
                 {
-                    east = basin.Neibors[Direction.Se];
-                    west = basin.Neibors[Direction.Sw];
+                    east = basin.Neighbors[Direction.Se];
+                    west = basin.Neighbors[Direction.Sw];
                 }
 
                 inter = new Basin3

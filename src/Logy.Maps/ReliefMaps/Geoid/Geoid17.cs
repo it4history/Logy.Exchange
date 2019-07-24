@@ -14,7 +14,7 @@ namespace Logy.Maps.ReliefMaps.Geoid
         public Geoid17() : base(7)
         {
             YResolution = 3;
-            Scale = 1;
+            Scale = 2;
         }
 
         public override Projection Projection => Projection.Healpix2EquirectangularFast;
@@ -27,7 +27,7 @@ namespace Logy.Maps.ReliefMaps.Geoid
         public void Relative()
         {
             var reliefAxis17 = new ReliefAxis17(5);
-            var bundle = Bundle<BasinOfGeoid>.Deserialize(
+            var bundle = Bundle<Basin3>.Deserialize(
                 File.ReadAllText(reliefAxis17.StatsFileName()));
 
             Geoid.Obtain(bundle.Algorithm.DataAbstract);
@@ -41,11 +41,17 @@ namespace Logy.Maps.ReliefMaps.Geoid
         {
             var reliefAxis17 = new ReliefAxis17();
             var bundle = Bundle<Basin3>.Deserialize(
-                File.ReadAllText(reliefAxis17.StatsFileName()),
-                false,
-                false);
+                File.ReadAllText(reliefAxis17.StatsFileName()), false, false);
+            /* var data = new GeoidData(HealpixManager)
+            {
+                WithRelief = true,
+                Accuracy = 1
+            };
+            data.Init(); */
+            var data = bundle.Algorithm.DataAbstract;
 
-            _data = new Geoid17Data(this, bundle.Algorithm.DataAbstract.PixMan.Pixels);
+            Geoid.Obtain(data);
+            _data = new Geoid17Data(this, data.PixMan.Pixels);
             Draw();
         }
     }

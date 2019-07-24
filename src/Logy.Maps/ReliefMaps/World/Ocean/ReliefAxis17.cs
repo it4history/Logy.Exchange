@@ -1,5 +1,6 @@
 ﻿#if DEBUG
 using Logy.Maps.Exchange;
+using Logy.Maps.ReliefMaps.Map2D;
 using NUnit.Framework;
 
 namespace Logy.Maps.ReliefMaps.World.Ocean
@@ -17,6 +18,8 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
             LegendNeeded = true;
         }
 
+        public override Projection Projection => Projection.Healpix2EquirectangularFast;
+
         /// <summary>
         /// bug of Logy.Maps.Exchange.Bundle: 
         /// 1. save maps till 500 frame; 
@@ -26,7 +29,7 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
         [Test]
         public void AxisChange_Slow()
         {
-            var data = new BasinData(HealpixManager)
+            var data = new OceanData(HealpixManager)
             {
                 WithRelief = true,
                 IntegrationEndless = true,
@@ -60,7 +63,7 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
         [Test]
         public void AxisChange_Sharp()
         {
-            Data = new BasinData(HealpixManager
+            Data = new OceanData(HealpixManager
                 /*, -6000d, null
                 , -1000d, 5000d, true*/)
             {

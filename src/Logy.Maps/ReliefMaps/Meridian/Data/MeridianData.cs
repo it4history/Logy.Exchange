@@ -31,7 +31,7 @@ namespace Logy.Maps.ReliefMaps.Meridian.Data
                 return null;
 
             var northBasin = PixMan.Pixels.Length == HealpixManager.Npix
-                ? PixMan.Pixels[HealpixManager.Neibors.NorthMean(basin)]
+                ? PixMan.Pixels[HealpixManager.Neighbors.NorthMean(basin)]
                 : (from p in PixMan.Pixels
                     where p.Ring == basin.Ring - 1
                     select p).First(); /*slow*/
@@ -46,7 +46,7 @@ namespace Logy.Maps.ReliefMaps.Meridian.Data
         {
             var pix = new List<T>();
             T last;
-            for (var south = man.Npix - 3; south > 0; south = man.Neibors.NorthMean(last))
+            for (var south = man.Npix - 3; south > 0; south = man.Neighbors.NorthMean(last))
             {
                 last = man.GetCenter<T>(south);
                 pix.Add(last);

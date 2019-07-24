@@ -67,7 +67,7 @@ namespace Logy.Maps.Exchange
                 var basin = data.PixMan.Pixels[bundleBasin.P] as Basin3;
                 if (bundleBasin.P < data.PixMan.Pixels.Length)
                 {
-                    var jsonDelta_g_meridian = bundleBasin.Delta_g_meridian;
+                    // var jsonDelta_g_meridian = bundleBasin.Delta_g_meridian;
                     /*bundleBasin.Y = basin.Y;
                     bundleBasin.X = basin.X;
                     bundleBasin.Ring = basin.Ring;
@@ -77,16 +77,25 @@ namespace Logy.Maps.Exchange
                     // bundleBasin.OnInit(bundle.Algorithm.DataAbstract.HealpixManager);
                     // bundleBasin.Delta_g_meridian = jsonDelta_g_meridian; /// OnInit corrupts it*/
 
-                    basin.Delta_g_meridian = jsonDelta_g_meridian;
-                    basin.Delta_g_traverse = bundleBasin.Delta_g_traverse;
+                    // basin.Delta_g_meridian = jsonDelta_g_meridian;
+                    // basin.Delta_g_traverse = bundleBasin.Delta_g_traverse;
 
                     basin.Hoq = bundleBasin.Hoq;
-                    /* Depth may not be serialized
-                    basin.Depth = bundleBasin.Depth;
-                    Assert.IsTrue(basin.Depth == bundleBasin.Depth
-                                  && basin.WaterHeight == bundleBasin.WaterHeight); */
+
+                    // Depth may not be serialized
+                    if (bundleBasin.Depth.HasValue)
+                    {
+                        if (basin.Depth.HasValue)
+                            Assert.AreEqual(basin.Depth, bundleBasin.Depth);
+                        else
+                            basin.Depth = bundleBasin.Depth;
+                        Assert.IsTrue(basin.WaterHeight == bundleBasin.WaterHeight);
+                    }
                 }
             }
+            if (!initFull)
+                data.CheckOcean();
+
             if (!ignoreNewBasins)
                 bundle.Basins[data.HealpixManager.K] = data.PixMan.Pixels;
 

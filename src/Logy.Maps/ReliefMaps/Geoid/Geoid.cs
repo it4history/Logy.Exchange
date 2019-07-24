@@ -1,6 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using Logy.Maps.ReliefMaps.Water;
+using Logy.Maps.ReliefMaps.World.Ocean;
 
 namespace Logy.Maps.ReliefMaps.Geoid
 {
@@ -8,27 +8,16 @@ namespace Logy.Maps.ReliefMaps.Geoid
     {
         /// <summary>
         /// for stabilized accelerations new geoid may be obtained
-        /// by modelling its surface with BasinOfGeoid.GeoidRadius
+        /// by modelling its surface with BasinOfGeoid.RadiusGeoid
         /// calculated from BasinAbstract.Radius etc on some moment of time
         /// finally ideal is to get mathematical formula for new geoid
         /// </summary>
-        public static void Obtain(WaterMoving<BasinOfGeoid> data)
+        public static void Obtain<T>(WaterMoving<T> data) where T : Basin3
         {
-            var polygons = new List<Polygon>();
             foreach (var basin in data.PixMan.Pixels)
             {
-                if (basin.P == 0)
-                {
-                    if (!basin.HasWater())
-                        throw new ApplicationException("must have water to know geoid radius");
-
-                    basin.SetGeoid();
-                }
-                else
-                {
-                    if (!basin.FillNewGeoid(data.Water))
-                        throw new ApplicationException("cannot fill");
-                }
+                if (!basin.FillNewGeoid(data.Water))
+                    throw new ApplicationException("cannot fill");
             }
         }
     }

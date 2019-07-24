@@ -12,7 +12,7 @@ namespace Logy.Maps.Metrics.Tests
         [Test]
         public void Hto_SameRing()
         {
-            var data = new BasinData(new HealpixManager(2)) { Spheric = true };
+            var data = new OceanData(new HealpixManager(2)) { Spheric = true };
             data.Init();
 
             foreach (var aBasin in data.PixMan.Pixels)
@@ -34,7 +34,7 @@ namespace Logy.Maps.Metrics.Tests
         public void Hto()
         {
             var man = new HealpixManager(2);
-            var data = new BasinData(man) { Spheric = true };
+            var data = new OceanData(man) { Spheric = true };
             data.Init();
 
             foreach (var aBasin in data.PixMan.Pixels)
@@ -50,7 +50,7 @@ namespace Logy.Maps.Metrics.Tests
             foreach (var aBasin in data.PixMan.Pixels)
             {
                 if (aBasin != basin &&
-                    !(from n in basin.Neibors.Cast<Basin3>()
+                    !(from n in basin.Neighbors.Cast<Basin3>()
                         where n == aBasin
                         select n).Any())
                     Assert.AreEqual(0, aBasin.Hoq);
@@ -83,13 +83,13 @@ namespace Logy.Maps.Metrics.Tests
         {
             // k6 2, k2 150, sphere .001
             var accuracy = .001;
-            var ne = basin.Neibors[Direction.Ne];
-            var nw = basin.Neibors[Direction.Nw];
+            var ne = basin.Neighbors[Direction.Ne];
+            var nw = basin.Neighbors[Direction.Nw];
             Assert.AreEqual(ne.Hto[1], basin.Hto[0], accuracy);
             if (ne.Ring == nw.Ring) Assert.AreEqual(ne.Hto[1], nw.Hto[1]);
 
-            var sw = basin.Neibors[Direction.Sw];
-            var se = basin.Neibors[Direction.Se];
+            var sw = basin.Neighbors[Direction.Sw];
+            var se = basin.Neighbors[Direction.Se];
             Assert.AreEqual(sw.Hto[0], basin.Hto[1], accuracy);
             Assert.AreEqual(sw.Hto[1], se.Hto[1]);
 

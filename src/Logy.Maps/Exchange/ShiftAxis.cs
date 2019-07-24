@@ -11,7 +11,7 @@ namespace Logy.Maps.Exchange
         {
         }
 
-        public ShiftAxis(BasinData dataInited) : base(dataInited)
+        public ShiftAxis(OceanData dataInited) : base(dataInited)
         {
         }
 
@@ -20,9 +20,9 @@ namespace Logy.Maps.Exchange
 
         public bool Slow { get; set; }
 
-        public BasinData Data
+        public OceanData Data
         {
-            get { return (BasinData)DataAbstract; }
+            get { return (OceanData)DataAbstract; }
             set { DataAbstract = value; }
         }
 
@@ -39,7 +39,7 @@ namespace Logy.Maps.Exchange
                 delegate(int frame)
                 {
                     if (frame == 0
-                        || (Slow && frame % slowFrames(frame) == 0 && poleShift < poleShiftsCount))
+                        || (Slow && frame % slowFrames(frame) == 0 && poleShift <= poleShiftsCount))
                     {
                         var newPole = new Datum
                         {

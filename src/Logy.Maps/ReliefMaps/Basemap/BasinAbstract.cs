@@ -117,7 +117,8 @@ namespace Logy.Maps.ReliefMaps.Basemap
         /// 
         /// int? is not enough when geoidUndulation included
         /// </summary>
-        /// let be serealized if really needed [DataMember]
+        /// let be serialized if really needed 
+        [DataMember]
         public double? Depth { get; set; }
 
         // h_{water}

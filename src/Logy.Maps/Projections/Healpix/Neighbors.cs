@@ -2,11 +2,11 @@ using System.Collections;
 
 namespace Logy.Maps.Projections.Healpix
 {
-    public class Neibors<T> : IEnumerable where T : HealCoor
+    public class Neighbors<T> : IEnumerable where T : HealCoor
     {
         private readonly T[] _basins;
 
-        public Neibors(T[] basins)
+        public Neighbors(T[] basins)
         {
             _basins = basins;
         }
@@ -23,8 +23,8 @@ namespace Logy.Maps.Projections.Healpix
             set { _basins[(int)direction] = value; }
         }
 
-        /*        public static implicit operator T[] (Neibors<T> neibors) { return neibors._basins; }
-                public static implicit operator Neibors<T>(T[] data) { return new Neibors<T>(data); }*/
+        /*        public static implicit operator T[] (Neighbors<T> neighbors) { return neighbors._basins; }
+                public static implicit operator Neighbors<T>(T[] data) { return new Neighbors<T>(data); }*/
         IEnumerator IEnumerable.GetEnumerator()
         {
             return _basins.GetEnumerator();

@@ -8,12 +8,12 @@ namespace Logy.Maps.Projections.Healpix
 
         public readonly int K;
 
-        public readonly NeighborManager Neibors;
+        public readonly NeighborManager Neighbors;
 
         /// <param name="k">resolution, 9 is 5-arc min, 11 is 1-arc min</param>
         public HealpixManager(int k)
         {
-            Neibors = new NeighborManager(this);
+            Neighbors = new NeighborManager(this);
             K = k;
             Nside = 1 << k;
             Npix = 12 * Nside * Nside;

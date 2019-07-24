@@ -299,7 +299,7 @@ namespace Logy.Maps.Projections.Healpix.Tests
             Assert.AreEqual(.4, edge0_sw.Z, .1);
         }
         [Test]
-        public void MeanBoundary_NeiborsHaveTheSame()
+        public void MeanBoundary_NeighborsHaveTheSame()
         {
             var pixMan = new PixelsManager<Basin3>(healpixManager);
             foreach (var basin in pixMan.Pixels)

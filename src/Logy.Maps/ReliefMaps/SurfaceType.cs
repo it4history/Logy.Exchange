@@ -2,7 +2,12 @@
 {
     public enum SurfaceType
     {
-        Water,
-        Solid, /// what about ice, sand, rock; land (суша)?
+        WorldOcean,
+        Lake,
+
+        /// <summary>
+        /// what about ice, sand, rock; land (суша)?
+        /// </summary>
+        Solid, 
     }
 }

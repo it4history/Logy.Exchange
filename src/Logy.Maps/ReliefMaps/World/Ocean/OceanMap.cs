@@ -20,7 +20,7 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
         [Test]
         public void Water_HighBasin()
         {
-            Data = new BasinData(HealpixManager, -20d /*, 200d*/)
+            Data = new OceanData(HealpixManager, -20d /*, 200d*/)
                 { Spheric = true };
 
             var h = 500d;
@@ -44,7 +44,7 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
         [Test]
         public void Water_Gradient()
         {
-            Data = new BasinData(HealpixManager, -200d /*, 2000d*/);
+            Data = new OceanData(HealpixManager, -200d /*, 2000d*/);
 
             var p = HealpixManager.GetP(HealpixManager.Nside - 1, HealpixManager.Nside * 1);
             var basin = Data.PixMan.Pixels[p];
@@ -73,7 +73,7 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
         [Test]
         public void Hto_Spheric()
         {
-            var algorithm = new ShiftAxis(new BasinData(new HealpixManager(2)));
+            var algorithm = new ShiftAxis(new OceanData(new HealpixManager(2)));
             SetData(algorithm);
 
             Data.GradientAndHeightCrosses();
@@ -101,7 +101,7 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
         [Test]
         public void Water_ChangeAxis()
         {
-            var data = new BasinData(
+            var data = new OceanData(
                 HealpixManager
                 /*, -2600d, 2700d*/)
             {
@@ -116,7 +116,7 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
         [Test]
         public void Water_RotationStopped()
         {
-            var algorithm = new ShiftAxis(new BasinData(HealpixManager/*,-3000d, 3000d*/));
+            var algorithm = new ShiftAxis(new OceanData(HealpixManager/*,-3000d, 3000d*/));
             SetData(algorithm);
             algorithm.ChangeRotation(-HealpixManager.Nside);
             Data.DoFrames(

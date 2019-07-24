@@ -142,7 +142,15 @@ namespace Logy.MwAgent.DotNetWikiBot
 
             Initialize();
         }
-        
+
+        /// <summary>If true, assembly is running on Mono framework. If false,
+        /// it is running on Microsoft .NET Framework. This variable is set
+        /// automatically, don't change it's value.</summary>
+        public static bool IsRunningOnMono
+        {
+            get { return Type.GetType("Mono.Runtime") != null; }
+        }
+
         public static Site Wikipedia
         {
             get { return _wikipedia ?? (_wikipedia = new Site(WikipediaBaseUrl)); }
@@ -271,7 +279,7 @@ namespace Logy.MwAgent.DotNetWikiBot
 
                 if (!string.IsNullOrEmpty(postData))
                 {
-                    if (Bot.IsRunningOnMono)    // Mono bug 636219 evasion
+                    if (IsRunningOnMono)    // Mono bug 636219 evasion
                         webReq.AllowAutoRedirect = false;
 
                     // https://bugzilla.novell.com/show_bug.cgi?id=636219
@@ -732,7 +740,7 @@ namespace Logy.MwAgent.DotNetWikiBot
                 webReq.KeepAlive = false;
             }
 
-            if (!Bot.IsRunningOnMono)
+            if (!IsRunningOnMono)
             {    // Mono bug evasion
                 // last checked in January 2015 on Mono 3.12 for Windows
                 // http://mono.1490590.n4.nabble.com/...
@@ -846,7 +854,7 @@ namespace Logy.MwAgent.DotNetWikiBot
                                      }).ToDictionary(s => s.attrName, s => s.attrValue);
             }
 
-            if (!Bot.IsRunningOnMono)
+            if (!IsRunningOnMono)
                 Bot.DisableCanonicalizingUriAsFilePath();    // .NET bug evasion
 
             Bot.LastSite = this;

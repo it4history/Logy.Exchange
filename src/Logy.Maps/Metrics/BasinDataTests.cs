@@ -7,13 +7,16 @@ using NUnit.Framework;
 
 namespace Logy.Maps.Metrics
 {
+    /// <summary>
+    /// OceanDataTests
+    /// </summary>
     [TestFixture]
     public class BasinDataTests
     {
         [Test]
         public void HighBasin_31()
         {
-            var data = new BasinData(new HealpixManager(2));
+            var data = new OceanData(new HealpixManager(2));
             data.Init();
             var basin3 = data.PixMan.Pixels[31];
             foreach (var basin in data.PixMan.Pixels)

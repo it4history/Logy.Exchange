@@ -146,5 +146,10 @@ Each grid file contains 10,800 x 21,600 = 233,280,000 records */
                 NorthCap = !NorthCap,
             };
         }
+
+        public override string ToString()
+        {
+            return $"{P}, #{PixelInRing} in {Ring} ring; {Y},{X}";
+        }
     }
 }

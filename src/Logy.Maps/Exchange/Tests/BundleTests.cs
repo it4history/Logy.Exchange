@@ -19,7 +19,7 @@ namespace Logy.Maps.Exchange.Tests
         [Test]
         public void Serialize()
         {
-            var data = new BasinData(new HealpixManager(4)) { WithRelief = true };
+            var data = new OceanData(new HealpixManager(4)) { WithRelief = true };
             data.Init();
             var bundle = new Bundle<Basin3>(new ShiftAxis(data)
             {
@@ -46,7 +46,7 @@ namespace Logy.Maps.Exchange.Tests
         public void SerializeAndDeserialize()
         {
             var man = new HealpixManager(2);
-            var data = new BasinData(man)
+            var data = new OceanData(man)
             {
                 WithRelief = true,
                 IntegrationEndless = true,

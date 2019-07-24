@@ -1,5 +1,4 @@
 using System;
-using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
@@ -43,6 +42,9 @@ namespace Logy.Maps.ReliefMaps.Map2D
 
         public override Projection Projection => Projection.Healpix;
 
+        /// <summary>
+        /// !setting may delete maps!
+        /// </summary>
         public WaterMoving<T> Data
         {
             get
@@ -63,7 +65,7 @@ namespace Logy.Maps.ReliefMaps.Map2D
             }
         }
 
-        protected override ImageFormat ImageFormat => ImageFormat.Jpeg;
+        protected override ImageFormat ImageFormat => ImageFormat.Tiff;
 
         public string StatsFileName(int? frame = null)
         {

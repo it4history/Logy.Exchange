@@ -68,7 +68,7 @@ namespace Logy.MwAgent.DotNetWikiBot
 
             // Format full version string
             _BotVer += "/" + " (" + Environment.OSVersion.VersionString + "; ";
-            if (IsRunningOnMono) 
+            if (Site.IsRunningOnMono) 
             {
                 _BotVer += "Mono";
                 try 
@@ -142,7 +142,7 @@ namespace Logy.MwAgent.DotNetWikiBot
                     _BotMessagesLang = "en";
 
             // Disable SSL/TLS server certificate validation on Mono
-            if (IsRunningOnMono)
+            if (Site.IsRunningOnMono)
                 ServicePointManager.ServerCertificateValidationCallback = Validator;
 
             // Don't strip trailing dots in URIs, see function description for details
@@ -215,14 +215,6 @@ namespace Logy.MwAgent.DotNetWikiBot
         public static WebClient WebClient
         {
             get { return _webClient; }
-        }
-
-        /// <summary>If true, assembly is running on Mono framework. If false,
-        /// it is running on Microsoft .NET Framework. This variable is set
-        /// automatically, don't change it's value.</summary>
-        public static bool IsRunningOnMono
-        {
-            get { return Type.GetType("Mono.Runtime") != null; }
         }
 
         internal static int UnsafeHttpHeaderParsingUsed
@@ -759,7 +751,7 @@ namespace Logy.MwAgent.DotNetWikiBot
         /// <exclude />
         public static void InitWebClient()
         {
-            if (!IsRunningOnMono)
+            if (!Site.IsRunningOnMono)
                 WebClient.UseDefaultCredentials = true;
             WebClient.Encoding = Encoding.UTF8;
             WebClient.Headers.Add("Content-Type", "application/x-www-form-urlencoded");

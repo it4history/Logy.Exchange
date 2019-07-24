@@ -82,10 +82,11 @@
     <Compile Include="Geometry\Tests\MatrixesTests.cs" />
     <Compile Include="Geometry\Tests\DatumTests.cs" />
     <Compile Include="Geometry\Tests\MathNetPoint3DTests.cs" />
-    <Compile Include="Projections\Healpix\Neibors.cs" />
+    <Compile Include="Projections\Healpix\Neighbors.cs" />
     <Compile Include="Projections\Healpix\NeighborManager.cs" />
     <Compile Include="Projections\Healpix\Tests\HealCoorTests.cs" />
     <Compile Include="Projections\Healpix\Tests\NeighborManagerTests.cs" />
+    <Compile Include="ReliefMaps\Geoid\GeoidData.cs" />
     <Compile Include="ReliefMaps\Geoid\BasinOfGeoid.cs" />
     <Compile Include="ReliefMaps\Basemap\DataEarth.cs" />
     <Compile Include="ReliefMaps\Geoid\Geoid.cs" />
@@ -110,7 +111,7 @@
     <Compile Include="ReliefMaps\World\Ocean\Basin3.cs" />
     <Compile Include="ReliefMaps\Meridian\Data\CentrifugalAcceleration.cs" />
     <Compile Include="Metrics\BasinDotProduct.cs" />
-    <Compile Include="ReliefMaps\World\Ocean\BasinData.cs" />
+    <Compile Include="ReliefMaps\World\Ocean\OceanData.cs" />
     <Compile Include="ReliefMaps\Meridian\Data\GravityChecking.cs" />
     <Compile Include="ReliefMaps\Meridian\MeridianCoor.cs" />
     <Compile Include="Geometry\Triangles.cs" />

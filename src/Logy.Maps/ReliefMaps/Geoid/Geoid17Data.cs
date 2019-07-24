@@ -21,6 +21,8 @@ namespace Logy.Maps.ReliefMaps.Geoid
         public override double? GetAltitude(Basin3 basin)
         {
             var jsonBasin = _jsonPixels[basin.P];
+            return jsonBasin.Polygon.SurfaceType == SurfaceType.Lake ? 1 : 0;
+            //(jsonBasin.RadiusGeoid - jsonBasin.RadiusOfEllipse);
             return jsonBasin.HasWater() ? jsonBasin.Radius - basin.RadiusOfEllipse : (double?)null;
         }
 

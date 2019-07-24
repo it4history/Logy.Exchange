@@ -3,10 +3,10 @@ using Logy.Maps.ReliefMaps.Basemap;
 
 namespace Logy.Maps.ReliefMaps.World.Ocean
 {
-    public class BasinData : BasinDataAbstract<Basin3>
+    public class OceanData : BasinDataAbstract<Basin3>
     {
-        public BasinData() { }
-        public BasinData(
+        public OceanData() { }
+        public OceanData(
             HealpixManager man, 
             double? min = null, 
             double? max = null, 

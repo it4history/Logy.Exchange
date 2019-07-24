@@ -25,20 +25,21 @@ namespace Logy.Maps.ReliefMaps.Basemap
         [IgnoreDataMember]
         public Func<T, double> Visual { get; set; } = basin => basin.Hoq; //// basin.Altitude * 1000;
 
+        /// <param name="full">if false then Depth, Hoq are not set</param>
         public override void Init(bool full = true)
         {
             base.Init(full);
 
             ColorsMiddle = 0;
 
-            if (full)
+            foreach (var basin in PixMan.Pixels)
             {
-                foreach (var basin in PixMan.Pixels)
+                if (full)
                 {
                     if (WithRelief)
                     {
                         int waterHeight;
-                        var hOQ = GetHeights(basin, (int)basin.RadiusOfEllipse, out waterHeight);
+                        var hOQ = GetHeights(basin, (int) basin.RadiusOfEllipse, out waterHeight);
                         basin.Hoq = hOQ;
                         if (waterHeight > 0)
                         {
@@ -60,28 +61,40 @@ namespace Logy.Maps.ReliefMaps.Basemap
                         }
                         basin.InitROfEllipse(HealpixManager);
                     }
-
-                    foreach (Direction to in Enum.GetValues(typeof(Direction)))
-                    {
-                        var toBasin = PixMan.Pixels[HealpixManager.Neibors.Get(to, basin)];
-                        basin.Neibors[to] = toBasin;
-
-                        basin.Opposites[(int)to] = basin.GetFromAndFillType(to, toBasin, HealpixManager);
-                    }
-
-                    basin.InitMetrics(HealpixManager.Neibors);
                 }
-
-                if (WithRelief)
+                foreach (Direction to in Enum.GetValues(typeof(Direction)))
                 {
-                    CheckOcean();
+                    var toBasin = PixMan.Pixels[HealpixManager.Neighbors.Get(to, basin)];
+                    basin.Neighbors[to] = toBasin;
+
+                    basin.Opposites[(int) to] = basin.GetFromAndFillType(to, toBasin, HealpixManager);
                 }
+
+                InitMetrics(basin);
+            }
+
+            if (full && WithRelief)
+            {
+                CheckOcean();
+            }
+        }
+
+        public virtual void InitMetrics(T basin)
+        {
+            foreach (Direction to in Enum.GetValues(typeof(Direction)))
+            {
+                basin.MeanEdges[(int)to] = HealpixManager.Neighbors.MeanBoundary(basin, to);
+            }
+            /// CorrectionSurface();
+            for (int to = 0; to < 4; to++)
+            {
+                basin.HtoBase[to] = basin.Metric(to, true);
             }
         }
 
         public override void GradientAndHeightCrosses()
         {
-            // todo SignedDistance may be accelerated twice by calcing Hto for neibors only once; take basin.Volumes into account 
+            // todo SignedDistance may be accelerated twice by calcing Hto for neighbors only once; take basin.Volumes into account 
             foreach (var basin in PixMan.Pixels)
             {
                 basin.WaterReset();
@@ -90,7 +103,7 @@ namespace Logy.Maps.ReliefMaps.Basemap
                  * because solid contour may get water */
                 for (int to = 0; to < 4; to++)
                 {
-                    var toBasin = basin.Neibors[to];
+                    var toBasin = basin.Neighbors[to];
                     var hto = basin.Metric(toBasin, to);
                     basin.Hto[to] = hto;
                 }
@@ -103,7 +116,7 @@ namespace Logy.Maps.ReliefMaps.Basemap
             {
                 for (int to = 0; to < 4; to++)
                 {
-                    var toBasin = basin.Neibors[to];
+                    var toBasin = basin.Neighbors[to];
 
                     // null for maps that only visualize
                     if (toBasin != null)
