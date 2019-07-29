@@ -117,7 +117,7 @@ namespace Logy.Maps.ReliefMaps.Map2D
             }
             if (_jsonNeeded)
             {
-                SaveJson();
+                SaveJson(Data.Frame);
             }
             else
             {

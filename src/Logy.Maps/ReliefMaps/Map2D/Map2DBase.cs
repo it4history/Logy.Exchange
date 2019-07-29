@@ -52,12 +52,14 @@ namespace Logy.Maps.ReliefMaps.Map2D
 
         protected virtual DataForMap2D<T> MapData => null;
 
+        protected string Subdir { get; set; }
         protected string Dir => _dir ?? (_dir = string.Format(
-                                    "{2}{3}maps{3}{1}_lines{0}",
+                                    "{2}{3}maps{3}{1}_lines{0}{3}{4}",
                                     YResolution * HealpixManager.Nside,
                                     GetType().Name,
                                     Directory.GetCurrentDirectory(),
-                                    Path.DirectorySeparatorChar));
+                                    Path.DirectorySeparatorChar,
+                                    Subdir));
 
         protected virtual ImageFormat ImageFormat => ImageFormat.Jpeg;
 

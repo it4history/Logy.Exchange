@@ -8,12 +8,7 @@ namespace Logy.Maps.ReliefMaps.Water
     public class WaterModel
     {
         public const double Koef = .25;
-
-        // when Viscosity greater then water is more liquid
-        // if > 1 then water is autoliquied
-        // if == 0 then water is solid
-        // .4 good and side faces are solid, .5 water not becoming quiet, .7 is bad
-        protected const double Viscosity = .4;
+        public const double FluidityStable = .4;
 
         protected const double ThreshholdReliability = 2.2;
 
@@ -22,6 +17,12 @@ namespace Logy.Maps.ReliefMaps.Water
             Threshhold = (ThreshholdReliability + 7.4) * Math.Pow(2, 4 - man.K);
             ThreshholdNotReliable = 7.4 * Math.Pow(2, 4 - man.K);
         }
+
+        // when Fluidity greater then water is more liquid
+        // if > 1 then water is autoliquied
+        // if == 0 then water is solid
+        // .4 good and side faces are stable, .5 water not becoming quiet, .7 is bad
+        public double Fluidity { get; set; } = FluidityStable;
 
         /// <summary>
         /// very reliable
@@ -60,7 +61,7 @@ namespace Logy.Maps.ReliefMaps.Water
                 if (Math.Abs(height) > Threshhold)
                 {
                     var k = IsMeridian ? basin.RingArea / toBasin.RingArea : 1;
-                    var v = Viscosity * height;
+                    var v = Fluidity * height;
                     var volumeFromBasin = v;
                     double? volumeToBasin = null;
                     if (v > 0)

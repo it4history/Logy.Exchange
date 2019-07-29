@@ -400,7 +400,7 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
                         {
                             if (solid.Value != null && water.Value.Polygon.SurfaceType == SurfaceType.Lake)
                             {
-                                // there are issues on lakes borders maybe because of geoid undulations in Earth2014
+                                // there are issues on lakes (like Baikal) borders maybe because of geoid undulations in Earth2014
                                 if (diff > model.Threshhold * 10)
                                     return false;
                             }

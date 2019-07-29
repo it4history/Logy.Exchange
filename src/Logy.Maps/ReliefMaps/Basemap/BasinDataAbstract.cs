@@ -39,7 +39,7 @@ namespace Logy.Maps.ReliefMaps.Basemap
                     if (WithRelief)
                     {
                         int waterHeight;
-                        var hOQ = GetHeights(basin, (int) basin.RadiusOfEllipse, out waterHeight);
+                        var hOQ = GetHeights(basin, (int)basin.RadiusOfEllipse, out waterHeight);
                         basin.Hoq = hOQ;
                         if (waterHeight > 0)
                         {
@@ -67,7 +67,7 @@ namespace Logy.Maps.ReliefMaps.Basemap
                     var toBasin = PixMan.Pixels[HealpixManager.Neighbors.Get(to, basin)];
                     basin.Neighbors[to] = toBasin;
 
-                    basin.Opposites[(int) to] = basin.GetFromAndFillType(to, toBasin, HealpixManager);
+                    basin.Opposites[(int)to] = basin.GetFromAndFillType(to, toBasin, HealpixManager);
                 }
 
                 InitMetrics(basin);

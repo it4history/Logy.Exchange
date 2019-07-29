@@ -1,6 +1,7 @@
 ﻿#if DEBUG
 using Logy.Maps.Exchange;
 using Logy.Maps.ReliefMaps.Map2D;
+using Logy.Maps.ReliefMaps.Water;
 using NUnit.Framework;
 
 namespace Logy.Maps.ReliefMaps.World.Ocean
@@ -20,15 +21,14 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
 
         public override Projection Projection => Projection.Healpix2EquirectangularFast;
 
-        /// <summary>
-        /// bug of Logy.Maps.Exchange.Bundle: 
-        /// 1. save maps till 500 frame; 
-        /// 2. restart from json; 
-        /// 3. min at 501 frame is -1221.1, but must be -1221.2
-        /// </summary>
         [Test]
         public void AxisChange_Slow()
         {
+            var fluidity = .4; /* ! */
+            Subdir = fluidity == WaterModel.FluidityStable
+                ? null
+                : $"fluidity{fluidity} from2761";
+
             var data = new OceanData(HealpixManager)
             {
                 WithRelief = true,
@@ -36,8 +36,10 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
             };
             SetData(new ShiftAxis(data) { Slow = true }, true);
 
+            Data.Water.Fluidity = fluidity; 
+
             ShiftAxis(
-                2000,
+                4000,
                 (frame) =>
                 {
                     switch (K)

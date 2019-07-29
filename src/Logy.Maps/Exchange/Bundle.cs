@@ -67,7 +67,7 @@ namespace Logy.Maps.Exchange
                 var basin = data.PixMan.Pixels[bundleBasin.P] as Basin3;
                 if (bundleBasin.P < data.PixMan.Pixels.Length)
                 {
-                    // var jsonDelta_g_meridian = bundleBasin.Delta_g_meridian;
+                    /// var jsonDelta_g_meridian = bundleBasin.Delta_g_meridian;
                     /*bundleBasin.Y = basin.Y;
                     bundleBasin.X = basin.X;
                     bundleBasin.Ring = basin.Ring;
@@ -77,8 +77,8 @@ namespace Logy.Maps.Exchange
                     // bundleBasin.OnInit(bundle.Algorithm.DataAbstract.HealpixManager);
                     // bundleBasin.Delta_g_meridian = jsonDelta_g_meridian; /// OnInit corrupts it*/
 
-                    // basin.Delta_g_meridian = jsonDelta_g_meridian;
-                    // basin.Delta_g_traverse = bundleBasin.Delta_g_traverse;
+                    /// basin.Delta_g_meridian = jsonDelta_g_meridian;
+                    /// basin.Delta_g_traverse = bundleBasin.Delta_g_traverse;
 
                     basin.Hoq = bundleBasin.Hoq;
 
