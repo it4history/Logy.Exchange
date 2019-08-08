@@ -25,6 +25,20 @@ namespace Logy.Maps.ReliefMaps.Map2D
         protected Map2DBase(int k = 6) : base(k)
         {
             LegendNeeded = true;
+
+            if (k < 7)
+            {
+                YResolution = 3;
+                Scale = (7 - k) * 3;
+                /*if (k < 5)
+                {
+                    Scale += 7 - 5;
+                }*/
+            }
+            if (k == 7)
+            {
+                Scale = 2;
+            }
         }
 
         public virtual Projection Projection => Projection.Healpix;

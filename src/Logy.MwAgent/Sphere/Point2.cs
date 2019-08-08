@@ -1,3 +1,4 @@
+using System;
 using System.Text.RegularExpressions;
 
 namespace Logy.MwAgent.Sphere
@@ -50,6 +51,45 @@ namespace Logy.MwAgent.Sphere
         {
             get { return _y; }
             set { _y = value; }
+        }
+
+        #region metrics
+        public double Sum
+        {
+            get { return X + Y; }
+        }
+
+        public double Sqrt
+        {
+            get { return Math.Sqrt(Sum); }
+        }
+        #endregion
+
+        public static Point2 operator +(Point2 a, Point2 b)
+        {
+            return new Point2
+            {
+                X = a.X + b.X,
+                Y = a.Y + b.Y,
+            }; /// .Normalize();
+        }
+
+        public static Point2 operator -(Point2 a, Point2 b)
+        {
+            return new Point2
+            {
+                X = a.X - b.X,
+                Y = a.Y - b.Y,
+            }; /// .Normalize();
+        }
+
+        public static Point2 operator *(Point2 a, double b)
+        {
+            return new Point2()
+            {
+                X = a.X * b,
+                Y = a.Y * b,
+            };
         }
 
         public Point2 Normalize()

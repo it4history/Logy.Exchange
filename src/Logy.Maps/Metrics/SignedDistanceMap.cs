@@ -5,12 +5,12 @@ using NUnit.Framework;
 namespace Logy.Maps.Metrics
 {
     [TestFixture]
-    public class SignedDistanceMap : RotationStopMap<BasinSignedDistance>
+    public class SignedDistanceMap : RotationStopMap<SignedDistanceBasin>
     {
         [Test]
         public void Water_ShiftAxis(int i)
         {
-            Data = new BasinDataAbstract<BasinSignedDistance>(HealpixManager/*, -200d //, 2000d*/);
+            Data = new BasinDataAbstract<SignedDistanceBasin>(HealpixManager/*, -200d //, 2000d*/);
 
             ShiftAxis();
         }

@@ -1,7 +1,7 @@
 ﻿#if DEBUG
 using Logy.Maps.Exchange;
 using Logy.Maps.Geometry;
-using Logy.Maps.Metrics;
+using Logy.Maps.Metrics.Tests;
 using Logy.Maps.Projections.Healpix;
 using Logy.Maps.ReliefMaps.Map2D;
 using NUnit.Framework;
@@ -95,7 +95,7 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
             // Data.GradientAndHeightCrosses();
             Assert.AreEqual(0, basin0.Hto[0]);
 
-            BasinDataTests.DoFrame(Data);
+            OceanDataTests.DoFrame(Data);
         }
 
         [Test]

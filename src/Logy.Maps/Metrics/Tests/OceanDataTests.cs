@@ -1,17 +1,15 @@
-﻿using System;
+﻿#if DEBUG
+using System;
 using Logy.Maps.Projections.Healpix;
 using Logy.Maps.ReliefMaps.Basemap;
 using Logy.Maps.ReliefMaps.Water;
 using Logy.Maps.ReliefMaps.World.Ocean;
 using NUnit.Framework;
 
-namespace Logy.Maps.Metrics
+namespace Logy.Maps.Metrics.Tests
 {
-    /// <summary>
-    /// OceanDataTests
-    /// </summary>
     [TestFixture]
-    public class BasinDataTests
+    public class OceanDataTests
     {
         [Test]
         public void HighBasin_31()
@@ -44,7 +42,7 @@ namespace Logy.Maps.Metrics
         [Test]
         public void HighBasin_62_126_ellipse()
         {
-            var data = new BasinDataAbstract<BasinSignedDistance>(new HealpixManager(2));
+            var data = new BasinDataAbstract<SignedDistanceBasin>(new HealpixManager(2));
             data.Init();
             data.PixMan.Pixels[45].Hoq = 500;
             DoFrame(data);
@@ -55,18 +53,19 @@ namespace Logy.Maps.Metrics
                 data.PixMan.Pixels[62].Hoq, 
                 1);
             Assert.AreEqual(
-                203, //// 203 for SignedDistance, 298 for MeanEdge
+                107, //// 203 for SignedDistance, 298 for MeanEdge
                 data.PixMan.Pixels[45].Hoq, 
                 1);
 
             // Assert.AreEqual(99, data.PixMan.Pixels[77].hOQ, 1);
             DoFrame(data);
 
-            data = new BasinDataAbstract<BasinSignedDistance>(new HealpixManager(2));
+            data = new BasinDataAbstract<SignedDistanceBasin>(new HealpixManager(2));
+            data.Init();
             data.PixMan.Pixels[126].Hoq = 500;
             DoFrame(data);
-            Assert.AreEqual(50, data.PixMan.Pixels[110].Hoq, 1);
-            Assert.AreEqual(99, data.PixMan.Pixels[142].Hoq, 1); //// 99 for SignedDistance, 50 for MeanEdge
+            Assert.AreEqual(99, data.PixMan.Pixels[110].Hoq, 1); /// 99 for SignedDistance
+            Assert.AreEqual(99, data.PixMan.Pixels[142].Hoq, 1); /// 99 for SignedDistance, 50 for MeanEdge
         }
 
         internal static void DoFrame<T>(WaterMoving<T> data) where T : BasinAbstract
@@ -81,3 +80,4 @@ namespace Logy.Maps.Metrics
         }
     }
 }
+#endif

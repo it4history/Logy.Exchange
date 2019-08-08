@@ -7,14 +7,13 @@ using NUnit.Framework;
 
 namespace Logy.Maps.ReliefMaps.Geoid
 {
-    public class Geoid17 : Map2DBase<Basin3>
+    public class Geoid17Map : Map2DBase<Basin3>
     {
-        private Geoid17Data _data;
+        private ComplexData _data;
 
-        public Geoid17() : base(7)
+        public Geoid17Map() : base(7)
         {
-            YResolution = 3;
-            Scale = 2;
+            LegendNeeded = false;
         }
 
         public override Projection Projection => Projection.Healpix2EquirectangularFast;
@@ -51,7 +50,22 @@ namespace Logy.Maps.ReliefMaps.Geoid
             var data = bundle.Algorithm.DataAbstract;
 
             Geoid.Obtain(data);
-            _data = new Geoid17Data(this, data.PixMan.Pixels);
+            _data = new ComplexData(this, data.PixMan.Pixels);
+            Draw();
+        }
+
+        /// <summary>
+        /// http://hist.tk/ory/Искажение_начала_перетекания
+        /// </summary>
+        [Test]
+        public void Eddies()
+        {
+            var reliefAxis17 = new ReliefAxis17(7);
+            var bundle = Bundle<Basin3>.Deserialize(
+                File.ReadAllText(reliefAxis17.StatsFileName()), false, false);
+            var data = bundle.Algorithm.DataAbstract;
+
+            _data = new ComplexData(this, data.PixMan.Pixels);
             Draw();
         }
     }

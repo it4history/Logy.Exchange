@@ -23,11 +23,14 @@ namespace Logy.Maps
             int lo = 0, hi = list.Count - 1;
             while (lo < hi)
             {
-                int m = (hi + lo) / 2;  // this might overflow; be careful.
-                if (comp.Compare(list[m], value) < 0) lo = m + 1;
-                else hi = m - 1;
+                int m = (hi + lo) / 2; // this might overflow; be careful.
+                if (comp.Compare(list[m], value) < 0)
+                    lo = m + 1;
+                else
+                    hi = m - 1;
             }
-            if (comp.Compare(list[lo], value) < 0) lo++;
+            if (list.Count > lo && comp.Compare(list[lo], value) < 0)
+                lo++;
             return lo;
         }
     }

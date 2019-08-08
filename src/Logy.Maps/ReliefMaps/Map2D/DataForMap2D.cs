@@ -15,7 +15,11 @@ namespace Logy.Maps.ReliefMaps.Map2D
         /// </summary>
         private readonly Map2DBase<T> _map;
 
-        protected DataForMap2D(Map2DBase<T> map)
+        protected DataForMap2D(Map2DBase<T> map) : this(map, null)
+        {
+        }
+
+        protected DataForMap2D(Map2DBase<T> map, T[] basins) : base(basins)
         {
             _map = map;
             K = map.HealpixManager.K;

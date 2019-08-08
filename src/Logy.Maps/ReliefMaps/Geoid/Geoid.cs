@@ -8,7 +8,7 @@ namespace Logy.Maps.ReliefMaps.Geoid
     {
         /// <summary>
         /// for stabilized accelerations new geoid may be obtained
-        /// by modelling its surface with BasinOfGeoid.RadiusGeoid
+        /// by modelling its surface with GeoidBasin.RadiusGeoid
         /// calculated from BasinAbstract.Radius etc on some moment of time
         /// finally ideal is to get mathematical formula for new geoid
         /// </summary>

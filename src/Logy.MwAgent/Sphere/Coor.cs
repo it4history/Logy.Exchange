@@ -90,16 +90,7 @@ namespace Logy.MwAgent.Sphere
 
         public double? Precision { get; set; }
 
-        #region metrics
-        public double Sum
-        {
-            get { return X + Y; }
-        }
-        public double Sqrt
-        {
-            get { return Math.Sqrt(Sum); }
-        }
-
+        #region operators
         public static Coor operator +(Coor a, Coor b)
         {
             return (Coor)new Coor
@@ -126,12 +117,6 @@ namespace Logy.MwAgent.Sphere
                 Y = a.Y * b.Y, // may be overflow
             };
         }
-
-        /*public static double operator /(Coor a, Coor b)
-        {
-            return (b.X == 0 ? 0 : a.X / b.X)
-                   + (b.Y == 0 ? 0 : a.Y / b.Y);
-        }*/
         #endregion
     }
 }

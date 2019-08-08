@@ -52,7 +52,7 @@ namespace Logy.Maps.ReliefMaps.Water
         }
 
         /// <param name="height">>0 when water is moved from basin</param>
-        /// <returns>some volume moved from basin</returns>
+        /// <returns>volume moved from basin</returns>
         public double PutV(BasinAbstract basin, BasinAbstract toBasin, double height, int to, int from)
         {
             // must be transaction

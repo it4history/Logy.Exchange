@@ -109,6 +109,26 @@ namespace Logy.Maps.Coloring
                 .Sum(); // for 3 and more points incorrect ->   / deltas.Count; 
         }
 
+        public static void SetPixelOnBmp(Color color, Bitmap bmp, Point2 point, int scale)
+        {
+            SetPixelOnBmp(color, bmp, (int)point.X, (int)point.Y, scale);
+        }
+
+        public static void SetPixelOnBmp(Color color, Bitmap bmp, int x, int y, int scale)
+        {
+            if (scale == 1)
+                bmp.SetPixel(x, y, color);
+            else
+            {
+                var scaleX = scale;
+                var scaleY = scale;
+                var g = Graphics.FromImage(bmp);
+                var r = new RectangleF(x * scaleX, y * scaleY, scaleX, scaleY);
+                g.FillRectangle(new SolidBrush(color), r);
+                g.Flush();
+            }
+        }
+
         public void SetColorLists(SortedList<int, Color3> above, SortedList<int, Color3> under)
         {
             _above = above;
@@ -131,7 +151,7 @@ namespace Logy.Maps.Coloring
 
         public void SetPixelOnBmp(double height, Bitmap bmp, Point2 point, int scale)
         {
-            SetPixelOnBmp(height, bmp, (int)point.X, (int)point.Y, scale);
+            SetPixelOnBmp(height, bmp, point, scale);
         }
 
         public void SetPixelOnBmp(double? height, Bitmap bmp, int x, int y, int scale)
@@ -163,21 +183,6 @@ namespace Logy.Maps.Coloring
             SetPixelOnBmp(color, bmp, x, y, scale);
         }
 
-        public void SetPixelOnBmp(Color color, Bitmap bmp, int x, int y, int scale)
-        {
-            if (scale == 1)
-                bmp.SetPixel(x, y, color);
-            else
-            {
-                var scaleX = scale;
-                var scaleY = scale;
-                var g = Graphics.FromImage(bmp);
-                var r = new RectangleF(x * scaleX, y * scaleY, scaleX, scaleY);
-                g.FillRectangle(new SolidBrush(color), r);
-                g.Flush();
-            }
-        }
-        
         private Color3 FindNearestColor(double indexPercent, SortedList<int, Color3> colors)
         {
             if (colors.Count == 1)

@@ -130,7 +130,7 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
             {
                 if (_s_q == null)
                 {
-                    _s_q = new Plane(Normal.Value, Q3); // Q3 and not r - tested in BasinTests
+                    _s_q = new Plane(Normal.Value, Q3); // Q3 and not r - tested in OceanDataTests
                 }
                 return _s_q.Value;
             }
@@ -316,7 +316,7 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
         {
             /* MeanEdge metric */
             return (initial ? S_geiod : S_q).IntersectionWith(MeanEdges[to]).DistanceTo(O3) 
-                   - HtoBase[to]; /// needed for BasinDataTests.HighBasin_31
+                   - HtoBase[to]; /// needed for OceanDataTests.HighBasin_31
         }
 
         /// <summary>

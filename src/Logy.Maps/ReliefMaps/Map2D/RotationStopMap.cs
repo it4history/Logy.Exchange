@@ -21,19 +21,6 @@ namespace Logy.Maps.ReliefMaps.Map2D
         }
         public RotationStopMap(int k) : base(k)
         {
-            if (k < 7)
-            {
-                YResolution = 3;
-                Scale = (7 - k) * 3;
-                /*if (k < 5)
-                {
-                    Scale += 7 - 5;
-                }*/
-            }
-            if (k == 7)
-            {
-                Scale = 2;
-            }
         }
 
         public Bitmap Bmp { get; set; }

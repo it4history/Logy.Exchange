@@ -4,7 +4,7 @@ using Logy.Maps.ReliefMaps.Basemap;
 
 namespace Logy.Maps.ReliefMaps.Geoid
 {
-    public class GeoidData : BasinDataAbstract<BasinOfGeoid>
+    public class GeoidData : BasinDataAbstract<GeoidBasin>
     {
         private readonly Earth2014Manager _reliefMask;
 
@@ -13,7 +13,7 @@ namespace Logy.Maps.ReliefMaps.Geoid
             _reliefMask = new Earth2014Manager(ReliefType.Mask, 1);
         }
 
-        public override void InitMetrics(BasinOfGeoid basin)
+        public override void InitMetrics(GeoidBasin basin)
         {
             basin.Mask = (MaskType)_reliefMask.GetAltitude(basin);
             switch (basin.Mask)

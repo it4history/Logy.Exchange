@@ -199,11 +199,10 @@ namespace Logy.Maps.ReliefMaps.Basemap
                         if (Colors != null
                             && dist >= r - width && dist <= r + width)
                         {
-                            Colors.SetPixelOnBmp(
+                            ColorsManager.SetPixelOnBmp(
                                 Color.FromArgb(255, 174, 201),
                                 bmp,
-                                (int)point.X,
-                                (int)point.Y,
+                                point,
                                 scale);
                         }
                     }

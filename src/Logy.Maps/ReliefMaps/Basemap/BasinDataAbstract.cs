@@ -34,33 +34,30 @@ namespace Logy.Maps.ReliefMaps.Basemap
 
             foreach (var basin in PixMan.Pixels)
             {
-                if (full)
+                if (full && WithRelief)
                 {
-                    if (WithRelief)
+                    int waterHeight;
+                    var hOQ = GetHeights(basin, (int)basin.RadiusOfEllipse, out waterHeight);
+                    basin.Hoq = hOQ;
+                    if (waterHeight > 0)
                     {
-                        int waterHeight;
-                        var hOQ = GetHeights(basin, (int)basin.RadiusOfEllipse, out waterHeight);
-                        basin.Hoq = hOQ;
-                        if (waterHeight > 0)
-                        {
-                            basin.Depth = waterHeight - hOQ;
-                        }
-                        else
-                        {
-                            basin.Depth = -hOQ;
-                        }
+                        basin.Depth = waterHeight - hOQ;
                     }
-                    if (Spheric)
+                    else
                     {
-                        basin.Delta_g_meridian = basin.Delta_g_traverse = 0;
-                        if (WithRelief)
-                        {
-                            var diff = Earth2014Manager.Radius2Add - basin.RadiusOfEllipse;
-                            basin.Depth += diff;
-                            basin.Hoq -= diff;
-                        }
-                        basin.InitROfEllipse(HealpixManager);
+                        basin.Depth = -hOQ;
                     }
+                }
+                if (Spheric)
+                {
+                    basin.Delta_g_meridian = basin.Delta_g_traverse = 0;
+                    if (full && WithRelief)
+                    {
+                        var diff = Earth2014Manager.Radius2Add - basin.RadiusOfEllipse;
+                        basin.Depth += diff;
+                        basin.Hoq -= diff;
+                    }
+                    basin.InitROfEllipse(HealpixManager);
                 }
                 foreach (Direction to in Enum.GetValues(typeof(Direction)))
                 {
