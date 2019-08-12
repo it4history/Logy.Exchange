@@ -35,6 +35,9 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="AppConfiguration, Version=2.6.0.11, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\Entities\packages\AppConfiguration.2.6.0.11\lib\net40\AppConfiguration.dll</HintPath>
+    </Reference>
     <Reference Include="GeoJSON.Net, Version=0.0.0.6, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\TopoJSON.Net.0.0.0.7\lib\GeoJSON.Net.dll</HintPath>
     </Reference>

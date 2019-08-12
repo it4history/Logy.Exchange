@@ -1,4 +1,5 @@
 using System;
+using System.Runtime.Serialization;
 using System.Text.RegularExpressions;
 
 namespace Logy.MwAgent.Sphere
@@ -6,6 +7,7 @@ namespace Logy.MwAgent.Sphere
     /// <summary>
     /// point on spheroid
     /// </summary>
+    [DataContract]
     public class Point2
     {
         private double _x;

@@ -64,6 +64,11 @@ namespace Logy.Maps.ReliefMaps.Basemap
         public virtual ReliefType ReliefBedType => ReliefType.Bed;
 
         /// <summary>
+        /// not needed for Projection.Equirectangular
+        /// </summary>
+        public PixelsManager<T> PixMan { get; private set; }
+
+        /// <summary>
         /// value that treated as splitter for colors
         /// if null then is (max-min)/2
         /// </summary>
@@ -73,11 +78,6 @@ namespace Logy.Maps.ReliefMaps.Basemap
         [IgnoreDataMember]
         public double? MaxDefault { get; set; }
         internal double? MinDefault { get; set; }
-
-        /// <summary>
-        /// not needed for Projection.Equirectangular
-        /// </summary>
-        protected internal PixelsManager<T> PixMan { get; private set; }
 
         // physical surface 
         protected Earth2014Manager Relief { get; private set; }

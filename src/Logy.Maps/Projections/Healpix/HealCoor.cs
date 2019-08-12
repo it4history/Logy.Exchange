@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Runtime.Serialization;
+using AppConfiguration;
 using Logy.MwAgent.Sphere;
 using Newtonsoft.Json;
 
@@ -8,7 +10,7 @@ namespace Logy.Maps.Projections.Healpix
     /// create this object by HealpixManager.GetCenter() 
     ///  to fill P, Beta(Y is more acurate), Lambda(X is more acurate), Ring, PixelInRing
     /// </summary>
-    /// [DataContract(Namespace = UrlsManager.Namespace)]
+    [DataContract(Namespace = UrlsManager.Namespace)]
     public class HealCoor : Coor
     {
         private static readonly Equirectangular Equirectangular1 = new Equirectangular(1);
@@ -39,6 +41,8 @@ namespace Logy.Maps.Projections.Healpix
         /// <summary>
         /// visual
         /// </summary>
+        [DataMember]
+        [JsonIgnore]
         public double? Altitude { get; set; }
 
         /// <summary>

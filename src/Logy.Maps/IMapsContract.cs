@@ -11,10 +11,6 @@ namespace Logy.Maps
     [ServiceContract]
     public interface IMapsContract
     {
-        [OperationContract]
-        [WebInvoke(Method = "GET", UriTemplate = "Chart{inside}_{level}", ResponseFormat = WebMessageFormat.Json)]
-        void Chart();
-
         /// <param name="inside">x-y in degrees</param>
         /// <param name="level">meters</param>
         [OperationContract]

@@ -36,7 +36,7 @@ namespace Logy.Maps.Geometry.Tests
             // todo why angle with opposite sign?
             var rotation = Matrix3D.RotationAroundYAxis(new Angle(-coor.Phi, AngleUnit.Radians))
                            * Matrix3D.RotationAroundZAxis(new Angle(coor.Lambda.Value, AngleUnit.Radians));
-            var normalCalmByMatrix = new UnitVector3D(Matrixes.RotationVector * rotation);
+            var normalCalmByMatrix = new UnitVector3D(Basin3.OxMinus * rotation);
             Assert.AreEqual(normalCalm.X, normalCalmByMatrix.X, .00000001);
             Assert.AreEqual(normalCalm.Y, normalCalmByMatrix.Y, .00000001);
             Assert.AreEqual(normalCalm.Z, normalCalmByMatrix.Z, .00000001);

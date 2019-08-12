@@ -121,8 +121,8 @@ namespace Logy.Maps.ReliefMaps.Water
                                         };
                                         was[index].Hto = new double[4];
                                         basin.Hto.CopyTo(was[index].Hto, 0);
-                                        was[index].MeanEdges = new Ray3D[4];
-                                        basin.MeanEdges.CopyTo(was[index].MeanEdges, 0);
+                                        was[index].EdgeRays = new Ray3D[4];
+                                        basin.EdgeRays.CopyTo(was[index].EdgeRays, 0);
                                     }
                                 }
                                 else

@@ -72,14 +72,38 @@ namespace Logy.Maps.Projections.Healpix
             }
         }
 
+        /// <returns>P, index in all HEALPix grid</returns>
+        public int NorthMean(HealCoor basin)
+        {
+            // last basin in north ring
+            var northP = basin.P - basin.PixelInRing;
+            var pixelsInNorthRing = _healpixManager.PixelsCountInRing(basin.Ring - 1);
+            var northPixelInRing = basin.PixelInRing * pixelsInNorthRing /
+                                   basin.PixelsCountInRing /* _healpixManager.PixelsCountInRing(basin.Ring) */;
+            return northP - pixelsInNorthRing + Math.Max(1, northPixelInRing);
+        }
+
+        #region Boundaries
+        public Plane Boundary(HealCoor basin, Direction to)
+        {
+            var rays = BoundaryRays(basin, to);
+            return new Plane(Basin3.O3, rays[0].ToPoint3D(), rays[1].ToPoint3D());
+        }
+
         /// <summary>
         /// maybe better reuse code from 5.3 Pixel Boundaries
         /// https://www.researchgate.net/publication/1801816_HEALPix_A_Framework_for_High-Resolution_Discretization_and_Fast_Analysis_of_Data_Distributed_on_the_Sphere
         /// </summary>
         public Ray3D MeanBoundary(HealCoor basin, Direction to)
         {
+            var rays = BoundaryRays(basin, to);
+            return new Ray3D(Basin3.O3, rays[0] + rays[1]);
+        }
+
+        internal UnitVector3D[] BoundaryRays(HealCoor basin, Direction to)
+        {
             var deltaX = 360d / (basin.PixelsCountInRing * 2);
-            var deltaXsign = GetHor(to) == (int)NeighborHor.East ? 1 : -1;
+            var deltaXsign = GetHor(to) == (int) NeighborHor.East ? 1 : -1;
             var sameRingBoundaryX = basin.X + (deltaXsign * deltaX);
 
             var toBasin = _healpixManager.GetCenter<HealCoor>(Get(to, basin));
@@ -106,21 +130,14 @@ namespace Logy.Maps.Projections.Healpix
                 }
             }
 
-            var bisector = Matrixes.Rotate(new HealCoor(toBasinX, toBasinY.Value))
-                           + Matrixes.Rotate(new HealCoor(sameRingBoundaryX, basin.Y));
-            return new Ray3D(Basin3.O3, bisector);
+            return new[]
+            {
+                Matrixes.Rotate(new HealCoor(toBasinX, toBasinY.Value)),
+                Matrixes.Rotate(new HealCoor(sameRingBoundaryX, basin.Y))
+            };
         }
 
-        /// <returns>P, index in all HEALPix grid</returns>
-        public int NorthMean(HealCoor basin)
-        {
-            // last basin in north ring
-            var northP = basin.P - basin.PixelInRing;
-            var pixelsInNorthRing = _healpixManager.PixelsCountInRing(basin.Ring - 1);
-            var northPixelInRing = basin.PixelInRing * pixelsInNorthRing /
-                                   basin.PixelsCountInRing /* _healpixManager.PixelsCountInRing(basin.Ring) */;
-            return northP - pixelsInNorthRing + Math.Max(1, northPixelInRing);
-        }
+        #endregion
 
         internal int NorthEast(HealCoor basin)
         {

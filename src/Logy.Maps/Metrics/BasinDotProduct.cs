@@ -48,7 +48,7 @@ namespace Logy.Maps.Metrics
         {
             base.OnInit(man);
 
-            NormalCalm = new UnitVector3D(new UnitVector3D(-1, 0, 0) * Matrix.Transpose());
+            NormalCalm = new UnitVector3D(OxMinus * Matrix.Transpose());
 
             KQQaxisTanCotan_traverse = CalcKQQaxisTanCotan_traverse(GetKQQaxis_traverse());
         }

@@ -148,6 +148,7 @@ namespace Logy.MwAgent.DotNetWikiBot
         /// automatically, don't change it's value.</summary>
         public static bool IsRunningOnMono
         {
+            // ? maybe Environment.OSVersion.Platform.Equals(PlatformID.Unix)
             get { return Type.GetType("Mono.Runtime") != null; }
         }
 

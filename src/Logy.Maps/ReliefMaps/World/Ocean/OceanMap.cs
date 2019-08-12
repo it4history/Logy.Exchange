@@ -21,7 +21,7 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
         public void Water_HighBasin()
         {
             Data = new OceanData(HealpixManager, -20d /*, 200d*/)
-                { Spheric = true };
+                { Spheric = false };
 
             var h = 500d;
             var p = HealpixManager.GetP(HealpixManager.Nside + 5, HealpixManager.Nside * 2);
@@ -41,6 +41,9 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
                 20);
         }
 
+        /// <summary>
+        /// http://hist.tk/ory/file:OceanMap_Water_HighBasin.gif
+        /// </summary>
         [Test]
         public void Water_Gradient()
         {
@@ -73,7 +76,8 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
         [Test]
         public void Hto_Spheric()
         {
-            var algorithm = new ShiftAxis(new OceanData(new HealpixManager(2)));
+            var algorithm = new ShiftAxis(
+                new OceanData(new HealpixManager(2)) { Spheric = true });
             SetData(algorithm);
 
             Data.GradientAndHeightCrosses();

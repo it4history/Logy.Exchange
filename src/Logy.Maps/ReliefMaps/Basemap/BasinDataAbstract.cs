@@ -4,6 +4,7 @@ using Logy.Maps.Exchange.Earth2014;
 using Logy.Maps.Projections.Healpix;
 using Logy.Maps.ReliefMaps.Water;
 using Logy.Maps.ReliefMaps.World.Ocean;
+using MathNet.Spatial.Euclidean;
 
 namespace Logy.Maps.ReliefMaps.Basemap
 {
@@ -21,6 +22,9 @@ namespace Logy.Maps.ReliefMaps.Basemap
 
         [IgnoreDataMember]
         public override ReliefType ReliefBedType => ReliefType.Tbi;
+
+        [IgnoreDataMember]
+        public bool IntersectionRay { get; set; } = true;
 
         [IgnoreDataMember]
         public Func<T, double> Visual { get; set; } = basin => basin.Hoq; //// basin.Altitude * 1000;
@@ -80,7 +84,11 @@ namespace Logy.Maps.ReliefMaps.Basemap
         {
             foreach (Direction to in Enum.GetValues(typeof(Direction)))
             {
-                basin.MeanEdges[(int)to] = HealpixManager.Neighbors.MeanBoundary(basin, to);
+                basin.EdgeRays[(int)to] = IntersectionRay
+                    ? new Ray3D(
+                        Basin3.O3, 
+                        basin.S_geiod.IntersectionWith(basin.Neighbors[to].S_geiod).IntersectionWith(HealpixManager.Neighbors.Boundary(basin, to)).Value.ToVector3D())
+                    : HealpixManager.Neighbors.MeanBoundary(basin, to);
             }
             /// CorrectionSurface();
             for (int to = 0; to < 4; to++)

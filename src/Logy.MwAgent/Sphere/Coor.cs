@@ -59,6 +59,8 @@ namespace Logy.MwAgent.Sphere
         /// 0       x = -r  y = 0
         /// 1.5Pi   x = 0  y = -r
         /// </summary>
+        [DataMember]
+        [JsonIgnore]
         public double? Lambda
         {
             get
@@ -82,6 +84,8 @@ namespace Logy.MwAgent.Sphere
         /// spherical
         /// http://hist.tk/ory/Reduced_co-latitude
         /// </summary>
+        [DataMember]
+        [JsonIgnore]
         public double? Beta
         {
             get { return base.Y / 180 * Math.PI; }

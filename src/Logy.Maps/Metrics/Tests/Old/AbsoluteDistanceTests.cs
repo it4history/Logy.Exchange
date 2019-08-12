@@ -6,6 +6,9 @@ using NUnit.Framework;
 
 namespace Logy.Maps.Metrics.Tests.Old
 {
+    /// <summary>
+    /// SignedDistance metric variations
+    /// </summary>
     [TestFixture]
     public class AbsoluteDistanceTests
     {
