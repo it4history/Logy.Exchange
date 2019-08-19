@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Logy.Maps.Geometry;
+using Logy.Maps.Metrics;
 using Logy.Maps.Projections.Healpix;
 using Logy.Maps.ReliefMaps.Basemap;
 using Logy.Maps.ReliefMaps.Geoid;
@@ -39,7 +40,6 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
         /// RotationVector
         /// </summary>
         public static UnitVector3D OxMinus { get; } = new UnitVector3D(-1, 0, 0);
-        public static Plane Equator { get; } = new Plane(Oz, O3);
 
         public static Point3D OzEnd => Oz.ToPoint3D();
 
@@ -169,30 +169,31 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
 
         public Matrix<double> Matrix { get; set; }
 
-        /// <summary>
-        /// was named InitialHto
-        /// </summary>
-        public double[] HtoBase { get; set; }
+        public MetricType MetricType { get; set; } = MetricType.MeanEdge;
 
         /// <summary>
-        /// rays that go either through Middle of edge (MeanEdge) or through edges intersection (IntersectionRay)
+        /// rays that go either through Middle of edge (MeanEdge metric)
+        ///  or through edges intersection (IntersectionRay metric)
         /// </summary>
-        public Ray3D[] EdgeRays { get; set; }
-        public List<HealCoor> EdgeRaysCoor
+        public Ray3D[] MetricRays { get; set; }
+        public double[] Q3ToMetricRay { get; set; }
+        public List<HealCoor> MetricRaysCoor
         {
             get
             {
                 var l = new List<HealCoor>();
-                foreach (var ray in EdgeRays)
+                foreach (var ray in MetricRays)
                 {
-                    // conversion to polar coordinates
-                    l.Add(new HealCoor(
-                        ray.Direction.ProjectOn(Equator).Direction.AngleTo(OxMinus).Degrees,
-                        ray.Direction.AngleTo(Oz).Degrees));
+                    l.Add(Utils3D.FromCartesian<HealCoor>(ray.Direction));
                 }
                 return l;
             }
         }
+
+        /// <summary>
+        /// was named InitialHto
+        /// </summary>
+        public double[] HtoBase { get; set; }
 
         /// <summary>
         /// angle, directed to East
@@ -282,6 +283,7 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
         /// http://hist.tk/ory/Радиус_Земли#Transverse
         /// </summary>
         public double Atrans { get; set; }
+
         #endregion
 
         public override void OnInit(HealpixManager man)
@@ -296,7 +298,8 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
             Hto = new double[4];
             Volumes = new bool[4];
             Opposites = new int[4];
-            EdgeRays = new Ray3D[4];
+            MetricRays = new Ray3D[4];
+            Q3ToMetricRay = new double[4];
             HtoBase = new double[4];
         }
 
@@ -339,17 +342,26 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
         }
         public virtual double Metric(Basin3 toBasin, int to, bool initial = false)
         {
-            /* MeanEdge or IntersectionRay metric */
-            return (initial ? S_geiod : S_q).IntersectionWith(EdgeRays[to]).DistanceTo(O3) 
-                   - HtoBase[to]; /// needed for OceanDataTests.HighBasin_31
+            switch (MetricType)
+            {
+                case MetricType.MeanEdge:
+                case MetricType.IntersectionRay:
+                    return (initial ? S_geiod : S_q).IntersectionWith(MetricRays[to]).DistanceTo(O3)
+                           - HtoBase[to]; /// needed for OceanDataTests.HighBasin_31
+                case MetricType.Edge:
+                default:
+                    /// !!!
+                    return (initial ? S_geiod : S_q).IntersectionWith(MetricRays[to]).DistanceTo(O3)
+                           - HtoBase[to]; /// needed for OceanDataTests.HighBasin_31
+            }
         }
 
         /// <summary>
-        /// EdgeRays are required
+        /// MetricRays are required
         /// </summary>
         public void CorrectionSurface()
         {
-            var points = (from edge in EdgeRays select edge.Direction.ToPoint3D()).ToArray();
+            var points = (from edge in MetricRays select edge.Direction.ToPoint3D()).ToArray();
 
             var correctionVector1 = new Plane(points[0], points[2], points[1]).Normal;
             var correctionVector2 = new Plane(points[1], points[2], points[3]).Normal;
@@ -484,7 +496,7 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
         {
             var fromTo = Opposites[fromPair.Key];
             var diff = HtoBase[fromPair.Key] - fromPair.Value.HtoBase[fromTo];
-            var ray = fromPair.Value.EdgeRays[fromTo];
+            var ray = fromPair.Value.MetricRays[fromTo];
 
             var fromGeoidSurface = fromPair.Value.GeoidSurface;
             var geoidPoint = fromGeoidSurface.IntersectionWith(ray) + (diff * ray.Direction);

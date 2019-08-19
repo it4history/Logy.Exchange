@@ -40,7 +40,7 @@ namespace Logy.Maps.Metrics
 
                     basin.Opposites[(int)to] = basin.GetFromAndFillType(to, toBasin, HealpixManager);
 
-                    basin.EdgeRays[(int)to] = man.Neighbors.MeanBoundary(basin, to);
+                    basin.MetricRays[(int)to] = man.Neighbors.MeanBoundary(basin, to);
 
                     basin.HtoBase[(int)to] = basin.Metric(toBasin, (int)to);
 

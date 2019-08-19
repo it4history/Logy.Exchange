@@ -94,13 +94,18 @@ namespace Logy.MwAgent.Sphere
             };
         }
 
-        public Point2 Normalize()
+        public T Normalize<T>() where T : Point2
         {
             while (_x < 0) _x += 360;
             while (_x > 360) _x -= 360;
             while (_y < 0) _y += 180;
             while (_y > 180) _y -= 180;
-            return this;
+            return (T)this;
+        }
+
+        public override string ToString()
+        {
+            return $"{X}:{Y}";
         }
     }
 }

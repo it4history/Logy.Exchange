@@ -1,5 +1,6 @@
 ﻿using System;
 using Logy.Maps.Geometry;
+using Logy.Maps.Metrics;
 using Logy.Maps.ReliefMaps.World.Ocean;
 using MathNet.Spatial.Euclidean;
 
@@ -100,10 +101,44 @@ namespace Logy.Maps.Projections.Healpix
             return new Ray3D(Basin3.O3, rays[0] + rays[1]);
         }
 
-        internal UnitVector3D[] BoundaryRays(HealCoor basin, Direction to)
+        public Compass Compasses(Direction to, out Compass sameRingCompass)
+        {
+            switch (to)
+            {
+                case Direction.Ne:
+                    sameRingCompass = Compass.East;
+                    return Compass.North;
+                case Direction.Nw:
+                    sameRingCompass = Compass.West;
+                    return Compass.North;
+                case Direction.Se:
+                    sameRingCompass = Compass.East;
+                    return Compass.South;
+                case Direction.Sw:
+                default:
+                    sameRingCompass = Compass.West;
+                    return Compass.South;
+            }
+        }
+
+        public Ray3D BoundaryRay(HealCoor basin, Compass compass)
+        {
+            HealCoor sameRingCoor;
+            var result = BoundaryRays(basin, (Direction)compass, out sameRingCoor);
+            switch (compass)
+            {
+                case Compass.West:
+                case Compass.East:
+                    result = sameRingCoor;
+                    break;
+            }
+            return new Ray3D(Basin3.O3, Matrixes.Rotate(result));
+        }
+
+        public HealCoor BoundaryRays(HealCoor basin, Direction to, out HealCoor sameRingCoor)
         {
             var deltaX = 360d / (basin.PixelsCountInRing * 2);
-            var deltaXsign = GetHor(to) == (int) NeighborHor.East ? 1 : -1;
+            var deltaXsign = GetHor(to) == (int)NeighborHor.East ? 1 : -1;
             var sameRingBoundaryX = basin.X + (deltaXsign * deltaX);
 
             var toBasin = _healpixManager.GetCenter<HealCoor>(Get(to, basin));
@@ -130,13 +165,19 @@ namespace Logy.Maps.Projections.Healpix
                 }
             }
 
-            return new[]
-            {
-                Matrixes.Rotate(new HealCoor(toBasinX, toBasinY.Value)),
-                Matrixes.Rotate(new HealCoor(sameRingBoundaryX, basin.Y))
-            };
+            sameRingCoor = new HealCoor(sameRingBoundaryX, basin.Y);
+            return new HealCoor(toBasinX, toBasinY.Value);
         }
 
+        internal UnitVector3D[] BoundaryRays(HealCoor basin, Direction to)
+        {
+            HealCoor sameRingCoor;
+            return new[]
+            {
+                Matrixes.Rotate(BoundaryRays(basin, to, out sameRingCoor)),
+                Matrixes.Rotate(sameRingCoor)
+            };
+        }
         #endregion
 
         internal int NorthEast(HealCoor basin)

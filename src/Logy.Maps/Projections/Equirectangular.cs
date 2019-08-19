@@ -60,8 +60,7 @@ namespace Logy.Maps.Projections
         {
             var lat = 90d - ((p.Y + BorderWidth) * 180d / (yResolution * man.Nside));
             var lon = ((p.X + BorderWidth) * 360 / (4 * man.Nside)) - (180 - frame);
-            var coor = (Coor)new Coor { Y = lat, X = lon }.Normalize();
-            return coor;
+            return new Coor(lon, lat).Normalize<Coor>();
         }
     }
 }

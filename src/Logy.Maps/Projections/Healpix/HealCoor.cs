@@ -73,20 +73,17 @@ namespace Logy.Maps.Projections.Healpix
 
         /// <summary>
         /// Longitude
+        /// from -180 to 180, 180 corresponds to East on the right
         /// </summary>
         [JsonIgnore]
         public override double X { get { return base.X; } set { base.X = value; } }
 
         /// <summary>
         /// Latitude
+        /// from -90 to 90, 90 corresponds to North pole
         /// </summary>
         [JsonIgnore]
         public override double Y { get { return base.Y; } set { base.Y = value; } }
-
-        /// <summary>
-        /// Pi/2 .. -Pi/2; Pi/2 is North pole
-        /// </summary>
-        public double Phi => (Math.PI / 2) - Beta.Value;
 
         /* data in spherical geocoordinates!!!
 5 arc-min grids contain 2,160 x 4,320 data points, are 18 MB in size and extend from
@@ -100,7 +97,7 @@ Each grid file contains 10,800 x 21,600 = 233,280,000 records */
         public int Offset(int accuracyMin = 1)
         {
             var equirectangular = accuracyMin == 1 ? Equirectangular1 : Equirectangular5;
-            var coor = new Coor { X = X, Y = -Y };
+            var coor = new Coor(X, -Y);
             return equirectangular.FullOffset(coor);
         }
 

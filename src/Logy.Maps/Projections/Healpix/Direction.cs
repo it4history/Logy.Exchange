@@ -13,9 +13,17 @@ namespace Logy.Maps.Projections.Healpix
 
     public enum Direction
     {
-        Nw = NeighborHor.West + (NeighborVert.North << 1),
-        Ne = NeighborHor.East + (NeighborVert.North << 1),
-        Sw = NeighborHor.West + (NeighborVert.South << 1),
-        Se = NeighborHor.East + (NeighborVert.South << 1)
+        Nw = NeighborHor.West + (NeighborVert.North << 1), // 0
+        Ne = NeighborHor.East + (NeighborVert.North << 1), // 1
+        Sw = NeighborHor.West + (NeighborVert.South << 1), // 2
+        Se = NeighborHor.East + (NeighborVert.South << 1), // 3
+    }
+
+    public enum Compass
+    {
+        West = 0,
+        North = 1,
+        South = 2,
+        East = 3,
     }
 }

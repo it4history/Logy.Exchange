@@ -12,18 +12,18 @@ namespace Logy.Maps.Projections.Tests
         public void Offset()
         {
             var e = new Equirectangular(5);
-            var coor = new Coor { X = 0, Y = 0 };
+            var coor = new Coor(0, 0);
             Assert.AreEqual(2160, e.Offset(coor).X);
             Assert.AreEqual(1080, e.Offset(coor).Y);
 
             e = new Equirectangular(new HealpixManager(5));
             Assert.AreEqual(64, e.Offset(coor).X); // or 64?
             Assert.AreEqual(32, e.Offset(coor).Y);
-            coor = new Coor { X = 180, Y = -90 };
+            coor = new Coor(180, -90);
             Assert.AreEqual(127, e.Offset(coor).X);
             Assert.AreEqual(64, e.Offset(coor).Y); // or 64?
 
-            coor = new Coor { X = -180, Y = -90 };
+            coor = new Coor(-180, -90);
             Assert.AreEqual(0, e.Offset(coor).X);
         }
 

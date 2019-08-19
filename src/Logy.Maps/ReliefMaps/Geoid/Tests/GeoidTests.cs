@@ -22,7 +22,7 @@ namespace Logy.Maps.ReliefMaps.Geoid.Tests
             {
                 for (var from = 0; from < 4; from++)
                 {
-                    var ray = basin.EdgeRays[from];
+                    var ray = basin.MetricRays[from];
                     var edgePoint = basin.S_q.IntersectionWith(ray);
                     var geoidSurfaceForEdge = new Plane(basin.Normal.Value, edgePoint);
 

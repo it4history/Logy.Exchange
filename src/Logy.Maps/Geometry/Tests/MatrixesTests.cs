@@ -1,5 +1,6 @@
 using Logy.Maps.Projections.Healpix;
 using Logy.Maps.ReliefMaps.World.Ocean;
+using Logy.MwAgent.Sphere;
 using MathNet.Spatial.Euclidean;
 using MathNet.Spatial.Units;
 using NUnit.Framework;
@@ -30,6 +31,8 @@ namespace Logy.Maps.Geometry.Tests
         [Test]
         public void Rotate_Matrix()
         {
+            Assert.AreEqual(Basin3.Oz, Matrixes.Rotate(new Coor()));
+
             var coor = new HealCoor(-90, 90);
             var normalCalm = Matrixes.Rotate(coor);
 

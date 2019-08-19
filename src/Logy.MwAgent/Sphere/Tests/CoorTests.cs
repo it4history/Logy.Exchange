@@ -23,13 +23,13 @@ namespace Logy.MwAgent.Sphere.Tests
         [Test]
         public void BetaLambda()
         {
-            var coor = (Coor)new Coor("-180:-90").Normalize();
+            var coor = new Coor("-180:-90").Normalize<Coor>();
             Assert.AreEqual(-180d, coor.X);
             Assert.AreEqual(-90d, coor.Y);
             Assert.AreEqual(2 * Math.PI, coor.Lambda);
             Assert.AreEqual(Math.PI, coor.Beta);
 
-            coor = (Coor)new Coor("180:90").Normalize();
+            coor = new Coor("180:90").Normalize<Coor>();
             Assert.AreEqual(180d, coor.X);
             Assert.AreEqual(90d, coor.Y);
             Assert.AreEqual(0, coor.Lambda);

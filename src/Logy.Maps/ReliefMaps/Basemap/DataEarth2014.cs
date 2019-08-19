@@ -10,6 +10,7 @@ using Logy.Maps.Projections;
 using Logy.Maps.Projections.Healpix;
 using Logy.Maps.ReliefMaps.Map2D;
 using Logy.MwAgent.Sphere;
+using Newtonsoft.Json;
 
 namespace Logy.Maps.ReliefMaps.Basemap
 {
@@ -66,6 +67,7 @@ namespace Logy.Maps.ReliefMaps.Basemap
         /// <summary>
         /// not needed for Projection.Equirectangular
         /// </summary>
+        [JsonIgnore]
         public PixelsManager<T> PixMan { get; private set; }
 
         /// <summary>

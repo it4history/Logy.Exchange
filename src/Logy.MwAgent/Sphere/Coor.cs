@@ -29,6 +29,12 @@ namespace Logy.MwAgent.Sphere
         {
         }
 
+        public Coor(double x, double y)
+        {
+            X = x;
+            Y = y;
+        }
+
         /// <summary>
         /// from -180 to 180, 180 corresponds to East on the right
         /// </summary>
@@ -50,11 +56,11 @@ namespace Logy.MwAgent.Sphere
         }
 
         /// <summary>
-        /// from 2PI to 0, counterclockwise, λ
+        /// from 2PI on West to 0 on East, counterclockwise, λ
         /// 
         /// spherical
         /// http://skills.gq/aw/Axises_orientation#Z_up
-        /// Pi x = r   y = 0
+        /// Pi      x = r   y = 0
         /// Pi/2    x = 0   y = r
         /// 0       x = -r  y = 0
         /// 1.5Pi   x = 0  y = -r
@@ -92,34 +98,35 @@ namespace Logy.MwAgent.Sphere
             set { Y = 90 - (((value ?? 0) * 180) / Math.PI); }
         }
 
+        /// <summary>
+        /// Pi/2 .. -Pi/2; Pi/2 is North pole
+        /// </summary>
+        public double Phi
+        {
+            get
+            {
+                return (Math.PI * .5) - Beta.Value;
+            }
+        }
+
         public double? Precision { get; set; }
 
         #region operators
+
         public static Coor operator +(Coor a, Coor b)
         {
-            return (Coor)new Coor
-            {
-                X = a.X + b.X,
-                Y = a.Y + b.Y,
-            }.Normalize();
+            return new Coor(a.X + b.X, a.Y + b.Y).Normalize<Coor>();
         }
 
         public static Coor operator -(Coor a, Coor b)
         {
-            return (Coor)new Coor
-            {
-                X = a.X - b.X,
-                Y = a.Y - b.Y,
-            }.Normalize();
+            return new Coor(a.X - b.X, a.Y - b.Y).Normalize<Coor>();
         }
 
         public static Coor operator *(Coor a, Coor b)
         {
-            return new Coor
-            {
-                X = a.X * b.X, // may be overflow
-                Y = a.Y * b.Y, // may be overflow
-            };
+            // may be overflow
+            return new Coor(a.X * b.X, a.Y * b.Y);
         }
         #endregion
     }

@@ -150,7 +150,7 @@ namespace Logy.Maps.ReliefMaps.Geoid
             for (var i = 0; i < positions.Count; i++)
             {
                 var position = (GeographicPosition)positions[i];
-                var coor = new Coor { X = position.Longitude, Y = position.Latitude };
+                var coor = new Coor(position.Longitude, position.Latitude);
                 var point = equirectangular.Offset(coor);
                 points[i] = new Point((int)point.X, (int)point.Y);
             }

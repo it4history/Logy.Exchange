@@ -4,7 +4,6 @@ using Logy.Maps.ReliefMaps.World.Ocean;
 using Logy.MwAgent.Sphere;
 using MathNet.Numerics.LinearAlgebra;
 using MathNet.Spatial.Euclidean;
-using MathNet.Spatial.Units;
 using Newtonsoft.Json;
 
 namespace Logy.Maps.Geometry
@@ -75,22 +74,9 @@ namespace Logy.Maps.Geometry
 
         public Matrix<double> Matrix { get; private set; }
 
-        public static UnitVector3D Cartesian(Coor coor)
-        {
-            return coor.Y == 90
-                ? Basin3.Oz
-                : Basin3.Oz
-                    .Rotate(
-                        new UnitVector3D(0, 1, 0),
-                        new Angle(90 - coor.Y, AngleUnit.Degrees))
-                    .Rotate(
-                        new UnitVector3D(0, 0, 1),
-                        new Angle(coor.X, AngleUnit.Degrees));
-        }
-
         private void Calc()
         {
-            _axisOfRotation = Cartesian(this);
+            _axisOfRotation = Utils3D.Cartesian(this);
             Matrix = Matrix3D.RotationTo(Basin3.Oz, _axisOfRotation);
         }
     }
