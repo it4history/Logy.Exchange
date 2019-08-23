@@ -128,7 +128,7 @@ namespace Logy.Maps.Geometry
             var aSphere = /// Math.Abs
                 a * CurrentDatum.AxisOfRotation.DotProduct(b3unit); /// axisOrtohonal.Direction.DotProduct(aSphereLine.Direction)); 
 
-            var aMeridianLine = surfaceCalm.IntersectionWith(b.MeridianCalm); /// new Plane(OzEnd, Q3, O3);
+            var aMeridianLine = surfaceCalm.IntersectionWith(b.Meridian); /// new Plane(OzEnd, Q3, O3);
             var aTraverseLine = surfaceCalm.IntersectionWith(b.TraverseCalm);
             Assert.AreEqual(0, aMeridianLine.Direction.DotProduct(aTraverseLine.Direction), .000000001);
 

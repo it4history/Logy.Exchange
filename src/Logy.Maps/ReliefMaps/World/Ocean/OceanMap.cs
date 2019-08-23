@@ -1,4 +1,5 @@
 ﻿#if DEBUG
+using System;
 using Logy.Maps.Exchange;
 using Logy.Maps.Geometry;
 using Logy.Maps.Metrics.Tests;
@@ -10,11 +11,12 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
 {
     public class OceanMap : RotationStopMap<Basin3>
     {
-        public OceanMap() : this(5)
+        public OceanMap() : this(6)
         {
         }
         public OceanMap(int k) : base(k)
         {
+            // YResolution = 4;
         }
 
         [Test]
@@ -74,6 +76,21 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
         }
 
         [Test]
+        public void Water_ChangeAxis()
+        {
+            var data = new OceanData(
+                HealpixManager
+                /*, -2600d, 2700d*/)
+            {
+                /*SamePolesAndEquatorGravitation = true,
+                NoIntegrationFinish = true,
+                Visual = basin => basin.r - Earth2014Manager.Radius2Add //*/
+            };
+            SetData(new ShiftAxis(data));
+            ShiftAxis(); // 45, 90
+        }
+
+        [Test]
         public void Hto_Spheric()
         {
             var algorithm = new ShiftAxis(
@@ -81,7 +98,7 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
             SetData(algorithm);
 
             Data.GradientAndHeightCrosses();
-            InitialHtoRecalc();
+            InitialHtoRecalc(); // may be needed for some metrics
 
             var basin0 = Data.PixMan.Pixels[0];
 
@@ -103,18 +120,18 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
         }
 
         [Test]
-        public void Water_ChangeAxis()
+        public void Height_RotationStopped()
         {
-            var data = new OceanData(
-                HealpixManager
-                /*, -2600d, 2700d*/)
-            {
-                /*SamePolesAndEquatorGravitation = true,
-                NoIntegrationFinish = true,
-                Visual = basin => basin.r - Earth2014Manager.Radius2Add //*/
-            };
-            SetData(new ShiftAxis(data));
-            ShiftAxis(); // 45, 90
+            var algorithm = new ShiftAxis(
+                new OceanData(new HealpixManager(2)) { Spheric = false });
+            SetData(algorithm);
+
+            algorithm.ChangeRotation(-HealpixManager.Nside);
+            OceanDataTests.DoFrame(Data, true);
+            OceanDataTests.DoFrame(Data, true);
+            OceanDataTests.DoFrame(Data, true);
+            OceanDataTests.DoFrame(Data, true);
+            Data.Draw(Bmp, 0, null, YResolution, Scale);
         }
 
         [Test]
@@ -130,7 +147,7 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
                     SaveBitmap(frame);
                     return 1;
                 },
-                400);
+                30/*400*/);
         }
 
         private void InitialHtoRecalc()

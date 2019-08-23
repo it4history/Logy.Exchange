@@ -24,12 +24,7 @@ namespace Logy.Maps.Metrics
         /// <summary>
         /// calm sphere
         /// </summary>
-        public Plane MeridianCalm => new Plane(OzEnd, Q3, O3);
-
-        /// <summary>
-        /// calm sphere
-        /// </summary>
-        public Plane TraverseCalm => new Plane(MeridianCalm.Normal.ToPoint3D(), Q3, O3);
+        public Plane TraverseCalm => new Plane(Meridian.Normal.ToPoint3D(), Q3, O3);
 
         public UnitVector3D NormalCalm { get; set; }
 

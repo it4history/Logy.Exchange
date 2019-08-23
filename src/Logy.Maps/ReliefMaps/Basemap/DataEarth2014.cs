@@ -16,10 +16,6 @@ namespace Logy.Maps.ReliefMaps.Basemap
 {
     public abstract class DataEarth2014<T> : DataEarth, IDisposable where T : HealCoor
     {
-        /// <summary>
-        /// are packed into PixMan in Init()
-        /// </summary>
-        private readonly T[] _basins;
         private readonly bool _readAllAtStart;
         private int _k;
         private HealpixManager _healpixManager;
@@ -30,7 +26,7 @@ namespace Logy.Maps.ReliefMaps.Basemap
 
         protected DataEarth2014(T[] basins, double? min = null, double? max = null, bool readAllAtStart = false)
         {
-            _basins = basins;
+            InitialBasins = basins;
             MinDefault = min;
             MaxDefault = max;
             _readAllAtStart = readAllAtStart;
@@ -71,6 +67,11 @@ namespace Logy.Maps.ReliefMaps.Basemap
         public PixelsManager<T> PixMan { get; private set; }
 
         /// <summary>
+        /// are packed into PixMan in Init()
+        /// </summary>
+        public T[] InitialBasins { private get; set; }
+
+        /// <summary>
         /// value that treated as splitter for colors
         /// if null then is (max-min)/2
         /// </summary>
@@ -96,7 +97,7 @@ namespace Logy.Maps.ReliefMaps.Basemap
         /// </summary>
         public virtual void Init(bool full = true)
         {
-            PixMan = new PixelsManager<T>(HealpixManager, _basins);
+            PixMan = new PixelsManager<T>(HealpixManager, InitialBasins);
             Relief = new Earth2014Manager(ReliefType, Accuracy, IsReliefShape, _readAllAtStart);
             ReliefBed = new Earth2014Manager(ReliefBedType, Accuracy, IsReliefBedShape, _readAllAtStart);
         }

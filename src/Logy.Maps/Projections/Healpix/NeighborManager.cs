@@ -58,6 +58,26 @@ namespace Logy.Maps.Projections.Healpix
             }
         }
 
+        public static Compass Compasses(Direction to, out Compass sameRingCompass)
+        {
+            switch (to)
+            {
+                case Direction.Ne:
+                    sameRingCompass = Compass.East;
+                    return Compass.North;
+                case Direction.Nw:
+                    sameRingCompass = Compass.West;
+                    return Compass.North;
+                case Direction.Se:
+                    sameRingCompass = Compass.East;
+                    return Compass.South;
+                case Direction.Sw:
+                default:
+                    sameRingCompass = Compass.West;
+                    return Compass.South;
+            }
+        }
+
         public int Get(Direction direction, HealCoor basin)
         {
             switch (direction)
@@ -101,26 +121,6 @@ namespace Logy.Maps.Projections.Healpix
             return new Ray3D(Basin3.O3, rays[0] + rays[1]);
         }
 
-        public Compass Compasses(Direction to, out Compass sameRingCompass)
-        {
-            switch (to)
-            {
-                case Direction.Ne:
-                    sameRingCompass = Compass.East;
-                    return Compass.North;
-                case Direction.Nw:
-                    sameRingCompass = Compass.West;
-                    return Compass.North;
-                case Direction.Se:
-                    sameRingCompass = Compass.East;
-                    return Compass.South;
-                case Direction.Sw:
-                default:
-                    sameRingCompass = Compass.West;
-                    return Compass.South;
-            }
-        }
-
         public Ray3D BoundaryRay(HealCoor basin, Compass compass)
         {
             HealCoor sameRingCoor;
@@ -132,7 +132,14 @@ namespace Logy.Maps.Projections.Healpix
                     result = sameRingCoor;
                     break;
             }
-            return new Ray3D(Basin3.O3, Matrixes.Rotate(result));
+            return new Ray3D(Basin3.O3, Matrixes.ToCartesian(result));
+        }
+
+        public double BoundaryLength(HealCoor basin, Direction to)
+        {
+            HealCoor sameRingCoor;
+            var result = BoundaryRays(basin, to, out sameRingCoor);
+            return result.DistanceTo(sameRingCoor);
         }
 
         public HealCoor BoundaryRays(HealCoor basin, Direction to, out HealCoor sameRingCoor)
@@ -174,8 +181,8 @@ namespace Logy.Maps.Projections.Healpix
             HealCoor sameRingCoor;
             return new[]
             {
-                Matrixes.Rotate(BoundaryRays(basin, to, out sameRingCoor)),
-                Matrixes.Rotate(sameRingCoor)
+                Matrixes.ToCartesian(BoundaryRays(basin, to, out sameRingCoor)),
+                Matrixes.ToCartesian(sameRingCoor)
             };
         }
         #endregion
@@ -247,11 +254,9 @@ namespace Logy.Maps.Projections.Healpix
                     }
                     else
                     {
-                        var ringFromPole = _healpixManager.RingsCount - basin.Ring + 1;
-
                         ringFirstP -= basin.PixelsCountInRing + 4;
                         newP -= basin.PixelsCountInRing + 4
-                                + (eastIndex == 1 ? 0 : -1) - (basin.PixelInRing - 1) / ringFromPole;
+                                + (eastIndex == 1 ? 0 : -1) - (basin.PixelInRing - 1) / _healpixManager.RingFromPole(basin);
                     }
                     break;
                 default:

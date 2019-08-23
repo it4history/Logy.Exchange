@@ -24,56 +24,84 @@ namespace Logy.Maps.ReliefMaps.Geoid
         {
         }
 
+        public Rectangle<Basin3> Rectangle { get; set; }
+
+        public bool ToAnalize(Basin3 basin)
+        {
+            return basin.HasWater(); // && Rectangle.Contains(basin)
+        }
+
+        public void CalcArrows()
+        {
+            foreach (var basin in PixMan.Pixels)
+            {
+                if (ToAnalize(basin))
+                {
+                    double? heights = 0;
+                    var maxHeight = 0d;
+                    var maxHeightSigned = 0d;
+                    var maxDirection = -1;
+                    for (var to = 0; to < 4; to++)
+                    {
+                        var toBasin = basin.Neighbors[to];
+                        if (!toBasin.HasWater())
+                        {
+                            heights = null;
+                            break;
+                        }
+                        /*var hto = basin.Metric(toBasin, to);
+                        var from = basin.Opposites[to];
+                        var diff = hto - toBasin.Metric(basin, from);*/
+                        var diff = basin.Hoq - toBasin.Hoq;
+                        var height = Math.Abs(diff);
+                        if (height > maxHeight)
+                        {
+                            maxHeight = height;
+                            maxHeightSigned = diff;
+                            maxDirection = to;
+                        }
+                        heights += diff;
+                    }
+                    var count = 700;
+                    if (heights.HasValue &&
+                        (_arrows.Count < count || _arrows.Keys[0] < heights))
+                    {
+                        List<Current> list;
+                        if (!_arrows.TryGetValue(heights.Value, out list))
+                        {
+                            list = new List<Current>();
+                            _arrows.Add(heights.Value, list);
+                        }
+                        list.Add(new Current
+                        {
+                            Basin = basin,
+                            Volume = heights.Value,
+                            Direction = maxDirection,
+                            DirectionVolume = maxHeight,
+                            DirectionVolumeSigned = maxHeightSigned
+                        });
+                        if (_arrows.Count >= count)
+                            _arrows.RemoveAt(0);
+                    }
+                }
+            }
+        }
+
         public override double? GetAltitude(Basin3 basin)
         {
-            if (basin.HasWater())
+            if (ToAnalize(basin))
             {
-                double? heights = 0;
-                var maxHeight = 0d;
-                var maxHeightSigned = 0d;
-                var maxDirection = -1;
-                for (var to = 0; to < 4; to++)
+                /*foreach (var arrows in _arrows)
                 {
-                    var toBasin = basin.Neighbors[to];
-                    if (!toBasin.HasWater())
+                    foreach (var current in arrows.Value)
                     {
-                        heights = null;
-                        break;
+                        if (current.Basin.P == basin.P)
+                        {
+                            var sign = arrows.Key * current.DirectionVolumeSigned;
+                            return arrows.Key;
+                        }
                     }
-                    /*var hto = basin.Metric(toBasin, to);
-                    var from = basin.Opposites[to];
-                    var diff = hto - toBasin.Metric(basin, from);*/
-                    var diff = basin.Hoq - toBasin.Hoq;
-                    var height = Math.Abs(diff);
-                    if (height > maxHeight)
-                    {
-                        maxHeight = height;
-                        maxHeightSigned = diff;
-                        maxDirection = to;
-                    }
-                    heights += diff;
-                }
-                var count = 700;
-                if (heights.HasValue && 
-                    (_arrows.Count < count || _arrows.Keys[0] < heights))
-                {
-                    List<Current> list;
-                    if (!_arrows.TryGetValue(heights.Value, out list))
-                    {
-                        list = new List<Current>();
-                        _arrows.Add(heights.Value, list);
-                    }
-                    list.Add(new Current
-                    {
-                        Basin = basin,
-                        Volume = heights.Value,
-                        Direction = maxDirection,
-                        DirectionVolume = maxHeight,
-                        DirectionVolumeSigned = maxHeightSigned
-                    });
-                    if (_arrows.Count >= count)
-                        _arrows.RemoveAt(0);
-                }
+                }*/
                 return basin.Hoq;
             }
 
@@ -104,6 +132,8 @@ namespace Logy.Maps.ReliefMaps.Geoid
             var g = Graphics.FromImage(bmp);
             var equirectangular = new Equirectangular(HealpixManager, yResolution);
 
+            var min = _arrows.Keys.First();
+            var max = _arrows.Keys.Last();
             foreach (var arrows in _arrows)
             {
                 foreach (var current in arrows.Value)
@@ -114,13 +144,13 @@ namespace Logy.Maps.ReliefMaps.Geoid
                     
                     if (Math.Abs(pointTo.X - point.X) > HealpixManager.Nside)
                     {
-                        Console.WriteLine("line: {0}:{1}-{2}:{3} should be drawn through Earth left and right edges");
+                        Console.WriteLine($"line: {current.Basin}-{basinTo} should be drawn through Earth left and right edges");
                     }
                     else
                     {
-                        var koefTill255 = (int)(arrows.Key / _arrows.Keys.Last() * 100d);
-                        var color = Color.FromArgb(koefTill255, koefTill255, koefTill255);
-                        var koefEnd = Math.Min(255, koefTill255 + 170);
+                        var koefTill100 = (int)((arrows.Key - min) / (max - min) * 100d);
+                        var color = Color.FromArgb(koefTill100, koefTill100, koefTill100);
+                        var koefEnd = Math.Min(255, koefTill100 + 150);
                         var colorEnd = Color.FromArgb(koefEnd, koefEnd, koefEnd);
                         var pen = new Pen(color);
 
@@ -140,7 +170,7 @@ namespace Logy.Maps.ReliefMaps.Geoid
             }
 
             g.Flush();
-            Console.WriteLine($"arrows {_arrows.Keys.First():#}.. {_arrows.Keys.Last():#}m");
+            Console.WriteLine($"arrows {min:#} .. {max:#}m");
         }
 
         private static void DrawPolygon(Polygon polygon, Equirectangular equirectangular, Graphics g)

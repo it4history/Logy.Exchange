@@ -1,4 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
+using Logy.Maps.ReliefMaps.Geoid;
+using Logy.Maps.ReliefMaps.World.Ocean;
+using Logy.MwAgent.Sphere;
 
 namespace Logy.Maps.Projections.Healpix
 {
@@ -174,6 +178,11 @@ namespace Logy.Maps.Projections.Healpix
                 p += PixelsCountInRing(r);
             }
             return p;
+        }
+
+        public int RingFromPole(HealCoor basin)
+        {
+            return RingsCount - basin.Ring + 1;
         }
 
         /// <summary>

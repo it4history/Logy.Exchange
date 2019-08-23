@@ -68,13 +68,19 @@ namespace Logy.Maps.Metrics.Tests
             Assert.AreEqual(99, data.PixMan.Pixels[142].Hoq, 1); /// 99 for SignedDistance, 50 for MeanEdge
         }
 
-        internal static void DoFrame<T>(WaterMoving<T> data) where T : BasinAbstract
+        internal static void DoFrame<T>(WaterMoving<T> data, bool mainBasins = false) where T : BasinAbstract
         {
             Console.WriteLine("---------");
             data.DoFrame();
             foreach (var basin in data.PixMan.Pixels)
             {
-                if (basin.Hoq != 0)
+                if (mainBasins)
+                {
+                    if (basin.NorthCap == true 
+                        && basin.PixelInRing <= Math.Round(basin.PixelsCountInRing / 8d))
+                        Console.WriteLine($"{basin.P}({basin.Ring}) {basin.Hoq:#.#}");
+                }
+                else if (basin.Hoq != 0)
                     Console.WriteLine("{0} {1:#.#}", basin.P, basin.Hoq);
             }
         }

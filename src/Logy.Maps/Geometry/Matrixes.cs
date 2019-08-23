@@ -7,7 +7,7 @@ namespace Logy.Maps.Geometry
 {
     public class Matrixes
     {
-        public static UnitVector3D Rotate(Coor coor)
+        public static UnitVector3D ToCartesian(Coor coor)
         {
             if (coor.Y == 90)
                 return Basin3.Oz;

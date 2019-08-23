@@ -31,10 +31,10 @@ namespace Logy.Maps.Geometry.Tests
         [Test]
         public void Rotate_Matrix()
         {
-            Assert.AreEqual(Basin3.Oz, Matrixes.Rotate(new Coor()));
+            Assert.AreEqual(Basin3.Oz, Matrixes.ToCartesian(new Coor()));
 
             var coor = new HealCoor(-90, 90);
-            var normalCalm = Matrixes.Rotate(coor);
+            var normalCalm = Matrixes.ToCartesian(coor);
 
             // todo why angle with opposite sign?
             var rotation = Matrix3D.RotationAroundYAxis(new Angle(-coor.Phi, AngleUnit.Radians))

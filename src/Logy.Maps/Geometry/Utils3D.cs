@@ -11,16 +11,16 @@ namespace Logy.Maps.Geometry
 
         public static UnitVector3D Cartesian(Coor coor)
         {
-            return Matrixes.Rotate(coor);
+            return Matrixes.ToCartesian(coor);
 
             /* analogy
             return coor.Y == 90
                 ? Basin3.Oz
                 : Basin3.Oz
-                    .Rotate(
+                    .ToCartesian(
                         new UnitVector3D(0, 1, 0),
                         new Angle(90 - coor.Y, AngleUnit.Degrees))
-                    .Rotate(
+                    .ToCartesian(
                         new UnitVector3D(0, 0, 1),
                         new Angle(coor.X, AngleUnit.Degrees)); */
         }

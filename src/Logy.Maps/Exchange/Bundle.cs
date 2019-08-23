@@ -41,7 +41,7 @@ namespace Logy.Maps.Exchange
         /// </summary>
         public Dictionary<int, T[]> Basins { get; } = new Dictionary<int, T[]>();
 
-        public static Bundle<T> Deserialize(string json, bool ignoreNewBasins = false, bool initFull = true)
+        public static Bundle<T> Deserialize(string json, bool ignoreNewBasins = false, bool initFull = true, Action<WaterMoving<T>> dataChange = null)
         {
             var bundle = JsonConvert.DeserializeObject<Bundle<T>>(json);
             for (var i = 0; i < bundle.Algorithms.Count; i++)
@@ -51,12 +51,15 @@ namespace Logy.Maps.Exchange
                     algorithmInJson.ToString(),
                     Type.GetType(algorithmInJson["Name"].ToString()));
             }
+
+            var data = bundle.Algorithm.DataAbstract;
+            dataChange?.Invoke(data);
+
             if (initFull)
                 bundle.Algorithm.Init();
             else
-                bundle.Algorithm.DataAbstract.Init(false);
+                data.Init(false);
 
-            var data = bundle.Algorithm.DataAbstract;
             for (var p = 0; p < bundle.Basins[data.K].Length; p++)
             {
                 var bundleBasin = bundle.Basins[data.K][p] as Basin3;

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Runtime.Serialization;
 using Logy.Maps.Exchange.Earth2014;
+using Logy.Maps.Geometry;
 using Logy.Maps.Metrics;
 using Logy.Maps.Projections.Healpix;
 using Logy.Maps.ReliefMaps.Water;
@@ -16,10 +17,11 @@ namespace Logy.Maps.ReliefMaps.Basemap
         public BasinDataAbstract() { }
         public BasinDataAbstract(
             HealpixManager man,
+            T[] basins = null,
             double? min = null,
             double? max = null,
             bool readAllAtStart = false)
-            : base(man, null, min, max, readAllAtStart)
+            : base(man, basins, min, max, readAllAtStart)
         {
         }
 
@@ -87,12 +89,12 @@ namespace Logy.Maps.ReliefMaps.Basemap
             foreach (Direction to in Enum.GetValues(typeof(Direction)))
             {
                 var meanBoundary = HealpixManager.Neighbors.MeanBoundary(basin, to);
-                switch (basin.MetricType)
+                switch (Basin3.MetricType)
                 {
                     case MetricType.IntersectionRay:
                         var intersection = basin.S_geiod.IntersectionWith(basin.Neighbors[to].S_geiod)
                             .IntersectionWith(HealpixManager.Neighbors.Boundary(basin, to));
-                        if (intersection.HasValue) /* true always, why? */
+                        if (intersection.HasValue) /* why always true? */
                             basin.MetricRays[(int)to] = new Ray3D(Basin3.O3, intersection.Value.ToVector3D());
                         else
                             basin.MetricRays[(int)to] = meanBoundary;
@@ -103,18 +105,29 @@ namespace Logy.Maps.ReliefMaps.Basemap
                     case MetricType.Edge:
                         basin.MetricRays[(int)to] = HealpixManager.Neighbors.BoundaryRay(basin, (Compass)to);
                         break;
+                    case MetricType.HEALPixaS:
+                        var toBasin = basin.Neighbors[to];
+                        basin.MetricRays[(int)to] = new Ray3D(Basin3.O3, basin.RadiusRay.Direction + toBasin.RadiusRay.Direction);
+                        break;
                 }
             }
 
             /// CorrectionSurface();
+
+            var metricRayDistanceSum = 1d;
             for (int to = 0; to < 4; to++)
             {
                 basin.HtoBase[to] = basin.Metric(to, true);
 
-                var q3_RayDistance = new Line3D(basin.Q3, basin.S_geiod.IntersectionWith(basin.MetricRays[to])).Length;
-                basin.Q3ToMetricRay[to] = q3_RayDistance;
+                var q3_RayDistance
+                    = /// new Line3D(basin.Q3, basin.S_geiod.IntersectionWith(basin.MetricRays[to])).Length;
+                    HealpixManager.Neighbors.BoundaryLength(basin, (Direction)to);
+                basin.MetricRayDistance[to] = q3_RayDistance;
+                metricRayDistanceSum *= q3_RayDistance;
+
                 _q3_RayDistance += q3_RayDistance;
             }
+            basin.MetricRayDistanceMean = Math.Pow(metricRayDistanceSum, .25);
         }
 
         public override void GradientAndHeightCrosses()
@@ -123,14 +136,13 @@ namespace Logy.Maps.ReliefMaps.Basemap
             foreach (var basin in PixMan.Pixels)
             {
                 basin.WaterReset();
-                
-                /* should be commented if (basin.HasWater()
+
+                /* if (basin.HasWater() should be commented
                  * because solid contour may get water */
                 for (int to = 0; to < 4; to++)
                 {
                     var toBasin = basin.Neighbors[to];
-                    var hto = basin.Metric(toBasin, to);
-                    basin.Hto[to] = hto;
+                    basin.Hto[to] = basin.Metric(toBasin, to);
                 }
             }
         }
@@ -148,14 +160,69 @@ namespace Logy.Maps.ReliefMaps.Basemap
                     {
                         var from = basin.Opposites[to];
 
-                        /* bug http://hist.tk/ory/Искажение_начала_перетекания 
-                         * may be fixed by balancing deltaH (of BasinAbstract.WaterIn method) relative to basin.WaterHeight */
-                        var height = basin.Hto[to] - toBasin.Hto[from];
+                        double height;
+                        switch (Basin3.MetricType)
+                        {
+                            case MetricType.Edge:
+                                Compass sameRingCompass, sameRingCompass2;
+                                var compass = NeighborManager.Compasses((Direction)to, out sameRingCompass);
+                                var compass2 = NeighborManager.Compasses((Direction)from, out sameRingCompass2);
+                                height = (basin.Hto[(int)compass] + basin.Hto[(int)sameRingCompass]
+                                          - toBasin.Hto[(int)compass2] - toBasin.Hto[(int)sameRingCompass2]) * .5;
+                                break;
+                            default:
+                                /* bug http://hist.tk/ory/Искажение_начала_перетекания 
+                                 * may be fixed by balancing deltaH (of BasinAbstract.WaterIn method) relative to basin.WaterHeight */
+                                height = basin.Hto[to] - toBasin.Hto[from];
+                                break;
+                        }
+                        if ((basin.Type == null || (toBasin.Type == null /*&& toBasin.NorthCap.HasValue*/))
+                            && basin.NorthCap.HasValue)
+                        {
+                            /// var vert = NeighborManager.GetVert((Direction)to);
+                            if (basin.NorthCap == true /// && vert == NeighborVert.North
+                                || basin.NorthCap == false) 
+                            {
+                              // height *= 0.5;
+                            }
+                        }
+                        var ratio = basin.MetricRayDistance[to] / basin.MetricRayDistanceMean;
+                        /// height *= ratio;
+
+                        if (basin.NorthCap == toBasin.NorthCap && basin.NorthCap.HasValue)
+                        {
+                            var angle = Math.Abs(new Line3D(basin.Q3, toBasin.Q3).Direction
+                                .DotProduct(Utils3D.Equator.Normal));
+
+                            // near extreme basin
+                            if ((basin.Type == null && toBasin.Type != null)
+                                || (basin.Type != null && toBasin.Type == null))
+                            {
+                                height *= .391;
+                            }
+                            else
+                            {
+                                // inside, no extreme basin
+                                if (basin.Type == null && toBasin.Type == null)
+                                {
+                                    var ring4 = basin.PixelsCountInRing / 4;
+                                    var pixelInRing4 = basin.PixelInRing % ring4;
+                                    if (HealpixManager.RingFromPole(basin) > 4
+                                        && pixelInRing4 > 2 && pixelInRing4 < ring4 - 1)
+                                    {
+                                        height *= .8; /* normal (and .8) better for ring 8, 
+                                        but .88 for ring 6,7 */
+                                    }
+                                    else
+                                        height *= .609;
+                                }
+                            }
+                        }
 
                         Water.PutV(
                             basin,
                             toBasin,
-                            height * WaterModel.Koef, // * (basin.Q3ToMetricRay[to] / _q3_RayDistance) 
+                            height * WaterModel.Koef, // * (basin.MetricRayDistance[to] / _q3_RayDistance) 
                             to,
                             from);
                     }

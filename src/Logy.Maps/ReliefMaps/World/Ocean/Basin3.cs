@@ -43,6 +43,8 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
 
         public static Point3D OzEnd => Oz.ToPoint3D();
 
+        public static MetricType MetricType { get; set; } = MetricType.HEALPixaS;
+
         public override double Hoq
         {
             get
@@ -56,6 +58,8 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
                 _s_q = null;
             }
         }
+
+        public Plane Meridian => new Plane(O3, Q3, OzEnd);
 
         public Point2D Qmeridian
         {
@@ -109,7 +113,7 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
                 {
                     var normal = OxMinus; 
 
-                    // Matrixes.Rotate() analog in radians
+                    // Matrixes.ToCartesian() analog in radians
                     normal = normal.Rotate(
                         new UnitVector3D(0, 1, 0),
                         new Angle((Math.Sign(Vartheta) * (Delta_g_meridian + Delta_s_meridian)) + Phi, AngleUnit.Radians));
@@ -169,14 +173,13 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
 
         public Matrix<double> Matrix { get; set; }
 
-        public MetricType MetricType { get; set; } = MetricType.MeanEdge;
-
         /// <summary>
         /// rays that go either through Middle of edge (MeanEdge metric)
         ///  or through edges intersection (IntersectionRay metric)
         /// </summary>
         public Ray3D[] MetricRays { get; set; }
-        public double[] Q3ToMetricRay { get; set; }
+        public double[] MetricRayDistance { get; set; }
+        public double MetricRayDistanceMean { get; set; }
         public List<HealCoor> MetricRaysCoor
         {
             get
@@ -299,7 +302,7 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
             Volumes = new bool[4];
             Opposites = new int[4];
             MetricRays = new Ray3D[4];
-            Q3ToMetricRay = new double[4];
+            MetricRayDistance = new double[4];
             HtoBase = new double[4];
         }
 
@@ -344,15 +347,14 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
         {
             switch (MetricType)
             {
-                case MetricType.MeanEdge:
-                case MetricType.IntersectionRay:
+                default:
                     return (initial ? S_geiod : S_q).IntersectionWith(MetricRays[to]).DistanceTo(O3)
                            - HtoBase[to]; /// needed for OceanDataTests.HighBasin_31
                 case MetricType.Edge:
-                default:
-                    /// !!!
-                    return (initial ? S_geiod : S_q).IntersectionWith(MetricRays[to]).DistanceTo(O3)
-                           - HtoBase[to]; /// needed for OceanDataTests.HighBasin_31
+                case MetricType.HEALPixaS:
+                    if (initial)
+                        return 0;
+                    return S_q.IntersectionWith(MetricRays[to]).DistanceTo(O3);
             }
         }
 

@@ -36,7 +36,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="AppConfiguration, Version=2.6.0.11, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\Entities\packages\AppConfiguration.2.6.0.11\lib\net40\AppConfiguration.dll</HintPath>
+      <HintPath>..\packages\AppConfiguration.2.6.0.11\lib\net40\AppConfiguration.dll</HintPath>
     </Reference>
     <Reference Include="GeoJSON.Net, Version=0.0.0.6, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\TopoJSON.Net.0.0.0.7\lib\GeoJSON.Net.dll</HintPath>
@@ -99,6 +99,7 @@
     <Compile Include="ReliefMaps\Basemap\DataEarth.cs" />
     <Compile Include="ReliefMaps\Geoid\Geoid.cs" />
     <Compile Include="ReliefMaps\Geoid\Polygon.cs" />
+    <Compile Include="ReliefMaps\Geoid\Rectangle.cs" />
     <Compile Include="ReliefMaps\Geoid\Tests\GeoidTests.cs" />
     <Compile Include="ReliefMaps\SurfaceType.cs" />
     <Compile Include="ReliefMaps\Map2D\Tests\OptimizationTests.cs" />

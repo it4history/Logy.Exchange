@@ -13,7 +13,7 @@ namespace Logy.Maps.ReliefMaps.Geoid
 
         public Geoid17Map() : base(7)
         {
-            LegendNeeded = false;
+            // LegendNeeded = false;
         }
 
         public override Projection Projection => Projection.Healpix2EquirectangularFast;
@@ -61,11 +61,19 @@ namespace Logy.Maps.ReliefMaps.Geoid
         public void Eddies()
         {
             var reliefAxis17 = new ReliefAxis17(7);
+            var rectangle = new Rectangle<Basin3>(-98, 57, -82, 67);
             var bundle = Bundle<Basin3>.Deserialize(
-                File.ReadAllText(reliefAxis17.StatsFileName()), false, false);
+                File.ReadAllText(reliefAxis17.StatsFileName()), 
+                false, 
+                false,
+                d =>
+                {
+                    // d.InitialBasins = rectangle.Subset(reliefAxis17.HealpixManager);
+                });
             var data = bundle.Algorithm.DataAbstract;
 
-            _data = new ComplexData(this, data.PixMan.Pixels);
+            _data = new ComplexData(this, data.PixMan.Pixels) { Rectangle = rectangle };
+            _data.CalcArrows();
             Draw();
         }
     }

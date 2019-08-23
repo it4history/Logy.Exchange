@@ -108,10 +108,14 @@ namespace Logy.Maps.ReliefMaps.Map2D
             }
             else
             {
-                // for meridian maps mainly
-                SaveBitmap(Data.Frame);
+                if (Data.Colors != null)
+                {
+                    // for meridian maps mainly
+                    SaveBitmap(Data.Frame);
+                }
             }
-            OpenPicture(GetFileName(Data.Colors, FrameToString(Data.Frame)));
+            if (Data.Colors != null)
+                OpenPicture(GetFileName(Data.Colors, FrameToString(Data.Frame)));
         }
 
         public void ShiftAxis(
