@@ -1,5 +1,4 @@
 ﻿#if DEBUG
-using System;
 using Logy.Maps.Exchange;
 using Logy.Maps.Geometry;
 using Logy.Maps.Metrics.Tests;
@@ -127,6 +126,7 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
             SetData(algorithm);
 
             algorithm.ChangeRotation(-HealpixManager.Nside);
+            
             OceanDataTests.DoFrame(Data, true);
             OceanDataTests.DoFrame(Data, true);
             OceanDataTests.DoFrame(Data, true);

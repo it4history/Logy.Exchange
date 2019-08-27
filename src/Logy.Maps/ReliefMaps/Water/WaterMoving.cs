@@ -3,9 +3,13 @@ using System.Collections;
 using System.Drawing;
 using System.Runtime.Serialization;
 using System.Threading.Tasks;
+using Logy.Maps.Geometry;
+using Logy.Maps.Metrics;
 using Logy.Maps.Projections.Healpix;
 using Logy.Maps.ReliefMaps.Basemap;
 using Logy.Maps.ReliefMaps.Map2D;
+using Logy.Maps.ReliefMaps.World.Ocean;
+using MathNet.Spatial.Euclidean;
 using NUnit.Framework;
 
 namespace Logy.Maps.ReliefMaps.Water
@@ -247,6 +251,84 @@ namespace Logy.Maps.ReliefMaps.Water
                     // basin.Altitude =  is needed for meridian maps
                     basin.Altitude = GetAltitude(basin);
                 }
+        }
+
+        internal double GetBasinHeight(Basin3 basin, int to)
+        {
+            var toBasin = basin.Neighbors[to];
+            var from = basin.Opposites[to];
+            return GetBasinHeight(basin, toBasin, to, from);
+        }
+
+        protected double GetBasinHeight(Basin3 basin, Basin3 toBasin, int to, int from)
+        {
+            // null for maps that only visualize
+            if (toBasin == null)
+                return 0;
+
+            double height;
+            switch (Basin3.MetricType)
+            {
+                case MetricType.Edge:
+                    Compass sameRingCompass, sameRingCompass2;
+                    var compass = NeighborManager.Compasses((Direction)to, out sameRingCompass);
+                    var compass2 = NeighborManager.Compasses((Direction)from, out sameRingCompass2);
+                    height = (basin.Hto[(int)compass] + basin.Hto[(int)sameRingCompass]
+                              - toBasin.Hto[(int)compass2] - toBasin.Hto[(int)sameRingCompass2]) * .5;
+                    break;
+                default:
+                    /* bug http://hist.tk/ory/Искажение_начала_перетекания 
+                     * may be fixed by balancing deltaH (of BasinAbstract.WaterIn method) relative to basin.WaterHeight */
+                    height = basin.Hto[to] - toBasin.Hto[from];
+                    break;
+            }
+
+            if ((basin.Type == null || (toBasin.Type == null /*&& toBasin.NorthCap.HasValue*/))
+                && basin.NorthCap.HasValue)
+            {
+                /// var vert = NeighborManager.GetVert((Direction)to);
+                if (basin.NorthCap == true /// && vert == NeighborVert.North
+                    || basin.NorthCap == false)
+                {
+                    // height *= 0.5;
+                }
+            }
+            var ratio = basin.MetricRayDistance[to] / basin.MetricRayDistanceMean;
+            /// height *= ratio;
+
+            return height;
+            if (basin.NorthCap == toBasin.NorthCap && basin.NorthCap.HasValue)
+            {
+                var angle = Math.Abs(new Line3D(basin.Q3, toBasin.Q3).Direction
+                    .DotProduct(Utils3D.Equator.Normal));
+
+                // near extreme basin
+                if ((basin.Type == null && toBasin.Type != null)
+                    || (basin.Type != null && toBasin.Type == null))
+                {
+                    height *= 0.38758972827175014;
+                }
+                else
+                {
+                    // inside, no extreme basin
+                    if (basin.Type == null && toBasin.Type == null)
+                    {
+                        return height * .6028;
+                        var ring4 = basin.PixelsCountInRing / 4;
+                        var pixelInRing4 = basin.PixelInRing % ring4;
+                        if (HealpixManager.RingFromPole(basin) > 4
+                            && pixelInRing4 > 2 && pixelInRing4 < ring4 - 1)
+                        {
+                            height *= .8;
+                            /// normal (and .8) better for ring 8, 
+                            ///         but .88 for ring 6,7 
+                        }
+                        else
+                            height *= .609;
+                    }
+                }
+            }
+            return height;
         }
 
         protected virtual void CalcDeltasH()

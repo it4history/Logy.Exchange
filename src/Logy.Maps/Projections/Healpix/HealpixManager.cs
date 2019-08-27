@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using Logy.Maps.ReliefMaps.Geoid;
-using Logy.Maps.ReliefMaps.World.Ocean;
-using Logy.MwAgent.Sphere;
 
 namespace Logy.Maps.Projections.Healpix
 {
