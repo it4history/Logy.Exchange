@@ -178,7 +178,9 @@ namespace Logy.Maps.Projections.Healpix
 
         public int RingFromPole(HealCoor basin)
         {
-            return RingsCount - basin.Ring + 1;
+            return basin.Ring < RingsCount / 2
+                ? basin.Ring 
+                : RingsCount - basin.Ring + 1;
         }
 
         /// <summary>

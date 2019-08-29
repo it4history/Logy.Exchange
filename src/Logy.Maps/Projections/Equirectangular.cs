@@ -45,15 +45,16 @@ namespace Logy.Maps.Projections
         public int FullOffset(Coor coor)
         {
             return (int)Math.Round(
-                (/*rounding is important*/Math.Round(Y(coor.Y)) * _width)
-                + X(coor.X));
+                (/*rounding is important*/Math.Round(Y(coor.Y), MidpointRounding.AwayFromZero) * _width)
+                + X(coor.X), 
+                MidpointRounding.AwayFromZero);
         }
 
         public Point2 Offset(Coor coor)
         {
             return new Point2(
-                (int)Math.Round(X(coor.X)),
-                (int)Math.Round(Y(coor.Y)));
+                (int)Math.Round(X(coor.X), MidpointRounding.AwayFromZero),
+                (int)Math.Round(Y(coor.Y), MidpointRounding.AwayFromZero));
         }
 
         internal static Coor CoorFromXY(Point2 p, int yResolution, HealpixManager man, int frame = 0)

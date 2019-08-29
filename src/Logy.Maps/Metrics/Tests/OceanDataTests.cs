@@ -77,7 +77,7 @@ namespace Logy.Maps.Metrics.Tests
                 if (mainBasins)
                 {
                     if (basin.NorthCap == true 
-                        && basin.PixelInRing <= Math.Round(basin.PixelsCountInRing / 8d))
+                        && basin.PixelInRing <= Math.Round(basin.PixelsCountInRing / 8d, MidpointRounding.AwayFromZero))
                         Console.WriteLine($"{basin.P}({basin.Ring}) {basin.Hoq:#.#}");
                 }
                 else if (basin.Hoq != 0)

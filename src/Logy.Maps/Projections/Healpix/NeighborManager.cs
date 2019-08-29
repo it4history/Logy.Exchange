@@ -57,6 +57,20 @@ namespace Logy.Maps.Projections.Healpix
                     return Direction.Se;
             }
         }
+        public static Direction GetOppositeVer(Direction to)
+        {
+            switch (to)
+            {
+                case Direction.Ne:
+                    return Direction.Se;
+                case Direction.Nw:
+                    return Direction.Sw;
+                case Direction.Se:
+                    return Direction.Ne;
+                default:
+                    return Direction.Nw;
+            }
+        }
 
         public static Compass Compasses(Direction to, out Compass sameRingCompass)
         {

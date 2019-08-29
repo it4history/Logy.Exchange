@@ -20,14 +20,15 @@ namespace Logy.Maps.Projections.Healpix
 
         public Basin3 Basin { get; }
         public int? Direction { get; set; }
-        public int Koef { get; set; } = 1;
+        public double Koef { get; set; } = 1;
 
+        public int NodeInRing => Basin.Ring - Basin.PixelInRing;
         public string Key => ToString();
 
         public override string ToString()
         {
             // return $"{Basin.P}{(Direction.HasValue ? "_" + Direction.Value : "")}";
-            return $"{Basin.Ring}{Basin.Ring - Basin.PixelInRing}{(Direction.HasValue ? "_" + Direction.Value : "")}";
+            return $"{Basin.Ring}{NodeInRing}{(Direction.HasValue ? "_" + Direction.Value : "")}";
         }
 
         public override bool Equals(object obj)

@@ -222,7 +222,7 @@ namespace Logy.Maps.ReliefMaps.Map2D
             {
                 var measure0 = g.MeasureString(middle, font);
                 var rectangle = new Rectangle(
-                    (int)Math.Round(left0.Value + 2 + ((left0end.Value - left0.Value - measure0.Width) / 2)),
+                    (int)Math.Round(left0.Value + 2 + ((left0end.Value - left0.Value - measure0.Width) / 2), MidpointRounding.AwayFromZero),
                     (int)stringTop,
                     (int)measure0.Width + 1,
                     (int)measure0.Height - 2);

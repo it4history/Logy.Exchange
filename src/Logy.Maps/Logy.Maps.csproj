@@ -89,8 +89,8 @@
     <Compile Include="Geometry\Tests\MathNetPoint3DTests.cs" />
     <Compile Include="Metrics\Tests\OceanDataTests.cs" />
     <Compile Include="Projections\Healpix\Equation.cs" />
-    <Compile Include="Projections\Healpix\Equations.cs" />
     <Compile Include="Projections\Healpix\HealpixFormattor.cs" />
+    <Compile Include="Projections\Healpix\EquationType.cs" />
     <Compile Include="Projections\Healpix\Neighbors.cs" />
     <Compile Include="Projections\Healpix\NeighborManager.cs" />
     <Compile Include="Projections\Healpix\Node.cs" />

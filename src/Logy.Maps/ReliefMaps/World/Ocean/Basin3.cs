@@ -178,8 +178,6 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
         ///  or through edges intersection (IntersectionRay metric)
         /// </summary>
         public Ray3D[] MetricRays { get; set; }
-        public double[] MetricRayDistance { get; set; }
-        public double MetricRayDistanceMean { get; set; }
         public List<HealCoor> MetricRaysCoor
         {
             get
@@ -192,6 +190,8 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
                 return l;
             }
         }
+
+        public double[] Koefs { get; set; }
 
         /// <summary>
         /// was named InitialHto
@@ -302,8 +302,8 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
             Volumes = new bool[4];
             Opposites = new int[4];
             MetricRays = new Ray3D[4];
-            MetricRayDistance = new double[4];
             HtoBase = new double[4];
+            Koefs = new double[4];
         }
 
         public override void WaterReset()

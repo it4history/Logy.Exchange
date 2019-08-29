@@ -122,7 +122,7 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
         public void Height_RotationStopped()
         {
             var algorithm = new ShiftAxis(
-                new OceanData(new HealpixManager(2)) { Spheric = false });
+                new OceanData(new HealpixManager(3)) { WithFormattor = true });
             SetData(algorithm);
 
             algorithm.ChangeRotation(-HealpixManager.Nside);
