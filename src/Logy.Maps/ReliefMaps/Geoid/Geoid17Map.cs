@@ -55,7 +55,7 @@ namespace Logy.Maps.ReliefMaps.Geoid
         }
 
         /// <summary>
-        /// http://hist.tk/ory/Искажение_начала_перетекания
+        /// http://hist.tk/ory/Геометрическое_искажение
         /// </summary>
         [Test]
         public void Eddies()

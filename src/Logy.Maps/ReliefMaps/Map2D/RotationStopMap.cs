@@ -27,7 +27,7 @@ namespace Logy.Maps.ReliefMaps.Map2D
 
         public Bundle<T> Bundle { get; protected set; }
 
-        public override Projection Projection => Projection.Healpix;
+        public override Projection Projection => Projection.Healpix2EquirectangularFast;
 
         /// <summary>
         /// !setting may delete maps!
@@ -97,25 +97,28 @@ namespace Logy.Maps.ReliefMaps.Map2D
         [TearDown]
         public void TearDown()
         {
-            if (Data.IsRunning)
+            if (Bundle != null)
             {
-                Data.IsRunning = false;
-                Data.RunningTask.Wait();
-            }
-            if (_jsonNeeded)
-            {
-                SaveJson(Data.Frame);
-            }
-            else
-            {
-                if (Data.Colors != null)
+                if (Data.IsRunning)
                 {
-                    // for meridian maps mainly
-                    SaveBitmap(Data.Frame);
+                    Data.IsRunning = false;
+                    Data.RunningTask.Wait();
                 }
+                if (_jsonNeeded)
+                {
+                    SaveJson(Data.Frame);
+                }
+                else
+                {
+                    if (Data.Colors != null)
+                    {
+                        // for meridian maps mainly
+                        SaveBitmap(Data.Frame);
+                    }
+                }
+                if (Data.Colors != null)
+                    OpenPicture(GetFileName(Data.Colors, FrameToString(Data.Frame)));
             }
-            if (Data.Colors != null)
-                OpenPicture(GetFileName(Data.Colors, FrameToString(Data.Frame)));
         }
 
         public void ShiftAxis(

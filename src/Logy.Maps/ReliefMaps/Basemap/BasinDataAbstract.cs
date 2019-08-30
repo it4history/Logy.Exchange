@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Runtime.Serialization;
 using Logy.Maps.Exchange.Earth2014;
-using Logy.Maps.Geometry;
 using Logy.Maps.Metrics;
 using Logy.Maps.Projections.Healpix;
 using Logy.Maps.ReliefMaps.Water;
@@ -32,50 +31,13 @@ namespace Logy.Maps.ReliefMaps.Basemap
         [IgnoreDataMember]
         public Func<T, double> Visual { get; set; } = basin => basin.Hoq; //// basin.Altitude * 1000;
 
-        public virtual void InitMetrics(T basin)
-        {
-            foreach (Direction to in Enum.GetValues(typeof(Direction)))
-            {
-                var meanBoundary = HealpixManager.Neighbors.MeanBoundary(basin, to);
-                switch (Basin3.MetricType)
-                {
-                    case MetricType.IntersectionRay:
-                        var intersection = basin.S_geiod.IntersectionWith(basin.Neighbors[to].S_geiod)
-                            .IntersectionWith(HealpixManager.Neighbors.Boundary(basin, to));
-                        if (intersection.HasValue) /* why always true? */
-                            basin.MetricRays[(int)to] = new Ray3D(Basin3.O3, intersection.Value.ToVector3D());
-                        else
-                            basin.MetricRays[(int)to] = meanBoundary;
-                        break;
-                    case MetricType.MeanEdge:
-                        basin.MetricRays[(int)to] = meanBoundary;
-                        break;
-                    case MetricType.Edge:
-                        basin.MetricRays[(int)to] = HealpixManager.Neighbors.BoundaryRay(basin, (Compass)to);
-                        break;
-                    case MetricType.HEALPixaS:
-                        var toBasin = basin.Neighbors[to];
-                        basin.MetricRays[(int)to] =
-                            new Ray3D(Basin3.O3, basin.RadiusRay.Direction + toBasin.RadiusRay.Direction);
-                        break;
-                }
-            }
-
-            /// CorrectionSurface();
-
-            for (int to = 0; to < 4; to++)
-            {
-                basin.Koefs[to] = WaterModel.Koef;
-                basin.HtoBase[to] = basin.Metric(to, true);
-            }
-        }
-
         /// <param name="full">if false then Depth, Hoq are not set</param>
         public override void Init(bool full = true)
         {
             base.Init(full);
 
-            ColorsMiddle = 0;
+            if (ColorsMiddle == null)
+                ColorsMiddle = 0;
 
             foreach (var basin in PixMan.Pixels)
             {
@@ -111,7 +73,11 @@ namespace Logy.Maps.ReliefMaps.Basemap
 
                     basin.Opposites[(int)to] = basin.GetFromAndFillType(to, toBasin, HealpixManager);
                 }
+            }
 
+            // foreach because of calculated Delta_g_meridian... of neighbors 
+            foreach (var basin in PixMan.Pixels)
+            {
                 InitMetrics(basin);
             }
 
@@ -134,6 +100,44 @@ namespace Logy.Maps.ReliefMaps.Basemap
             if (full && WithRelief)
             {
                 CheckOcean();
+            }
+        }
+
+        public virtual void InitMetrics(T basin)
+        {
+            foreach (Direction to in Enum.GetValues(typeof(Direction)))
+            {
+                var meanBoundary = HealpixManager.Neighbors.MeanBoundary(basin, to);
+                switch (Basin3.MetricType)
+                {
+                    case MetricType.IntersectionRay:
+                        var intersection = basin.S_geiod.IntersectionWith(basin.Neighbors[to].S_geiod)
+                            .IntersectionWith(HealpixManager.Neighbors.Boundary(basin, to));
+                        if (intersection.HasValue) /* why always true? */
+                            basin.MetricRays[(int)to] = new Ray3D(Basin3.O3, intersection.Value.ToVector3D());
+                        else
+                            basin.MetricRays[(int)to] = meanBoundary;
+                        break;
+                    case MetricType.MeanEdge:
+                        basin.MetricRays[(int)to] = meanBoundary;
+                        break;
+                    case MetricType.Edge:
+                        basin.MetricRays[(int)to] = HealpixManager.Neighbors.BoundaryRay(basin, (Compass)to);
+                        break;
+                    case MetricType.Middle:
+                        var toBasin = basin.Neighbors[to];
+                        basin.MetricRays[(int)to] =
+                            new Ray3D(Basin3.O3, basin.RadiusRay.Direction + toBasin.RadiusRay.Direction);
+                        break;
+                }
+            }
+
+            /// CorrectionSurface();
+
+            for (int to = 0; to < 4; to++)
+            {
+                basin.Koefs[to] = WaterModel.Koef;
+                basin.HtoBase[to] = basin.Metric(to, true);
             }
         }
 
@@ -197,8 +201,8 @@ namespace Logy.Maps.ReliefMaps.Basemap
                     return (basin.Hto[(int)compass] + basin.Hto[(int)sameRingCompass]
                             - toBasin.Hto[(int)compass2] - toBasin.Hto[(int)sameRingCompass2]) * .5;
                 default:
-                    /* bug http://hist.tk/ory/Искажение_начала_перетекания 
-                     * may be fixed by balancing deltaH (of BasinAbstract.WaterIn method) relative to basin.WaterHeight */
+                    /* bug http://hist.tk/ory/Геометрическое_искажение
+                     * may be fixed by balancing deltaH (of BasinAbstract.WaterIn method) relative to basin.WaterHeight in HealpixFormattor */
                     return basin.Hto[to] - toBasin.Hto[from];
             }
         }

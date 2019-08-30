@@ -14,7 +14,7 @@ namespace Logy.Maps.Metrics.Tests
         [Test]
         public void HighBasin_31()
         {
-            var data = new OceanData(new HealpixManager(2));
+            var data = new OceanData(new HealpixManager(2)){Spheric = false, WithFormattor = false};
             data.Init();
             var basin3 = data.PixMan.Pixels[31];
             foreach (var basin in data.PixMan.Pixels)
@@ -25,8 +25,6 @@ namespace Logy.Maps.Metrics.Tests
 
             basin3.Hoq = 500;
 
-            // data.Frame();
-            DoFrame(data);
             DoFrame(data);
             DoFrame(data);
             DoFrame(data);
@@ -81,7 +79,7 @@ namespace Logy.Maps.Metrics.Tests
                         Console.WriteLine($"{basin.P}({basin.Ring}) {basin.Hoq:#.#}");
                 }
                 else if (basin.Hoq != 0)
-                    Console.WriteLine("{0} {1:#.#}", basin.P, basin.Hoq);
+                    Console.WriteLine($"{basin.P}({basin.Ring}) {basin.Hoq:#.#}");
             }
         }
     }

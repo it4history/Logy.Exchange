@@ -5,7 +5,8 @@ namespace Logy.Maps.Projections.Healpix
         Normal,
         Koefs20_2, Koefs20_3,
         Koefs52_2,
-        Koefs31_2,
-        KoefsLast_3
+        KoefsLast1_2,
+        KoefsLast0_3,
+        Koefs41_3
     }
 }

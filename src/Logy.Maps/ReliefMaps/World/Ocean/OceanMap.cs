@@ -122,7 +122,7 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
         public void Height_RotationStopped()
         {
             var algorithm = new ShiftAxis(
-                new OceanData(new HealpixManager(3)) { WithFormattor = true });
+                new OceanData(new HealpixManager(3)) { WithFormattor = false });
             SetData(algorithm);
 
             algorithm.ChangeRotation(-HealpixManager.Nside);
@@ -131,7 +131,7 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
             OceanDataTests.DoFrame(Data, true);
             OceanDataTests.DoFrame(Data, true);
             OceanDataTests.DoFrame(Data, true);
-            Data.Draw(Bmp, 0, null, YResolution, Scale);
+            Draw();
         }
 
         [Test]
@@ -143,7 +143,7 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
             Data.DoFrames(
                 delegate(int frame)
                 {
-                    Data.Draw(Bmp, 0, null, YResolution, Scale);
+                    Draw();
                     SaveBitmap(frame);
                     return 1;
                 },

@@ -3,13 +3,9 @@ using System.Collections;
 using System.Drawing;
 using System.Runtime.Serialization;
 using System.Threading.Tasks;
-using Logy.Maps.Geometry;
-using Logy.Maps.Metrics;
 using Logy.Maps.Projections.Healpix;
 using Logy.Maps.ReliefMaps.Basemap;
 using Logy.Maps.ReliefMaps.Map2D;
-using Logy.Maps.ReliefMaps.World.Ocean;
-using MathNet.Spatial.Euclidean;
 using NUnit.Framework;
 
 namespace Logy.Maps.ReliefMaps.Water

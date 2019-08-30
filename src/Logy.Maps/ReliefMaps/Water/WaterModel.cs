@@ -30,7 +30,7 @@ namespace Logy.Maps.ReliefMaps.Water
         /// for k9: 0.05 is bad, .1-.15 strange interference, .23 is NotReliable
         /// .25 is reliable, .3 very reliable
         /// </summary>
-        public double Threshhold { get; }
+        public double Threshhold { get; internal set; }
         public double ThreshholdNotReliable { get; }
 
         public bool IsMeridian { get; set; }

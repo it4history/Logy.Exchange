@@ -8,12 +8,12 @@ namespace Logy.Maps.Projections.Healpix.Tests
     [TestFixture]
     public class HealpixFormattorTests
     {
-        public const double Koef20Dir3 = 0.39107720544643054;
-        public const double Koef31Dir2 = 0.60557311017098969;
+        public const double Koef20Dir3 = .1720367531992649;
+        public const double Koef31Dir2 = .48064422748589886;
 
         public static OceanData Data(int k = 2)
         {
-            var data = new OceanData(new HealpixManager(k)) { Spheric = true };
+            var data = new OceanData(new HealpixManager(k)) { Spheric = false };
             data.Init();
             data.GradientAndHeightCrosses();
             return data;
@@ -68,12 +68,12 @@ namespace Logy.Maps.Projections.Healpix.Tests
             Assert.AreEqual(1, equations.GetResult(data.PixMan.Pixels[7], 0));
             Assert.AreEqual(1, equations.GetResult(data.PixMan.Pixels[7], 1));
             Assert.AreEqual(1, equations.GetResult(data.PixMan.Pixels[7], 2));
-            Assert.AreEqual(Koef20Dir3, equations.GetResult(data.PixMan.Pixels[7], 3), .0000001);
+            Assert.AreEqual(.41, equations.GetResult(data.PixMan.Pixels[7], 3), .1); // was Koef20Dir3
 
-            Assert.AreEqual(Koef20Dir3, equations.GetResult(data.PixMan.Pixels[16], 0), .0000001);
-            Assert.AreEqual(Koef20Dir3, equations.GetResult(data.PixMan.Pixels[16], 1), .0000001);
-            Assert.AreEqual(Koef31Dir2, equations.GetResult(data.PixMan.Pixels[16], 2), .0000001);
-            Assert.AreEqual(Koef31Dir2, equations.GetResult(data.PixMan.Pixels[16], 3), .0000001);
+            Assert.AreEqual(.41, equations.GetResult(data.PixMan.Pixels[16], 0), .1); // was Koef20Dir3
+            Assert.AreEqual(.41, equations.GetResult(data.PixMan.Pixels[16], 1), .1); // was Koef20Dir3
+            Assert.AreEqual(.6, equations.GetResult(data.PixMan.Pixels[16], 2), .0000001);
+            Assert.AreEqual(.6, equations.GetResult(data.PixMan.Pixels[16], 3), .0000001);
 
             Assert.AreEqual(1, equations.GetResult(data.PixMan.Pixels[data.HealpixManager.GetP(12, 1)], 0));
             Assert.AreEqual(1, equations.GetResult(data.PixMan.Pixels[data.HealpixManager.GetP(12, 1)], 1));
@@ -90,11 +90,11 @@ namespace Logy.Maps.Projections.Healpix.Tests
                 switch (i)
                 {
                     case 3:
-                        Assert.AreEqual(.5, equations.GetResult(2, 0, 3), .01);
+                        Assert.AreEqual(.2, equations.GetResult(2, 0, 3), .01); // was .5
                         break;
                     case 4:
-                        Assert.AreEqual(Koef20Dir3, equations.GetResult(3, 0, 3), .01);
-                        Assert.AreEqual(Koef31Dir2, equations.GetResult(3, 1, 2), .01);
+                        Assert.AreEqual(.1, equations.GetResult(3, 0, 3), .01); // was Koef20Dir3
+                        Assert.AreEqual(.6, equations.GetResult(3, 1, 2), .01);
                         break;
                     case 5:
                     case 6:
@@ -117,9 +117,9 @@ namespace Logy.Maps.Projections.Healpix.Tests
         [Test]
         public void Format_new()
         {
-            var equations = new HealpixFormattor<Basin3>(Data(),6).Format();
+            var equations = new HealpixFormattor<Basin3>(Data(3)).Format();
 
-            equations = new HealpixFormattor<Basin3>(Data(3)).Format();
+            equations = new HealpixFormattor<Basin3>(Data(4)).Format();
             foreach (var node in equations.Nodes)
             {
                 if (node.Direction.HasValue)

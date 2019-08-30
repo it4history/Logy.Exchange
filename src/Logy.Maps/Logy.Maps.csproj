@@ -114,6 +114,7 @@
     <Compile Include="ReliefMaps\Meridian\ReliefMap.cs" />
     <Compile Include="ReliefMaps\World\Earth2014Correction.cs" />
     <Compile Include="ReliefMaps\World\Earth2014CorrectionData.cs" />
+    <Compile Include="ReliefMaps\World\Ocean\GeometricDistortion.cs" />
     <Compile Include="ReliefMaps\World\Percentage.cs" />
     <Compile Include="ReliefMaps\World\Data\PercentageData.cs" />
     <Compile Include="ReliefMaps\Basemap\BasinDataAbstract.cs" />

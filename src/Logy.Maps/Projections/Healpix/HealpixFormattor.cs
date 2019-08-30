@@ -8,7 +8,7 @@ using MathNet.Numerics.LinearAlgebra;
 namespace Logy.Maps.Projections.Healpix
 {
     /// <summary>
-    /// fixer of http://hist.tk/ory/Искажение_начала_перетекания
+    /// koefs for http://hist.tk/ory/Геометрическое_искажение
     /// </summary>
     public class HealpixFormattor<T> where T : Basin3
     {
@@ -270,25 +270,39 @@ namespace Logy.Maps.Projections.Healpix
                                         return -1;
                                 }
                                 break;
-                            case EquationType.KoefsLast_3:
-                                if (node.NodeInRing == 0 && node.Direction == 3)
+                            case EquationType.Koefs41_3:
+                                if (node.NodeInRing == 1 && node.Direction == 3)
                                 {
-                                    if (equationNum + _lastRing - 1 == ring)
-                                        return 1;
+                                    if (equationNum + 4 == ring)
+                                        /// if 1 then 41_2,50_2,51_2=1.1 61_3=1.2 eddy 62-73-83-72-62 
+                                        /// if 1.5 then 40_2 = 1.2 eddy less
+                                        /// if 2 then 40_2 = 1.3
+                                        return 1.5; 
+                                    if (equationNum + 5 == ring)
+                                        return -1;
                                 }
                                 break;
-                            case EquationType.Koefs31_2:
+                            case EquationType.KoefsLast1_2:
                                 if (node.NodeInRing == 1 && node.Direction == 2)
                                 {
                                     if (equationNum + _lastRing - 1 == ring)
                                         return 1;
                                 }
                                 break;
+                            case EquationType.KoefsLast0_3:
+                                if (node.NodeInRing == 0 && node.Direction == 3)
+                                {
+                                    if (equationNum + _lastRing - 1 == ring)
+                                        return 1;
+                                }
+                                break;
                             case EquationType.Koefs52_2:
-                                if (node.NodeInRing == 2 && node.Direction == 2//&& node.Direction == 2 + (ring-1) % 2
+                                if (node.Direction == 2 //&& node.Direction == 2 + (ring-1) % 2
                                 )
                                 {
-                                    if (equationNum + 5 == ring)
+                                    if (node.NodeInRing == 2 && equationNum + 5 == ring)
+                                        return 1;
+                                    if (node.NodeInRing == 3 && equationNum + 7 == ring)
                                         return 1;
                                 }
                                 break;
@@ -305,12 +319,12 @@ namespace Logy.Maps.Projections.Healpix
                         {
                             case EquationType.Koefs20_2:
                                 return 1;
-                            case EquationType.Koefs31_2:
+                            case EquationType.KoefsLast1_2:
                                 return .6;
-                            case EquationType.KoefsLast_3:
+                            case EquationType.KoefsLast0_3:
                                 return .4;
                             case EquationType.Koefs52_2:
-                                return .5; // equationNum / 3d + .3;
+                                return .3; //if 1 then 51_3 low // equationNum / 3d + .3;
                             default:
                                 return 0;
                         }
@@ -329,22 +343,24 @@ namespace Logy.Maps.Projections.Healpix
                     return EquationType.Koefs20_2;
 
                 equationNum = newNum;
-                newNum -= _lastRing - 4; // -3;
+                newNum -= _lastRing - 4; // -3 if KoefsLast1_2 is 0;
                 if (newNum < 0)
                     return EquationType.Koefs20_3;
 
                 equationNum = newNum;
                 newNum -= 1; 
                 if (newNum < 0)
-                    return EquationType.Koefs31_2;
+                    return EquationType.KoefsLast1_2;
 
                 equationNum = newNum;
                 newNum -= 0;
                 if (newNum < 0)
-                    return EquationType.KoefsLast_3;
+                    return EquationType.KoefsLast0_3;
 
-                equationNum = newNum;
-                return EquationType.Koefs52_2;
+                equationNum = newNum; 
+                return EquationType.Koefs41_3; // works on lastring 8 and Data(3) with eddy 62-72-83-73-62
+
+                return EquationType.Koefs52_2; // if KoefsLast0_3 is 0   1 for 6rings, 2 - 7, 4 - 8
             }
             equationNum = row;
             return EquationType.Normal;

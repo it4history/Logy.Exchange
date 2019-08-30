@@ -43,7 +43,7 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
 
         public static Point3D OzEnd => Oz.ToPoint3D();
 
-        public static MetricType MetricType { get; set; } = MetricType.HEALPixaS;
+        public static MetricType MetricType { get; set; } = MetricType.Middle;
 
         public override double Hoq
         {
@@ -350,8 +350,10 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
                 default:
                     return (initial ? S_geiod : S_q).IntersectionWith(MetricRays[to]).DistanceTo(O3)
                            - HtoBase[to]; /// needed for OceanDataTests.HighBasin_31
+                case MetricType.RadiusIntersection:
+                    return S_q.IntersectionWith(toBasin.RadiusRay).DistanceTo(toBasin.Q3);
                 case MetricType.Edge:
-                case MetricType.HEALPixaS:
+                case MetricType.Middle:
                     if (initial)
                         return 0;
                     return S_q.IntersectionWith(MetricRays[to]).DistanceTo(O3);

@@ -8,7 +8,6 @@ namespace Logy.Maps.Metrics
         {
             return
                 -S_q.SignedDistanceTo(toBasin.Q3) /// bad for OceanDataTests.HighBasin_31_sphere 
-                /// RadiusIntersection metric:   S_q.IntersectionWith(toBasin.RadiusRay).DistanceTo(toBasin.Q3) 
                 - HtoBase[to]; /// needed for OceanDataTests.HighBasin_31 movedBasins
         }
     }
