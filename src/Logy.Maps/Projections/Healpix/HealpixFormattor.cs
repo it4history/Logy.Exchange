@@ -8,7 +8,7 @@ using MathNet.Numerics.LinearAlgebra;
 namespace Logy.Maps.Projections.Healpix
 {
     /// <summary>
-    /// koefs for http://hist.tk/ory/Геометрическое_искажение
+    /// koefs for http://hist.tk/ory/Искажение_начала_перетекания
     /// </summary>
     public class HealpixFormattor<T> where T : Basin3
     {

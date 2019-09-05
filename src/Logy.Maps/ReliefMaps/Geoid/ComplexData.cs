@@ -65,7 +65,7 @@ namespace Logy.Maps.ReliefMaps.Geoid
                         }
                         heights += diff;
                     }
-                    var count = 4000;
+                    var count = 500;
                     if (heights.HasValue)
                     {
                         var heightsAbs = //heights.Value; 

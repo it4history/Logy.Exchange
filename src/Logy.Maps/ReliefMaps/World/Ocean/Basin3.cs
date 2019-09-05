@@ -538,7 +538,7 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
                     return (Hto[(int)compass] + Hto[(int)sameRingCompass]
                             - toBasin.Hto[(int)compass2] - toBasin.Hto[(int)sameRingCompass2]) * .5;
                 default:
-                    /* bug http://hist.tk/ory/Геометрическое_искажение
+                    /* bug http://hist.tk/ory/Искажение_начала_перетекания
                      * may be fixed by balancing deltaH (of BasinAbstract.WaterIn method) relative to basin.WaterHeight in HealpixFormattor */
                     return Hto[to] - toBasin.Hto[from];
             }
