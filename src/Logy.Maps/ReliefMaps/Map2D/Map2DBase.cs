@@ -54,6 +54,17 @@ namespace Logy.Maps.ReliefMaps.Map2D
 
         public virtual SortedList<int, Color3> ColorsUnder => ColorsManager.Water;
 
+        public string Subdir { get; set; }
+        protected string Dir => _dir ?? (_dir = string.Format(
+                                    "{2}{3}maps{3}{1}_lines{0}{3}{4}",
+                                    YResolution * HealpixManager.Nside,
+                                    GetType().Name,
+                                    Directory.GetCurrentDirectory(),
+                                    Path.DirectorySeparatorChar,
+                                    Subdir));
+
+        protected virtual ImageFormat ImageFormat => ImageFormat.Jpeg;
+
         protected virtual bool IsGrey => false;
 
         /// <summary>
@@ -65,17 +76,6 @@ namespace Logy.Maps.ReliefMaps.Map2D
         protected int Frames { get; set; } = 1;
 
         protected virtual DataForMap2D<T> MapData => null;
-
-        protected string Subdir { get; set; }
-        protected string Dir => _dir ?? (_dir = string.Format(
-                                    "{2}{3}maps{3}{1}_lines{0}{3}{4}",
-                                    YResolution * HealpixManager.Nside,
-                                    GetType().Name,
-                                    Directory.GetCurrentDirectory(),
-                                    Path.DirectorySeparatorChar,
-                                    Subdir));
-
-        protected virtual ImageFormat ImageFormat => ImageFormat.Jpeg;
 
         protected bool LegendNeeded { get; set; }
 

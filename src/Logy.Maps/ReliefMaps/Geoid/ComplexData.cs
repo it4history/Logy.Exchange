@@ -9,6 +9,7 @@ using GeoJSON.Net.Geometry;
 using Logy.Maps.Exchange.Naturalearth;
 using Logy.Maps.Projections;
 using Logy.Maps.ReliefMaps.Map2D;
+using Logy.Maps.ReliefMaps.Water;
 using Logy.Maps.ReliefMaps.World.Ocean;
 using Logy.MwAgent.Sphere;
 using Newtonsoft.Json;
@@ -18,6 +19,9 @@ namespace Logy.Maps.ReliefMaps.Geoid
 {
     public class ComplexData : DataForMap2D<Basin3>
     {
+        /// <summary>
+        /// Key - abs. value of in/out volume
+        /// </summary>
         private readonly SortedList<double, List<Current>> _arrows = new SortedList<double, List<Current>>();
 
         public ComplexData(Map2DBase<Basin3> map, Basin3[] basins) : base(map, basins)
@@ -49,10 +53,9 @@ namespace Logy.Maps.ReliefMaps.Geoid
                             heights = null;
                             break;
                         }
-                        /*var hto = basin.Metric(toBasin, to);
-                        var from = basin.Opposites[to];
-                        var diff = hto - toBasin.Metric(basin, from);*/
-                        var diff = basin.Hoq - toBasin.Hoq;
+                        var diff 
+                            /// = basin.Hoq - toBasin.Hoq;
+                         = basin.GetBasinHeight(to) * basin.Koefs[to] * WaterModel.FluidityStable;
                         var height = Math.Abs(diff);
                         if (height > maxHeight)
                         {
@@ -62,26 +65,30 @@ namespace Logy.Maps.ReliefMaps.Geoid
                         }
                         heights += diff;
                     }
-                    var count = 700;
-                    if (heights.HasValue &&
-                        (_arrows.Count < count || _arrows.Keys[0] < heights))
+                    var count = 4000;
+                    if (heights.HasValue)
                     {
-                        List<Current> list;
-                        if (!_arrows.TryGetValue(heights.Value, out list))
+                        var heightsAbs = //heights.Value; 
+                         Math.Abs(heights.Value);
+                        if (_arrows.Count < count || _arrows.Keys[0] < heightsAbs)
                         {
-                            list = new List<Current>();
-                            _arrows.Add(heights.Value, list);
+                            List<Current> list;
+                            if (!_arrows.TryGetValue(heightsAbs, out list))
+                            {
+                                list = new List<Current>();
+                                _arrows.Add(heightsAbs, list);
+                            }
+                            list.Add(new Current
+                            {
+                                Basin = basin,
+                                VolumeSigned = heights.Value,
+                                Direction = maxDirection,
+                                DirectionVolume = maxHeight,
+                                DirectionVolumeSigned = maxHeightSigned
+                            });
+                            if (_arrows.Count >= count)
+                                _arrows.RemoveAt(0);
                         }
-                        list.Add(new Current
-                        {
-                            Basin = basin,
-                            Volume = heights.Value,
-                            Direction = maxDirection,
-                            DirectionVolume = maxHeight,
-                            DirectionVolumeSigned = maxHeightSigned
-                        });
-                        if (_arrows.Count >= count)
-                            _arrows.RemoveAt(0);
                     }
                 }
             }
@@ -141,10 +148,11 @@ namespace Logy.Maps.ReliefMaps.Geoid
                     var basinTo = current.Basin.Neighbors[current.Direction];
                     var point = equirectangular.Offset(current.Basin);
                     var pointTo = equirectangular.Offset(basinTo);
-                    
+
                     if (Math.Abs(pointTo.X - point.X) > HealpixManager.Nside)
                     {
-                        Console.WriteLine($"line: {current.Basin}-{basinTo} should be drawn through Earth left and right edges");
+                        Console.WriteLine(
+                            $"line: {current.Basin}-{basinTo} should be drawn through Earth left and right edges");
                     }
                     else
                     {
@@ -162,7 +170,7 @@ namespace Logy.Maps.ReliefMaps.Geoid
                         }
 
                         // ColorsManager.SetPixelOnBmp(color, bmp, point, scale);
-                        var ar = pointTo + ((pointTo - point) * (current.DirectionVolume / current.Volume));
+                        var ar = pointTo + ((pointTo - point) * (current.DirectionVolume / Math.Abs(current.VolumeSigned)));
                         g.DrawLine(pen, (int)(point.X * scale), (int)(point.Y * scale), (int)(pointTo.X * scale), (int)(pointTo.Y * scale));
                         g.DrawLine(new Pen(colorEnd), (int)(pointTo.X * scale), (int)(pointTo.Y * scale), (int)(ar.X * scale), (int)(ar.Y * scale));
                     }

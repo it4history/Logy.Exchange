@@ -516,6 +516,34 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
             return geoidRadius;
         }
 
+        public double GetBasinHeight(int to)
+        {
+            var toBasin = Neighbors[to];
+            var from = Opposites[to];
+            return GetBasinHeight(toBasin, to, from);
+        }
+
+        internal double GetBasinHeight(Basin3 toBasin, int to, int from)
+        {
+            // null for maps that only visualize
+            if (toBasin == null)
+                return 0;
+
+            switch (MetricType)
+            {
+                case MetricType.Edge:
+                    Compass sameRingCompass, sameRingCompass2;
+                    var compass = NeighborManager.Compasses((Direction)to, out sameRingCompass);
+                    var compass2 = NeighborManager.Compasses((Direction)from, out sameRingCompass2);
+                    return (Hto[(int)compass] + Hto[(int)sameRingCompass]
+                            - toBasin.Hto[(int)compass2] - toBasin.Hto[(int)sameRingCompass2]) * .5;
+                default:
+                    /* bug http://hist.tk/ory/Геометрическое_искажение
+                     * may be fixed by balancing deltaH (of BasinAbstract.WaterIn method) relative to basin.WaterHeight in HealpixFormattor */
+                    return Hto[to] - toBasin.Hto[from];
+            }
+        }
+
         private static bool IsSolid(SurfaceType surfaceType)
         {
             return surfaceType == SurfaceType.Solid;

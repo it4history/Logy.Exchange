@@ -165,7 +165,7 @@ namespace Logy.Maps.ReliefMaps.Basemap
                 {
                     var toBasin = basin.Neighbors[to];
                     var from = basin.Opposites[to];
-                    var height = GetBasinHeight(basin, toBasin, to, from);
+                    var height = basin.GetBasinHeight(toBasin, to, from);
 
                     Water.PutV(
                         basin,
@@ -177,34 +177,6 @@ namespace Logy.Maps.ReliefMaps.Basemap
                 return Visual(basin); // basin.hOQ;
             }
             return null;
-        }
-
-        internal double GetBasinHeight(Basin3 basin, int to)
-        {
-            var toBasin = basin.Neighbors[to];
-            var from = basin.Opposites[to];
-            return GetBasinHeight(basin, toBasin, to, from);
-        }
-
-        protected double GetBasinHeight(Basin3 basin, Basin3 toBasin, int to, int from)
-        {
-            // null for maps that only visualize
-            if (toBasin == null)
-                return 0;
-
-            switch (Basin3.MetricType)
-            {
-                case MetricType.Edge:
-                    Compass sameRingCompass, sameRingCompass2;
-                    var compass = NeighborManager.Compasses((Direction)to, out sameRingCompass);
-                    var compass2 = NeighborManager.Compasses((Direction)from, out sameRingCompass2);
-                    return (basin.Hto[(int)compass] + basin.Hto[(int)sameRingCompass]
-                            - toBasin.Hto[(int)compass2] - toBasin.Hto[(int)sameRingCompass2]) * .5;
-                default:
-                    /* bug http://hist.tk/ory/Геометрическое_искажение
-                     * may be fixed by balancing deltaH (of BasinAbstract.WaterIn method) relative to basin.WaterHeight in HealpixFormattor */
-                    return basin.Hto[to] - toBasin.Hto[from];
-            }
         }
     }
 }

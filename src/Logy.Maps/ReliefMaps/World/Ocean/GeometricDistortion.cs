@@ -8,18 +8,18 @@ using NUnit.Framework;
 namespace Logy.Maps.ReliefMaps.World.Ocean
 {
     /// <summary>
-    /// calm water
+    /// for calm water
     /// </summary>
     public class GeometricDistortion : RotationStopMap<Basin3>
     {
-        public GeometricDistortion() : base(7)
+        public GeometricDistortion() : base(5)
         {
         }
 
         protected override ImageFormat ImageFormat => ImageFormat.Png;
 
         [Test]
-        public void EllipticEarth_FirstWave()
+        public void EllipticEarth_FirstWave_RadiusIntersection()
         {
             Basin3.MetricType = MetricType.RadiusIntersection;
             var man = new HealpixManager(2);
@@ -32,14 +32,45 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
 
             // distortion on polar cap - equator border
             Assert.AreEqual(36, data.PixMan.Pixels[man.GetP(man.Nside + 1, 1)].Hoq, 1);
+        }
 
-
-            Data = new OceanData(HealpixManager) { ColorsMiddle = .04 };
-            Data.Water.Threshhold *= .3;
+        [Test]
+        public void EllipticEarth_FirstWave()
+        {
+            LowThreshholdMiddleData();
             OceanDataTests.DoFrame(Data);
             Draw();
             SaveBitmap(0);
         }
+
+        /// <summary>
+        /// http://hist.tk/ory/file:OceanMap_GeometricDistortion.png
+        /// </summary>
+        [Test]
+        public void EllipticEarth_5Waves()
+        {
+            LowThreshholdMiddleData();
+            for (var i = 0; i < 5; i++)
+                OceanDataTests.DoFrame(Data);
+
+            Draw();
+            SaveBitmap(0);
+        }
+
+        /*[Test]
+        public void EarthShirt17_1Waves()
+        {
+            Basin3.MetricType = MetricType.Middle;
+            var data = new OceanData(HealpixManager) { ColorsMiddle = .04 };
+            SetData(new ShiftAxis(data) { Slow = false},false);
+            Data.Water.Threshhold *= .05;
+
+            for (var i = 0; i < 1; i++)
+                OceanDataTests.DoFrame(Data);
+
+            Draw();
+            SaveBitmap(0);
+        }*/
 
         [Test]
         public void Waves100()
@@ -63,6 +94,13 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
                 Assert.Less(movedBasins, 1);
                 break;
             }
+        }
+
+        private void LowThreshholdMiddleData()
+        {
+            Basin3.MetricType = MetricType.Middle;
+            Data = new OceanData(HealpixManager) { ColorsMiddle = .04 };
+            Data.Water.Threshhold *= .05;
         }
     }
 }

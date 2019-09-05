@@ -1,6 +1,5 @@
 ﻿using System;
 using Logy.Maps.Geometry;
-using Logy.Maps.Metrics;
 using Logy.Maps.ReliefMaps.World.Ocean;
 using MathNet.Spatial.Euclidean;
 

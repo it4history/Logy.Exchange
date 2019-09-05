@@ -1,6 +1,7 @@
 ﻿using System.Drawing.Imaging;
 using System.IO;
 using Logy.Maps.Exchange;
+using Logy.Maps.Metrics;
 using Logy.Maps.ReliefMaps.Map2D;
 using Logy.Maps.ReliefMaps.World.Ocean;
 using NUnit.Framework;
@@ -60,7 +61,13 @@ namespace Logy.Maps.ReliefMaps.Geoid
         [Test]
         public void Eddies()
         {
-            var reliefAxis17 = new ReliefAxis17(7);
+            Basin3.MetricType = MetricType.MeanEdge;
+            var reliefAxis17 = new ReliefAxis17(7)
+            {
+                Subdir = 
+                 "fluidity0.9 from2761"
+                //    $"fluidity0.7 from2761Middle"
+            };
             var rectangle = new Rectangle<Basin3>(-98, 57, -82, 67);
             var bundle = Bundle<Basin3>.Deserialize(
                 File.ReadAllText(reliefAxis17.StatsFileName()), 
@@ -71,6 +78,7 @@ namespace Logy.Maps.ReliefMaps.Geoid
                     // d.InitialBasins = rectangle.Subset(reliefAxis17.HealpixManager);
                 });
             var data = bundle.Algorithm.DataAbstract;
+            data.DoFrame();
 
             _data = new ComplexData(this, data.PixMan.Pixels) { Rectangle = rectangle };
             _data.CalcArrows();
