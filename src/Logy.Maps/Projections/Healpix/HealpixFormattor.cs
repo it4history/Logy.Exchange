@@ -251,7 +251,7 @@ namespace Logy.Maps.Projections.Healpix
                                     if (equationNode.Equals(node))
                                     {
                                         sum += node.Direction.HasValue
-                                            ? node.Basin.GetBasinHeight(node.Direction.Value) * equationNode.Koef
+                                            ? _data.GetBasinHeight(node.Basin, node.Direction.Value) * equationNode.Koef
                                             : equationNode.Koef;
                                     }
                                 }

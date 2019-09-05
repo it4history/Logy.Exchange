@@ -21,9 +21,12 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
         [Test]
         public void EllipticEarth_FirstWave_RadiusIntersection()
         {
-            Basin3.MetricType = MetricType.RadiusIntersection;
             var man = new HealpixManager(2);
-            var data = new OceanData(man) { Spheric = false };
+            var data = new OceanData(man)
+            {
+                Spheric = false,
+                MetricType = MetricType.RadiusIntersection
+            };
             data.Init();
 
             OceanDataTests.DoFrame(data);
@@ -75,11 +78,14 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
         [Test]
         public void Waves100()
         {
-            Basin3.MetricType = MetricType.Middle;
             for (int k = 2; k <= 5; k++)
             {
                 var man = new HealpixManager(k);
-                var data = new OceanData(man) { Spheric = false };
+                var data = new OceanData(man)
+                {
+                    Spheric = false,
+                    MetricType = MetricType.Middle
+                };
                 data.Init();
                 for (var i = 0; i < 100; i++)
                     data.DoFrame();
@@ -98,8 +104,11 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
 
         private void LowThreshholdMiddleData()
         {
-            Basin3.MetricType = MetricType.Middle;
-            Data = new OceanData(HealpixManager) { ColorsMiddle = .04 };
+            Data = new OceanData(HealpixManager)
+            {
+                ColorsMiddle = .04,
+                MetricType = MetricType.Middle
+            };
             Data.Water.Threshhold *= .05;
         }
     }

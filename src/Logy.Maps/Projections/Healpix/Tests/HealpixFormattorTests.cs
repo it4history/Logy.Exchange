@@ -31,18 +31,18 @@ namespace Logy.Maps.Projections.Healpix.Tests
             var a = Matrix<double>.Build.DenseOfArray(new[,]
             {
                 {
-                    h30.GetBasinHeight(3),
-                    h31.GetBasinHeight(2)
+                    data.GetBasinHeight(h30, 3),
+                    data.GetBasinHeight(h31, 2)
                 },
                 {
-                    -h30.GetBasinHeight(3) - (2 * h20.GetBasinHeight(3)),
-                    2 * h31.GetBasinHeight(2)
+                    -data.GetBasinHeight(h30, 3) - (2 * data.GetBasinHeight(h20, 3)),
+                    2 * data.GetBasinHeight(h31, 2)
                 }
             });
             var b = Vector<double>.Build.Dense(new[]
             {
-                h30.GetBasinHeight(2),
-                h30.GetBasinHeight(2) - h20.GetBasinHeight(2),
+                data.GetBasinHeight(h30, 2),
+                data.GetBasinHeight(h30, 2) - data.GetBasinHeight(h20, 2),
             });
             var x = a.Solve(b);
 

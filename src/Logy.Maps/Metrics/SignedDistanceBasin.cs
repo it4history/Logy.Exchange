@@ -4,7 +4,7 @@ namespace Logy.Maps.Metrics
 {
     public class SignedDistanceBasin : Basin3
     {
-        public override double Metric(Basin3 toBasin, int to, bool initial = false)
+        public override double Metric(Basin3 toBasin, int to, MetricType metricType, bool initial = false)
         {
             return
                 -S_q.SignedDistanceTo(toBasin.Q3) /// bad for OceanDataTests.HighBasin_31_sphere 

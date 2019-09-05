@@ -24,8 +24,11 @@ namespace Logy.Maps.ReliefMaps.Geoid
         /// </summary>
         private readonly SortedList<double, List<Current>> _arrows = new SortedList<double, List<Current>>();
 
-        public ComplexData(Map2DBase<Basin3> map, Basin3[] basins) : base(map, basins)
+        private WaterMoving<Basin3> _data;
+
+        public ComplexData(Map2DBase<Basin3> map, WaterMoving<Basin3> data) : base(map, data.PixMan.Pixels)
         {
+            _data = data;
         }
 
         public Rectangle<Basin3> Rectangle { get; set; }
@@ -55,7 +58,7 @@ namespace Logy.Maps.ReliefMaps.Geoid
                         }
                         var diff 
                             /// = basin.Hoq - toBasin.Hoq;
-                         = basin.GetBasinHeight(to) * basin.Koefs[to] * WaterModel.FluidityStable;
+                         = _data.GetBasinHeight(basin, to) * basin.Koefs[to] * WaterModel.FluidityStable;
                         var height = Math.Abs(diff);
                         if (height > maxHeight)
                         {
@@ -64,6 +67,7 @@ namespace Logy.Maps.ReliefMaps.Geoid
                             maxDirection = to;
                         }
                         heights += diff;
+                        // check of currents heights = maxHeight;
                     }
                     var count = 500;
                     if (heights.HasValue)

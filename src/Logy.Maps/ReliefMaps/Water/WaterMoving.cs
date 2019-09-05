@@ -3,9 +3,11 @@ using System.Collections;
 using System.Drawing;
 using System.Runtime.Serialization;
 using System.Threading.Tasks;
+using Logy.Maps.Metrics;
 using Logy.Maps.Projections.Healpix;
 using Logy.Maps.ReliefMaps.Basemap;
 using Logy.Maps.ReliefMaps.Map2D;
+using Logy.Maps.ReliefMaps.World.Ocean;
 using NUnit.Framework;
 
 namespace Logy.Maps.ReliefMaps.Water
@@ -32,6 +34,8 @@ namespace Logy.Maps.ReliefMaps.Water
 
         [IgnoreDataMember]
         public WaterModel Water { get; set; }
+
+        public MetricType MetricType { get; set; } = MetricType.Middle;
 
         [IgnoreDataMember]
         public bool WithFormattor { get; set; }
@@ -235,6 +239,34 @@ namespace Logy.Maps.ReliefMaps.Water
         /// </summary>
         public virtual void GradientAndHeightCrosses()
         {
+        }
+
+        public double GetBasinHeight(Basin3 basin, int to)
+        {
+            var toBasin = basin.Neighbors[to];
+            var from = basin.Opposites[to];
+            return GetBasinHeight(basin, toBasin, to, from);
+        }
+
+        internal double GetBasinHeight(Basin3 basin, Basin3 toBasin, int to, int from)
+        {
+            // null for maps that only visualize
+            if (toBasin == null)
+                return 0;
+
+            switch (MetricType)
+            {
+                case MetricType.Edge:
+                    Compass sameRingCompass, sameRingCompass2;
+                    var compass = NeighborManager.Compasses((Direction)to, out sameRingCompass);
+                    var compass2 = NeighborManager.Compasses((Direction)from, out sameRingCompass2);
+                    return (basin.Hto[(int)compass] + basin.Hto[(int)sameRingCompass]
+                            - toBasin.Hto[(int)compass2] - toBasin.Hto[(int)sameRingCompass2]) * .5;
+                default:
+                    /* bug http://hist.tk/ory/Искажение_начала_перетекания
+                     * may be fixed by balancing deltaH (of BasinAbstract.WaterIn method) relative to basin.WaterHeight in HealpixFormattor */
+                    return basin.Hto[to] - toBasin.Hto[from];
+            }
         }
 
         /// <param name="isDynamicScale">whether recalculate min, max and therefore possibly make scale dynamic</param>

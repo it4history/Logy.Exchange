@@ -16,7 +16,7 @@ namespace Logy.Maps.ReliefMaps.Geoid
         {
             foreach (var basin in data.PixMan.Pixels)
             {
-                if (!basin.FillNewGeoid(data.Water))
+                if (!basin.FillNewGeoid(data))
                     throw new ApplicationException("cannot fill");
             }
         }

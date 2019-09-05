@@ -43,8 +43,6 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
 
         public static Point3D OzEnd => Oz.ToPoint3D();
 
-        public static MetricType MetricType { get; set; } = MetricType.Middle;
-
         public override double Hoq
         {
             get
@@ -339,13 +337,13 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
         }
 
         /// <param name="to">Direction</param>
-        public double Metric(int to, bool initial = false)
+        public double Metric(int to, MetricType metricType, bool initial = false)
         {
-            return Metric(Neighbors[to], to, initial);
+            return Metric(Neighbors[to], to, metricType, initial);
         }
-        public virtual double Metric(Basin3 toBasin, int to, bool initial = false)
+        public virtual double Metric(Basin3 toBasin, int to, MetricType metricType, bool initial = false)
         {
-            switch (MetricType)
+            switch (metricType)
             {
                 default:
                     return (initial ? S_geiod : S_q).IntersectionWith(MetricRays[to]).DistanceTo(O3)
@@ -379,7 +377,7 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
             Normal = null;
         }
 
-        public bool FillNewGeoid(WaterModel model)
+        public bool FillNewGeoid<T>(WaterMoving<T> data) where T : Basin3
         {
             var froms = new Dictionary<int, Basin3>();
             for (var from = 0; from < 4; from++)
@@ -406,21 +404,21 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
                     }
                     else
                     {
-                        if (Disbalance(froms, model, false))
+                        if (Disbalance(froms, data.Water, false))
                             return false;
 
                         var diff = Radius - RadiusFromNeighbor(solid);
                         SetPolygon(
-                            Math.Abs(diff) > model.Threshhold ? SurfaceType.Lake : SurfaceType.WorldOcean,
+                            Math.Abs(diff) > data.Water.Threshhold ? SurfaceType.Lake : SurfaceType.WorldOcean,
                             solid);
                     }
                 }
                 else
                 {
-                    if (Disbalance(froms, model))
+                    if (Disbalance(froms, data.Water))
                         return false;
 
-                    var height = Metric(water.Key) - fromWater.Metric(fromWaterTo);
+                    var height = Metric(water.Key, data.MetricType) - fromWater.Metric(fromWaterTo, data.MetricType);
 
                     // if border of this. inner basin is thiner than a pixel
                     var thisHigherThanWater = height > 0 && WaterHeight < height;
@@ -428,7 +426,7 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
                     if (thisHigherThanWater || thisLowerThanWater)
                     {
                         SetPolygon(
-                            Math.Abs(RadiusFromNeighbor(water) - Radius) < model.Threshhold
+                            Math.Abs(RadiusFromNeighbor(water) - Radius) < data.Water.Threshhold
                                 ? SurfaceType.WorldOcean
                                 : SurfaceType.Lake,
                             water);
@@ -437,12 +435,12 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
                     {
                         /* if rivers have slope then Threshhold is multiplied * 1.5; */
                         var diff = Math.Abs(height) * WaterModel.Koef;
-                        if (diff > model.Threshhold)
+                        if (diff > data.Water.Threshhold)
                         {
                             if (solid.Value != null && water.Value.Polygon.SurfaceType == SurfaceType.Lake)
                             {
                                 // there are issues on lakes (like Baikal) borders maybe because of geoid undulations in Earth2014
-                                if (diff > model.Threshhold * 10)
+                                if (diff > data.Water.Threshhold * 10)
                                     return false;
                             }
                             else
@@ -462,14 +460,14 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
                         throw new ApplicationException("first basin must have water to know geoid radius");
                     }
 
-                    if (Disbalance(froms, model))
+                    if (Disbalance(froms, data.Water))
                         return false;
 
                     SetPolygon(SurfaceType.Solid, water);
                 }
                 else
                 {
-                    if (Disbalance(froms, model, false))
+                    if (Disbalance(froms, data.Water, false))
                         return false;
 
                     SetPolygon(SurfaceType.Solid, solid, false);
@@ -514,34 +512,6 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
                 RadiusGeoid = geoidRadius;
             }
             return geoidRadius;
-        }
-
-        public double GetBasinHeight(int to)
-        {
-            var toBasin = Neighbors[to];
-            var from = Opposites[to];
-            return GetBasinHeight(toBasin, to, from);
-        }
-
-        internal double GetBasinHeight(Basin3 toBasin, int to, int from)
-        {
-            // null for maps that only visualize
-            if (toBasin == null)
-                return 0;
-
-            switch (MetricType)
-            {
-                case MetricType.Edge:
-                    Compass sameRingCompass, sameRingCompass2;
-                    var compass = NeighborManager.Compasses((Direction)to, out sameRingCompass);
-                    var compass2 = NeighborManager.Compasses((Direction)from, out sameRingCompass2);
-                    return (Hto[(int)compass] + Hto[(int)sameRingCompass]
-                            - toBasin.Hto[(int)compass2] - toBasin.Hto[(int)sameRingCompass2]) * .5;
-                default:
-                    /* bug http://hist.tk/ory/Искажение_начала_перетекания
-                     * may be fixed by balancing deltaH (of BasinAbstract.WaterIn method) relative to basin.WaterHeight in HealpixFormattor */
-                    return Hto[to] - toBasin.Hto[from];
-            }
         }
 
         private static bool IsSolid(SurfaceType surfaceType)

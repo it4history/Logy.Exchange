@@ -2,6 +2,10 @@ namespace Logy.Maps.Metrics
 {
     public enum MetricType
     {
-        MeanEdge, IntersectionRay, Edge, Middle, RadiusIntersection 
+        Middle = 0,
+        MeanEdge = 1,
+        RadiusIntersection,
+        Edge,
+        IntersectionRay
     }
 }

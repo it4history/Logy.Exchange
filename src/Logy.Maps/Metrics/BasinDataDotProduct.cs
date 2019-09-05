@@ -42,7 +42,7 @@ namespace Logy.Maps.Metrics
 
                     basin.MetricRays[(int)to] = man.Neighbors.MeanBoundary(basin, to);
 
-                    basin.HtoBase[(int)to] = basin.Metric(toBasin, (int)to);
+                    basin.HtoBase[(int)to] = basin.Metric(toBasin, (int)to, MetricType);
 
                     // !var otherQprojection = toBasin.Q3.ProjectOn(surface);//TraverseCalm);
                     // var dx = toBasin.Qb.X * Math.Sin(basin.Lambda.Value - toBasin.Lambda.Value);
@@ -161,7 +161,7 @@ namespace Logy.Maps.Metrics
                     for (int to = 0; to < 4; to++)
                     {
                         var toBasin = basin.Neighbors[to];
-                        var hto = basin.Metric(toBasin, to);
+                        var hto = basin.Metric(toBasin, to, MetricType);
                         basin.Hto[(int)to] = hto;
 
                         /*                       

@@ -157,7 +157,7 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
                 for (int to = 0; to < 4; to++)
                 {
                     basin.HtoBase[to] = 0;
-                    basin.HtoBase[to] = basin.Metric(null, to);
+                    basin.HtoBase[to] = basin.Metric(null, to, Data.MetricType);
                 }
             }
         }

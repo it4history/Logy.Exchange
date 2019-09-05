@@ -1,5 +1,6 @@
 ﻿#if DEBUG
 using Logy.Maps.Exchange;
+using Logy.Maps.Metrics;
 using Logy.Maps.ReliefMaps.Map2D;
 using Logy.Maps.ReliefMaps.Water;
 using NUnit.Framework;
@@ -25,13 +26,15 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
         public void AxisChange_Slow()
         {
             var fluidity = .7; /* ! */
+            var metricType = MetricType.Middle;
             Subdir = fluidity == WaterModel.FluidityStable
                 ? null
-                : $"fluidity{fluidity} from2761{Basin3.MetricType}";
+                : $"fluidity{fluidity} from2761{metricType}";
 
             var data = new OceanData(HealpixManager)
             {
                 WithRelief = true,
+                MetricType = metricType,
                 IntegrationEndless = true,
             };
             SetData(new ShiftAxis(data) { Slow = true }, true);

@@ -108,15 +108,12 @@ namespace Logy.Maps.ReliefMaps.Basemap
             foreach (Direction to in Enum.GetValues(typeof(Direction)))
             {
                 var meanBoundary = HealpixManager.Neighbors.MeanBoundary(basin, to);
-                switch (Basin3.MetricType)
+                switch (MetricType)
                 {
-                    case MetricType.IntersectionRay:
-                        var intersection = basin.S_geiod.IntersectionWith(basin.Neighbors[to].S_geiod)
-                            .IntersectionWith(HealpixManager.Neighbors.Boundary(basin, to));
-                        if (intersection.HasValue) /* why always true? */
-                            basin.MetricRays[(int)to] = new Ray3D(Basin3.O3, intersection.Value.ToVector3D());
-                        else
-                            basin.MetricRays[(int)to] = meanBoundary;
+                    case MetricType.Middle:
+                        var toBasin = basin.Neighbors[to];
+                        basin.MetricRays[(int)to] =
+                            new Ray3D(Basin3.O3, basin.RadiusRay.Direction + toBasin.RadiusRay.Direction);
                         break;
                     case MetricType.MeanEdge:
                         basin.MetricRays[(int)to] = meanBoundary;
@@ -124,10 +121,13 @@ namespace Logy.Maps.ReliefMaps.Basemap
                     case MetricType.Edge:
                         basin.MetricRays[(int)to] = HealpixManager.Neighbors.BoundaryRay(basin, (Compass)to);
                         break;
-                    case MetricType.Middle:
-                        var toBasin = basin.Neighbors[to];
-                        basin.MetricRays[(int)to] =
-                            new Ray3D(Basin3.O3, basin.RadiusRay.Direction + toBasin.RadiusRay.Direction);
+                    case MetricType.IntersectionRay:
+                        var intersection = basin.S_geiod.IntersectionWith(basin.Neighbors[to].S_geiod)
+                            .IntersectionWith(HealpixManager.Neighbors.Boundary(basin, to));
+                        if (intersection.HasValue) /* why always true? */
+                            basin.MetricRays[(int)to] = new Ray3D(Basin3.O3, intersection.Value.ToVector3D());
+                        else
+                            basin.MetricRays[(int)to] = meanBoundary;
                         break;
                 }
             }
@@ -137,7 +137,7 @@ namespace Logy.Maps.ReliefMaps.Basemap
             for (int to = 0; to < 4; to++)
             {
                 basin.Koefs[to] = WaterModel.Koef;
-                basin.HtoBase[to] = basin.Metric(to, true);
+                basin.HtoBase[to] = basin.Metric(to, MetricType, true);
             }
         }
 
@@ -152,7 +152,7 @@ namespace Logy.Maps.ReliefMaps.Basemap
                  * because solid contour may get water */
                 for (int to = 0; to < 4; to++)
                 {
-                    basin.Hto[to] = basin.Metric(to);
+                    basin.Hto[to] = basin.Metric(to, MetricType);
                 }
             }
         }
@@ -165,7 +165,7 @@ namespace Logy.Maps.ReliefMaps.Basemap
                 {
                     var toBasin = basin.Neighbors[to];
                     var from = basin.Opposites[to];
-                    var height = basin.GetBasinHeight(toBasin, to, from);
+                    var height = GetBasinHeight(basin, toBasin, to, from);
 
                     Water.PutV(
                         basin,
