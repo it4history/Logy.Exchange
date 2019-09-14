@@ -32,6 +32,11 @@ namespace Logy.Maps.ReliefMaps.Water
 
         public bool Spheric { get; set; }
 
+        /// <summary>
+        /// gravitation like a sphere has, but Spheric may be equal to false
+        /// </summary>
+        public bool SamePolesAndEquatorGravitation { get; set; }
+
         [IgnoreDataMember]
         public WaterModel Water { get; set; }
 
@@ -51,8 +56,6 @@ namespace Logy.Maps.ReliefMaps.Water
         /// maybe value decreases but not increases
         /// </summary>
         public bool IntegrationEndless { get; set; }
-
-        public bool SamePolesAndEquatorGravitation { get; set; }
 
         [IgnoreDataMember]
         public bool IsRunning { get; set; }

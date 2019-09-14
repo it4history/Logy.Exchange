@@ -63,7 +63,6 @@ namespace Logy.Maps.Exchange
                     }
                 }
 
-            // InitiialHtoRecalc();
             ChangeRotation(null, 0);
 
             if (frame.HasValue)
@@ -83,6 +82,12 @@ namespace Logy.Maps.Exchange
                     {
                         if (DataAbstract.SamePolesAndEquatorGravitation)
                             basin.GHpure = 0;
+                        else if (Ellipsoid.CurrentDatum.EllipsoidChanged)
+                        {
+                            var varphi = Ellipsoid.VarphiPaleo(basin, Ellipsoid.CurrentDatum.Gravity.Axis);
+                            basin.InitROfEllipse(DataAbstract.HealpixManager, Ellipsoid.Radius(varphi));
+                            basin.CalcGpure(varphi);
+                        }
                         basin.RecalculateDelta_g();
                     }
 
@@ -95,7 +100,8 @@ namespace Logy.Maps.Exchange
                         {
                             X = lastPole.X,
                             Y = lastPole.X,
-                            SiderealDayInSeconds = Ellipsoid.CurrentDatum.SiderealDayInSeconds
+                            SiderealDayInSeconds = Ellipsoid.CurrentDatum.SiderealDayInSeconds,
+                            Gravity = lastPole.Gravity
                         });
                 }
             }

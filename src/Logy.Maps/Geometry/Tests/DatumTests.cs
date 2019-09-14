@@ -10,7 +10,7 @@ namespace Logy.Maps.Geometry.Tests
         [Test]
         public void Radius()
         {
-            Assert.AreEqual(Basin3.Oz, Datum.Normal.AxisOfRotation);
+            Assert.AreEqual(Basin3.Oz, Datum.Normal.Axis);
             Assert.AreEqual(-180, new Datum().X);
             Assert.AreEqual(90, new Datum().Y);
         }

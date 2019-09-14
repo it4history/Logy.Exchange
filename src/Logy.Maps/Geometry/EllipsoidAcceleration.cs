@@ -87,7 +87,7 @@ namespace Logy.Maps.Geometry
         public static double Centrifugal(BasinAbstract basin, out double a, out double aTraverse, out double aVertical)
         {
             aTraverse = 0; 
-            if (CurrentDatum.AxisOfRotation == Basin3.Oz)
+            if (CurrentDatum.Axis == Basin3.Oz)
             {
                 a = Centrifugal(basin.Radius * Math.Cos(basin.Varphi));
                 aVertical = a * Math.Sin(basin.Theta);
@@ -95,7 +95,7 @@ namespace Logy.Maps.Geometry
             }
 
             var b = (Basin3)basin;
-            var axisEnd = CurrentDatum.AxisOfRotation.ToPoint3D();
+            var axisEnd = CurrentDatum.Axis.ToPoint3D();
 
             // this is 3) method http://hist.tk/ory/Способ_расчета_центробежного_ускорения, use b.Q3 for 2)
             var axisOrtohonal = new Line3D(Basin3.O3, axisEnd).LineTo(b.Qgeiod, false); 
@@ -124,9 +124,9 @@ namespace Logy.Maps.Geometry
 
             var b3unit = b.RadiusLine.Direction;
             
-            // lays in surfaceCalm plane, directed to equator of AxisOfRotation if Math.Abs used
+            // lays in surfaceCalm plane, directed to equator of Axis if Math.Abs used
             var aSphere = /// Math.Abs
-                a * CurrentDatum.AxisOfRotation.DotProduct(b3unit); /// axisOrtohonal.Direction.DotProduct(aSphereLine.Direction)); 
+                a * CurrentDatum.Axis.DotProduct(b3unit); /// axisOrtohonal.Direction.DotProduct(aSphereLine.Direction)); 
 
             var aMeridianLine = surfaceCalm.IntersectionWith(b.Meridian); /// new Plane(OzEnd, Q3, O3);
             var aTraverseLine = surfaceCalm.IntersectionWith(b.TraverseCalm);
@@ -135,7 +135,7 @@ namespace Logy.Maps.Geometry
             aTraverse = Math.Abs(aSphere * aSphereLine.Direction.DotProduct(aTraverseLine.Direction));
 
             var planeOZ = new Plane(Basin3.Oz);
-            var planeAxis = new Plane(CurrentDatum.AxisOfRotation);
+            var planeAxis = new Plane(CurrentDatum.Axis);
 
             // directed to equator of Oz if Math.Abs used
             double aMeridian;
@@ -149,11 +149,11 @@ namespace Logy.Maps.Geometry
                 aMeridian = Math.Abs(aSphere * dotProduct);
             }
 
-            // if (AxisOfRotation != Basin.Oz)
+            // if (Axis != Basin.Oz)
             var spin = new Plane(Basin3.OzEnd, b3unit.ToPoint3D(), axisEnd).Normal.DotProduct(b3unit);
 
-            // "north" hemisphere of AxisOfRotation
-            if (b3unit.DotProduct(CurrentDatum.AxisOfRotation) > 0) 
+            // "north" hemisphere of Axis
+            if (b3unit.DotProduct(CurrentDatum.Axis) > 0) 
             {
                 if (spin > 0)
                 {
@@ -168,14 +168,14 @@ namespace Logy.Maps.Geometry
                 }
             }
 
-            // aMeridian<0 if Q3 between planes or inside of cones (bug when angle is near 90) of OZ and AxisOfRotation
+            // aMeridian<0 if Q3 between planes or inside of cones (bug when angle is near 90) of OZ and Axis
             if (planeOZ.SignedDistanceTo(b.Q3) * planeAxis.SignedDistanceTo(b.Q3) < 0)
             {
                 aMeridian = -aMeridian;
             }
             else
             {
-                var coneAxis = new UnitVector3D((Basin3.Oz + CurrentDatum.AxisOfRotation).ToVector());
+                var coneAxis = new UnitVector3D((Basin3.Oz + CurrentDatum.Axis).ToVector());
                 if (new UnitVector3D(b.Q3.ToVector()).DotProduct(coneAxis) > coneAxis.DotProduct(Basin3.Oz))
                 {
                     // inside cone

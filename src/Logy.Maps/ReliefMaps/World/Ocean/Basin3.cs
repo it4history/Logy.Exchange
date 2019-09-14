@@ -83,19 +83,20 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
         }
 
         /// <summary>
-        /// may depend on AxisOfRotation
         /// ignores internal waters, marks only Mean sea level
         /// </summary>
         public Point3D Qgeiod
         {
             get
             {
-                var paleoRadius = RadiusSpheric ? RadiusOfEllipse : Ellipsoid.RadiusPaleo(this);
-                var x = paleoRadius * BetaSin;
+                // if depends on Ellipsoid.CurrentDatum.Gravity.Axis
+                // then: RadiusSpheric? RadiusOfEllipse : Ellipsoid.RadiusPaleo(this);
+                var radius = RadiusOfEllipse;
+                var x = radius * BetaSin;
                 return new Point3D(
                     LambdaMinusPi2Sin * x,
                     LambdaSin * x,
-                    paleoRadius * BetaCos);
+                    radius * BetaCos);
             }
         }
 
@@ -114,10 +115,10 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
                     // Matrixes.ToCartesian() analog in radians
                     normal = normal.Rotate(
                         new UnitVector3D(0, 1, 0),
-                        new Angle((Math.Sign(Vartheta) * (Delta_g_meridian + Delta_s_meridian)) + Phi, AngleUnit.Radians));
+                        new Angle((Math.Sign(Vartheta) * Delta_g_meridian) + Phi, AngleUnit.Radians));
                     _normal = normal.Rotate(
                         new UnitVector3D(0, 0, 1),
-                        new Angle(-(Delta_g_traverse + Delta_s_traverse) - Lambda.Value, AngleUnit.Radians));
+                        new Angle(-Delta_g_traverse - Lambda.Value, AngleUnit.Radians));
                 }
                 return _normal.Value;
             }
@@ -224,16 +225,7 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
             }
         }
 
-        /// <summary>
-        /// set _normal = null;
-        /// </summary>
-        public double Delta_s_meridian { get; set; }
-
-        /// <summary>
-        /// set _normal = null;
-        /// </summary>
-        public double Delta_s_traverse { get; set; }
-
+        #region a geoid
         public Polygon<Basin3> Polygon
         {
             get
@@ -269,6 +261,7 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
         public Plane GeoidSurface { get; set; }
 
         public double RadiusGeoid { get; set; }
+        #endregion
 
         #region reserved
         /// <summary>
@@ -356,25 +349,6 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
                         return 0;
                     return S_q.IntersectionWith(MetricRays[to]).DistanceTo(O3);
             }
-        }
-
-        /// <summary>
-        /// MetricRays are required
-        /// </summary>
-        public void CorrectionSurface()
-        {
-            var points = (from edge in MetricRays select edge.Direction.ToPoint3D()).ToArray();
-
-            var correctionVector1 = new Plane(points[0], points[2], points[1]).Normal;
-            var correctionVector2 = new Plane(points[1], points[2], points[3]).Normal;
-            /// var correctionVector = (correctionVector1 + correctionVector2) * Matrix;
-            var correctionVector = new UnitVector3D((correctionVector1 + correctionVector2).ToVector()) * Matrix;
-            var k = 20;
-
-            Altitude =
-                Delta_s_meridian = -(Vartheta < 0 ? 1 : -1) * correctionVector[2] / k;
-            Delta_s_traverse = -correctionVector[1] / k;
-            Normal = null;
         }
 
         public bool FillNewGeoid<T>(WaterMoving<T> data) where T : Basin3

@@ -1,11 +1,13 @@
 ﻿using System;
 using Logy.MwAgent.Sphere;
+using MathNet.Spatial.Euclidean;
 
 namespace Logy.Maps.Geometry
 {
     public class Ellipsoid
     {
         #region https://en.wikipedia.org/wiki/Geodetic_Reference_System_1980
+
         /// <summary>
         /// Tyapkin - 6378160 (IAG-67)
         /// </summary>
@@ -23,12 +25,16 @@ namespace Logy.Maps.Geometry
 
         // Period of rotation(sidereal day) in seconds
         public const double SunDayMeanInSeconds = 86200.002;
+
         #endregion
 
         public static readonly double Ratio = BigRadius / LessRadius;
 
         protected static readonly double E2 = 1 - ((LessRadius * LessRadius) / (BigRadius * BigRadius));
 
+        /// <summary>
+        /// todo move to WaterMoving<T>
+        /// </summary>
         public static Datum CurrentDatum { get; set; } = Datum.Normal;
 
         /// <summary>
@@ -41,10 +47,14 @@ namespace Logy.Maps.Geometry
             var sin2 = varphiSin * varphiSin;
             return BigRadius * Math.Sqrt((1 - (E2 * (2 - E2) * sin2)) / (1 - (E2 * sin2)));
         }
+        public static double VarphiPaleo(Coor coor, UnitVector3D? axis = null)
+        {
+            var theta = (axis ?? CurrentDatum.Axis).AngleTo(Utils3D.Cartesian(coor)).Radians;
+            return (Math.PI / 2) - theta;
+        }
         public static double RadiusPaleo(Coor coor)
         {
-            var theta = CurrentDatum.AxisOfRotation.AngleTo(Utils3D.Cartesian(coor)).Radians;
-            return Radius((Math.PI / 2) - theta);
+            return Radius(VarphiPaleo(coor));
         }
 
         /// <summary>

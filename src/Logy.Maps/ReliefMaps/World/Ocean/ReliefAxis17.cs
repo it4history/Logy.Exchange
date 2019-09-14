@@ -1,5 +1,4 @@
-﻿#if DEBUG
-using Logy.Maps.Exchange;
+﻿using Logy.Maps.Exchange;
 using Logy.Maps.Metrics;
 using Logy.Maps.ReliefMaps.Map2D;
 using Logy.Maps.ReliefMaps.Water;
@@ -25,7 +24,7 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
         [Test]
         public void AxisChange_Slow()
         {
-            var fluidity = WaterModel.FluidityStable; /* ! */
+            var fluidity = WaterModel.FluidityStable;
             var metricType = MetricType.Middle;
             Subdir = fluidity == WaterModel.FluidityStable
                 ? null
@@ -80,4 +79,3 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
         }
     }
 }
-#endif

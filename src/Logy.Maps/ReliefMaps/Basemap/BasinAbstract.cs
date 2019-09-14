@@ -180,23 +180,26 @@ namespace Logy.Maps.ReliefMaps.Basemap
             BetaSin = Math.Sin(Beta.Value);
             BetaCos = Math.Cos(Beta.Value);
 
-            /*
+            /* old
             var thetaTan = Ellipsoid.CalcThetaTan(Beta.Value);
             var varphi = Ellipsoid.CalcVarPhi(thetaTan);
             Theta = Math.PI / 2 - varphi; // faster than Atan(thetaTan) and Atan(thetaTan)<0 when thetaTan>Pi/2
             */
 
-            // new
             Theta = Beta.Value;
             var thetaTan = Math.Tan(Theta);
-            var varphi = (Math.PI / 2) - Theta;
-            /// end of new
 
-            InitROfEllipse(
-                man,
-                Ellipsoid.CurrentDatum.AxisOfRotation == Basin3.Oz ? Ellipsoid.Radius(varphi) : Ellipsoid.RadiusPaleo(this));
             Vartheta = Ellipsoid.CalcVarTheta(thetaTan);
+            Delta_g_meridian = GoodDeflectionAngle;
 
+            var varphi = (Math.PI / 2) - Theta;
+            InitROfEllipse(man, Ellipsoid.Radius(varphi));
+
+            CalcGpure(varphi);
+        }
+
+        public void CalcGpure(double varphi)
+        {
             // vertical to ellipsoid surface
             var g = EllipsoidAcceleration.GravitationalSomigliana(varphi);
             /// return g * 100;
@@ -223,16 +226,6 @@ namespace Logy.Maps.ReliefMaps.Basemap
             /// return aV * 100;*/
             /// return aH * 100;
             GHpure = gHor - aMeridian;
-
-            Delta_g_meridian = GoodDeflectionAngle;
-        }
-
-        /// <summary>
-        /// maybe rudiment
-        /// </summary>
-        public virtual double Intersect(BasinAbstract otherBasin)
-        {
-            return 0;
         }
 
         /// <returns>aTraverse</returns>
@@ -261,6 +254,14 @@ namespace Logy.Maps.ReliefMaps.Basemap
             // range -0.1..0.1m
             // return (basin.Delta_gq - newDelta_g) * basin.r;
             return aTraverse;
+        }
+
+        /// <summary>
+        /// maybe rudiment
+        /// </summary>
+        public virtual double Intersect(BasinAbstract otherBasin)
+        {
+            return 0;
         }
     }
 }

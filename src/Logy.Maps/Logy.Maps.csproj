@@ -79,6 +79,8 @@
     <Compile Include="Exchange\ShiftAxisGeneric.cs" />
     <Compile Include="Exchange\Tests\BundleTests.cs" />
     <Compile Include="Exchange\ShiftAxis.cs" />
+    <Compile Include="Geometry\Gravity.cs" />
+    <Compile Include="Geometry\Pole.cs" />
     <Compile Include="Geometry\Tests\Utils3DTests.cs" />
     <Compile Include="Geometry\Utils3D.cs" />
     <Compile Include="Geometry\Datum.cs" />
