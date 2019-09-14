@@ -34,7 +34,7 @@ namespace Logy.Maps.ReliefMaps.Geoid
         }
 
         /// <summary>
-        /// http://hist.tk/ory/file:ReliefAxis17_SlowChange_2761_Currents.png
+        /// http://hist.tk/ory/file:ReliefAxis17_SlowChange_2761_Hoq.png
         /// </summary>
         [Test]
         public void RelativePaleogeoid()
@@ -51,26 +51,27 @@ namespace Logy.Maps.ReliefMaps.Geoid
             var data = bundle.Algorithm.DataAbstract;
 
             Geoid.Obtain(data);
-            _data = new ComplexData(this, data.PixMan.Pixels);
+            _data = new ComplexData(this, data);
             Draw();
         }
 
         /// <summary>
-        /// http://hist.tk/ory/Геометрическое_искажение
+        /// http://hist.tk/ory/file:Geoid17Map_Eddies.gif
         /// </summary>
         [Test]
-        public void Eddies()
+        public void Eddies_MeanEdge()
         {
-            Basin3.MetricType = MetricType.MeanEdge;
-            var reliefAxis17 = new ReliefAxis17(7)
+            Eddies(new ReliefAxis17(7)
             {
-                Subdir = 
-                 "fluidity0.9 from2761"
-                //    $"fluidity0.7 from2761Middle"
-            };
+                Subdir = "MeanEdge/fluidity0.7 from2761Middle"
+            });
+        }
+
+        public void Eddies(ReliefAxis17 map)
+        {
             var rectangle = new Rectangle<Basin3>(-98, 57, -82, 67);
             var bundle = Bundle<Basin3>.Deserialize(
-                File.ReadAllText(reliefAxis17.StatsFileName()), 
+                File.ReadAllText(map.StatsFileName(3789)), 
                 false, 
                 false,
                 d =>
@@ -80,7 +81,7 @@ namespace Logy.Maps.ReliefMaps.Geoid
             var data = bundle.Algorithm.DataAbstract;
             data.DoFrame();
 
-            _data = new ComplexData(this, data.PixMan.Pixels) { Rectangle = rectangle };
+            _data = new ComplexData(this, data) { Rectangle = rectangle };
             _data.CalcArrows();
             Draw();
         }

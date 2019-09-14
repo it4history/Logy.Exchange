@@ -14,8 +14,9 @@ namespace Logy.Maps.ReliefMaps.Water
 
         public WaterModel(HealpixManager man)
         {
-            Threshhold = (ThreshholdReliability + 7.4) * Math.Pow(2, 4 - man.K);
-            ThreshholdNotReliable = 7.4 * Math.Pow(2, 4 - man.K);
+            var pow = Math.Pow(2, 4 - man.K);
+            Threshhold = (ThreshholdReliability + 7.4) * pow;
+            ThreshholdNotReliable = 7.4 * pow;
         }
 
         // when Fluidity greater then water is more liquid

@@ -25,7 +25,7 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
         [Test]
         public void AxisChange_Slow()
         {
-            var fluidity = .7; /* ! */
+            var fluidity = WaterModel.FluidityStable; /* ! */
             var metricType = MetricType.Middle;
             Subdir = fluidity == WaterModel.FluidityStable
                 ? null
