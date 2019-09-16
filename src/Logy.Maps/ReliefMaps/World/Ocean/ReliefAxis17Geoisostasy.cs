@@ -1,36 +1,30 @@
-﻿using Logy.Maps.Exchange;
-using Logy.Maps.Metrics;
+using Logy.Maps.Exchange;
 using Logy.Maps.ReliefMaps.Water;
 using NUnit.Framework;
 
 namespace Logy.Maps.ReliefMaps.World.Ocean
 {
-    /// <summary>
-    /// http://hist.tk/ory/Карта_Земли_после_сдвига_полюса_на_17_градусов
-    /// </summary>
-    public class ReliefAxis17 : ReliefMap
+    public class ReliefAxis17Geoisostasy : ReliefMap
     {
-        public ReliefAxis17(int k = 7) : base(k)
+        public ReliefAxis17Geoisostasy() : base(5)
         {
         }
 
         [Test]
-        public void AxisChange_Slow()
+        public void AxisChange()
         {
             var fluidity = WaterModel.FluidityStable;
-            var metricType = MetricType.Middle;
             Subdir = fluidity == WaterModel.FluidityStable
                 ? null
-                : $"fluidity{fluidity} from2761{metricType}";
+                : $"fluidity{fluidity} from";
 
             var data = new OceanData(HealpixManager)
             {
                 WithRelief = true,
-                MetricType = metricType,
             };
-            SetData(new ShiftAxis(data) { Slow = true }, true);
+            SetData(new ShiftAxis(data) { Slow = false }, true);
 
-            Data.Water.Fluidity = fluidity; 
+            Data.Water.Fluidity = fluidity;
 
             ShiftAxis(
                 4000,
@@ -51,22 +45,6 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
                     }
                     return 15;
                 });
-        }
-
-        /// <summary>
-        /// framesCountBy2 == 100 is not enough for all integration
-        /// </summary>
-        [Test]
-        public void AxisChange_Sharp()
-        {
-            Data = new OceanData(HealpixManager
-                /*, -6000d, null
-                , -1000d, 5000d, true*/)
-            {
-                WithRelief = true,
-            };
-
-            ShiftAxis();
         }
     }
 }

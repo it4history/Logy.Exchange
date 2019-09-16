@@ -3,6 +3,7 @@ using System.Collections;
 using System.Drawing;
 using System.Runtime.Serialization;
 using System.Threading.Tasks;
+using Logy.Maps.Geometry;
 using Logy.Maps.Metrics;
 using Logy.Maps.Projections.Healpix;
 using Logy.Maps.ReliefMaps.Basemap;
@@ -40,8 +41,6 @@ namespace Logy.Maps.ReliefMaps.Water
         [IgnoreDataMember]
         public WaterModel Water { get; set; }
 
-        public MetricType MetricType { get; set; } = MetricType.Middle;
-
         [IgnoreDataMember]
         public bool WithFormattor { get; set; }
 
@@ -55,7 +54,8 @@ namespace Logy.Maps.ReliefMaps.Water
         /// <summary>
         /// maybe value decreases but not increases
         /// </summary>
-        public bool IntegrationEndless { get; set; }
+        // [IgnoreDataMember] was commented!
+        public bool IntegrationEndless { get; set; } = true;
 
         [IgnoreDataMember]
         public bool IsRunning { get; set; }
@@ -63,15 +63,18 @@ namespace Logy.Maps.ReliefMaps.Water
         [IgnoreDataMember]
         public Task RunningTask { get; set; }
 
+        public MetricType MetricType { get; set; } = MetricType.Middle;
+
         public int Frame { get; set; } = -1;
         public int Time { get; set; }
         public int TimeStep { get; set; } = 1;
         public double? Max { get; set; }
         public double? Min { get; set; }
 
-        public override void Init(bool full = true)
+        /// <param name="reliefFromDb">if true then Depth, Hoq are got from db, it is slow</param>
+        public virtual void Init(bool reliefFromDb = true, Datum datum = null)
         {
-            base.Init(full);
+            base.Init();
             Water = new WaterModel(HealpixManager);
         }
 
@@ -220,9 +223,9 @@ namespace Logy.Maps.ReliefMaps.Water
         public void CheckOcean()
         {
             _oceanVolume = GetOceanVolume();
-            if (K > 3)
+            if (K > 1 /* for MetricType.Middle and > 3 for others */)
             {
-                Assert.GreaterOrEqual(_oceanVolume, 1330);
+                Assert.GreaterOrEqual(_oceanVolume, 1329);
                 Assert.LessOrEqual(_oceanVolume, 1340);
             }
         }

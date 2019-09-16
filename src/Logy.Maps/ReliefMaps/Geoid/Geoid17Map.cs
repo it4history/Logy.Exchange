@@ -1,7 +1,6 @@
 ﻿using System.Drawing.Imaging;
 using System.IO;
 using Logy.Maps.Exchange;
-using Logy.Maps.Metrics;
 using Logy.Maps.ReliefMaps.Map2D;
 using Logy.Maps.ReliefMaps.World.Ocean;
 using NUnit.Framework;
@@ -28,7 +27,7 @@ namespace Logy.Maps.ReliefMaps.Geoid
         {
             var reliefAxis17 = new ReliefAxis17();
             var bundle = Bundle<Basin3>.Deserialize(
-                File.ReadAllText(reliefAxis17.StatsFileName()), false, false);
+                File.ReadAllText(reliefAxis17.StatsFileName()));
 
             Geoid.Obtain(bundle.Algorithm.DataAbstract);
         }
@@ -41,7 +40,7 @@ namespace Logy.Maps.ReliefMaps.Geoid
         {
             var reliefAxis17 = new ReliefAxis17();
             var bundle = Bundle<Basin3>.Deserialize(
-                File.ReadAllText(reliefAxis17.StatsFileName()), false, false);
+                File.ReadAllText(reliefAxis17.StatsFileName()));
             /* var data = new GeoidData(HealpixManager)
             {
                 WithRelief = true,
@@ -73,7 +72,6 @@ namespace Logy.Maps.ReliefMaps.Geoid
             var bundle = Bundle<Basin3>.Deserialize(
                 File.ReadAllText(map.StatsFileName(3789)), 
                 false, 
-                false,
                 d =>
                 {
                     // d.InitialBasins = rectangle.Subset(reliefAxis17.HealpixManager);

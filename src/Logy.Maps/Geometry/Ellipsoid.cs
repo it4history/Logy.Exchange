@@ -33,11 +33,6 @@ namespace Logy.Maps.Geometry
         protected static readonly double E2 = 1 - ((LessRadius * LessRadius) / (BigRadius * BigRadius));
 
         /// <summary>
-        /// todo move to WaterMoving<T>
-        /// </summary>
-        public static Datum CurrentDatum { get; set; } = Datum.Normal;
-
-        /// <summary>
         /// Hirt_Rexer2015_Earth2014.pdf
         /// </summary>
         /// <param name="varphi">http://hist.tk/ory/Широта#геоцентрическая</param>
@@ -47,14 +42,14 @@ namespace Logy.Maps.Geometry
             var sin2 = varphiSin * varphiSin;
             return BigRadius * Math.Sqrt((1 - (E2 * (2 - E2) * sin2)) / (1 - (E2 * sin2)));
         }
-        public static double VarphiPaleo(Coor coor, UnitVector3D? axis = null)
+        public static double VarphiPaleo(Coor coor, UnitVector3D axis)
         {
-            var theta = (axis ?? CurrentDatum.Axis).AngleTo(Utils3D.Cartesian(coor)).Radians;
+            var theta = axis.AngleTo(Utils3D.Cartesian(coor)).Radians;
             return (Math.PI / 2) - theta;
         }
-        public static double RadiusPaleo(Coor coor)
+        public static double RadiusPaleo(Coor coor, Datum datum)
         {
-            return Radius(VarphiPaleo(coor));
+            return Radius(VarphiPaleo(coor, datum.Axis));
         }
 
         /// <summary>

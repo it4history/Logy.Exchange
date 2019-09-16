@@ -151,7 +151,7 @@ namespace Logy.Maps.Coloring
 
         public void SetPixelOnBmp(double height, Bitmap bmp, Point2 point, int scale)
         {
-            SetPixelOnBmp(height, bmp, point, scale);
+            SetPixelOnBmp(height, bmp, (int)point.X, (int)point.Y, scale);
         }
 
         public void SetPixelOnBmp(double? height, Bitmap bmp, int x, int y, int scale)

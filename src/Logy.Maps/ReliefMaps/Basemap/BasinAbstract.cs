@@ -46,7 +46,6 @@ namespace Logy.Maps.ReliefMaps.Basemap
         /// from 0 or poles and equator to 0.0017 on +- 45 parallels
         /// </summary>
         public double GoodDeflectionAngle => Vartheta < 0 ? Math.PI - Delta_gq : Delta_gq;
-
         #endregion
 
         /// <summary>
@@ -78,6 +77,7 @@ namespace Logy.Maps.ReliefMaps.Basemap
 
         /// <summary>
         /// angle, directed to equator of Oz
+        /// it approximates geoid surface to sphere with RadiusOfEllipse radius 
         /// </summary>
         public virtual double Delta_g_meridian
         {
@@ -186,25 +186,26 @@ namespace Logy.Maps.ReliefMaps.Basemap
             Theta = Math.PI / 2 - varphi; // faster than Atan(thetaTan) and Atan(thetaTan)<0 when thetaTan>Pi/2
             */
 
+            // the same geoid-ellipsoid is approximated by spheres with different radiuses
             Theta = Beta.Value;
-            var thetaTan = Math.Tan(Theta);
-
-            Vartheta = Ellipsoid.CalcVarTheta(thetaTan);
-            Delta_g_meridian = GoodDeflectionAngle;
 
             var varphi = (Math.PI / 2) - Theta;
             InitROfEllipse(man, Ellipsoid.Radius(varphi));
 
-            CalcGpure(varphi);
+            var thetaTan = Math.Tan(Theta);
+            Vartheta = Ellipsoid.CalcVarTheta(thetaTan);
+            CalcGpure(varphi, Datum.Normal); /// needs Vartheta
+
+            Delta_g_meridian = GoodDeflectionAngle;
         }
 
-        public void CalcGpure(double varphi)
+        public void CalcGpure(double varphi, Datum datum)
         {
             // vertical to ellipsoid surface
             var g = EllipsoidAcceleration.GravitationalSomigliana(varphi);
             /// return g * 100;
             double a, aTraverse, aVertical;
-            var aMeridian = EllipsoidAcceleration.Centrifugal(this, out a, out aTraverse, out aVertical);
+            var aMeridian = datum.Centrifugal(this, out a, out aTraverse, out aVertical);
             /// vertical to ellipsoid surface
             var aVert = Math.Abs(a * Math.Sin(Vartheta));
             /// horizontal to ellipsoid surface
@@ -229,13 +230,13 @@ namespace Logy.Maps.ReliefMaps.Basemap
         }
 
         /// <returns>aTraverse</returns>
-        public virtual double RecalculateDelta_g(bool revert = true)
+        public virtual double RecalculateDelta_g(Datum datum, bool revert = true)
         {
             // return basin.gHpure * 1000;
             double a;
             double aTraverse;
             double aVertical;
-            var aMeridian = EllipsoidAcceleration.Centrifugal(this, out a, out aTraverse, out aVertical);
+            var aMeridian = datum.Centrifugal(this, out a, out aTraverse, out aVertical);
 
             // range: 0..0.0034
             var newDeflectionAngleTan = (GHpure + aMeridian) / (GVpure - aVertical);

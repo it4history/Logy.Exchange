@@ -71,6 +71,9 @@ namespace Logy.Maps.ReliefMaps.Basemap
         /// </summary>
         public T[] InitialBasins { private get; set; }
 
+        [IgnoreDataMember]
+        public Action<HealCoor, Bitmap, Point2, int> AdditionalDraw;
+
         /// <summary>
         /// value that treated as splitter for colors
         /// if null then is (max-min)/2
@@ -95,7 +98,7 @@ namespace Logy.Maps.ReliefMaps.Basemap
         /// <summary>
         /// moved out constructor to enable deserialization
         /// </summary>
-        public virtual void Init(bool full = true)
+        protected void Init()
         {
             PixMan = new PixelsManager<T>(HealpixManager, InitialBasins);
             Relief = new Earth2014Manager(ReliefType, Accuracy, IsReliefShape, _readAllAtStart);
@@ -194,21 +197,7 @@ namespace Logy.Maps.ReliefMaps.Basemap
                     previousPoint = point;
                     previousCoor = healCoor;
 
-                    if (Ellipsoid.CurrentDatum.PoleBasin != null)
-                    {
-                        var r = K == 7 ? 0.01 : (K == 6 ? 0.03 : 0.2);
-                        var width = K > 5 ? 0.03 : 0.06;
-                        var dist = Ellipsoid.CurrentDatum.PoleBasin.DistanceTo(healCoor);
-                        if (Colors != null
-                            && dist >= r - width && dist <= r + width)
-                        {
-                            ColorsManager.SetPixelOnBmp(
-                                Color.FromArgb(255, 174, 201),
-                                bmp,
-                                point,
-                                scale);
-                        }
-                    }
+                    AdditionalDraw?.Invoke(healCoor, bmp, point, scale);
                 }
             }
         }

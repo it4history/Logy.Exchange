@@ -48,9 +48,9 @@ namespace Logy.Maps.Metrics
             KQQaxisTanCotan_traverse = CalcKQQaxisTanCotan_traverse(GetKQQaxis_traverse());
         }
 
-        public override double RecalculateDelta_g(bool revert = true)
+        public override double RecalculateDelta_g(Datum datum = null, bool revert = true)
         {
-            var aTraverse = base.RecalculateDelta_g(false);
+            var aTraverse = base.RecalculateDelta_g(datum, false);
 
             var aKQQaxis_traverse = GetKQQaxis_traverse();
             KQQaxisTanCotan_traverse = CalcKQQaxisTanCotan_traverse(aKQQaxis_traverse);

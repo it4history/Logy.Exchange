@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Runtime.Serialization;
 using Logy.Maps.Exchange.Earth2014;
+using Logy.Maps.Geometry;
 using Logy.Maps.Metrics;
 using Logy.Maps.Projections.Healpix;
 using Logy.Maps.ReliefMaps.Water;
@@ -31,17 +32,16 @@ namespace Logy.Maps.ReliefMaps.Basemap
         [IgnoreDataMember]
         public Func<T, double> Visual { get; set; } = basin => basin.Hoq; //// basin.Altitude * 1000;
 
-        /// <param name="full">if false then Depth, Hoq are not set</param>
-        public override void Init(bool full = true)
+        /// <param name="reliefFromDb">if true then Depth, Hoq are got from db, it is slow</param>
+        public override void Init(bool reliefFromDb = true, Datum datum = null)
         {
-            base.Init(full);
-
+            base.Init(reliefFromDb, datum);
             if (ColorsMiddle == null)
                 ColorsMiddle = 0;
 
             foreach (var basin in PixMan.Pixels)
             {
-                if (full && WithRelief)
+                if (reliefFromDb && WithRelief)
                 {
                     int waterHeight;
                     var hOQ = GetHeights(basin, (int)basin.RadiusOfEllipse, out waterHeight);
@@ -55,17 +55,7 @@ namespace Logy.Maps.ReliefMaps.Basemap
                         basin.Depth = -hOQ;
                     }
                 }
-                if (Spheric)
-                {
-                    basin.Delta_g_meridian = basin.Delta_g_traverse = 0;
-                    if (full && WithRelief)
-                    {
-                        var diff = Earth2014Manager.Radius2Add - basin.RadiusOfEllipse;
-                        basin.Depth += diff;
-                        basin.Hoq -= diff;
-                    }
-                    basin.InitROfEllipse(HealpixManager);
-                }
+
                 foreach (Direction to in Enum.GetValues(typeof(Direction)))
                 {
                     var toBasin = PixMan.Pixels[HealpixManager.Neighbors.Get(to, basin)];
@@ -73,15 +63,32 @@ namespace Logy.Maps.ReliefMaps.Basemap
 
                     basin.Opposites[(int)to] = basin.GetFromAndFillType(to, toBasin, HealpixManager);
                 }
+                if (Spheric)
+                {
+                    /* !uncomment if needed!
+                    if (reliefFromDb && WithRelief)
+                    {
+                        var diff = Earth2014Manager.Radius2Add - basin.RadiusOfEllipse;
+                        basin.Depth += diff;
+                        basin.Hoq -= diff;
+                    }//*/
+                    basin.InitROfEllipse(HealpixManager);
+                    basin.Delta_g_meridian = basin.Delta_g_traverse = 0;
+                }
             }
 
-            // foreach because of calculated Delta_g_meridian... of neighbors 
+            if (reliefFromDb && WithRelief)
+            {
+                CheckOcean();
+            }
+
+            // one more foreach because of calculated Delta_g_meridian... of neighbors 
             foreach (var basin in PixMan.Pixels)
             {
                 InitMetrics(basin);
             }
 
-            if (full && WithFormattor)
+            if (WithFormattor)
             {
                 // HtoBase was calculated without formatting
                 var sphericData = new BasinDataAbstract<T>(HealpixManager) { Spheric = true };
@@ -92,14 +99,10 @@ namespace Logy.Maps.ReliefMaps.Basemap
                 {
                     for (int to = 0; to < 4; to++)
                     {
+                        // needs Koefs set in InitMetrics
                         basin.Koefs[to] *= equations.GetResult(basin, to);
                     }
                 }
-            }
-
-            if (full && WithRelief)
-            {
-                CheckOcean();
             }
         }
 
@@ -132,12 +135,20 @@ namespace Logy.Maps.ReliefMaps.Basemap
                 }
             }
 
-            /// CorrectionSurface();
-
             for (int to = 0; to < 4; to++)
             {
                 basin.Koefs[to] = WaterModel.Koef;
-                basin.HtoBase[to] = basin.Metric(to, MetricType, true);
+                switch (MetricType)
+                {
+                    case MetricType.RadiusIntersection:
+                    case MetricType.Edge:
+                    case MetricType.Middle:
+                        break;
+                    default:
+                        // may be problem if ShiftAxisGeneric.SetDatum will be called after this 
+                        basin.HtoBase[to] = basin.Metric(to, MetricType, true);
+                        break;
+                }
             }
         }
 

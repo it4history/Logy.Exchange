@@ -1,4 +1,3 @@
-#if DEBUG
 using Logy.Maps.Exchange;
 using NUnit.Framework;
 
@@ -6,19 +5,19 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
 {
     public class ReliefMap : OceanMap
     {
+        public ReliefMap() : this(5)
+        {
+        }
+
         public ReliefMap(int k) : base(k)
         {
-            LegendNeeded = false;
         }
 
         [Test]
         public void Basin()
         {
-            Data = new OceanData(
-                HealpixManager
-                /*, -7000d*/)
+            Data = new OceanData(HealpixManager /*, -7000d*/)
             {
-                IntegrationEndless = true,
                 /// Visual = basin => basin.WaterHeight
             };
 
@@ -30,7 +29,7 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
             Data.DoFrames(
                 delegate(int frame)
                 {
-                    Data.Draw(Bmp, 0, null, YResolution, Scale);
+                    Draw();
                     SaveBitmap(frame);
                     return 1;
                 },
@@ -90,4 +89,3 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
         }
     }
 }
-#endif

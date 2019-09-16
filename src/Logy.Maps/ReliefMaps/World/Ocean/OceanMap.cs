@@ -10,25 +10,26 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
 {
     public class OceanMap : RotationStopMap<Basin3>
     {
-        public OceanMap() : this(6)
+        public OceanMap() : this(5)
         {
         }
         public OceanMap(int k) : base(k)
         {
-            // YResolution = 4;
         }
 
         [Test]
         public void Water_HighBasin()
         {
-            Data = new OceanData(HealpixManager, -20d /*, 200d*/)
-                { Spheric = false };
+            var algorithm = new ShiftAxis(new OceanData(HealpixManager, -20d /*, 200d*/));
+            SetData(algorithm);
 
             var h = 500d;
             var p = HealpixManager.GetP(HealpixManager.Nside + 5, HealpixManager.Nside * 2);
             var basin = Data.PixMan.Pixels[p];
+            algorithm.SetDatum(new Datum { PoleBasin = basin });
+
             basin.Hoq = h;
-            Ellipsoid.CurrentDatum.PoleBasin = basin;
+
             Data.PixMan.Pixels[HealpixManager
                 .GetP(HealpixManager.Nside, (int)(HealpixManager.Nside * 2.5))].Hoq = h;
 
@@ -48,12 +49,14 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
         [Test]
         public void Water_Gradient()
         {
-            Data = new OceanData(HealpixManager, -200d /*, 2000d*/);
+            var algorithm = new ShiftAxis(new OceanData(HealpixManager, -200d /*, 2000d*/));
+            SetData(algorithm);
 
             var p = HealpixManager.GetP(HealpixManager.Nside - 1, HealpixManager.Nside * 1);
             var basin = Data.PixMan.Pixels[p];
+            algorithm.SetDatum(new Datum { PoleBasin = basin });
+
             basin.Delta_g_meridian = -.2;
-            Ellipsoid.CurrentDatum.PoleBasin = basin;
 
             p = HealpixManager.GetP(HealpixManager.Nside * 2, HealpixManager.Nside * 2);
             Data.PixMan.Pixels[p].Delta_g_meridian = .2;

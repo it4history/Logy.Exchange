@@ -33,11 +33,6 @@ namespace Logy.Maps.Exchange
         [IgnoreDataMember]
         public WaterMoving<T> DataAbstract { get; protected set; }
 
-        public virtual void Init()
-        {
-            DataAbstract.Init();
-        }
-
         public virtual void OnDeserialize()
         {
         }

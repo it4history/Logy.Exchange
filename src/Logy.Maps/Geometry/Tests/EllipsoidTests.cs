@@ -8,12 +8,6 @@ namespace Logy.Maps.Geometry.Tests
     [TestFixture]
     public class EllipsoidTests
     {
-        [TearDown]
-        public void TearDown()
-        {
-            Ellipsoid.CurrentDatum = Datum.Normal;
-        }
-
         [Test]
         public void Radius()
         {
@@ -24,9 +18,8 @@ namespace Logy.Maps.Geometry.Tests
         [Test]
         public void RadiusPaleo()
         {
-            Assert.AreEqual(Ellipsoid.LessRadius, Ellipsoid.RadiusPaleo(new Coor()));
-            Ellipsoid.CurrentDatum = new Datum { Y = 0 };
-            Assert.AreEqual(Ellipsoid.BigRadius, Ellipsoid.RadiusPaleo(new Coor()));
+            Assert.AreEqual(Ellipsoid.LessRadius, Ellipsoid.RadiusPaleo(new Coor(), Datum.Normal));
+            Assert.AreEqual(Ellipsoid.BigRadius, Ellipsoid.RadiusPaleo(new Coor(), new Datum { Y = 0 }));
         }
     }
 }

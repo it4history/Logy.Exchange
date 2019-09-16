@@ -20,6 +20,8 @@ namespace Logy.Maps.Exchange
 
         public bool Slow { get; set; }
 
+        public bool Geoisostasy { get; set; }
+
         public OceanData Data
         {
             get { return (OceanData)DataAbstract; }
@@ -46,7 +48,8 @@ namespace Logy.Maps.Exchange
                             X = DesiredDatum.X, /// * slowFrame / slowFramesCount
                             Y = 90 - ((90 - DesiredDatum.Y) * poleShift / poleShiftsCount)
                         };
-                        SetPole(newPole, frame + 1); /// will be applied on next DoFrame()
+                        newPole.Gravity = new Gravity { X = newPole.X, Y = newPole.Y };
+                        SetDatum(newPole, frame + 1); /// will be applied on next DoFrame()
                         poleShift++;
                     }
                     onFrame?.Invoke(frame);

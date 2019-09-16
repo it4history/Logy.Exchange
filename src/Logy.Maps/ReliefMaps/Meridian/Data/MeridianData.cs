@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Logy.Maps.Geometry;
 using Logy.Maps.Projections.Healpix;
 using Logy.Maps.ReliefMaps.Water;
 
@@ -19,9 +20,9 @@ namespace Logy.Maps.ReliefMaps.Meridian.Data
             Init();
         }
 
-        public override void Init(bool full = true)
+        public override void Init(bool reliefFromDb = true, Datum datum = null)
         {
-            base.Init(full);
+            base.Init(false);
             Water.IsMeridian = true;
         }
 

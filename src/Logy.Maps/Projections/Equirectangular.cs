@@ -6,7 +6,7 @@ namespace Logy.Maps.Projections
 {
     public class Equirectangular
     {
-        private const double BorderWidth = 0; // why was .5 ?
+        private const double BorderWidth = .1; 
 
         private readonly double _resx;
         private readonly double _resy;
@@ -18,7 +18,7 @@ namespace Logy.Maps.Projections
         /// </summary>
         public Equirectangular(HealpixManager man, int yResolution = 2)
         {
-            var collapse1PixelWidth = 4 * man.Nside / ((4 * man.Nside) + 1 /*shrinking on one pixel at width*/ + BorderWidth);
+            var collapse1PixelWidth = 4 * man.Nside / ((4 * man.Nside) + 0 /*shrinking on 0 pixel at width*/ + BorderWidth);
             _resx = man.Nside / 90.0 * collapse1PixelWidth;
             _resy = _resx * yResolution / 2;
         }

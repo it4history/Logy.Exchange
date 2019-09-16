@@ -41,7 +41,7 @@ namespace Logy.Maps.Exchange
         /// </summary>
         public Dictionary<int, T[]> Basins { get; } = new Dictionary<int, T[]>();
 
-        public static Bundle<T> Deserialize(string json, bool ignoreNewBasins = false, bool initFull = true, Action<WaterMoving<T>> dataChange = null)
+        public static Bundle<T> Deserialize(string json, bool ignoreNewBasins = false, Action<WaterMoving<T>> dataChange = null)
         {
             var bundle = JsonConvert.DeserializeObject<Bundle<T>>(json);
             for (var i = 0; i < bundle.Algorithms.Count; i++)
@@ -55,10 +55,7 @@ namespace Logy.Maps.Exchange
             var data = bundle.Algorithm.DataAbstract;
             dataChange?.Invoke(data);
 
-            if (initFull)
-                bundle.Algorithm.Init();
-            else
-                data.Init(false);
+            data.Init(ignoreNewBasins);
 
             for (var p = 0; p < bundle.Basins[data.K].Length; p++)
             {
@@ -96,8 +93,8 @@ namespace Logy.Maps.Exchange
                     }
                 }
             }
-            if (!initFull)
-                data.CheckOcean();
+
+            data.CheckOcean();
 
             if (!ignoreNewBasins)
                 bundle.Basins[data.HealpixManager.K] = data.PixMan.Pixels;

@@ -199,6 +199,8 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
 
         /// <summary>
         /// angle, directed to East
+        /// relative to sphere
+        /// </summary>
         /// </summary>
         public double Delta_g_traverse
         {
@@ -322,9 +324,9 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
             return (int)NeighborManager.GetOpposite(to);
         }
 
-        public override double RecalculateDelta_g(bool revert = true)
+        public override double RecalculateDelta_g(Datum datum = null, bool revert = true)
         {
-            var aTraverse = base.RecalculateDelta_g(false);
+            var aTraverse = base.RecalculateDelta_g(datum, false);
             Delta_g_traverse = Math.Atan(aTraverse / GVpure);
             return 0;
         }
@@ -345,8 +347,6 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
                     return S_q.IntersectionWith(toBasin.RadiusRay).DistanceTo(toBasin.Q3);
                 case MetricType.Edge:
                 case MetricType.Middle:
-                    if (initial)
-                        return 0;
                     return S_q.IntersectionWith(MetricRays[to]).DistanceTo(O3);
             }
         }

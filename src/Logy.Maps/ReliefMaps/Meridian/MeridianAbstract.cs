@@ -51,9 +51,9 @@ namespace Logy.Maps.ReliefMaps.Meridian
             KQQaxisTan = Math.Tan(Vartheta);
         }
 
-        public override double RecalculateDelta_g(bool revert = true)
+        public override double RecalculateDelta_g(Datum datum = null, bool revert = true)
         {
-            var aTraverse = base.RecalculateDelta_g(revert);
+            var aTraverse = base.RecalculateDelta_g(datum, revert);
             /// return basin.Vartheta - Math.Atan(newDeflectionAngleTan);
             var aKQQaxis = Theta - Delta_g_meridian;
             /// return newKQQaxis;
