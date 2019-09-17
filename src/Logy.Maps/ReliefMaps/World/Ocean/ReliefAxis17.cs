@@ -30,27 +30,9 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
             };
             SetData(new ShiftAxis(data) { Slow = true }, true);
 
-            Data.Water.Fluidity = fluidity; 
+            Data.Water.Fluidity = fluidity;
 
-            ShiftAxis(
-                4000,
-                (frame) =>
-                {
-                    switch (K)
-                    {
-                        // to make second shift "Y":86.6 on frame 5 and following on frame 61, 121 etc
-                        case 7: return frame == 4 ? 4 : 60;
-                    }
-                    return 10;
-                },
-                frame =>
-                {
-                    switch (K)
-                    {
-                        case 7: return 15 + (frame / 10);
-                    }
-                    return 15;
-                });
+            ShiftAxisBalanced(4000);
         }
 
         /// <summary>

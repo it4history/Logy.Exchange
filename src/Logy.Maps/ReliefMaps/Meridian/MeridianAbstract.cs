@@ -53,7 +53,7 @@ namespace Logy.Maps.ReliefMaps.Meridian
 
         public override double RecalculateDelta_g(Datum datum = null, bool revert = true)
         {
-            var aTraverse = base.RecalculateDelta_g(datum, revert);
+            var delta_g_traverse = base.RecalculateDelta_g(datum, revert);
             /// return basin.Vartheta - Math.Atan(newDeflectionAngleTan);
             var aKQQaxis = Theta - Delta_g_meridian;
             /// return newKQQaxis;
@@ -66,7 +66,12 @@ namespace Logy.Maps.ReliefMaps.Meridian
             // return (basin.KQQaxisTan - newKQQaxisTan)*10000000;
             KQQaxisTan = newKQQaxisTan;
 
-            return aTraverse;
+            return delta_g_traverse;
+        }
+
+        public static Line2D OQ(Point2D q)
+        {
+            return new Line2D(O, q);
         }
 
         /// <summary>

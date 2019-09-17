@@ -5,7 +5,6 @@ using System.Drawing;
 using System.Runtime.Serialization;
 using Logy.Maps.Coloring;
 using Logy.Maps.Exchange.Earth2014;
-using Logy.Maps.Geometry;
 using Logy.Maps.Projections;
 using Logy.Maps.Projections.Healpix;
 using Logy.Maps.ReliefMaps.Map2D;

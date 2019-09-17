@@ -44,5 +44,12 @@ namespace Logy.Maps.Geometry.Tests
             Assert.AreEqual(normalCalm.Y, normalCalmByMatrix.Y, .00000001);
             Assert.AreEqual(normalCalm.Z, normalCalmByMatrix.Z, .00000001);
         }
+
+        [Test]
+        public void Matrix2d()
+        {
+            var oz = Basin3.Oz;
+            var axis = new UnitVector3D(0, 1, 0);
+        }
     }
 }

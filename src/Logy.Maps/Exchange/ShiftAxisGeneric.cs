@@ -6,6 +6,8 @@ using Logy.Maps.Coloring;
 using Logy.Maps.Geometry;
 using Logy.Maps.ReliefMaps.Basemap;
 using Logy.Maps.ReliefMaps.Water;
+using Logy.Maps.ReliefMaps.World.Ocean;
+using MathNet.Spatial.Euclidean;
 
 namespace Logy.Maps.Exchange
 {
@@ -120,14 +122,25 @@ namespace Logy.Maps.Exchange
                     {
                         if (DataAbstract.SamePolesAndEquatorGravitation)
                             basin.GHpure = 0; /// what about GVpure?
-                        else if (datum.EllipsoidChanged)
+                        else if (!datum.GravityNormal)
                         {
                             var varphi = Ellipsoid.VarphiPaleo(basin, datum.Gravity.Axis);
                             basin.InitROfEllipse(DataAbstract.HealpixManager, Ellipsoid.Radius(varphi));
-                            // todo rotate GHpure
-                            basin.CalcGpure(varphi, datum);
+
+                            var theta = (Math.PI / 2) - varphi;
+                            var vartheta = Ellipsoid.CalcVarTheta(Math.Tan(theta));
+                            var delta_gq = theta - vartheta;
+                            var gh = basin.CalcGpure(varphi, theta, vartheta, BasinAbstract.GoodDeflection(vartheta, delta_gq), datum);
+
+                            // GHpure projections
+                            var oz_sphere = Basin3.Oz.ProjectOn(basin.S_sphere).Direction;
+                            var axis_sphere = datum.Gravity.Axis.ProjectOn(basin.S_sphere).Direction;
+                            var angle = oz_sphere.SignedAngleTo(axis_sphere, basin.S_sphere.Normal);
+                            var gh_sphere = new Vector3D(0, Math.Sign(vartheta) * gh, 0) * Matrix3D.RotationAroundZAxis(angle);
+                            basin.GHpure = Math.Sign(basin.Vartheta) * gh_sphere[1];  
+                            basin.GHpureTraverse = gh_sphere[0]; 
                         }
-                        basin.RecalculateDelta_g(datum);
+                        basin.RecalculateDelta_g(datum, false);
                     }
                 if (frame.HasValue)
                 {

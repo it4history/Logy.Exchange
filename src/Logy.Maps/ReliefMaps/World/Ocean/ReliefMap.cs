@@ -87,5 +87,34 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
                 },
                 framesCount);
         }
+
+        protected void ShiftAxisBalanced(int framesCount)
+        {
+            var algo = Bundle.Algorithm as ShiftAxis;
+            ShiftAxis(
+                framesCount,
+                (frame) =>
+                {
+                    switch (K)
+                    {
+                        // to make secondShift "Y":86.6 on frame 5 (or 9 if algo.Geoisostasy) and following on frame 61, 121 etc
+                        // if algo.Geoisostasy then on frame 5, 31, 91 there will be litosphere gravity change
+                        case 7:
+                        case 6:
+                            var secondShift = 4 * (algo.Geoisostasy ? 2 : 1);
+                            var cycle = 60;
+                            return frame <= secondShift ? secondShift : cycle; // cycle must be > secondShift*2
+                    }
+                    return 10;
+                },
+                frame =>
+                {
+                    switch (K)
+                    {
+                        case 7: return 15 + (frame / 10);
+                    }
+                    return 15;
+                });
+        }
     }
 }

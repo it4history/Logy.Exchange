@@ -1,5 +1,4 @@
-﻿#if DEBUG
-using Logy.Maps.Exchange;
+﻿using Logy.Maps.Exchange;
 using Logy.Maps.Geometry;
 using Logy.Maps.Metrics.Tests;
 using Logy.Maps.Projections.Healpix;
@@ -84,9 +83,10 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
                 HealpixManager
                 /*, -2600d, 2700d*/)
             {
-                /*SamePolesAndEquatorGravitation = true,
-                NoIntegrationFinish = true,
-                Visual = basin => basin.r - Earth2014Manager.Radius2Add //*/
+                //SamePolesAndEquatorGravitation = true,
+                //NoIntegrationFinish = true,
+                Visual = basin => basin.GVpure*1000-9822 
+                //basin.r - Earth2014Manager.Radius2Add
             };
             SetData(new ShiftAxis(data));
             ShiftAxis(); // 45, 90
@@ -166,4 +166,3 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
         }
     }
 }
-#endif

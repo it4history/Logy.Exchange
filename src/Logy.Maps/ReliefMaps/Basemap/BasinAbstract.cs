@@ -3,7 +3,6 @@ using System.Runtime.Serialization;
 using Logy.Maps.Exchange.Earth2014;
 using Logy.Maps.Geometry;
 using Logy.Maps.Projections.Healpix;
-using Logy.Maps.ReliefMaps.World.Ocean;
 using MathNet.Spatial.Euclidean;
 
 namespace Logy.Maps.ReliefMaps.Basemap
@@ -40,12 +39,6 @@ namespace Logy.Maps.ReliefMaps.Basemap
         /// phi
         /// </summary>
         public double Delta_gq => Theta - Vartheta;
-
-        /// <summary>
-        /// delta_gq ForVisualzation 
-        /// from 0 or poles and equator to 0.0017 on +- 45 parallels
-        /// </summary>
-        public double GoodDeflectionAngle => Vartheta < 0 ? Math.PI - Delta_gq : Delta_gq;
         #endregion
 
         /// <summary>
@@ -70,10 +63,16 @@ namespace Logy.Maps.ReliefMaps.Basemap
 
         /// <summary>
         /// acceleration, horizontal to sphere, no Centrifugal
-        /// directed to equator, 0 on poles and equator
+        /// directed to equator of Oz, 0 on poles and equator
         /// max: .016 on +-45grad
         /// </summary>
         public double GHpure { get; set; }
+        /// <summary>
+        /// used when gravitational axis is shifted 
+        /// GHpureTraverse and GHpure are orthogonal vectors that lay on S_sphere
+        /// directed to East
+        /// </summary>
+        public double GHpureTraverse { get; set; }
 
         /// <summary>
         /// angle, directed to equator of Oz
@@ -135,10 +134,15 @@ namespace Logy.Maps.ReliefMaps.Basemap
                 return 0;
             }
         }
+        #endregion
 
-        public static Line2D OQ(Point2D q)
+        /// <summary>
+        /// delta_gq ForVisualzation 
+        /// from 0 or poles and equator to 0.0017 on +- 45 parallels
+        /// </summary>
+        public static double GoodDeflection(double vartheta, double delta_gq)
         {
-            return new Line2D(O, q);
+            return vartheta < 0 ? Math.PI - delta_gq : delta_gq;
         }
 
         public bool HasWater(double threshhold = 0)
@@ -159,7 +163,6 @@ namespace Logy.Maps.ReliefMaps.Basemap
                 Volumes[direction] = true;
             }
         }
-        #endregion
 
         /// <param name="newR">null for spheric Earth</param>
         public void InitROfEllipse(HealpixManager man, double? newR = null)
@@ -192,44 +195,46 @@ namespace Logy.Maps.ReliefMaps.Basemap
             var varphi = (Math.PI / 2) - Theta;
             InitROfEllipse(man, Ellipsoid.Radius(varphi));
 
-            var thetaTan = Math.Tan(Theta);
-            Vartheta = Ellipsoid.CalcVarTheta(thetaTan);
-            CalcGpure(varphi, Datum.Normal); /// needs Vartheta
+            Vartheta = Ellipsoid.CalcVarTheta(Math.Tan(Theta));
+            var goodDeflectionAngle = GoodDeflection(Vartheta, Delta_gq);
+            GHpure = CalcGpure(varphi, Theta, Vartheta, goodDeflectionAngle, Datum.Normal); /// needs Vartheta
 
-            Delta_g_meridian = GoodDeflectionAngle;
+            Delta_g_meridian = goodDeflectionAngle;
         }
 
-        public void CalcGpure(double varphi, Datum datum)
+        public double CalcGpure(double varphi, double theta, double vartheta, double goodDeflectionAngle, Datum datum)
         {
             // vertical to ellipsoid surface
             var g = EllipsoidAcceleration.GravitationalSomigliana(varphi);
             /// return g * 100;
-            double a, aTraverse, aVertical;
-            var aMeridian = datum.Centrifugal(this, out a, out aTraverse, out aVertical);
+
+            double a, aVertical;
+            // this is 3) method http://hist.tk/ory/Способ_расчета_центробежного_ускорения, use b.Q3 for 2)
+            var aMeridian = datum.CentrifugalSimple(RadiusOfEllipse, varphi, theta, out a, out aVertical);
             /// vertical to ellipsoid surface
-            var aVert = Math.Abs(a * Math.Sin(Vartheta));
+            var aVert = Math.Abs(a * Math.Sin(vartheta));
             /// horizontal to ellipsoid surface
             /// var aHoriz = a * Math.Cos(Vartheta);
 
             // vertical to sphere
-            GVpure = (g + aVert) * Math.Cos(GoodDeflectionAngle); /// Triangles.CalcGPureToCenter
+            GVpure = (g + aVert) * Math.Cos(goodDeflectionAngle); /// Triangles.CalcGPureToCenter
 
             // return gVpure*10000;
             // horizontal to sphere
             // max: .03299
             // horizontal to sphere
-            var gHor = (g + aVert) * Math.Sin(GoodDeflectionAngle);
+            var gHor = (g + aVert) * Math.Sin(goodDeflectionAngle);
 
             // gToCenterByThetaCos = gVpure / Math.Abs(Math.Cos(Theta));
             // return basin.GoodDeflectionAngle * 1000;
             // vertical to sphere
-            var aV = a * Math.Sin(Theta);
+            var aV = a * Math.Sin(theta);
             /// return aV * 100;*/
             /// return aH * 100;
-            GHpure = gHor - aMeridian;
+            return gHor - aMeridian;
         }
 
-        /// <returns>aTraverse</returns>
+        /// <returns>Delta_g_traverse</returns>
         public virtual double RecalculateDelta_g(Datum datum, bool revert = true)
         {
             // return basin.gHpure * 1000;
@@ -239,7 +244,8 @@ namespace Logy.Maps.ReliefMaps.Basemap
             var aMeridian = datum.Centrifugal(this, out a, out aTraverse, out aVertical);
 
             // range: 0..0.0034
-            var newDeflectionAngleTan = (GHpure + aMeridian) / (GVpure - aVertical);
+            var gv = GVpure - aVertical;
+            var newDeflectionAngleTan = (GHpure + aMeridian) / gv;
 
             // todo try to rid of newDeflectionAngle and calculate without Atan, Tan
             var newDeflectionAngle = Math.Atan(newDeflectionAngleTan);
@@ -254,7 +260,8 @@ namespace Logy.Maps.ReliefMaps.Basemap
 
             // range -0.1..0.1m
             // return (basin.Delta_gq - newDelta_g) * basin.r;
-            return aTraverse;
+
+            return Math.Atan((GHpureTraverse + aTraverse) / gv);
         }
 
         /// <summary>

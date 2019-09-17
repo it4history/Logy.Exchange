@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Runtime.Serialization;
 using Logy.Maps.Geometry;
 using Logy.Maps.ReliefMaps.World.Ocean;
@@ -40,17 +41,36 @@ namespace Logy.Maps.Exchange
             Data.DoFrames(
                 delegate(int frame)
                 {
+                    var slowCentrifugalChange = (frame * (Geoisostasy ? 2 : 1)) % slowFrames(frame) == 0;
                     if (frame == 0
-                        || (Slow && frame % slowFrames(frame) == 0 && poleShift <= poleShiftsCount))
+                        || (Slow && poleShift <= poleShiftsCount && slowCentrifugalChange))
                     {
-                        var newPole = new Datum
+                        var datum = Poles.Last().Value;
+                        var newX = DesiredDatum.X; /// * slowFrame / slowFramesCount
+                        var newY = 90 - ((90 - DesiredDatum.Y) * poleShift / poleShiftsCount);
+                        if (!Slow || frame % slowFrames(frame) == 0) 
                         {
-                            X = DesiredDatum.X, /// * slowFrame / slowFramesCount
-                            Y = 90 - ((90 - DesiredDatum.Y) * poleShift / poleShiftsCount)
-                        };
-                        newPole.Gravity = new Gravity { X = newPole.X, Y = newPole.Y };
-                        SetDatum(newPole, frame + 1); /// will be applied on next DoFrame()
-                        poleShift++;
+                            datum = new Datum
+                            {
+                                X = newX,
+                                Y = newY,
+                                Gravity = datum.Gravity
+                            };
+                            if (!Geoisostasy)
+                                poleShift++;
+                        }
+                        else if (Geoisostasy)
+                        {
+                            datum = new Datum
+                            {
+                                X = datum.X,
+                                Y = datum.Y,
+                                GravityFirstUse = true,
+                                Gravity = new Gravity { X = newX, Y = newY }
+                            };
+                            poleShift++;
+                        }
+                        SetDatum(datum, frame + 1); /// will be applied on next DoFrame()
                     }
                     onFrame?.Invoke(frame);
                     return timeStepByFrame?.Invoke(frame) ?? 15; // 15 for k4, 80 for k5 of Meridian

@@ -89,8 +89,6 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
         {
             get
             {
-                // if depends on Ellipsoid.CurrentDatum.Gravity.Axis
-                // then: RadiusSpheric? RadiusOfEllipse : Ellipsoid.RadiusPaleo(this);
                 var radius = RadiusOfEllipse;
                 var x = radius * BetaSin;
                 return new Point3D(
@@ -112,7 +110,7 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
                 {
                     var normal = OxMinus; 
 
-                    // Matrixes.ToCartesian() analog in radians
+                    // the Matrixes.ToCartesian() analog in radians
                     normal = normal.Rotate(
                         new UnitVector3D(0, 1, 0),
                         new Angle((Math.Sign(Vartheta) * Delta_g_meridian) + Phi, AngleUnit.Radians));
@@ -146,7 +144,7 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
         }
 
         /// <summary>
-        /// Mean sea level
+        /// Mean sea level, resemble of S_sphere
         /// </summary>
         public Plane S_geiod => new Plane(Normal.Value, Qgeiod);
 
@@ -326,9 +324,7 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
 
         public override double RecalculateDelta_g(Datum datum = null, bool revert = true)
         {
-            var aTraverse = base.RecalculateDelta_g(datum, false);
-            Delta_g_traverse = Math.Atan(aTraverse / GVpure);
-            return 0;
+            return Delta_g_traverse = base.RecalculateDelta_g(datum, false);
         }
 
         /// <param name="to">Direction</param>

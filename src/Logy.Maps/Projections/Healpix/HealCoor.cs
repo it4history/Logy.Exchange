@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Runtime.Serialization;
 using AppConfiguration;
+using Logy.Maps.Geometry;
 using Logy.MwAgent.Sphere;
+using MathNet.Spatial.Euclidean;
 using Newtonsoft.Json;
 
 namespace Logy.Maps.Projections.Healpix
@@ -85,6 +87,8 @@ namespace Logy.Maps.Projections.Healpix
         [JsonIgnore]
         public override double Y { get { return base.Y; } set { base.Y = value; } }
 
+        public Plane S_sphere { get; private set; }
+
         /* data in spherical geocoordinates!!!
 5 arc-min grids contain 2,160 x 4,320 data points, are 18 MB in size and extend from
 -90+5/120 deg to  +90-5/120 deg in latitude direction, and from
@@ -109,6 +113,7 @@ Each grid file contains 10,800 x 21,600 = 233,280,000 records */
         {
             PixelsCountInRing = man.PixelsCountInRing(Ring);
             NorthCap = man.Northcap(Ring);
+            S_sphere = new Plane(Matrixes.ToCartesian(this));
         }
 
         /// <returns>angle</returns>

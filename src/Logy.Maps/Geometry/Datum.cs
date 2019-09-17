@@ -25,8 +25,10 @@ namespace Logy.Maps.Geometry
 
         [DataMember]
         public Gravity Gravity { get; set; }
+        [DataMember]
+        public bool GravityFirstUse { get; set; }
 
-        public bool EllipsoidChanged => Gravity != null && Gravity.Axis != Basin3.Oz;
+        public bool GravityNormal => Gravity == null || Gravity.Axis == Basin3.Oz;
         
         public static double CentrifugalByMatrix(Basin3 b, double a, Line3D axisOrtohonal, out double aTraverse, out double aVertical)
         {
@@ -43,6 +45,13 @@ namespace Logy.Maps.Geometry
             return Centrifugal(basin, out a, out aTraverse, out aVertical);
         }
 
+        public double CentrifugalSimple(double r, double varphi, double theta, out double a, out double aVertical)
+        {
+            a = Centrifugal(r * Math.Cos(varphi));
+            aVertical = a * Math.Sin(theta);
+            return a * Math.Abs(Math.Cos(theta));
+        }
+
         /// <param name="a">perpendicular to AxisOrRotation</param>
         /// <param name="aTraverse"></param>
         /// <param name="aVertical">projected value to the sphere normal, > 0</param>
@@ -52,9 +61,8 @@ namespace Logy.Maps.Geometry
             aTraverse = 0;
             if (Axis == Basin3.Oz)
             {
-                a = Centrifugal(basin.Radius * Math.Cos(basin.Varphi));
-                aVertical = a * Math.Sin(basin.Theta);
-                return a * Math.Abs(Math.Cos(basin.Theta));
+                // this is 3) method http://hist.tk/ory/Способ_расчета_центробежного_ускорения, use b.Q3 for 2)
+                return CentrifugalSimple(basin.RadiusOfEllipse, basin.Varphi, basin.Theta, out a, out aVertical);
             }
 
             var b = (Basin3)basin;

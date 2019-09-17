@@ -121,7 +121,42 @@ namespace Logy.Maps.ReliefMaps.Map2D
             }
         }
 
-        public void ShiftAxis(
+        public override void Draw()
+        {
+            Data.Draw(Bmp, 0, null, YResolution, Scale, Projection);
+        }
+
+        protected static string FrameToString(int? frame)
+        {
+            return frame.HasValue ? $"{frame:00000}" : null;
+        }
+
+        protected void SaveBitmap(int frame)
+        {
+            if (K > 3)
+            {
+                DrawLegend(Data, Bmp);
+
+                var projection = new Equirectangular(HealpixManager, YResolution);
+                var point = projection.Offset(Data.PixMan.Pixels[HealpixManager.RingsCount / 2]);
+                var algorithm = Bundle.Algorithm as ShiftAxisGeneric<T>;
+                if (algorithm != null)
+                    foreach (var pair in algorithm.Poles)
+                    {
+                        var line = (int)Math.Max(0, point.X + pair.Key);
+
+                        if (line < Bmp.Width)
+                            for (var y = -10; y < 0; y++)
+                                Bmp.SetPixel(
+                                    line,
+                                    (YResolution * Scale * HealpixManager.Nside) + y,
+                                    pair.Value.GravityFirstUse ? Color.Red : Color.Black);
+                    }
+            }
+            SaveBitmap(Bmp, Data.Colors, FrameToString(frame));
+        }
+
+        protected void ShiftAxis(
             int framesCount = 200, /* for k6 */
             Func<int, int> slowFrames = null,
             Func<int, int> timeStepByFrame = null)
@@ -143,38 +178,6 @@ namespace Logy.Maps.ReliefMaps.Map2D
                     }
                 },
                 timeStepByFrame);
-        }
-
-        public override void Draw()
-        {
-            Data.Draw(Bmp, 0, null, YResolution, Scale, Projection);
-        }
-
-        protected static string FrameToString(int? frame)
-        {
-            return frame.HasValue ? $"{frame:00000}" : null;
-        }
-
-        protected void SaveBitmap(int frame)
-        {
-            if (K > 3)
-            {
-                DrawLegend(Data, Bmp);
-
-                var projection = new Equirectangular(HealpixManager, YResolution);
-                var point = projection.Offset(Data.PixMan.Pixels[HealpixManager.RingsCount / 2]);
-                var algorithm = Bundle.Algorithm as ShiftAxisGeneric<T>;
-                if (algorithm != null)
-                    foreach (var axisShiftFrame in algorithm.Poles.Keys)
-                    {
-                        var line = (int)Math.Max(0, point.X + axisShiftFrame);
-
-                        if (line < Bmp.Width)
-                            for (var y = -10; y < 0; y++)
-                                Bmp.SetPixel(line, (YResolution * Scale * HealpixManager.Nside) + y, Color.Black);
-                    }
-            }
-            SaveBitmap(Bmp, Data.Colors, FrameToString(frame));
         }
 
         private void SaveJson(int? frame = null)
