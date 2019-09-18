@@ -3,10 +3,10 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using Logy.Maps.Exchange;
-using Logy.Maps.Geometry;
 using Logy.Maps.Projections;
 using Logy.Maps.ReliefMaps.Basemap;
 using Logy.Maps.ReliefMaps.Water;
+using Logy.Maps.ReliefMaps.World.Ocean;
 using Newtonsoft.Json;
 using NUnit.Framework;
 
@@ -53,7 +53,10 @@ namespace Logy.Maps.ReliefMaps.Map2D
             }
         }
 
-        protected override ImageFormat ImageFormat => ImageFormat.Tiff;
+        /// <summary>
+        /// Tiff is beatufil but ScreenToGif does not read it
+        /// </summary>
+        protected override ImageFormat ImageFormat => ImageFormat.Png;
 
         public string StatsFileName(int? frame = null)
         {
@@ -144,7 +147,7 @@ namespace Logy.Maps.ReliefMaps.Map2D
                 if (algorithm != null)
                     foreach (var pair in algorithm.Poles)
                     {
-                        if (pair.Value != Datum.Normal && frame >= pair.Key)
+                        if (pair.Value.Axis != Basin3.Oz && frame >= pair.Key)
                         {
                             var line = (int)Math.Max(0, point.X + pair.Key);
 

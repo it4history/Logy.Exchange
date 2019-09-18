@@ -127,10 +127,16 @@ namespace Logy.Maps.Exchange
                             var varphi = Ellipsoid.VarphiPaleo(basin, datum.Gravity.Axis);
                             basin.InitROfEllipse(DataAbstract.HealpixManager, Ellipsoid.Radius(varphi));
 
+                            /*basin.varphi1 = varphi;
+                            var beta = (Math.PI / 2) - varphi;
+                            var thetaTan = Ellipsoid.CalcThetaTan(beta);
+                            var theta = Math.Atan(thetaTan);
+                            varphi = (Math.PI / 2) - theta;*/
                             var theta = (Math.PI / 2) - varphi;
+
                             var vartheta = Ellipsoid.CalcVarTheta(Math.Tan(theta));
                             var delta_gq = theta - vartheta;
-                            var gh = basin.CalcGpure(varphi, theta, vartheta, BasinAbstract.GoodDeflection(vartheta, delta_gq), datum);
+                            var gh = basin.CalcGpure(varphi, theta, vartheta, BasinAbstract.GoodDeflection(vartheta, delta_gq));
 
                             // GHpure projections
                             var oz_sphere = Basin3.Oz.ProjectOn(basin.S_sphere).Direction;
@@ -138,7 +144,7 @@ namespace Logy.Maps.Exchange
                             var angle = oz_sphere.SignedAngleTo(axis_sphere, basin.S_sphere.Normal);
                             var gh_sphere = new Vector3D(0, Math.Sign(vartheta) * gh, 0) * Matrix3D.RotationAroundZAxis(angle);
                             basin.GHpure = Math.Sign(basin.Vartheta) * gh_sphere[1];  
-                            basin.GHpureTraverse = gh_sphere[0]; 
+                            basin.GHpureTraverse = gh_sphere[0];
                         }
                         basin.RecalculateDelta_g(datum, false);
                     }

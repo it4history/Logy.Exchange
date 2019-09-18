@@ -1,4 +1,6 @@
-﻿using Logy.Maps.Exchange;
+﻿using System;
+using Logy.Maps.Exchange;
+using Logy.Maps.Exchange.Earth2014;
 using Logy.Maps.Geometry;
 using Logy.Maps.Metrics.Tests;
 using Logy.Maps.Projections.Healpix;
@@ -85,11 +87,60 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
             {
                 //SamePolesAndEquatorGravitation = true,
                 //NoIntegrationFinish = true,
-                Visual = basin => basin.GVpure*1000-9822 
+                Visual = (basin, moved) => basin.GVpure * 1000 - 9822
                 //basin.r - Earth2014Manager.Radius2Add
             };
-            SetData(new ShiftAxis(data));
-            ShiftAxis(); // 45, 90
+            SetData(new ShiftAxis(data)
+            {
+                // DesiredDatum = new Datum { X = 0, Y = 45 /* 90 */ },
+            });
+            ShiftAxis(); 
+        }
+
+        [Test]
+        public void Water_ChangeAxis_Geoisostasy()
+        {
+            var data = new OceanData(HealpixManager)
+            {
+                Visual = (basin, moved) =>
+                {
+                    return basin.Hoq;
+                    return basin.GHpureTraverse * 1000;
+                    return basin.GHpure * 1000;
+                    return (basin.GVpure - EllipsoidAcceleration.GWithAOnEquator) * 1000;
+                    return Math.Sqrt(basin.Delta_g_meridian * basin.Delta_g_meridian
+                                     + basin.Delta_g_traverse * basin.Delta_g_traverse) * 1000;
+                    return Math.Sqrt(basin.GHpure * basin.GHpure + basin.GHpureTraverse * basin.GHpureTraverse) * 1000;
+                    return basin.RadiusOfEllipse - Earth2014Manager.Radius2Add;
+                }
+            };
+            var newY = 0;
+            var algo = new ShiftAxis(data)
+            {
+                DesiredDatum = new Datum
+                {
+                    X = 0,
+                    Y = newY,
+                   // SiderealDayInSeconds = int.MaxValue,
+                   Gravity = new Gravity { X = 0, Y = newY }
+                },
+                //Geoisostasy = true
+            };
+
+            SetData(algo); // inits data
+
+            algo.SetDatum(algo.DesiredDatum);
+
+            Data.DoFrame();//ShiftAxis(10);
+            Data.DoFrames(
+                (frame) =>
+                {
+                    Draw();
+                    SaveBitmap(frame);
+                    return 200;
+                },
+                20);//*/
+            Draw();
         }
 
         [Test]

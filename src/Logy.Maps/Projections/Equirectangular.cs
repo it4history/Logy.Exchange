@@ -58,6 +58,11 @@ namespace Logy.Maps.Projections
                 (int)Math.Round(Y(coor.Y), MidpointRounding.AwayFromZero));
         }
 
+        public Point2 OffsetDouble(Coor coor, int scale)
+        {
+            return new Point2(X(coor.X) * scale, Y(coor.Y) * scale);
+        }
+
         internal static Coor CoorFromXY(Point2 p, int yResolution, HealpixManager man, int frame = 0)
         {
             var lat = 90d - ((p.Y + BorderWidth) * 180d / (yResolution * man.Nside));

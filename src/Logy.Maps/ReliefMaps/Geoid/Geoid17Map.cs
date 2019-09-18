@@ -11,7 +11,7 @@ namespace Logy.Maps.ReliefMaps.Geoid
     {
         private ComplexData _data;
 
-        public Geoid17Map() : base(7)
+        public Geoid17Map() : base(5)
         {
             // LegendNeeded = false;
         }
@@ -21,6 +21,45 @@ namespace Logy.Maps.ReliefMaps.Geoid
         protected override DataForMap2D<Basin3> MapData => _data;
 
         protected override ImageFormat ImageFormat => ImageFormat.Bmp;
+
+        /// <summary>
+        /// http://hist.tk/ory/file:Geoid17Map_Eddies.gif
+        /// </summary>
+        [Test]
+        public void Eddies_MeanEdge()
+        {
+            Eddies(new ReliefAxis17(K)
+            {
+                Subdir = "MeanEdge/fluidity0.7 from2761Middle"
+            });
+        }
+
+        [Test]
+        public void Eddies_Geoisostasy()
+        {
+            Eddies(new ReliefAxis17Geoisostasy(K)
+            {
+                // Subdir = "MeanEdge/fluidity0.7 from2761Middle"
+            });
+        }
+
+        public void Eddies(ReliefMap map)
+        {
+            var rectangle = new Rectangle<Basin3>(-98, 57, -82, 67);
+            var bundle = Bundle<Basin3>.Deserialize(
+                File.ReadAllText(map.StatsFileName(4000)), // 3789 for Subdir = "MeanEdge/fluidity0.7 from2761Middle"
+                false, 
+                d =>
+                {
+                    // d.InitialBasins = rectangle.Subset(reliefAxis17.HealpixManager);
+                });
+            var data = bundle.Algorithm.DataAbstract;
+            data.DoFrame(); /// ? data.CalcAltitudes();
+
+            _data = new ComplexData(this, data) { Rectangle = rectangle };
+            _data.CalcArrows();
+            Draw();
+        }
 
         [Test]
         public void Relative()
@@ -51,36 +90,6 @@ namespace Logy.Maps.ReliefMaps.Geoid
 
             Geoid.Obtain(data);
             _data = new ComplexData(this, data);
-            Draw();
-        }
-
-        /// <summary>
-        /// http://hist.tk/ory/file:Geoid17Map_Eddies.gif
-        /// </summary>
-        [Test]
-        public void Eddies_MeanEdge()
-        {
-            Eddies(new ReliefAxis17(7)
-            {
-                Subdir = "MeanEdge/fluidity0.7 from2761Middle"
-            });
-        }
-
-        public void Eddies(ReliefAxis17 map)
-        {
-            var rectangle = new Rectangle<Basin3>(-98, 57, -82, 67);
-            var bundle = Bundle<Basin3>.Deserialize(
-                File.ReadAllText(map.StatsFileName(3789)), 
-                false, 
-                d =>
-                {
-                    // d.InitialBasins = rectangle.Subset(reliefAxis17.HealpixManager);
-                });
-            var data = bundle.Algorithm.DataAbstract;
-            data.DoFrame();
-
-            _data = new ComplexData(this, data) { Rectangle = rectangle };
-            _data.CalcArrows();
             Draw();
         }
     }

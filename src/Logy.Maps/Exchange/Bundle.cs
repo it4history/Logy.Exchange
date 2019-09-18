@@ -100,6 +100,10 @@ namespace Logy.Maps.Exchange
                 bundle.Basins[data.HealpixManager.K] = data.PixMan.Pixels;
 
             bundle.Algorithm.OnDeserialize();
+            /*
+            set colors in Data.CalcAltitudes();
+            if (data.Min != null && data.Max != null)
+                data.Colors = new ColorsManager(data.Min.Value, data.Max.Value, data.ColorsMiddle);*/
 
             return bundle;
         }

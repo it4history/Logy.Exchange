@@ -199,7 +199,6 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
         /// angle, directed to East
         /// relative to sphere
         /// </summary>
-        /// </summary>
         public double Delta_g_traverse
         {
             get

@@ -109,7 +109,7 @@ namespace Logy.Maps.ReliefMaps.Meridian
         public void Gravity_sphere_hor()
         {
             Data = new GravityChecking(HealpixManager);
-            Data.MoveAllWater();
+            Data.CalcAltitudes();
             Data.Draw(Bmp, 0, null, YResolution, Scale);
         }
 
@@ -120,7 +120,7 @@ namespace Logy.Maps.ReliefMaps.Meridian
         public void CentrifugalAcceleration_sphere_hor()
         {
             Data = new CentrifugalAcceleration(HealpixManager);
-            Data.MoveAllWater();
+            Data.CalcAltitudes();
             Data.Draw(Bmp, 0, null, YResolution, Scale);
         }
 
@@ -128,7 +128,7 @@ namespace Logy.Maps.ReliefMaps.Meridian
         public void Geodesic()
         {
             Data = new StartCheckingGeodesic(HealpixManager);
-            Data.MoveAllWater();
+            Data.CalcAltitudes();
             Data.Draw(Bmp, 0, null, YResolution, Scale);
         }
     }

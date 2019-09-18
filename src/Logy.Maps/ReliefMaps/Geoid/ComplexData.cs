@@ -2,18 +2,11 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
-using System.IO;
 using System.Linq;
-using GeoJSON.Net.Feature;
-using GeoJSON.Net.Geometry;
-using Logy.Maps.Exchange.Naturalearth;
 using Logy.Maps.Projections;
 using Logy.Maps.ReliefMaps.Map2D;
 using Logy.Maps.ReliefMaps.Water;
 using Logy.Maps.ReliefMaps.World.Ocean;
-using Logy.MwAgent.Sphere;
-using Newtonsoft.Json;
-using Point = System.Drawing.Point;
 
 namespace Logy.Maps.ReliefMaps.Geoid
 {
@@ -28,6 +21,7 @@ namespace Logy.Maps.ReliefMaps.Geoid
 
         public ComplexData(Map2DBase<Basin3> map, WaterMoving<Basin3> data) : base(map, data.PixMan.Pixels)
         {
+            ColorsMiddle = 0;
             _data = data;
         }
 
@@ -183,44 +177,6 @@ namespace Logy.Maps.ReliefMaps.Geoid
 
             g.Flush();
             Console.WriteLine($"arrows {min:#} .. {max:#}m");
-        }
-
-        private static void DrawPolygon(Polygon polygon, Equirectangular equirectangular, Graphics g)
-        {
-            var positions = polygon.Coordinates[0].Coordinates;
-            var points = new Point[positions.Count];
-            for (var i = 0; i < positions.Count; i++)
-            {
-                var position = (GeographicPosition)positions[i];
-                var coor = new Coor(position.Longitude, position.Latitude);
-                var point = equirectangular.Offset(coor);
-                points[i] = new Point((int)point.X, (int)point.Y);
-            }
-            g.DrawLines(new Pen(Color.Blue), points);
-        }
-
-        private void DrawPoliticalMap(Bitmap bmp, int yResolution)
-        {
-            var g = Graphics.FromImage(bmp);
-            var equirectangular = new Equirectangular(HealpixManager, yResolution);
-
-            var geo = JsonConvert.DeserializeObject<FeatureCollection>(File.ReadAllText(NeManager.Filepath));
-            foreach (var feature in geo.Features)
-            {
-                var multiPolygon = feature.Geometry as MultiPolygon;
-                if (multiPolygon != null)
-                {
-                    foreach (var polygon in multiPolygon.Coordinates)
-                    {
-                        DrawPolygon(polygon, equirectangular, g);
-                    }
-                }
-                else
-                {
-                    DrawPolygon((Polygon)feature.Geometry, equirectangular, g);
-                }
-            }
-            g.Flush();
         }
 
         /*      private void DrawPolygon(Graphics g, Topology topo, TopoJSONPolygon polygon, List<int> arcs, Equirectangular equirectangular, int scale)

@@ -30,7 +30,7 @@ namespace Logy.Maps.ReliefMaps.Basemap
         public override ReliefType ReliefBedType => ReliefType.Tbi;
 
         [IgnoreDataMember]
-        public Func<T, double> Visual { get; set; } = basin => basin.Hoq; //// basin.Altitude * 1000;
+        public Func<T, double, double> Visual { get; set; } = (basin, moved) => basin.Hoq; //// basin.Altitude * 1000;
 
         /// <param name="reliefFromDb">if true then Depth, Hoq are got from db, it is slow</param>
         public override void Init(bool reliefFromDb = true, Datum datum = null)
@@ -172,20 +172,25 @@ namespace Logy.Maps.ReliefMaps.Basemap
         {
             if (basin.HasWater())
             {
+                var moved = 0d;
                 for (int to = 0; to < 4; to++)
                 {
                     var toBasin = basin.Neighbors[to];
                     var from = basin.Opposites[to];
-                    var height = GetBasinHeight(basin, toBasin, to, from);
-
+                    var heightWithKoef = GetBasinHeight(basin, toBasin, to, from) * basin.Koefs[to];
                     Water.PutV(
                         basin,
                         toBasin,
-                        height * basin.Koefs[to],
+                        heightWithKoef,
                         to,
                         from);
+                    moved += heightWithKoef;
                 }
-                return Visual(basin); // basin.hOQ;
+                if (Math.Abs(moved) > 300)
+                {
+                }
+                return // moved- is H changed without threshhold check
+                    Visual(basin, moved * Water.Fluidity); // basin.hOQ;
             }
             return null;
         }

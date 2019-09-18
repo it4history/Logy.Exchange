@@ -134,6 +134,8 @@ namespace Logy.Maps.ReliefMaps.Basemap
                 return 0;
             }
         }
+
+        public double varphi1 { get; internal set; }
         #endregion
 
         /// <summary>
@@ -169,6 +171,7 @@ namespace Logy.Maps.ReliefMaps.Basemap
         {
             RadiusOfEllipse = newR ?? Earth2014Manager.Radius2Add;
             RadiusSpheric = newR == null;
+            Hoq = Hoq; // clearing cache
 
             Area = RadiusOfEllipse * RadiusOfEllipse * man.OmegaPix;
             RingArea = Area * PixelsCountInRing;
@@ -192,17 +195,16 @@ namespace Logy.Maps.ReliefMaps.Basemap
             // the same geoid-ellipsoid is approximated by spheres with different radiuses
             Theta = Beta.Value;
 
-            var varphi = (Math.PI / 2) - Theta;
-            InitROfEllipse(man, Ellipsoid.Radius(varphi));
+            InitROfEllipse(man, Ellipsoid.Radius(Varphi));
 
             Vartheta = Ellipsoid.CalcVarTheta(Math.Tan(Theta));
             var goodDeflectionAngle = GoodDeflection(Vartheta, Delta_gq);
-            GHpure = CalcGpure(varphi, Theta, Vartheta, goodDeflectionAngle, Datum.Normal); /// needs Vartheta
+            GHpure = CalcGpure(Varphi, Theta, Vartheta, goodDeflectionAngle); /// needs Vartheta
 
             Delta_g_meridian = goodDeflectionAngle;
         }
 
-        public double CalcGpure(double varphi, double theta, double vartheta, double goodDeflectionAngle, Datum datum)
+        public double CalcGpure(double varphi, double theta, double vartheta, double goodDeflectionAngle)
         {
             // vertical to ellipsoid surface
             var g = EllipsoidAcceleration.GravitationalSomigliana(varphi);
@@ -210,7 +212,7 @@ namespace Logy.Maps.ReliefMaps.Basemap
 
             double a, aVertical;
             // this is 3) method http://hist.tk/ory/Способ_расчета_центробежного_ускорения, use b.Q3 for 2)
-            var aMeridian = datum.CentrifugalSimple(RadiusOfEllipse, varphi, theta, out a, out aVertical);
+            var aMeridian = Datum.Normal.CentrifugalSimple(RadiusOfEllipse, varphi, theta, out a, out aVertical);
             /// vertical to ellipsoid surface
             var aVert = Math.Abs(a * Math.Sin(vartheta));
             /// horizontal to ellipsoid surface

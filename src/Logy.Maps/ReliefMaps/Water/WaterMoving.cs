@@ -82,8 +82,8 @@ namespace Logy.Maps.ReliefMaps.Water
         {
             GradientAndHeightCrosses();
             
-            // todo calculate Max..Min only for time that will be drawn
-            MoveAllWater(isDynamicScale);
+            // todo calculate Max..Min only for time that will be drawn,  problem with Altitude
+            CalcAltitudes(isDynamicScale);
         }
 
         /// <param name="onFrame">parameter is frame counted from 0</param>
@@ -276,7 +276,7 @@ namespace Logy.Maps.ReliefMaps.Water
         }
 
         /// <param name="isDynamicScale">whether recalculate min, max and therefore possibly make scale dynamic</param>
-        internal void MoveAllWater(bool isDynamicScale = true)
+        internal void CalcAltitudes(bool isDynamicScale = true)
         {
             if (isDynamicScale || Colors == null)
             {
