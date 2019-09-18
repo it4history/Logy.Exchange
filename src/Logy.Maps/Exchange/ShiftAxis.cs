@@ -31,24 +31,27 @@ namespace Logy.Maps.Exchange
 
         public void Shift(
             int framesCount, 
-            Func<int, int> slowFrames = null,
             Action<int> onFrame = null,
+            Func<int, int> slowFrames = null,
             Func<int, int> timeStepByFrame = null)
         {
             var poleShiftsCount = 10;
             var poleShift = Slow ? Poles.Count : poleShiftsCount;
+            if (slowFrames == null)
+                slowFrames = (frame) => 2;
 
             Data.DoFrames(
                 delegate(int frame)
                 {
-                    var slowCentrifugalChange = (frame * (Geoisostasy ? 2 : 1)) % slowFrames(frame) == 0;
+                    var slowAnyChange = (frame * (Geoisostasy ? 2 : 1)) % slowFrames(frame) == 0;
                     if (frame == 0
-                        || (Slow && poleShift <= poleShiftsCount && slowCentrifugalChange))
+                        || (Slow && poleShift <= poleShiftsCount && slowAnyChange))
                     {
                         var datum = Poles.Last().Value;
                         var newX = DesiredDatum.X; /// * slowFrame / slowFramesCount
                         var newY = 90 - ((90 - DesiredDatum.Y) * poleShift / poleShiftsCount);
-                        if (!Slow || frame % slowFrames(frame) == 0) 
+                        var slowCentrifugalChange = frame % slowFrames(frame) == 0;
+                        if (!Slow || slowCentrifugalChange)
                         {
                             datum = new Datum
                             {
@@ -59,7 +62,7 @@ namespace Logy.Maps.Exchange
                             if (!Geoisostasy)
                                 poleShift++;
                         }
-                        else if (Geoisostasy)
+                        if (Geoisostasy && (!Slow || !slowCentrifugalChange))
                         {
                             datum = new Datum
                             {

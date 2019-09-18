@@ -10,6 +10,10 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
         {
         }
 
+        public ReliefAxis17Geoisostasy(int k) : base(k)
+        {
+        }
+
         [Test]
         public void AxisChange()
         {
@@ -21,17 +25,14 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
             var data = new OceanData(HealpixManager)
             {
                 WithRelief = true,
-                /*Visual = basin =>
-                {
-                    return basin.GHpureTraverse* 1000;
-                }//*/
             };
-            var algo = new ShiftAxis(data) { Slow = true, Geoisostasy = true };
-            SetData(algo, true);
+
+            SetData(new ShiftAxis(data) { Slow = true, Geoisostasy = true }, true);
 
             Data.Water.Fluidity = fluidity;
 
-            ShiftAxisBalanced(3000);
+            ShiftAxisBalanced(4000);
         }
+
     }
 }

@@ -12,7 +12,7 @@ namespace Logy.Maps.Exchange.Tests
         private static readonly string Expected =
             @"{""Algorithms"":[{""Slow"":true,""Geoisostasy"":false" +
             @",""Data"":{""WithRelief"":true,""Spheric"":false,""SamePolesAndEquatorGravitation"":false,""IntegrationEndless"":true,""MetricType"":0,""Frame"":-1,""Time"":0,""TimeStep"":1,""Max"":null,""Min"":null,""K"":4,""Accuracy"":5,""Dimension"":""m""}" +
-            @",""Poles"":{""-1"":{""SiderealDayInSeconds"":86164.100637,""Gravity"":null,""X"":-180.0,""Y"":90.0}}" +
+            @",""Poles"":{""-1"":{""SiderealDayInSeconds"":86164.100637,""Gravity"":null,""GravityFirstUse"":false,""X"":-180.0,""Y"":90.0}}" +
             $@",""Name"":""Logy.Maps.Exchange.ShiftAxis, Logy.Maps, Version={Assembly.GetExecutingAssembly().GetName().Version}, Culture=neutral, PublicKeyToken=null"",""Diff"":0.0" +
             @"}],""Basins"":{""4"":[{""Hoq"":0.0,""Depth"":2371.0}]}}";
             
@@ -54,7 +54,6 @@ namespace Logy.Maps.Exchange.Tests
             string json5 = null;
             algorithm.Shift(
                 6,
-                (frame) => 2,
                 delegate(int frame)
                 {
                     if (frame == 5)
@@ -72,7 +71,7 @@ namespace Logy.Maps.Exchange.Tests
             }
 
             var algorithm5 = bundle5.Algorithm as ShiftAxis;
-            algorithm5.Shift(6, (frame) => 2);
+            algorithm5.Shift(6);
 
             var restoredAndRun = bundle5.Serialize();
 

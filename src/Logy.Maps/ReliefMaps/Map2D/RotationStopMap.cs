@@ -3,6 +3,7 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using Logy.Maps.Exchange;
+using Logy.Maps.Geometry;
 using Logy.Maps.Projections;
 using Logy.Maps.ReliefMaps.Basemap;
 using Logy.Maps.ReliefMaps.Water;
@@ -143,14 +144,17 @@ namespace Logy.Maps.ReliefMaps.Map2D
                 if (algorithm != null)
                     foreach (var pair in algorithm.Poles)
                     {
-                        var line = (int)Math.Max(0, point.X + pair.Key);
+                        if (pair.Value != Datum.Normal && frame >= pair.Key)
+                        {
+                            var line = (int)Math.Max(0, point.X + pair.Key);
 
-                        if (line < Bmp.Width)
-                            for (var y = -10; y < 0; y++)
-                                Bmp.SetPixel(
-                                    line,
-                                    (YResolution * Scale * HealpixManager.Nside) + y,
-                                    pair.Value.GravityFirstUse ? Color.Red : Color.Black);
+                            if (line < Bmp.Width)
+                                for (var y = -10; y < 0; y++)
+                                    Bmp.SetPixel(
+                                        line,
+                                        (YResolution * Scale * HealpixManager.Nside) + y,
+                                        pair.Value.GravityFirstUse ? Color.Red : Color.Black);
+                        }
                     }
             }
             SaveBitmap(Bmp, Data.Colors, FrameToString(frame));
@@ -165,7 +169,6 @@ namespace Logy.Maps.ReliefMaps.Map2D
             var lastTimeOfSaveJson = algorithm.DataAbstract.Time;
             algorithm.Shift(
                 framesCount,
-                slowFrames,
                 delegate(int frame)
                 {
                     Draw();
@@ -177,6 +180,7 @@ namespace Logy.Maps.ReliefMaps.Map2D
                         lastTimeOfSaveJson = time;
                     }
                 },
+                slowFrames,
                 timeStepByFrame);
         }
 
