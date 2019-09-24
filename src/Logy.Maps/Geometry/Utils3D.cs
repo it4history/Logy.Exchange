@@ -1,5 +1,5 @@
 ﻿using System;
-using Logy.Maps.ReliefMaps.World.Ocean;
+using Logy.Maps.ReliefMaps.Basemap;
 using Logy.MwAgent.Sphere;
 using MathNet.Spatial.Euclidean;
 
@@ -7,7 +7,7 @@ namespace Logy.Maps.Geometry
 {
     public class Utils3D
     {
-        public static Plane Equator { get; } = new Plane(Basin3.Oz, Basin3.O3);
+        public static Plane Equator { get; } = new Plane(BasinAbstract.Oz, BasinAbstract.O3);
 
         public static UnitVector3D Cartesian(Coor coor)
         {
@@ -28,14 +28,14 @@ namespace Logy.Maps.Geometry
         public static T FromCartesian<T>(UnitVector3D ray) where T : Coor
         {
             var coor = Activator.CreateInstance<T>();
-            if (ray == -Basin3.Oz)
+            if (ray == -BasinAbstract.Oz)
             {
                 coor.Y = -90;
             }
-            else if (ray != Basin3.Oz)
+            else if (ray != BasinAbstract.Oz)
             {
-                coor.X = -180 - ray.ProjectOn(Equator).Direction.SignedAngleTo(Basin3.OxMinus, Basin3.Oz).Degrees;
-                coor.Y = 90 - ray.AngleTo(Basin3.Oz).Degrees;
+                coor.X = -180 - ray.ProjectOn(Equator).Direction.SignedAngleTo(BasinAbstract.OxMinus, BasinAbstract.Oz).Degrees;
+                coor.Y = 90 - ray.AngleTo(BasinAbstract.Oz).Degrees;
             }
             return coor.Normalize<T>();
         }

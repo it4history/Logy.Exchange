@@ -7,6 +7,7 @@ using Logy.Maps.Projections.Healpix;
 using Logy.Maps.ReliefMaps.Basemap;
 using Logy.Maps.ReliefMaps.Geoid;
 using Logy.Maps.ReliefMaps.Water;
+using Logy.MwAgent.Sphere;
 using MathNet.Numerics.LinearAlgebra;
 using MathNet.Spatial.Euclidean;
 using MathNet.Spatial.Units;
@@ -33,16 +34,6 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
 
         private Polygon<Basin3> _polygon;
 
-        public static Point3D O3 { get; } = new Point3D(0, 0, 0);
-        public static UnitVector3D Oz { get; } = new UnitVector3D(0, 0, 1);
-
-        /// <summary>
-        /// RotationVector
-        /// </summary>
-        public static UnitVector3D OxMinus { get; } = new UnitVector3D(-1, 0, 0);
-
-        public static Point3D OzEnd => Oz.ToPoint3D();
-
         public override double Hoq
         {
             get
@@ -57,7 +48,16 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
             }
         }
 
-        public Plane Meridian => new Plane(O3, Q3, OzEnd);
+        public override double RadiusOfEllipse
+        {
+            get { return base.RadiusOfEllipse; }
+            protected set
+            {
+                base.RadiusOfEllipse = value;
+                _actualQ3 = false;
+                _s_q = null;
+            }
+        }
 
         public Point2D Qmeridian
         {
@@ -82,25 +82,7 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
             }
         }
 
-        /// <summary>
-        /// ignores internal waters, marks only Mean sea level
-        /// </summary>
-        public Point3D Qgeiod
-        {
-            get
-            {
-                var radius = RadiusOfEllipse;
-                var x = radius * BetaSin;
-                return new Point3D(
-                    LambdaMinusPi2Sin * x,
-                    LambdaSin * x,
-                    radius * BetaCos);
-            }
-        }
-
-        public Line3D RadiusLine => new Line3D(O3, Q3);
-
-        public Ray3D RadiusRay => new Ray3D(O3, RadiusLine.Direction);
+        public Ray3D RadiusRay => new Ray3D(O3, RadiusLine);
 
         public UnitVector3D? Normal
         {
@@ -167,8 +149,6 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
         /// </summary>
         public Direction? Type { get; set; }
         public int[] Opposites { get; set; }
-
-        public Matrix<double> Matrix { get; set; }
 
         /// <summary>
         /// rays that go either through Middle of edge (MeanEdge metric)
@@ -281,11 +261,6 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
 
         public override void OnInit(HealpixManager man)
         {
-            // todo why angle with opposite sign?
-            var rotation = Matrix3D.RotationAroundYAxis(new Angle(-Phi, AngleUnit.Radians))
-                           * Matrix3D.RotationAroundZAxis(new Angle(Lambda.Value, AngleUnit.Radians));
-            Matrix = rotation.Transpose();
-
             base.OnInit(man);
 
             Hto = new double[4];
@@ -321,9 +296,28 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
             return (int)NeighborManager.GetOpposite(to);
         }
 
-        public override double RecalculateDelta_g(Datum datum = null, bool revert = true)
+        public override void RecalculateDelta_g(Datum datum = null, bool revert = true)
         {
-            return Delta_g_traverse = base.RecalculateDelta_g(datum, false);
+            Delta_g_traverse = RecalculateDelta_gCorrectIfDelta_g_traverseZero(datum, false);
+            ///return;
+
+            double a;
+            double aTraverse;
+            double aVertical;
+            var aMeridian = datum.Centrifugal(this, out a, out aTraverse, out aVertical);
+
+            var vector = new Vector3D(
+                GVpure - aVertical, 
+                GHpureTraverse + aTraverse,
+                //Math.Sign(Vartheta) *
+                (GHpure + aMeridian));
+            var coor = Utils3D.FromCartesian<Coor>(vector.Normalize());
+            Delta_g_meridian = ///Math.Sign(Vartheta) * 
+                (
+                //Math.PI * .5
+                coor.Phi
+                );
+            Delta_g_traverse = Math.PI-coor.Lambda.Value ;
         }
 
         /// <param name="to">Direction</param>

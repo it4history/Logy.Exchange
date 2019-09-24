@@ -84,7 +84,7 @@ namespace Logy.Maps.Geometry
             // aSphere direction
             var aSphereLine = surfaceCalm.IntersectionWith(pointQonAxisPlane);
 
-            var b3unit = b.RadiusLine.Direction;
+            var b3unit = b.RadiusLine;
 
             // lays in surfaceCalm plane, directed to equator of Axis if Math.Abs used
             var aSphere = /// Math.Abs
@@ -96,7 +96,7 @@ namespace Logy.Maps.Geometry
 
             aTraverse = Math.Abs(aSphere * aSphereLine.Direction.DotProduct(aTraverseLine.Direction));
 
-            var planeOZ = new Plane(Basin3.Oz);
+            var planeOZ = Utils3D.Equator; /// new Plane(Basin3.Oz);
             var planeAxis = new Plane(Axis);
 
             // directed to equator of Oz if Math.Abs used

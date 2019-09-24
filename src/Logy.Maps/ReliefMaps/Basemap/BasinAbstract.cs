@@ -3,7 +3,9 @@ using System.Runtime.Serialization;
 using Logy.Maps.Exchange.Earth2014;
 using Logy.Maps.Geometry;
 using Logy.Maps.Projections.Healpix;
+using MathNet.Numerics.LinearAlgebra;
 using MathNet.Spatial.Euclidean;
+using MathNet.Spatial.Units;
 
 namespace Logy.Maps.ReliefMaps.Basemap
 {
@@ -11,6 +13,15 @@ namespace Logy.Maps.ReliefMaps.Basemap
     {
         private double _deltaGMeridian;
         public static Point2D O { get; } = new Point2D(0, 0);
+        public static Point3D O3 { get; } = new Point3D(0, 0, 0);
+
+        /// <summary>
+        /// RotationVector
+        /// </summary>
+        public static UnitVector3D OxMinus { get; } = new UnitVector3D(-1, 0, 0);
+
+        public static UnitVector3D Oz { get; } = new UnitVector3D(0, 0, 1);
+        public static Point3D OzEnd => Oz.ToPoint3D();
 
         #region static angles
         public double BetaSin { get; private set; }
@@ -50,11 +61,45 @@ namespace Logy.Maps.ReliefMaps.Basemap
         /// <summary>
         /// geoid surface set by a mathematical formula
         /// </summary>
-        public double RadiusOfEllipse { get; private set; }
+        public virtual double RadiusOfEllipse
+        {
+            get;
+            protected set;
+        }
         public bool RadiusSpheric { get; private set; }
 
         public double RingArea { get; private set; }
         public double Area { get; private set; }
+
+        /// <summary>
+        /// make it constant
+        /// </summary>
+        public Plane Meridian => new Plane(O3, Qgeiod, OzEnd);
+        /// <summary>
+        /// make it constant
+        /// </summary>
+        public UnitVector3D RadiusLine => new Line3D(O3, Qgeiod).Direction;
+
+        /// <summary>
+        /// what about S_sphere ?
+        /// </summary>
+        public Matrix<double> Matrix { get; set; }
+
+        /// <summary>
+        /// ignores internal waters, marks only Mean sea level
+        /// </summary>
+        public Point3D Qgeiod
+        {
+            get
+            {
+                var radius = RadiusOfEllipse;
+                var x = radius * BetaSin;
+                return new Point3D(
+                    LambdaMinusPi2Sin * x,
+                    LambdaSin * x,
+                    radius * BetaCos);
+            }
+        }
 
         /// <summary>
         /// acceleration, vertical to sphere, no Centrifugal
@@ -75,7 +120,7 @@ namespace Logy.Maps.ReliefMaps.Basemap
         public double GHpureTraverse { get; set; }
 
         /// <summary>
-        /// angle, directed to equator of Oz
+        /// angle, directed to equator of Oz (or opposite?)
         /// it approximates geoid surface to sphere with RadiusOfEllipse radius 
         /// </summary>
         public virtual double Delta_g_meridian
@@ -134,8 +179,6 @@ namespace Logy.Maps.ReliefMaps.Basemap
                 return 0;
             }
         }
-
-        public double varphi1 { get; internal set; }
         #endregion
 
         /// <summary>
@@ -171,7 +214,6 @@ namespace Logy.Maps.ReliefMaps.Basemap
         {
             RadiusOfEllipse = newR ?? Earth2014Manager.Radius2Add;
             RadiusSpheric = newR == null;
-            Hoq = Hoq; // clearing cache
 
             Area = RadiusOfEllipse * RadiusOfEllipse * man.OmegaPix;
             RingArea = Area * PixelsCountInRing;
@@ -179,6 +221,10 @@ namespace Logy.Maps.ReliefMaps.Basemap
 
         public override void OnInit(HealpixManager man)
         {
+            // todo why angle with opposite sign?
+            var rotation = Matrix3D.RotationAroundYAxis(new Angle(-Phi, AngleUnit.Radians))
+                           * Matrix3D.RotationAroundZAxis(new Angle(Lambda.Value, AngleUnit.Radians));
+            Matrix = rotation.Transpose();
             base.OnInit(man);
             LambdaSin = Math.Sin(Lambda.Value);
             LambdaMinusPi2Sin = Math.Sin(Lambda.Value - (Math.PI / 2));
@@ -195,17 +241,17 @@ namespace Logy.Maps.ReliefMaps.Basemap
             // the same geoid-ellipsoid is approximated by spheres with different radiuses
             Theta = Beta.Value;
 
-            InitROfEllipse(man, Ellipsoid.Radius(Varphi));
-
             Vartheta = Ellipsoid.CalcVarTheta(Math.Tan(Theta));
             var goodDeflectionAngle = GoodDeflection(Vartheta, Delta_gq);
-            GHpure = CalcGpure(Varphi, Theta, Vartheta, goodDeflectionAngle); /// needs Vartheta
+            GHpure = CalcGpure(man, Varphi, Theta, Vartheta, goodDeflectionAngle); /// needs Vartheta
 
             Delta_g_meridian = goodDeflectionAngle;
         }
 
-        public double CalcGpure(double varphi, double theta, double vartheta, double goodDeflectionAngle)
+        public double CalcGpure(HealpixManager man, double varphi, double theta, double vartheta, double goodDeflectionAngle)
         {
+            InitROfEllipse(man, Ellipsoid.Radius(varphi));
+
             // vertical to ellipsoid surface
             var g = EllipsoidAcceleration.GravitationalSomigliana(varphi);
             /// return g * 100;
@@ -236,8 +282,13 @@ namespace Logy.Maps.ReliefMaps.Basemap
             return gHor - aMeridian;
         }
 
+        public virtual void RecalculateDelta_g(Datum datum, bool revert = true)
+        {
+            RecalculateDelta_gCorrectIfDelta_g_traverseZero(datum, revert);
+        }
+
         /// <returns>Delta_g_traverse</returns>
-        public virtual double RecalculateDelta_g(Datum datum, bool revert = true)
+        public double RecalculateDelta_gCorrectIfDelta_g_traverseZero(Datum datum, bool revert = true)
         {
             // return basin.gHpure * 1000;
             double a;

@@ -48,13 +48,13 @@ namespace Logy.Maps.Metrics
             KQQaxisTanCotan_traverse = CalcKQQaxisTanCotan_traverse(GetKQQaxis_traverse());
         }
 
-        public override double RecalculateDelta_g(Datum datum = null, bool revert = true)
+        public override void RecalculateDelta_g(Datum datum = null, bool revert = true)
         {
-            var aTraverse = base.RecalculateDelta_g(datum, false);
+            RecalculateDelta_gCorrectIfDelta_g_traverseZero(datum, false);
 
             var aKQQaxis_traverse = GetKQQaxis_traverse();
             KQQaxisTanCotan_traverse = CalcKQQaxisTanCotan_traverse(aKQQaxis_traverse);
-            return aKQQaxis_traverse;
+            // return aKQQaxis_traverse;
         }
 
         public double IntersectTraverse(Basin3 otherBasin)

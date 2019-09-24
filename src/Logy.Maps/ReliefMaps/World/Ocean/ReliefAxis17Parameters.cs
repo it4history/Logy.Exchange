@@ -23,10 +23,10 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
         {
             Func<Basin3, double, double> parametersVisual = (basin, moved) =>
             {
-                return Math.Sqrt(basin.GHpure * basin.GHpure + basin.GHpureTraverse * basin.GHpureTraverse) * 1000;
-                return Math.Sqrt(basin.Delta_g_meridian * basin.Delta_g_meridian 
-                    + basin.Delta_g_traverse * basin.Delta_g_traverse) * 1000;
+                return Math.Sqrt(basin.Delta_g_meridian * basin.Delta_g_meridian
+                                 + basin.Delta_g_traverse * basin.Delta_g_traverse) * 1000;
                 return basin.RadiusOfEllipse - Ellipsoid.MeanRadius;
+                return Math.Sqrt(basin.GHpure * basin.GHpure + basin.GHpureTraverse * basin.GHpureTraverse) * 1000;
                 return basin.Delta_g_traverse * 1000;
                 return basin.GHpureTraverse * 1000;
                 return moved;
