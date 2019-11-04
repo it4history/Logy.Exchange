@@ -1,4 +1,5 @@
-﻿using System;
+﻿#if DEBUG
+using System;
 using Logy.Maps.Exchange;
 using Logy.Maps.Exchange.Earth2014;
 using Logy.Maps.Geometry;
@@ -100,11 +101,12 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
         [Test]
         public void Water_ChangeAxis_Geoisostasy()
         {
-            var newX = 0;
-            var newY = 0;
+            var newX = 30;
+            var newY = 45;
+            Subdir = $@"x{newX}_y{newY}";
             var algo = new ShiftAxis(new OceanData(HealpixManager)
                 {
-                    //*
+                    /*
                     Visual = (basin, moved) =>
                     {
                         return basin.Delta_g_traverse * 1000;
@@ -145,7 +147,7 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
                 {
                     Draw();
                     SaveBitmap(frame);
-                    return 10;
+                    return 100;
                 },
                 1);//*/
             /*Draw();//*/
@@ -226,3 +228,4 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
         }
     }
 }
+#endif

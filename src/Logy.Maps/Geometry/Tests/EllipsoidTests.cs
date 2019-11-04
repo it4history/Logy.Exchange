@@ -16,10 +16,14 @@ namespace Logy.Maps.Geometry.Tests
         }
 
         [Test]
-        public void RadiusPaleo()
+        public void VarphiPaleo()
         {
-            Assert.AreEqual(Ellipsoid.LessRadius, Ellipsoid.RadiusPaleo(new Coor(), Datum.Normal));
-            Assert.AreEqual(Ellipsoid.BigRadius, Ellipsoid.RadiusPaleo(new Coor(), new Datum { Y = 0 }));
+            Assert.AreEqual(
+                Ellipsoid.LessRadius, 
+                Ellipsoid.Radius(Ellipsoid.VarphiPaleo(new Coor(), Datum.Normal.Axis)));
+            Assert.AreEqual(
+                Ellipsoid.BigRadius, 
+                Ellipsoid.Radius(Ellipsoid.VarphiPaleo(new Coor(), new Datum { Y = 0 }.Axis)));
         }
     }
 }

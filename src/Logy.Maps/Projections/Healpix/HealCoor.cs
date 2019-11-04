@@ -87,6 +87,9 @@ namespace Logy.Maps.Projections.Healpix
         [JsonIgnore]
         public override double Y { get { return base.Y; } set { base.Y = value; } }
 
+        /// <summary>
+        /// related to Matrix, with Normal like RadiusLine
+        /// </summary>
         public Plane S_sphere { get; private set; }
 
         /* data in spherical geocoordinates!!!

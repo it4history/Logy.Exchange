@@ -47,10 +47,6 @@ namespace Logy.Maps.Geometry
             var theta = axis.AngleTo(Utils3D.Cartesian(coor)).Radians;
             return (Math.PI / 2) - theta;
         }
-        public static double RadiusPaleo(Coor coor, Datum datum)
-        {
-            return Radius(VarphiPaleo(coor, datum.Axis));
-        }
 
         /// <summary>
         /// https://ru.wikipedia.org/wiki/Радиус

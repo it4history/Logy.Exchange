@@ -7,6 +7,7 @@ using Logy.Maps.Geometry;
 using Logy.Maps.ReliefMaps.Basemap;
 using Logy.Maps.ReliefMaps.Water;
 using Logy.Maps.ReliefMaps.World.Ocean;
+using Logy.MwAgent.Sphere;
 using MathNet.Numerics;
 using MathNet.Spatial.Euclidean;
 using MathNet.Spatial.Units;
@@ -145,22 +146,27 @@ namespace Logy.Maps.Exchange
                                 BasinAbstract.GoodDeflection(vartheta, delta_gq));
 
                             // GHpure projections
-                            //*was
-                            var oz_sphere = Basin3.Oz.ProjectOn(basin.S_sphere).Direction;
-                            var axis_sphere = datum.Gravity.Axis.ProjectOn(basin.S_sphere).Direction;
-                            var angle = oz_sphere.SignedAngleTo(axis_sphere, basin.S_sphere.Normal);
+                            /*was
+                            var basinSphere = //basin.S_sphere;
+                                new Plane(Matrixes.ToCartesian(new Coor(0, 180/Math.PI* varphi)));
+
+                            var oz_sphere = Basin3.Oz.ProjectOn(basinSphere).Direction;
+                            var axis_sphere = datum.Gravity.Axis.ProjectOn(basinSphere).Direction;
+                            var angle = oz_sphere.SignedAngleTo(axis_sphere, basinSphere.Normal);
                             var gh_sphere = new Vector3D(0, Math.Sign(vartheta) * gh, 0) * Matrix3D.RotationAroundZAxis(angle);
                             basin.GHpure = Math.Sign(basin.Vartheta) * gh_sphere[1];
                             basin.GHpureTraverse = gh_sphere[0];//*/
 
-                            /*
+                            //*
                             var axisPlane = new Plane(BasinAbstract.O3, basin.Qgeiod, datum.Gravity.Axis.ToPoint3D());
                             var axis_sphere = axisPlane.IntersectionWith(basin.S_sphere).Direction;//S_sphere may be sphere without Radius
+                            /*var correctionAngle = Math.PI / 2 - axis_sphere.AngleTo(basin.RadiusLine).Radians;
+                            var ghCorrected = gh / Math.Cos(correctionAngle);*/
                             if (axis_sphere.DotProduct(datum.Gravity.Axis) < 0)
                                 axis_sphere = axis_sphere.Negate();
                             if (vartheta < 0)
                                 axis_sphere = axis_sphere.Negate();
-                            var gh_sphere = axis_sphere.ScaleBy(gh)* basin.Matrix;
+                            var gh_sphere = axis_sphere.ScaleBy(gh) * basin.Matrix;
                             basin.GHpure = Math.Sign(basin.Vartheta) * gh_sphere[2];
                             basin.GHpureTraverse = gh_sphere[1]; //*/
                         }

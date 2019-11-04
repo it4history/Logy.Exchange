@@ -1,6 +1,6 @@
 ﻿using System.Runtime.Serialization;
 using Logy.Maps.Projections.Healpix;
-using Logy.Maps.ReliefMaps.World.Ocean;
+using Logy.Maps.ReliefMaps.Basemap;
 using Logy.MwAgent.Sphere;
 using MathNet.Numerics.LinearAlgebra;
 using MathNet.Spatial.Euclidean;
@@ -58,7 +58,7 @@ namespace Logy.Maps.Geometry
         private void Calc()
         {
             _axis = Utils3D.Cartesian(this);
-            Matrix = Matrix3D.RotationTo(Basin3.Oz, _axis);
+            Matrix = Matrix3D.RotationTo(BasinAbstract.Oz, _axis);
         }
     }
 }

@@ -1,3 +1,4 @@
+#if DEBUG
 using System.Drawing.Imaging;
 using Logy.Maps.Metrics;
 using Logy.Maps.Metrics.Tests;
@@ -113,3 +114,4 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
         }
     }
 }
+#endif

@@ -119,7 +119,7 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
             {
                 if (_s_q == null)
                 {
-                    _s_q = new Plane(Normal.Value, Q3); // Q3 and not r - tested in OceanDataTests
+                    _s_q = new Plane(Normal.Value, Q3); // Q3, but not r - tested in OceanDataTests
                 }
                 return _s_q.Value;
             }
@@ -307,17 +307,17 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
             var aMeridian = datum.Centrifugal(this, out a, out aTraverse, out aVertical);
 
             var vector = new Vector3D(
-                GVpure - aVertical, 
+                GVpure - aVertical,
                 GHpureTraverse + aTraverse,
                 //Math.Sign(Vartheta) *
                 (GHpure + aMeridian));
             var coor = Utils3D.FromCartesian<Coor>(vector.Normalize());
             Delta_g_meridian = ///Math.Sign(Vartheta) * 
-                (
+            (
                 //Math.PI * .5
                 coor.Phi
-                );
-            Delta_g_traverse = Math.PI-coor.Lambda.Value ;
+            );
+            Delta_g_traverse = Math.PI - coor.Lambda.Value;
         }
 
         /// <param name="to">Direction</param>

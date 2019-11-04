@@ -1,3 +1,4 @@
+#if DEBUG
 using System;
 using System.Drawing.Imaging;
 using System.IO;
@@ -54,3 +55,4 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
         }
     }
 }
+#endif
