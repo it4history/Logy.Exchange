@@ -79,7 +79,7 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
         [Test]
         public void Waves100()
         {
-            for (int k = 2; k <= 5; k++)
+            for (int k = 2; k <= 2; k++)
             {
                 var man = new HealpixManager(k);
                 var data = new OceanData(man)
@@ -99,7 +99,6 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
                     if (basin.Hoq > 0) movedBasins++;
                 }
                 Assert.Less(movedBasins, 1);
-                break;
             }
         }
 

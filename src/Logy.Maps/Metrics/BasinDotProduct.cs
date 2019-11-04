@@ -54,7 +54,7 @@ namespace Logy.Maps.Metrics
 
             var aKQQaxis_traverse = GetKQQaxis_traverse();
             KQQaxisTanCotan_traverse = CalcKQQaxisTanCotan_traverse(aKQQaxis_traverse);
-            // return aKQQaxis_traverse;
+            /// return aKQQaxis_traverse;
         }
 
         public double IntersectTraverse(Basin3 otherBasin)

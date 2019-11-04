@@ -54,7 +54,7 @@ namespace Logy.Maps.ReliefMaps.Water
         /// <summary>
         /// maybe value decreases but not increases
         /// </summary>
-        // [IgnoreDataMember] was commented!
+        /// [IgnoreDataMember] was commented!
         public bool IntegrationEndless { get; set; } = true;
 
         [IgnoreDataMember]

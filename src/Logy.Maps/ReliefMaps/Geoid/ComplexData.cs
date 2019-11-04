@@ -50,8 +50,7 @@ namespace Logy.Maps.ReliefMaps.Geoid
                             heights = null;
                             break;
                         }
-                        var diff 
-                            /// = basin.Hoq - toBasin.Hoq;
+                        var diff /* = basin.Hoq - toBasin.Hoq; */
                          = _data.GetBasinHeight(basin, to) * basin.Koefs[to] * WaterModel.FluidityStable;
                         var height = Math.Abs(diff);
                         if (height > maxHeight)
@@ -60,13 +59,13 @@ namespace Logy.Maps.ReliefMaps.Geoid
                             maxHeightSigned = diff;
                             maxDirection = to;
                         }
-                        heights += diff;
-                        // check of currents heights = maxHeight;
+                        heights += diff; 
+                        /// check of currents heights = maxHeight;
                     }
                     var count = 500;
                     if (heights.HasValue)
                     {
-                        var heightsAbs = //heights.Value; 
+                        var heightsAbs = // heights.Value; 
                          Math.Abs(heights.Value);
                         if (_arrows.Count < count || _arrows.Keys[0] < heightsAbs)
                         {

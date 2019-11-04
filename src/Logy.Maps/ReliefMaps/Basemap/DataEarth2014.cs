@@ -71,7 +71,7 @@ namespace Logy.Maps.ReliefMaps.Basemap
         public T[] InitialBasins { private get; set; }
 
         [IgnoreDataMember]
-        public Action<HealCoor, Bitmap, Point2, int> AdditionalDraw;
+        public Action<HealCoor, Bitmap, Point2, int> AdditionalDraw { get; set; }
 
         /// <summary>
         /// value that treated as splitter for colors
@@ -94,10 +94,11 @@ namespace Logy.Maps.ReliefMaps.Basemap
 
         protected virtual bool IsReliefBedShape => IsReliefShape;
 
+        #region init methods that may be protected
         /// <summary>
         /// moved out constructor to enable deserialization
         /// </summary>
-        protected void Init()
+        public void Init()
         {
             PixMan = new PixelsManager<T>(HealpixManager, InitialBasins);
             Relief = new Earth2014Manager(ReliefType, Accuracy, IsReliefShape, _readAllAtStart);
@@ -124,6 +125,7 @@ namespace Logy.Maps.ReliefMaps.Basemap
             Colors = new ColorsManager(min.Value, max.Value, ColorsMiddle, isGrey);
             return Colors;
         }
+        #endregion
 
         /// <summary>
         /// either return altitude or fill basin.Altitude

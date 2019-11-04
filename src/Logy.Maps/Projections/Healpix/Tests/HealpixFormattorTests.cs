@@ -128,7 +128,7 @@ namespace Logy.Maps.Projections.Healpix.Tests
                     Assert.IsTrue(result < 1.0000001 && result > 0);
                 }
             }
-            // var equations = new HealpixFormattor<Basin3>(Data(6)).Format();
+            /// var equations = new HealpixFormattor<Basin3>(Data(6)).Format();
         }
     }
 }

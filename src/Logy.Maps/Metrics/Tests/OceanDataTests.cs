@@ -14,7 +14,7 @@ namespace Logy.Maps.Metrics.Tests
         [Test]
         public void HighBasin_31()
         {
-            var data = new OceanData(new HealpixManager(2)){Spheric = false, WithFormattor = false};
+            var data = new OceanData(new HealpixManager(2)) { Spheric = false, WithFormattor = false };
             data.Init();
             var basin3 = data.PixMan.Pixels[31];
             foreach (var basin in data.PixMan.Pixels)

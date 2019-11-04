@@ -45,6 +45,11 @@ namespace Logy.Maps.ReliefMaps.Meridian
             return new Line2D(pointK, q);
         }
 
+        public static Line2D OQ(Point2D q)
+        {
+            return new Line2D(O, q);
+        }
+
         public override void OnInit(HealpixManager man)
         {
             base.OnInit(man);
@@ -66,12 +71,7 @@ namespace Logy.Maps.ReliefMaps.Meridian
             // return (basin.KQQaxisTan - newKQQaxisTan)*10000000;
             KQQaxisTan = newKQQaxisTan;
         }
-
-        public static Line2D OQ(Point2D q)
-        {
-            return new Line2D(O, q);
-        }
-
+        
         /// <summary>
         /// todo do not use DistanceTo, return Point2D instead of double
         /// be careful with points

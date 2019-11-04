@@ -50,7 +50,10 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
 
         public override double RadiusOfEllipse
         {
-            get { return base.RadiusOfEllipse; }
+            get
+            {
+                return base.RadiusOfEllipse;
+            }
             protected set
             {
                 base.RadiusOfEllipse = value;
@@ -309,14 +312,10 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
             var vector = new Vector3D(
                 GVpure - aVertical,
                 GHpureTraverse + aTraverse,
-                //Math.Sign(Vartheta) *
-                (GHpure + aMeridian));
+                /* Math.Sign(Vartheta) * */ GHpure + aMeridian);
             var coor = Utils3D.FromCartesian<Coor>(vector.Normalize());
-            Delta_g_meridian = ///Math.Sign(Vartheta) * 
-            (
-                //Math.PI * .5
-                coor.Phi
-            );
+            Delta_g_meridian = /// Math.Sign(Vartheta) * // Math.PI * .5
+                coor.Phi;
             Delta_g_traverse = Math.PI - coor.Lambda.Value;
         }
 

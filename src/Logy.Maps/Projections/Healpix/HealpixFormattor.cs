@@ -18,7 +18,6 @@ namespace Logy.Maps.Projections.Healpix
 
         private readonly List<Equation> _equations = new List<Equation>();
 
-
         public HealpixFormattor(BasinDataAbstract<T> data, int? lastRingSet = null)
         {
             _lastRing = lastRingSet ?? data.HealpixManager.Nside;
@@ -168,14 +167,6 @@ namespace Logy.Maps.Projections.Healpix
             return GetResult(ring, nodeInRing, direction);
         }
 
-        /// <summary>
-        /// righter than symmetric calculated by (nodeInRing >= NodesInRing(ring))
-        /// </summary>
-        private bool SymmetricVert(int ring, int nodeInRing)
-        {
-            return ring <= nodeInRing * 2 + 1;
-        }
-
         /// <summary>only for north half of 1/4 part</summary>>
         /// <param name="ring">from 1 to _lastRing</param>
         /// <param name="nodeInRing">from 0 to NodesInRing(ring)</param>
@@ -208,6 +199,14 @@ namespace Logy.Maps.Projections.Healpix
         private static int NodesInRing(int row)
         {
             return (int)Math.Round(.5 * row, MidpointRounding.AwayFromZero);
+        }
+
+        /// <summary>
+        /// righter than symmetric calculated by (nodeInRing >= NodesInRing(ring))
+        /// </summary>
+        private bool SymmetricVert(int ring, int nodeInRing)
+        {
+            return ring <= (nodeInRing * 2) + 1;
         }
 
         private void Solve()
@@ -297,8 +296,7 @@ namespace Logy.Maps.Projections.Healpix
                                 }
                                 break;
                             case EquationType.Koefs52_2:
-                                if (node.Direction == 2 //&& node.Direction == 2 + (ring-1) % 2
-                                )
+                                if (node.Direction == 2) // && node.Direction == 2 + (ring-1) % 2
                                 {
                                     if (node.NodeInRing == 2 && equationNum + 5 == ring)
                                         return 1;
@@ -324,7 +322,7 @@ namespace Logy.Maps.Projections.Healpix
                             case EquationType.KoefsLast0_3:
                                 return .4;
                             case EquationType.Koefs52_2:
-                                return .3; //if 1 then 51_3 low // equationNum / 3d + .3;
+                                return .3; // if 1 then 51_3 low // equationNum / 3d + .3;
                             default:
                                 return 0;
                         }
@@ -360,7 +358,7 @@ namespace Logy.Maps.Projections.Healpix
                 equationNum = newNum; 
                 return EquationType.Koefs41_3; // works on lastring 8 and Data(3) with eddy 62-72-83-73-62
 
-                return EquationType.Koefs52_2; // if KoefsLast0_3 is 0   1 for 6rings, 2 - 7, 4 - 8
+// return EquationType.Koefs52_2; // if KoefsLast0_3 is 0   1 for 6rings, 2 - 7, 4 - 8
             }
             equationNum = row;
             return EquationType.Normal;

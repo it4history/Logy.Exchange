@@ -86,10 +86,10 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
                 HealpixManager
                 /*, -2600d, 2700d*/)
             {
-                //SamePolesAndEquatorGravitation = true,
-                //NoIntegrationFinish = true,
-                Visual = (basin, moved) => basin.GVpure * 1000 - 9822
-                //basin.r - Earth2014Manager.Radius2Add
+                // SamePolesAndEquatorGravitation = true,
+                // NoIntegrationFinish = true,
+                Visual = (basin, moved) => (basin.GVpure * 1000) - 9822
+                /// basin.r - Earth2014Manager.Radius2Add
             };
             SetData(new ShiftAxis(data)
             {
@@ -121,12 +121,12 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
                     }//*/
                 })
             {
-                //*
+                ///*
                 DesiredDatum = new Datum
                 {
                     X = newX,
                     Y = newY,
-                   // SiderealDayInSeconds = int.MaxValue,
+                   /// SiderealDayInSeconds = int.MaxValue,
                    Gravity = new Gravity { X = newX, Y = newY }
                 },//*/
                 Geoisostasy = true
@@ -134,7 +134,7 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
 
             SetData(algo); // inits data
 
-            //ShiftAxis(150, null, (frame)=>10);
+            // ShiftAxis(150, null, (frame)=>10);
 
             //*
             algo.SetDatum(algo.DesiredDatum);//Data.DoFrame();//ShiftAxis(10);
@@ -149,9 +149,8 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
                     SaveBitmap(frame);
                     return 100;
                 },
-                1);//*/
+                1); //*/
             /*Draw();//*/
-
         }
 
         [Test]

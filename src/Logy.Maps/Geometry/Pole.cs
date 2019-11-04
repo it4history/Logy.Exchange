@@ -29,7 +29,10 @@ namespace Logy.Maps.Geometry
         [JsonProperty("X")]
         public override double X
         {
-            get { return base.X; }
+            get
+            {
+                return base.X;
+            }
             set
             {
                 base.X = value;
@@ -44,7 +47,10 @@ namespace Logy.Maps.Geometry
         [JsonProperty("Y")]
         public override double Y
         {
-            get { return base.Y; }
+            get
+            {
+                return base.Y;
+            }
             set
             {
                 base.Y = value;

@@ -75,6 +75,7 @@ namespace Logy.Maps.ReliefMaps.Basemap
         /// make it constant
         /// </summary>
         public Plane Meridian => new Plane(O3, Qgeiod, OzEnd);
+
         /// <summary>
         /// make it constant
         /// </summary>
@@ -101,6 +102,7 @@ namespace Logy.Maps.ReliefMaps.Basemap
             }
         }
 
+        #region gravity attraction acceleratin vector
         /// <summary>
         /// acceleration, vertical to sphere, no Centrifugal
         /// </summary>
@@ -112,12 +114,14 @@ namespace Logy.Maps.ReliefMaps.Basemap
         /// max: .016 on +-45grad
         /// </summary>
         public double GHpure { get; set; }
+
         /// <summary>
         /// used when gravitational axis is shifted 
         /// GHpureTraverse and GHpure are orthogonal vectors that lay on S_sphere
         /// directed to East
         /// </summary>
         public double GHpureTraverse { get; set; }
+        #endregion
 
         /// <summary>
         /// angle, directed to equator of Oz (or opposite?)
@@ -257,7 +261,7 @@ namespace Logy.Maps.ReliefMaps.Basemap
             /// return g * 100;
 
             double a, aVertical;
-            // this is 3) method http://hist.tk/ory/Способ_расчета_центробежного_ускорения, use b.Q3 for 2)
+            /// this is 3) method http://hist.tk/ory/Способ_расчета_центробежного_ускорения, use b.Q3 for 2)
             var aMeridian = Datum.Normal.CentrifugalSimple(RadiusOfEllipse, varphi, theta, out a, out aVertical);
             /// vertical to ellipsoid surface
             var aVert = Math.Abs(a * Math.Sin(vartheta));
@@ -313,7 +317,6 @@ namespace Logy.Maps.ReliefMaps.Basemap
 
             // range -0.1..0.1m
             // return (basin.Delta_gq - newDelta_g) * basin.r;
-
             return Math.Atan((GHpureTraverse + aTraverse) / gv);
         }
 
