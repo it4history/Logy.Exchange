@@ -75,6 +75,7 @@
       <HintPath>..\packages\Skills.Xpo.1.0.0.18\lib\net40\Skills.Xpo.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Printing" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Xml" />
