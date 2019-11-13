@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
 using Logy.Maps.Projections;
@@ -36,8 +37,6 @@ namespace Logy.Maps.Geometry.Tests
             YResolution = 3;
         }
 
-        public override Projection Projection => Projection.Healpix;
-
         protected override ImageFormat ImageFormat => ImageFormat.Tiff;
 
         protected override DataForMap2D<City> MapData => new PoleSearchData(this);
@@ -45,16 +44,24 @@ namespace Logy.Maps.Geometry.Tests
 
     public class PoleSearchData : DataForMap2D<City>
     {
-        private const bool CurrentPoleDemo = true;
+        private const bool CurrentPoleDemo = false;
 
         // from https://chispa1707.livejournal.com/3235906.html
         private readonly City[] _cities =
         {
             new City("Житомир", 28.66, 50.25, 48.42), // старая широта 48° 25'
+            new City("Овруч", 28.81, 51.32, 49.12, true),
             new City("Яссы", 27.59, 47.17, 45.83), // старая широта 45°50'
             new City("Псков", 28.34, 57.82, 54), // старая широта 54°
+            new City("Полоцк", 28.78, 55.49, 52.15),
+
             new City("Рига", 24.11, 56.95, 53.58, true), // старая широта 53°35'
+            // new City("Вильнюс", 25.28, 54.68, 51.5),
+            // new City("Минск", 27.55, 53.92, 50.91),
+            // new City("Париж", 2.35, 48.86, 48.8),
         };
+
+        private readonly List<City> _poles = new List<City>();
 
         public PoleSearchData(Map2DBase<City> map) : base(map)
         {
@@ -85,7 +92,7 @@ namespace Logy.Maps.Geometry.Tests
                 var city = _cities[i];
                 var radianToPixel = city.DistanceTo(basin);
                 var toOldPoleRadian = ((90 - (CurrentPoleDemo ? city.Y : city.OldLatitudeDegree)) / 180) * Math.PI;
-                if (radianToPixel < .005)
+                if (radianToPixel < (K <= 7 ? .007 : .005))
                 {
                     city.Basin = basin;
                     return i + 1;
@@ -98,7 +105,10 @@ namespace Logy.Maps.Geometry.Tests
                     foundI = i;
                 }
             }
-            return found >= _cities.Length - (CurrentPoleDemo ? 0 : 1) ? -2 : foundI + 1;
+            var isOldPole = found >= _cities.Length - (CurrentPoleDemo ? 0 : 1);
+            if (isOldPole)
+                _poles.Add(basin);
+            return isOldPole ? -2 : foundI + 1;
         }
 
         public override void Draw(
@@ -125,6 +135,15 @@ namespace Logy.Maps.Geometry.Tests
                 g.DrawString(city.Name, font, new SolidBrush((Color)Colors.Get(i + 1)), left, top);
             }
             g.Flush();
+        }
+
+        public override void Log()
+        {
+            base.Log();
+            foreach (var pole in _poles)
+            {
+                Console.WriteLine("pole: {0}", pole);
+            }
         }
     }
 }
