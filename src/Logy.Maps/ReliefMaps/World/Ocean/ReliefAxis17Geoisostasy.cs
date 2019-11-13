@@ -58,43 +58,5 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
                 Data.Frame + 3);
             Draw();
         }
-
-        private static void DrawPolygon(Polygon polygon, Equirectangular equirectangular, int scale, Graphics g)
-        {
-            var positions = polygon.Coordinates[0].Coordinates;
-            var points = new System.Drawing.Point[positions.Count];
-            for (var i = 0; i < positions.Count; i++)
-            {
-                var position = (GeographicPosition)positions[i];
-                var coor = new Coor(position.Longitude, position.Latitude);
-                var point = equirectangular.OffsetDouble(coor, scale);
-                points[i] = new System.Drawing.Point((int)point.X, (int)point.Y);
-            }
-            g.DrawLines(new Pen(Color.Gray), points);
-        }
-
-        private void DrawPoliticalMap(Bitmap bmp)
-        {
-            var g = Graphics.FromImage(bmp);
-            var equirectangular = new Equirectangular(HealpixManager, YResolution);
-
-            var geo = JsonConvert.DeserializeObject<FeatureCollection>(File.ReadAllText(NeManager.Filepath));
-            foreach (var feature in geo.Features)
-            {
-                var multiPolygon = feature.Geometry as MultiPolygon;
-                if (multiPolygon != null)
-                {
-                    foreach (var polygon in multiPolygon.Coordinates)
-                    {
-                        DrawPolygon(polygon, equirectangular, Scale, g);
-                    }
-                }
-                else
-                {
-                    DrawPolygon((Polygon)feature.Geometry, equirectangular, Scale, g);
-                }
-            }
-            g.Flush();
-        }
     }
 }

@@ -28,7 +28,7 @@ namespace Logy.Maps.Geometry
         [DataMember]
         public bool GravityFirstUse { get; set; }
 
-        public bool GravityNormal => Gravity == null || Gravity.Axis == Basin3.Oz;
+        public bool GravityNormal => Gravity == null || Gravity.Axis == BasinAbstract.Oz;
         
         public static double CentrifugalByMatrix(Basin3 b, double a, Line3D axisOrtohonal, out double aTraverse, out double aVertical)
         {

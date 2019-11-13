@@ -247,12 +247,12 @@ namespace Logy.Maps.ReliefMaps.Basemap
 
             Vartheta = Ellipsoid.CalcVarTheta(Math.Tan(Theta));
             var goodDeflectionAngle = GoodDeflection(Vartheta, Delta_gq);
-            GHpure = CalcGpure(man, Varphi, Theta, Vartheta, goodDeflectionAngle); /// needs Vartheta
+            GHpure = CalcGpureAndInitROfEllipse(man, Varphi, Theta, Vartheta, goodDeflectionAngle); /// needs Vartheta
 
             Delta_g_meridian = goodDeflectionAngle;
         }
 
-        public double CalcGpure(HealpixManager man, double varphi, double theta, double vartheta, double goodDeflectionAngle)
+        public double CalcGpureAndInitROfEllipse(HealpixManager man, double varphi, double theta, double vartheta, double goodDeflectionAngle)
         {
             InitROfEllipse(man, Ellipsoid.Radius(varphi));
 

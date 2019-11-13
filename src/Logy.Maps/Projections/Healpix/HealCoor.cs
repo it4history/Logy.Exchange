@@ -119,7 +119,7 @@ Each grid file contains 10,800 x 21,600 = 233,280,000 records */
             S_sphere = new Plane(Matrixes.ToCartesian(this));
         }
 
-        /// <returns>angle</returns>
+        /// <returns>angle in radians</returns>
         public double DistanceTo(HealCoor coor)
         {
             var φ1 = Phi;
@@ -132,12 +132,11 @@ Each grid file contains 10,800 x 21,600 = 233,280,000 records */
                     (Math.Cos(φ1) * Math.Cos(φ2) *
                      Math.Sin(deltaλ / 2) * Math.Sin(deltaλ / 2));
             var c = 2 * Math.Atan2(Math.Sqrt(a), Math.Sqrt(1 - a));
-            return c;
+            return c; //*/
+
             /* Spherical Law of Cosines
-
-            var d = Math.Acos(Math.Sin(φ1) * Math.Sin(φ2) + Math.Cos(φ1) * Math.Cos(φ2) * Math.Cos(Δλ));
-
-            return d; */
+            var d = Math.Acos(Math.Sin(φ1) * Math.Sin(φ2) + Math.Cos(φ1) * Math.Cos(φ2) * Math.Cos(deltaλ));
+            return d; //*/
         }
 
         public HealCoor Symmetric(HealpixManager man)

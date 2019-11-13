@@ -13,7 +13,7 @@ namespace Logy.Maps.ReliefMaps.Map2D
         /// <summary>
         /// bad design
         /// </summary>
-        private readonly Map2DBase<T> _map;
+        protected readonly Map2DBase<T> Map;
 
         protected DataForMap2D(Map2DBase<T> map) : this(map, null)
         {
@@ -21,7 +21,7 @@ namespace Logy.Maps.ReliefMaps.Map2D
 
         protected DataForMap2D(Map2DBase<T> map, T[] basins) : base(basins)
         {
-            _map = map;
+            Map = map;
             K = map.HealpixManager.K;
 
             // do not deserialize descendant classes 
@@ -33,14 +33,14 @@ namespace Logy.Maps.ReliefMaps.Map2D
         /// </summary>
         public Point2[] Basins()
         {
-            switch (_map.Projection)
+            switch (Map.Projection)
             {
                 case Projection.Healpix:
                 case Projection.Healpix2EquirectangularFast:
                     return PixMan.Pixels;
                 case Projection.Healpix2Equirectangular:
                 case Projection.Equirectangular:
-                    var height = _map.YResolution * HealpixManager.Nside;
+                    var height = Map.YResolution * HealpixManager.Nside;
                     var width = 4 * HealpixManager.Nside;
                     var points = new Point2[height * width];
                     for (var y = 0; y < height; y++)
@@ -58,7 +58,7 @@ namespace Logy.Maps.ReliefMaps.Map2D
 
         public override void Log()
         {
-            Console.WriteLine("lines: {0}", _map.YResolution * HealpixManager.Nside);
+            Console.WriteLine("lines: {0}", Map.YResolution * HealpixManager.Nside);
             base.Log();
         }
 
@@ -70,7 +70,7 @@ namespace Logy.Maps.ReliefMaps.Map2D
         internal void InitPoints(Point2[] pixels, bool isGrey)
         {
             ColorsManager colorsManager = null;
-            switch (_map.Projection)
+            switch (Map.Projection)
             {
                 case Projection.Healpix:
                 case Projection.Healpix2EquirectangularFast:
@@ -85,13 +85,13 @@ namespace Logy.Maps.ReliefMaps.Map2D
                         var pix = (from pixel in pixels
                                 select (T)Activator.CreateInstance(
                                     typeof(HealCoor),
-                                    Equirectangular.CoorFromXY(pixel, _map.YResolution, HealpixManager)))
+                                    Equirectangular.CoorFromXY(pixel, Map.YResolution, HealpixManager)))
                             .ToArray();
                         colorsManager = InitAltitudes(pix, isGrey);
                     }
                     break;
             }
-            colorsManager.SetColorLists(_map.ColorsAbove, _map.ColorsUnder);
+            colorsManager.SetColorLists(Map.ColorsAbove, Map.ColorsUnder);
         }
     }
 }

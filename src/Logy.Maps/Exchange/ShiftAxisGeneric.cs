@@ -138,7 +138,7 @@ namespace Logy.Maps.Exchange
 
                             var vartheta = Ellipsoid.CalcVarTheta(Math.Tan(theta));
                             var delta_gq = theta - vartheta;
-                            var gh = basin.CalcGpure(
+                            var gh = basin.CalcGpureAndInitROfEllipse(
                                 DataAbstract.HealpixManager,
                                 varphi, 
                                 theta, 

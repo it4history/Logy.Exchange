@@ -5,12 +5,16 @@ using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 using System.IO;
+using GeoJSON.Net.Feature;
+using GeoJSON.Net.Geometry;
 using Logy.Maps.Coloring;
+using Logy.Maps.Exchange.Naturalearth;
 using Logy.Maps.Projections;
 using Logy.Maps.Projections.Healpix;
 using Logy.Maps.ReliefMaps.Basemap;
 using Logy.MwAgent.DotNetWikiBot;
 using Logy.MwAgent.Sphere;
+using Newtonsoft.Json;
 using NUnit.Framework;
 
 namespace Logy.Maps.ReliefMaps.Map2D
@@ -53,6 +57,8 @@ namespace Logy.Maps.ReliefMaps.Map2D
         public int YResolution { get; set; } = 2;
         public int Scale { get; set; } = 1;
 
+        public int Top => HealpixManager.Nside * YResolution * Scale;
+
         #region colors
         public virtual SortedList<int, Color3> ColorsAbove => ColorsManager.Gyr1;
 
@@ -94,6 +100,15 @@ namespace Logy.Maps.ReliefMaps.Map2D
                 new ProcessStartInfo("xdg-open", name) { UseShellExecute = false });
             else
                 Process.Start(name);
+        }
+
+        public static Graphics GetFont(Bitmap bmp)
+        {
+            var g = Graphics.FromImage(bmp);
+            g.SmoothingMode = SmoothingMode.AntiAlias;
+            g.InterpolationMode = InterpolationMode.HighQualityBicubic;
+            g.PixelOffsetMode = PixelOffsetMode.HighQuality;
+            return g;
         }
 
         [Test]
@@ -169,7 +184,6 @@ namespace Logy.Maps.ReliefMaps.Map2D
             if (!LegendToDraw)
                 return;
 
-            var top = YResolution * HealpixManager.Nside * Scale;
             var left = HealpixManager.Nside * Scale;
             const int Upbottomedge = 3;
             int? left0 = null;
@@ -197,7 +211,7 @@ namespace Logy.Maps.ReliefMaps.Map2D
                         else
                             c = (Color)data.Colors.Get(value);
                     }
-                    bmp.SetPixel(x, top + y, c);
+                    bmp.SetPixel(x, Top + y, c);
                 }
             }
 
@@ -205,12 +219,12 @@ namespace Logy.Maps.ReliefMaps.Map2D
             var font = new Font("Tahoma", 8 + (K > 7 ? (K - 7) * 8 : 0));
             var smin = data.Colors.Min.ToString("0.#");
             var measure = g.MeasureString(smin, font);
-            var stringTop = top + 3 + ((LegendHeight - 3 - measure.Height) / 2);
+            var stringTop = Top + 3 + ((LegendHeight - 3 - measure.Height) / 2);
             var layoutRectangle = new RectangleF(
                 left - 9 - measure.Width,
                 stringTop,
                 left,
-                top + LegendHeight);
+                Top + LegendHeight);
             g.DrawString(smin, font, Brushes.Black, layoutRectangle);
 
             var smax = data.Colors.Max.ToString("0.#");
@@ -218,7 +232,7 @@ namespace Logy.Maps.ReliefMaps.Map2D
                 left + (2 * HealpixManager.Nside * Scale) + 10,
                 stringTop,
                 left + (3 * HealpixManager.Nside * Scale),
-                top + LegendHeight);
+                Top + LegendHeight);
             g.DrawString(smax + data.Dimension, font, Brushes.Black, layoutRectangle);
 
             var middle = data.Colors.Middle.ToString("0.#");
@@ -235,15 +249,6 @@ namespace Logy.Maps.ReliefMaps.Map2D
                 g.DrawString(middle, font, Brushes.Black, rectangle);
             }
             g.Flush();
-        }
-
-        protected Graphics GetFont(Bitmap bmp)
-        {
-            var g = Graphics.FromImage(bmp);
-            g.SmoothingMode = SmoothingMode.AntiAlias;
-            g.InterpolationMode = InterpolationMode.HighQualityBicubic;
-            g.PixelOffsetMode = PixelOffsetMode.HighQuality;
-            return g;
         }
 
         protected string GetFileName(ColorsManager colors, string frame = null)
@@ -265,6 +270,44 @@ namespace Logy.Maps.ReliefMaps.Map2D
             var fileName = GetFileName(colors, frame);
             bmp.Save(fileName, ImageFormat);
             return fileName;
+        }
+
+        public static void DrawPoliticalMap(Bitmap bmp, HealpixManager man, int yResolution, int scale)
+        {
+            var g = Graphics.FromImage(bmp);
+            var equirectangular = new Equirectangular(man, yResolution);
+
+            var geo = JsonConvert.DeserializeObject<FeatureCollection>(File.ReadAllText(NeManager.Filepath));
+            foreach (var feature in geo.Features)
+            {
+                var multiPolygon = feature.Geometry as MultiPolygon;
+                if (multiPolygon != null)
+                {
+                    foreach (var polygon in multiPolygon.Coordinates)
+                    {
+                        DrawPolygon(polygon, equirectangular, scale, g);
+                    }
+                }
+                else
+                {
+                    DrawPolygon((Polygon)feature.Geometry, equirectangular, scale, g);
+                }
+            }
+            g.Flush();
+        }
+
+        private static void DrawPolygon(Polygon polygon, Equirectangular equirectangular, int scale, Graphics g)
+        {
+            var positions = polygon.Coordinates[0].Coordinates;
+            var points = new System.Drawing.Point[positions.Count];
+            for (var i = 0; i < positions.Count; i++)
+            {
+                var position = (GeographicPosition)positions[i];
+                var coor = new Coor(position.Longitude, position.Latitude);
+                var point = equirectangular.OffsetDouble(coor, scale);
+                points[i] = new System.Drawing.Point((int)point.X, (int)point.Y);
+            }
+            g.DrawLines(new Pen(Color.Gray), points);
         }
     }
 }

@@ -1,7 +1,6 @@
 ﻿using Logy.Entities.Import;
 using Logy.Entities.Products;
 using Logy.ImportExport.Bible;
-using Skills.Xpo;
 
 namespace Logy.ImportExport
 {

@@ -173,12 +173,13 @@ namespace Logy.Maps.ReliefMaps.Basemap
             if (basin.HasWater())
             {
                 var moved = 0d;
+                var movedVolume = 0d;
                 for (int to = 0; to < 4; to++)
                 {
                     var toBasin = basin.Neighbors[to];
                     var from = basin.Opposites[to];
                     var heightWithKoef = GetBasinHeight(basin, toBasin, to, from) * basin.Koefs[to];
-                    Water.PutV(
+                    movedVolume += Water.PutV(
                         basin,
                         toBasin,
                         heightWithKoef,

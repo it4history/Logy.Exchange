@@ -81,6 +81,7 @@
     <Compile Include="Exchange\ShiftAxis.cs" />
     <Compile Include="Geometry\Gravity.cs" />
     <Compile Include="Geometry\Pole.cs" />
+    <Compile Include="Geometry\Tests\PoleSearchTests.cs" />
     <Compile Include="Geometry\Tests\Utils3DTests.cs" />
     <Compile Include="Geometry\Utils3D.cs" />
     <Compile Include="Geometry\Datum.cs" />
@@ -117,6 +118,7 @@
     <Compile Include="ReliefMaps\World\Earth2014Correction.cs" />
     <Compile Include="ReliefMaps\World\Earth2014CorrectionData.cs" />
     <Compile Include="ReliefMaps\World\Ocean\GeometricDistortion.cs" />
+    <Compile Include="ReliefMaps\World\Ocean\OceanMapGravityAxisChange.cs" />
     <Compile Include="ReliefMaps\World\Ocean\ReliefAxis17Geoisostasy.cs" />
     <Compile Include="ReliefMaps\World\Ocean\ReliefAxis17Parameters.cs" />
     <Compile Include="ReliefMaps\World\Percentage.cs" />

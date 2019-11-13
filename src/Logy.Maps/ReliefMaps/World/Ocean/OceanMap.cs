@@ -3,6 +3,7 @@ using System;
 using Logy.Maps.Exchange;
 using Logy.Maps.Exchange.Earth2014;
 using Logy.Maps.Geometry;
+using Logy.Maps.Metrics;
 using Logy.Maps.Metrics.Tests;
 using Logy.Maps.Projections.Healpix;
 using Logy.Maps.ReliefMaps.Map2D;
@@ -12,7 +13,7 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
 {
     public class OceanMap : RotationStopMap<Basin3>
     {
-        public OceanMap() : this(5)
+        public OceanMap() : this(6)
         {
         }
         public OceanMap(int k) : base(k)
@@ -99,61 +100,6 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
         }
 
         [Test]
-        public void Water_ChangeAxis_Geoisostasy()
-        {
-            var newX = 30;
-            var newY = 45;
-            Subdir = $@"x{newX}_y{newY}";
-            var algo = new ShiftAxis(new OceanData(HealpixManager)
-                {
-                    /*
-                    Visual = (basin, moved) =>
-                    {
-                        return basin.Delta_g_traverse * 1000;
-                        return basin.Delta_g_meridian * 1000;
-                        return basin.RadiusOfEllipse - Earth2014Manager.Radius2Add;
-                        return Math.Sqrt(basin.Delta_g_meridian * basin.Delta_g_meridian
-                                         + basin.Delta_g_traverse * basin.Delta_g_traverse) * 1000;
-                        return basin.GHpure * 1000;
-                        return basin.GHpureTraverse * 1000;
-                        return (basin.GVpure - EllipsoidAcceleration.GWithAOnEquator) * 1000;
-                        return Math.Sqrt(basin.GHpure * basin.GHpure + basin.GHpureTraverse * basin.GHpureTraverse) * 1000;
-                    }//*/
-                })
-            {
-                ///*
-                DesiredDatum = new Datum
-                {
-                    X = newX,
-                    Y = newY,
-                   /// SiderealDayInSeconds = int.MaxValue,
-                   Gravity = new Gravity { X = newX, Y = newY }
-                },//*/
-                Geoisostasy = true
-            };
-
-            SetData(algo); // inits data
-
-            // ShiftAxis(150, null, (frame)=>10);
-
-            //*
-            algo.SetDatum(algo.DesiredDatum);//Data.DoFrame();//ShiftAxis(10);
-
-            var p = HealpixManager.GetP(HealpixManager.Nside + 5, HealpixManager.Nside * 2);
-            //Data.PixMan.Pixels[p].Hoq = 10000;
-
-            Data.DoFrames(
-                (frame) =>
-                {
-                    Draw();
-                    SaveBitmap(frame);
-                    return 100;
-                },
-                1); //*/
-            /*Draw();//*/
-        }
-
-        [Test]
         public void Hto_Spheric()
         {
             var algorithm = new ShiftAxis(
@@ -201,7 +147,8 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
         [Test]
         public void Water_RotationStopped()
         {
-            var algorithm = new ShiftAxis(new OceanData(HealpixManager/*,-3000d, 3000d*/));
+            var algorithm = new ShiftAxis(new OceanData(HealpixManager /*,-3000d, 3000d*/)
+                { SamePolesAndEquatorGravitation = false });
             SetData(algorithm);
             algorithm.ChangeRotation(-HealpixManager.Nside);
             Data.DoFrames(
