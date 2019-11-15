@@ -3,6 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
+using System.Linq;
+using System.ServiceModel.Configuration;
 using Logy.Maps.Projections;
 using Logy.Maps.Projections.Healpix;
 using Logy.Maps.ReliefMaps.Map2D;
@@ -27,6 +29,12 @@ namespace Logy.Maps.Geometry.Tests
         public string Name { get; set; }
         public bool Lefted { get; set; }
         public City Basin { get; set; }
+        public string Except { get; set; }
+
+        public override string ToString()
+        {
+            return base.ToString() + (string.IsNullOrEmpty(Except) ? null : " except: " + Except);
+        }
     }
 
     public class PoleSearchByLatitude : Map2DBase<City>
@@ -45,20 +53,26 @@ namespace Logy.Maps.Geometry.Tests
     public class PoleSearchData : DataForMap2D<City>
     {
         private const bool CurrentPoleDemo = false;
+        private const int AllowedExceptionCitiesCount = CurrentPoleDemo ? 0 : 0;
 
-        // from https://chispa1707.livejournal.com/3235906.html
-        private readonly City[] _cities =
+        // from http://hist.tk/ory/Карта_театра_войны_Российской_империи_против_Франции_и_её_союзников,_1813
+        private readonly List<City> _cities = new List<City>
         {
-            new City("Житомир", 28.66, 50.25, 48.42), // старая широта 48° 25'
-            new City("Овруч", 28.81, 51.32, 49.12, true),
-            new City("Яссы", 27.59, 47.17, 45.83), // старая широта 45°50'
-            new City("Псков", 28.34, 57.82, 54), // старая широта 54°
-            new City("Полоцк", 28.78, 55.49, 52.15),
+            new City("Житомир", 28.66, 50.25, 48.43), // старая широта 48° 25' (48.42)
+            new City("Овруч", 28.81, 51.32, 49.2, true), // 49.12
+            new City("Яссы", 27.59, 47.17, 45.99), // старая широта 45°50' (45.83)
 
-            new City("Рига", 24.11, 56.95, 53.58, true), // старая широта 53°35'
-            // new City("Вильнюс", 25.28, 54.68, 51.5),
-            // new City("Минск", 27.55, 53.92, 50.91),
+            new City("Псков", 28.34, 57.82, 54.3), // старая широта 54° (54)
+            new City("Полоцк", 28.78, 55.49, 52.3), // 52.15
+            new City("Рига", 24.11, 56.95, 54.9, true), // старая широта 53°35' (53.58)
+
+            new City("Вильнюс", 25.28, 54.68, 52.8, true), // 51.5
+            new City("Минск", 27.55, 53.92, 51.4), // 50.91
             // new City("Париж", 2.35, 48.86, 48.8),
+
+
+            //new City("Москва", 37.62, 55.76, 50),
+            //new City("Питер", 30.32, 59.95, 55),
         };
 
         private readonly List<City> _poles = new List<City>();
@@ -69,46 +83,35 @@ namespace Logy.Maps.Geometry.Tests
 
         public override double? GetAltitude(City basin)
         {
-            double width;
-            switch (K)
+            var accuracyError = HealpixManager.ThetaPix;
+            if (CurrentPoleDemo)
+                accuracyError *= 2;
+            var found = new List<City>();
+            foreach (var city in _cities)
             {
-                default:
-                    width = .005;
-                    break;
-                case 8:
-                    width = CurrentPoleDemo ? .002 : .0045; // .002 visually good
-                    break;
-                case 9:
-                    width = .001;
-                    break;
-                case 10:
-                    width = .0005;
-                    break;
-            }
-            var found = 0;
-            int? foundI = null;
-            for (var i = 0; i < _cities.Length; i++)
-            {
-                var city = _cities[i];
                 var radianToPixel = city.DistanceTo(basin);
-                var toOldPoleRadian = ((90 - (CurrentPoleDemo ? city.Y : city.OldLatitudeDegree)) / 180) * Math.PI;
                 if (radianToPixel < (K <= 7 ? .007 : .005))
                 {
                     city.Basin = basin;
-                    return i + 1;
+                    return ColorIndex(city);
                 }
 
-                if (radianToPixel >= toOldPoleRadian - width
-                    && radianToPixel <= toOldPoleRadian + width)
+                var toOldPoleRadian = ((90 - (CurrentPoleDemo ? city.Y : city.OldLatitudeDegree)) / 180) * Math.PI;
+                if (radianToPixel >= toOldPoleRadian - accuracyError
+                    && radianToPixel <= toOldPoleRadian + accuracyError)
                 {
-                    found++;
-                    foundI = i;
+                    found.Add(city);
                 }
             }
-            var isOldPole = found >= _cities.Length - (CurrentPoleDemo ? 0 : 1);
+            var isOldPole = found.Count >= _cities.Count - AllowedExceptionCitiesCount;
             if (isOldPole)
+            {
+                if (found.Count < _cities.Count)
+                    basin.Except = (from c in _cities where !found.Contains(c) select c.Name)
+                        .Aggregate((s, prop) => s + ", " + prop);
                 _poles.Add(basin);
-            return isOldPole ? -2 : foundI + 1;
+            }
+            return isOldPole ? -1 : (found.Count == 0 ? (int?)null : ColorIndex(found.Last()));
         }
 
         public override void Draw(
@@ -123,16 +126,15 @@ namespace Logy.Maps.Geometry.Tests
             base.Draw(bmp, deltaX, basins, yResolution, scale, projection);
             Map2DBase<HealCoor>.DrawPoliticalMap(bmp, HealpixManager, yResolution, scale);
             var g = Map2DBase<HealCoor>.GetFont(bmp);
-            var font = new Font("Tahoma", 10);
+            var font = new Font("Tahoma", K + 1);
             var equirectangular = new Equirectangular(HealpixManager, yResolution);
-            for (var i = 0; i < _cities.Length; i++)
+            foreach (var city in _cities)
             {
-                var city = _cities[i];
                 var point = equirectangular.OffsetDouble(city.Basin, scale);
                 var measure0 = g.MeasureString(city.Name, font);
                 var left = (city.Lefted ? -(int)measure0.Width : 5) + (int)point.X;
                 var top = (int)point.Y - (int)measure0.Height / 2; /// Map.Top + 15 * (i - _cities.Length - 1)
-                g.DrawString(city.Name, font, new SolidBrush((Color)Colors.Get(i + 1)), left, top);
+                g.DrawString(city.Name, font, new SolidBrush((Color)Colors.Get(ColorIndex(city))), left, top);
             }
             g.Flush();
         }
@@ -144,6 +146,11 @@ namespace Logy.Maps.Geometry.Tests
             {
                 Console.WriteLine("pole: {0}", pole);
             }
+        }
+
+        private int ColorIndex(City city)
+        {
+            return _cities.IndexOf(city) + 1;
         }
     }
 }
