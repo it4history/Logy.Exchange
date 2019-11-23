@@ -6,17 +6,26 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
 {
     public class OceanMapGravityAxisChange : OceanMap
     {
-        public OceanMapGravityAxisChange() : base(2)
+        public OceanMapGravityAxisChange() : this(6)
+        {
+        }
+        public OceanMapGravityAxisChange(int k) : base(k)
         {
         }
 
+        public string SubdirByDatum(Datum datum)
+        {
+            return $@"x{datum.X}_y{datum.Y}" + "GravityShift";
+        }
+
+        /// <summary>
+        /// calculates correction json
+        /// </summary>
         [Test]
         public void ChangeAxis_GravityEllipsoidCorrection()
         {
-            var newY = 0; // 0, 45, 30, 60
-            var newX = 0; // 0
-            var withGravity = true;
-            Subdir = $@"x{newX}_y{newY}" + (withGravity ? "GravityShift" : null);
+            var newY = 73; // 0, 45, 30, 60
+            var newX = -40; // 0
             var algo = new ShiftAxis(new OceanData(HealpixManager)
             {
                 IntegrationEndless = false,
@@ -41,51 +50,15 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
                     X = newX,
                     Y = newY,
                     // SiderealDayInSeconds = int.MaxValue,
-                    Gravity = withGravity ? new Gravity { X = newX, Y = newY } : null
+                    Gravity = new Gravity { X = newX, Y = newY }
                 }
             };
 
+            Subdir = SubdirByDatum(algo.DesiredDatum);
+
             SetData(algo, true); // inits data
 
-            algo.SetDatum(algo.DesiredDatum);
-
-            Data.DoFrames(
-                (frame) =>
-                {
-                    Draw();
-                    SaveBitmap(frame);
-                    return 1;
-                },
-                1000);
-        }
-
-        [Test]
-        public void Water_ChangeAxis_Geoisostasy()
-        {
-            var newY = 73;
-            var newX = -40;
-            var algo = new ShiftAxis(new OceanData(HealpixManager)
-            {
-            })
-            {
-                DesiredDatum = new Datum
-                {
-                    X = newX,
-                    Y = newY,
-                    Gravity = new Gravity { X = newX, Y = newY }
-                },
-                Geoisostasy = true
-            };
-
-            SetData(algo); // inits data
-
-            // ShiftAxis(150, null, (frame)=>10);
-
-            //*
-            algo.SetDatum(algo.DesiredDatum);//Data.DoFrame();//ShiftAxis(10);
-
-            var p = HealpixManager.GetP(HealpixManager.Nside + 5, HealpixManager.Nside * 2);
-            //Data.PixMan.Pixels[p].Hoq = 10000;
+            algo.SetDatum(algo.DesiredDatum, 0);
 
             Data.DoFrames(
                 (frame) =>
@@ -94,8 +67,7 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
                     SaveBitmap(frame);
                     return 100;
                 },
-                1000); //*/
-            /*Draw();//*/
+                1000);
         }
     }
 }

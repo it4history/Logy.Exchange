@@ -13,7 +13,7 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
 {
     public class ReliefAxis17Geoisostasy : ReliefMap
     {
-        public ReliefAxis17Geoisostasy() : base(5)
+        public ReliefAxis17Geoisostasy() : base(6)
         {
         }
 
@@ -24,28 +24,25 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
         [Test]
         public void AxisChange()
         {
-            // Subdir = "from 423";
             var data = new OceanData(HealpixManager)
             {
                 WithRelief = true,
             };
 
-            SetData(new ShiftAxis(data) { Slow = true, Geoisostasy = true }, true);
+            SetData(new ShiftAxis(data) { Slow = false, Geoisostasy = true }, true);
 
             ShiftAxisBalanced(4000);
         }
 
         [Test]
-        public void WithContours()
+        public void CheckEddies()
         {
             Subdir = "checkEddies";
 
-            // var map = new ReliefAxis17Geoisostasy(K);
             Bundle = Bundle<Basin3>.Deserialize(File.ReadAllText(StatsFileName(3674)));
             /*
             Data.CalcAltitudes(); 
             Data.SetColorLists();
-            Draw();
             DrawPoliticalMap(Bmp); */
 
             Data.DoFrames(

@@ -17,6 +17,8 @@ namespace Logy.Maps.ReliefMaps.Map2D
     {
         private bool _jsonNeeded;
 
+        public const string FilePrefix = "stats";
+
         public RotationStopMap() : this(6)
         {
         }
@@ -26,7 +28,7 @@ namespace Logy.Maps.ReliefMaps.Map2D
 
         public Bitmap Bmp { get; set; }
 
-        public Bundle<T> Bundle { get; protected set; }
+        public Bundle<T> Bundle { get; set; }
 
         public override Projection Projection => Projection.Healpix2EquirectangularFast;
 
@@ -58,11 +60,6 @@ namespace Logy.Maps.ReliefMaps.Map2D
         /// </summary>
         protected override ImageFormat ImageFormat => ImageFormat.Png;
 
-        public string StatsFileName(int? frame = null)
-        {
-            return Path.Combine(Dir, $"stats{FrameToString(frame)}.json");
-        }
-
         /// <summary>
         /// like a constructor
         /// </summary>
@@ -89,6 +86,11 @@ namespace Logy.Maps.ReliefMaps.Map2D
             }
         }
 
+        public string StatsFileName(int? frame = null)
+        {
+            return Path.Combine(Dir, $"{FilePrefix}{FrameToString(frame)}.json");
+        }
+
         [SetUp]
         public virtual void SetUp()
         {
@@ -112,16 +114,16 @@ namespace Logy.Maps.ReliefMaps.Map2D
                 {
                     SaveJson(Data.Frame);
                 }
-                else
+                if (Data.Colors != null)
                 {
-                    if (Data.Colors != null)
+                    var fileName = GetFileName(Data.Colors, FrameToString(Data.Frame));
+                    if (!File.Exists(fileName))
                     {
-                        // for meridian maps mainly
+                        // for meridian maps or when !IntegrationEndless
                         SaveBitmap(Data.Frame);
                     }
+                    OpenPicture(fileName);
                 }
-                if (Data.Colors != null)
-                    OpenPicture(GetFileName(Data.Colors, FrameToString(Data.Frame)));
             }
         }
 

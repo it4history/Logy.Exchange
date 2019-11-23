@@ -28,7 +28,7 @@ namespace Logy.Maps.Exchange
         /// <summary>
         /// deserialize Data manually
         /// 
-        /// should be stored here as inited
+        /// should be stored here as inited but may be not inited during Bundle.Deserialize
         /// </summary>
         [IgnoreDataMember]
         public WaterMoving<T> DataAbstract { get; protected set; }

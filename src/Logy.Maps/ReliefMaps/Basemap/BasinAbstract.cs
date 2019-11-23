@@ -60,11 +60,13 @@ namespace Logy.Maps.ReliefMaps.Basemap
 
         /// <summary>
         /// geoid surface set by a mathematical formula
+        /// 
+        /// good to set it in InitROfEllipse(...)
         /// </summary>
         public virtual double RadiusOfEllipse
         {
             get;
-            protected set;
+            set;
         }
         public bool RadiusSpheric { get; private set; }
 

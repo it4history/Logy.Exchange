@@ -95,6 +95,7 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
                 framesCount,
                 (frame) =>
                 {
+                    // has sense if Slow == true
                     switch (K)
                     {
                         // to make secondShift "Y":86.6 on frame 5 (or 9 if algo.Geoisostasy) and following on frame 61, 121 etc

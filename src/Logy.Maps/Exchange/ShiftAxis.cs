@@ -1,7 +1,10 @@
 ﻿using System;
+using System.IO;
 using System.Linq;
 using System.Runtime.Serialization;
 using Logy.Maps.Geometry;
+using Logy.Maps.ReliefMaps.Basemap;
+using Logy.Maps.ReliefMaps.Map2D;
 using Logy.Maps.ReliefMaps.World.Ocean;
 
 namespace Logy.Maps.Exchange
@@ -72,6 +75,14 @@ namespace Logy.Maps.Exchange
                                 Gravity = new Gravity { X = newX, Y = newY }
                             };
                             poleShift++;
+
+                            var correctionMap = new OceanMapGravityAxisChange(Data.K);
+                            var format = $"{correctionMap.Dir}{correctionMap.SubdirByDatum(datum)}";
+                            var json = Directory.GetFiles(format, RotationStopMap<BasinAbstract>.FilePrefix + "*.json").FirstOrDefault();
+                            if (json == null)
+                                throw new ApplicationException("needed correction at " + format);
+
+                            datum.CorrectionBundle = Bundle<Basin3>.Deserialize(File.ReadAllText(json), true);
                         }
                         SetDatum(datum, frame + 1); /// will be applied on next DoFrame()
                     }

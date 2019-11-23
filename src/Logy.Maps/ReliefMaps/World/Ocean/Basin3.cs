@@ -54,7 +54,7 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
             {
                 return base.RadiusOfEllipse;
             }
-            protected set
+            set
             {
                 base.RadiusOfEllipse = value;
                 _actualQ3 = false;

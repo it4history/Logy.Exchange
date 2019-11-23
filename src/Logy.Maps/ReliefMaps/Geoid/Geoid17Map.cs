@@ -47,12 +47,12 @@ namespace Logy.Maps.ReliefMaps.Geoid
         {
             var rectangle = new Rectangle<Basin3>(-98, 57, -82, 67);
             var bundle = Bundle<Basin3>.Deserialize(
-                File.ReadAllText(map.StatsFileName(4000)), // 3789 for Subdir = "MeanEdge/fluidity0.7 from2761Middle"
-                false, 
+                File.ReadAllText(map.StatsFileName(4000)) // 3789 for Subdir = "MeanEdge/fluidity0.7 from2761Middle"
+                /*, false, 
                 d =>
                 {
                     // d.InitialBasins = rectangle.Subset(reliefAxis17.HealpixManager);
-                });
+                }*/);
             var data = bundle.Algorithm.DataAbstract;
             data.DoFrame(); /// ? data.CalcAltitudes();
 

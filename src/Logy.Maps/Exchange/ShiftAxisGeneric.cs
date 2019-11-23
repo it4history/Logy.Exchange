@@ -144,6 +144,8 @@ namespace Logy.Maps.Exchange
                                 theta, 
                                 vartheta, 
                                 BasinAbstract.GoodDeflection(vartheta, delta_gq));
+                            if (datum.CorrectionBundle != null)
+                                basin.RadiusOfEllipse += datum.CorrectionBundle.Basins[DataAbstract.K][basin.P].Hoq;
 
                             // GHpure projections
                             /*was
@@ -157,7 +159,7 @@ namespace Logy.Maps.Exchange
                             basin.GHpure = Math.Sign(basin.Vartheta) * gh_sphere[1];
                             basin.GHpureTraverse = gh_sphere[0];//*/
 
-                            //*
+                                //*
                             var axisPlane = new Plane(BasinAbstract.O3, basin.Qgeiod, datum.Gravity.Axis.ToPoint3D());
                             var axis_sphere = axisPlane.IntersectionWith(basin.S_sphere).Direction;//S_sphere may be sphere without Radius
                             /*var correctionAngle = Math.PI / 2 - axis_sphere.AngleTo(basin.RadiusLine).Radians;

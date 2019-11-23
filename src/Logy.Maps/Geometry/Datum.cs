@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Runtime.Serialization;
+using Logy.Maps.Exchange;
 using Logy.Maps.Metrics;
 using Logy.Maps.ReliefMaps.Basemap;
 using Logy.Maps.ReliefMaps.World.Ocean;
@@ -29,7 +30,9 @@ namespace Logy.Maps.Geometry
         public bool GravityFirstUse { get; set; }
 
         public bool GravityNormal => Gravity == null || Gravity.Axis == BasinAbstract.Oz;
-        
+
+        public Bundle<Basin3> CorrectionBundle { get; set; }
+
         public static double CentrifugalByMatrix(Basin3 b, double a, Line3D axisOrtohonal, out double aTraverse, out double aVertical)
         {
             var aOnSurface = axisOrtohonal.Direction * b.Matrix;

@@ -41,7 +41,7 @@ namespace Logy.Maps.Exchange
         /// </summary>
         public Dictionary<int, T[]> Basins { get; } = new Dictionary<int, T[]>();
 
-        public static Bundle<T> Deserialize(string json, bool ignoreNewBasins = false, Action<WaterMoving<T>> dataChange = null)
+        public static Bundle<T> Deserialize(string json, bool ignoreNewBasins = false/*, Action<WaterMoving<T>> dataChange = null*/)
         {
             var bundle = JsonConvert.DeserializeObject<Bundle<T>>(json);
             for (var i = 0; i < bundle.Algorithms.Count; i++)
@@ -52,58 +52,61 @@ namespace Logy.Maps.Exchange
                     Type.GetType(algorithmInJson["Name"].ToString()));
             }
 
-            var data = bundle.Algorithm.DataAbstract;
-            dataChange?.Invoke(data);
-
-            data.Init(ignoreNewBasins);
-
-            for (var p = 0; p < bundle.Basins[data.K].Length; p++)
+            if (!ignoreNewBasins)
             {
-                var bundleBasin = bundle.Basins[data.K][p] as Basin3;
+                var data = bundle.Algorithm.DataAbstract;
+                /// dataChange?.Invoke(data);
 
-                // init P if it was not serialized
-                if (bundleBasin.P == 0)
-                    bundleBasin.P = p;
-                var basin = data.PixMan.Pixels[bundleBasin.P] as Basin3;
-                if (bundleBasin.P < data.PixMan.Pixels.Length)
+                data.Init(ignoreNewBasins);
+
+                for (var p = 0; p < bundle.Basins[data.K].Length; p++)
                 {
-                    /// var jsonDelta_g_meridian = bundleBasin.Delta_g_meridian;
-                    /*bundleBasin.Y = basin.Y;
-                    bundleBasin.X = basin.X;
-                    bundleBasin.Ring = basin.Ring;
-                    bundleBasin.PixelInRing = basin.PixelInRing;
+                    var bundleBasin = bundle.Basins[data.K][p] as Basin3;
 
-                    // OnInit corrupts HtoBase
-                    // bundleBasin.OnInit(bundle.Algorithm.DataAbstract.HealpixManager);
-                    // bundleBasin.Delta_g_meridian = jsonDelta_g_meridian; /// OnInit corrupts it*/
-
-                    /// basin.Delta_g_meridian = jsonDelta_g_meridian;
-                    /// basin.Delta_g_traverse = bundleBasin.Delta_g_traverse;
-
-                    basin.Hoq = bundleBasin.Hoq;
-
-                    // Depth may not be serialized
-                    if (bundleBasin.Depth.HasValue)
+                    // init P if it was not serialized
+                    if (bundleBasin.P == 0)
+                        bundleBasin.P = p;
+                    var basin = data.PixMan.Pixels[bundleBasin.P] as Basin3;
+                    if (bundleBasin.P < data.PixMan.Pixels.Length)
                     {
-                        if (basin.Depth.HasValue)
-                            Assert.AreEqual(basin.Depth, bundleBasin.Depth);
-                        else
-                            basin.Depth = bundleBasin.Depth;
-                        Assert.IsTrue(basin.WaterHeight == bundleBasin.WaterHeight);
+                        /// var jsonDelta_g_meridian = bundleBasin.Delta_g_meridian;
+                        /*bundleBasin.Y = basin.Y;
+                        bundleBasin.X = basin.X;
+                        bundleBasin.Ring = basin.Ring;
+                        bundleBasin.PixelInRing = basin.PixelInRing;
+    
+                        // OnInit corrupts HtoBase
+                        // bundleBasin.OnInit(bundle.Algorithm.DataAbstract.HealpixManager);
+                        // bundleBasin.Delta_g_meridian = jsonDelta_g_meridian; /// OnInit corrupts it*/
+
+                        /// basin.Delta_g_meridian = jsonDelta_g_meridian;
+                        /// basin.Delta_g_traverse = bundleBasin.Delta_g_traverse;
+
+                        basin.Hoq = bundleBasin.Hoq;
+
+                        // Depth may not be serialized
+                        if (bundleBasin.Depth.HasValue)
+                        {
+                            if (basin.Depth.HasValue)
+                                Assert.AreEqual(basin.Depth, bundleBasin.Depth);
+                            else
+                                basin.Depth = bundleBasin.Depth;
+                            Assert.IsTrue(basin.WaterHeight == bundleBasin.WaterHeight);
+                        }
                     }
                 }
+
+                data.CheckOcean();
+
+                if (!ignoreNewBasins)
+                    bundle.Basins[data.HealpixManager.K] = data.PixMan.Pixels;
+
+                bundle.Algorithm.OnDeserialize();
+                /*
+                set colors in Data.CalcAltitudes();
+                if (data.Min != null && data.Max != null)
+                    data.Colors = new ColorsManager(data.Min.Value, data.Max.Value, data.ColorsMiddle);*/
             }
-
-            data.CheckOcean();
-
-            if (!ignoreNewBasins)
-                bundle.Basins[data.HealpixManager.K] = data.PixMan.Pixels;
-
-            bundle.Algorithm.OnDeserialize();
-            /*
-            set colors in Data.CalcAltitudes();
-            if (data.Min != null && data.Max != null)
-                data.Colors = new ColorsManager(data.Min.Value, data.Max.Value, data.ColorsMiddle);*/
 
             return bundle;
         }

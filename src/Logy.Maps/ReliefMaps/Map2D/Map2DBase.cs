@@ -59,21 +59,22 @@ namespace Logy.Maps.ReliefMaps.Map2D
 
         public int Top => HealpixManager.Nside * YResolution * Scale;
 
+        /// <summary>
+        /// used during Data setting, bmp saving, teardown
+        /// </summary>
+        public string Subdir { get; set; }
+        public string Dir => _dir ?? (_dir = string.Format(
+                                 "{2}{3}maps{3}{1}_lines{0}{3}{4}",
+                                 YResolution * HealpixManager.Nside,
+                                 GetType().Name,
+                                 Directory.GetCurrentDirectory(),
+                                 Path.DirectorySeparatorChar,
+                                 Subdir));
+
         #region colors
         public virtual SortedList<int, Color3> ColorsAbove => ColorsManager.Gyr1;
 
         public virtual SortedList<int, Color3> ColorsUnder => ColorsManager.Water;
-
-        public string Subdir { get; set; }
-        protected string Dir => _dir ?? (_dir = string.Format(
-                                    "{2}{3}maps{3}{1}_lines{0}{3}{4}",
-                                    YResolution * HealpixManager.Nside,
-                                    GetType().Name,
-                                    Directory.GetCurrentDirectory(),
-                                    Path.DirectorySeparatorChar,
-                                    Subdir));
-
-        protected virtual ImageFormat ImageFormat => ImageFormat.Jpeg;
 
         protected virtual bool IsGrey => false;
 
@@ -82,6 +83,8 @@ namespace Logy.Maps.ReliefMaps.Map2D
         /// </summary>
         protected Brush Background { get; set; } = Brushes.White;
         #endregion
+
+        protected virtual ImageFormat ImageFormat => ImageFormat.Jpeg;
 
         protected int Frames { get; set; } = 1;
 
