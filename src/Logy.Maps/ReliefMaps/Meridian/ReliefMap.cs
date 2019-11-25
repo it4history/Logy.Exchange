@@ -19,7 +19,7 @@ namespace Logy.Maps.ReliefMaps.Meridian
         {
             var algorithm = new ShiftAxisGeneric<MeridianCoor>(
                 new WaterAndBottomData(HealpixManager, -3128d, 7336d));
-            SetData(algorithm);
+            InitData(algorithm);
             algorithm.ChangeRotation(-HealpixManager.Nside);
             Data.DoFrames(delegate(int frame) 
             {

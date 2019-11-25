@@ -28,7 +28,7 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
                 WithRelief = true,
                 MetricType = metricType,
             };
-            SetData(new ShiftAxis(data) { Slow = true }, true);
+            InitData(new ShiftAxis(data) { Slow = true }, true);
 
             Data.Water.Fluidity = fluidity;
 

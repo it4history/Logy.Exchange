@@ -38,7 +38,7 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
                 Visual = parametersVisual
             };
 
-            SetData(new ShiftAxis(data) { Geoisostasy = true });
+            InitData(new ShiftAxis(data) { Geoisostasy = true });
 
             ShiftAxis(1); /// produces 2 files
             return;

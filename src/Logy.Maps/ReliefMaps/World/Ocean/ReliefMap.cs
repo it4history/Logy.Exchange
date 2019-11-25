@@ -53,7 +53,7 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
                     /// Visual = basin => basin.Depth.Value
                     /// Visual = basin => basin.r - Earth2014Manager.Radius2Add //*/
                 });
-            SetData(algorithm);
+            InitData(algorithm);
 
             // 1000 does nothing when !SamePolesAndEquatorGravitation 
             if (Data.SamePolesAndEquatorGravitation)

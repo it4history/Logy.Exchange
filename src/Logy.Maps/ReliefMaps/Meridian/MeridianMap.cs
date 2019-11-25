@@ -27,7 +27,7 @@ namespace Logy.Maps.ReliefMaps.Meridian
             // integration not finished on 1000, run again!
             var algorithm = new ShiftAxisGeneric<MeridianCoor>(
                 new MeridianWater<MeridianCoor>(HealpixManager/*, -5032d, 5685d*/));
-            SetData(algorithm);
+            InitData(algorithm);
             algorithm.ChangeRotation(-HealpixManager.Nside); ///  Ellipsoid.SiderealDayInSeconds*1000);
 
             // must be 10.69km 
@@ -61,7 +61,7 @@ namespace Logy.Maps.ReliefMaps.Meridian
         {
             var algorithm = new ShiftAxisGeneric<MeridianCoor>(
                 new MeridianWater<MeridianCoor>(HealpixManager/*, -2523d, 5208d*/));
-            SetData(algorithm);
+            InitData(algorithm);
 
             Data.DoFrames(delegate(int frame) 
             {

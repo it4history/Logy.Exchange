@@ -1,32 +1,31 @@
+using System.Drawing.Imaging;
+using System.IO;
 using Logy.Maps.Exchange;
 using Logy.Maps.Geometry;
+using Logy.Maps.Projections.Healpix;
 using NUnit.Framework;
 
 namespace Logy.Maps.ReliefMaps.World.Ocean
 {
     public class OceanMapGravityAxisChange : OceanMap
     {
-        public OceanMapGravityAxisChange() : this(6)
+        private ShiftAxis _algo;
+
+        public OceanMapGravityAxisChange() : this(8)
         {
         }
         public OceanMapGravityAxisChange(int k) : base(k)
         {
         }
 
-        public string SubdirByDatum(Datum datum)
-        {
-            return $@"x{datum.X}_y{datum.Y}" + "GravityShift";
-        }
+        protected override ImageFormat ImageFormat => ImageFormat.Tiff;
 
-        /// <summary>
-        /// calculates correction json
-        /// </summary>
-        [Test]
-        public void ChangeAxis_GravityEllipsoidCorrection()
+        public override void SetUp()
         {
+            base.SetUp();
             var newY = 73; // 0, 45, 30, 60
             var newX = -40; // 0
-            var algo = new ShiftAxis(new OceanData(HealpixManager)
+            _algo = new ShiftAxis(new OceanData(HealpixManager)
             {
                 IntegrationEndless = false,
                 // MetricType = MetricType.MeanEdge
@@ -54,12 +53,25 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
                 }
             };
 
-            Subdir = SubdirByDatum(algo.DesiredDatum);
+            Subdir = SubdirByDatum(_algo.DesiredDatum);
+        }
 
-            SetData(algo, true); // inits data
+        public string SubdirByDatum(Datum datum)
+        {
+            return $@"x{datum.X}_y{datum.Y}" + "GravityShift";
+        }
 
-            algo.SetDatum(algo.DesiredDatum, 0);
+        /// <summary>
+        /// calculates correction json
+        /// </summary>
+        [Test]
+        public void CorrectionCalculated()
+        {
+            InitData(_algo, true); 
 
+            _algo.SetDatum(_algo.DesiredDatum, 0);
+
+            _algo.Data.IntegrationEndless = false;
             Data.DoFrames(
                 (frame) =>
                 {
@@ -68,6 +80,30 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
                     return 100;
                 },
                 1000);
+        }
+
+        [Test]
+        public void CorrectionLoadedFromParentResolutionAndCalculated()
+        {
+            InitData(_algo, true);
+
+            var parentMan = new HealpixManager(K-1);
+            var parentBasins = _algo.DesiredDatum.LoadCorrection(parentMan.K).Basins[parentMan.K];
+            for (var p = 0; p < parentBasins.Length; p++)
+                foreach (var kidP in parentMan.GetCenter(p).GetKids(HealpixManager))
+                    Data.PixMan.Pixels[kidP].Hoq = parentBasins[p].Hoq;
+
+            _algo.SetDatum(_algo.DesiredDatum, 0);
+
+            _algo.Data.IntegrationEndless = true;
+            Data.DoFrames(
+                (frame) =>
+                {
+                    Draw();
+                    SaveBitmap(frame);
+                    return 10;
+                },
+                10);
         }
     }
 }

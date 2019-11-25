@@ -6,11 +6,7 @@ using Logy.Maps.Coloring;
 using Logy.Maps.Geometry;
 using Logy.Maps.ReliefMaps.Basemap;
 using Logy.Maps.ReliefMaps.Water;
-using Logy.Maps.ReliefMaps.World.Ocean;
-using Logy.MwAgent.Sphere;
-using MathNet.Numerics;
 using MathNet.Spatial.Euclidean;
-using MathNet.Spatial.Units;
 
 namespace Logy.Maps.Exchange
 {

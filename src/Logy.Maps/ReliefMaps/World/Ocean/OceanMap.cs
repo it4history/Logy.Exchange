@@ -1,9 +1,6 @@
 ﻿#if DEBUG
-using System;
 using Logy.Maps.Exchange;
-using Logy.Maps.Exchange.Earth2014;
 using Logy.Maps.Geometry;
-using Logy.Maps.Metrics;
 using Logy.Maps.Metrics.Tests;
 using Logy.Maps.Projections.Healpix;
 using Logy.Maps.ReliefMaps.Map2D;
@@ -24,7 +21,7 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
         public void Water_HighBasin()
         {
             var algorithm = new ShiftAxis(new OceanData(HealpixManager, -20d /*, 200d*/));
-            SetData(algorithm);
+            InitData(algorithm);
 
             var h = 500d;
             var p = HealpixManager.GetP(HealpixManager.Nside + 5, HealpixManager.Nside * 2);
@@ -53,7 +50,7 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
         public void Water_Gradient()
         {
             var algorithm = new ShiftAxis(new OceanData(HealpixManager, -200d /*, 2000d*/));
-            SetData(algorithm);
+            InitData(algorithm);
 
             var p = HealpixManager.GetP(HealpixManager.Nside - 1, HealpixManager.Nside * 1);
             var basin = Data.PixMan.Pixels[p];
@@ -92,7 +89,7 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
                 Visual = (basin, moved) => (basin.GVpure * 1000) - 9822
                 /// basin.r - Earth2014Manager.Radius2Add
             };
-            SetData(new ShiftAxis(data)
+            InitData(new ShiftAxis(data)
             {
                 // DesiredDatum = new Datum { X = 0, Y = 45 /* 90 */ },
             });
@@ -104,7 +101,7 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
         {
             var algorithm = new ShiftAxis(
                 new OceanData(new HealpixManager(2)) { Spheric = true });
-            SetData(algorithm);
+            InitData(algorithm);
 
             Data.GradientAndHeightCrosses();
             InitialHtoRecalc(); // may be needed for some metrics
@@ -133,7 +130,7 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
         {
             var algorithm = new ShiftAxis(
                 new OceanData(new HealpixManager(3)) { WithFormattor = false });
-            SetData(algorithm);
+            InitData(algorithm);
 
             algorithm.ChangeRotation(-HealpixManager.Nside);
             
@@ -149,7 +146,7 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
         {
             var algorithm = new ShiftAxis(new OceanData(HealpixManager /*,-3000d, 3000d*/)
                 { SamePolesAndEquatorGravitation = false });
-            SetData(algorithm);
+            InitData(algorithm);
             algorithm.ChangeRotation(-HealpixManager.Nside);
             Data.DoFrames(
                 delegate(int frame)

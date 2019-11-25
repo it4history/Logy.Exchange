@@ -37,7 +37,7 @@ namespace Logy.Maps.Exchange
         public Algorithm<T> Algorithm => (Algorithm<T>)Algorithms[Algorithms.Count - 1];
 
         /// <summary>
-        /// key - K
+        /// key - K, synonym for Algorithm.DataAbstract.Pixman.Pixels after full Deserialize
         /// </summary>
         public Dictionary<int, T[]> Basins { get; } = new Dictionary<int, T[]>();
 
@@ -98,8 +98,9 @@ namespace Logy.Maps.Exchange
 
                 data.CheckOcean();
 
+                // needed to allow serialization of latest data.PixMan.Pixels to new json
                 if (!ignoreNewBasins)
-                    bundle.Basins[data.HealpixManager.K] = data.PixMan.Pixels;
+                    bundle.Basins[data.HealpixManager.K] = data.PixMan.Pixels; 
 
                 bundle.Algorithm.OnDeserialize();
                 /*

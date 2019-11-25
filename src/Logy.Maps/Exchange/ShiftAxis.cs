@@ -1,10 +1,7 @@
 ﻿using System;
-using System.IO;
 using System.Linq;
 using System.Runtime.Serialization;
 using Logy.Maps.Geometry;
-using Logy.Maps.ReliefMaps.Basemap;
-using Logy.Maps.ReliefMaps.Map2D;
 using Logy.Maps.ReliefMaps.World.Ocean;
 
 namespace Logy.Maps.Exchange
@@ -24,12 +21,25 @@ namespace Logy.Maps.Exchange
 
         public bool Slow { get; set; }
 
-        public bool Geoisostasy { get; set; }
-
         public OceanData Data
         {
             get { return (OceanData)DataAbstract; }
             set { DataAbstract = value; }
+        }
+
+        /// <summary>
+        /// call SetDatum before running, it is not called in OnDeserialize
+        /// </summary>
+        public bool Geoisostasy { get; set; }
+
+        public override void OnDeserialize()
+        {
+            /*if (Geoisostasy)
+            {
+                var datum = Poles.Values.Last();
+                datum.CorrectionBundle = datum.LoadCorrection(Data.K);
+            }*/
+            base.OnDeserialize();
         }
 
         public void Shift(
@@ -76,15 +86,9 @@ namespace Logy.Maps.Exchange
                             };
                             poleShift++;
 
-                            var correctionMap = new OceanMapGravityAxisChange(Data.K);
-                            var format = $"{correctionMap.Dir}{correctionMap.SubdirByDatum(datum)}";
-                            var json = Directory.GetFiles(format, RotationStopMap<BasinAbstract>.FilePrefix + "*.json").FirstOrDefault();
-                            if (json == null)
-                                throw new ApplicationException("needed correction at " + format);
-
-                            datum.CorrectionBundle = Bundle<Basin3>.Deserialize(File.ReadAllText(json), true);
+                            datum.CorrectionBundle = datum.LoadCorrection(Data.K);
                         }
-                        SetDatum(datum, frame + 1); /// will be applied on next DoFrame()
+                        SetDatum(datum, frame + 1); /// will influence water on next DoFrame()
                     }
                     onFrame?.Invoke(frame);
                     return timeStepByFrame?.Invoke(frame) ?? 15; // 15 for k4, 80 for k5 of Meridian

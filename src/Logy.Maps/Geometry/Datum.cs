@@ -1,8 +1,11 @@
 ﻿using System;
+using System.IO;
+using System.Linq;
 using System.Runtime.Serialization;
 using Logy.Maps.Exchange;
 using Logy.Maps.Metrics;
 using Logy.Maps.ReliefMaps.Basemap;
+using Logy.Maps.ReliefMaps.Map2D;
 using Logy.Maps.ReliefMaps.World.Ocean;
 using MathNet.Spatial.Euclidean;
 using NUnit.Framework;
@@ -32,6 +35,18 @@ namespace Logy.Maps.Geometry
         public bool GravityNormal => Gravity == null || Gravity.Axis == BasinAbstract.Oz;
 
         public Bundle<Basin3> CorrectionBundle { get; set; }
+
+        public Bundle<Basin3> LoadCorrection(int k)
+        {
+            var correctionMap = new OceanMapGravityAxisChange(k);
+            var format = $"{correctionMap.Dir}{correctionMap.SubdirByDatum(this)}";
+            var json = Directory.GetFiles(format, RotationStopMap<BasinAbstract>.FilePrefix + "*.json")
+                .FirstOrDefault();
+            if (json == null)
+                throw new ApplicationException("needed correction at " + format);
+
+            return Bundle<Basin3>.Deserialize(File.ReadAllText(json), true);
+        }
 
         public static double CentrifugalByMatrix(Basin3 b, double a, Line3D axisOrtohonal, out double aTraverse, out double aVertical)
         {

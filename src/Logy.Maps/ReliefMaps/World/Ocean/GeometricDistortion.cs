@@ -66,7 +66,7 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
         {
             Basin3.MetricType = MetricType.Middle;
             var data = new OceanData(HealpixManager) { ColorsMiddle = .04 };
-            SetData(new ShiftAxis(data) { Slow = false},false);
+            InitData(new ShiftAxis(data) { Slow = false},false);
             Data.Water.Threshhold *= .05;
 
             for (var i = 0; i < 1; i++)

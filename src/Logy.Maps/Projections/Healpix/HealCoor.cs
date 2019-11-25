@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Runtime.Serialization;
 using AppConfiguration;
 using Logy.Maps.Geometry;
@@ -158,6 +159,71 @@ Each grid file contains 10,800 x 21,600 = 233,280,000 records */
         public override string ToString()
         {
             return $"{P}, #{PixelInRing} in {Ring} ring; {Y},{X}";
+        }
+
+        /// <summary>
+        /// not ready
+        /// </summary>
+        public int GetParent(HealpixManager parentMan)
+        {
+            var parentPixelInRing = PixelInRing;
+            var parentRing = Ring / 2;
+            var ringModule = Ring - parentRing * 2;
+            if (ringModule == 1)
+            {
+                parentRing++;
+            }
+            else
+            {
+                parentPixelInRing /= 2;
+                if (PixelInRing % 2 == 1)
+                    parentPixelInRing++;
+            }
+
+            return parentMan.GetP(parentRing, parentPixelInRing);
+        }
+
+        public int[] GetKids(HealpixManager kidsMan)
+        {
+            var kidsRing = Ring * 2;
+            var kidsPixel = PixelInRing * 2;
+            var ringFromEquator = Math.Abs(2 * kidsMan.Nside - kidsRing);
+            var koef = ringFromEquator > 0 || kidsMan.K == 1 ? -1 : 0;
+                // ringFromEquator >= kidsMan.Nside / 2 ? -1 : kidsMan.Nside / 2 - 2;
+            /*if (!NorthCap.HasValue)
+            {
+                Console.WriteLine($"{P}: ringFromEquator {ringFromEquator}, koef {koef}");
+            }*/
+
+            return new[]
+            {
+                kidsMan.GetP(
+                    kidsRing - 1,
+                    kidsPixel + SpecialPixelInRing(kidsMan, kidsRing - 1)),
+                kidsMan.GetP(
+                    kidsRing, 
+                    kidsPixel - 1 - (kidsMan.Northcap(kidsRing).HasValue ? 0 : koef)),
+                kidsMan.GetP(
+                    kidsRing,
+                    kidsPixel - (kidsMan.Northcap(kidsRing).HasValue ? 0 : koef)),
+                kidsMan.GetP(
+                    kidsRing + 1,
+                    kidsPixel + SpecialPixelInRing(kidsMan, kidsRing + 1, false)),
+            };
+        }
+
+        private int SpecialPixelInRing(HealpixManager man, int ring, bool up = true)
+        {
+            var polarCapSector = (PixelInRing - 1) / (PixelsCountInRing / 4);
+            var ringFromEquator = Math.Abs(2 * man.Nside - ring);
+            var koef = (ringFromEquator >= man.Nside / 2 ? -1 : 0);
+            if (ring > man.RingsCount / 2)
+                up ^= true;
+            if (up)
+                return -1 - (man.Northcap(ring).HasValue ? polarCapSector : koef);
+            return man.Northcap(ring).HasValue
+                ? polarCapSector
+                : koef;
         }
     }
 }

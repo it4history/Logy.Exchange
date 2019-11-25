@@ -42,11 +42,6 @@ namespace Logy.Maps.ReliefMaps.Map2D
             {
                 Scale = 2;
             }
-
-            if (k <= 7)
-            {
-                YResolution = 3;
-            }
         }
 
         public virtual Projection Projection => Projection.Healpix;
@@ -54,7 +49,7 @@ namespace Logy.Maps.ReliefMaps.Map2D
         /// <summary>
         /// practical values 2, 3, 4
         /// </summary>
-        public int YResolution { get; set; } = 2;
+        public int YResolution { get; set; } = 3;
         public int Scale { get; set; } = 1;
 
         public int Top => HealpixManager.Nside * YResolution * Scale;

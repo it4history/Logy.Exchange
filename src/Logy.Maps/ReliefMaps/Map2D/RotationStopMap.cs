@@ -28,7 +28,7 @@ namespace Logy.Maps.ReliefMaps.Map2D
 
         public Bitmap Bmp { get; set; }
 
-        public Bundle<T> Bundle { get; set; }
+        public Bundle<T> Bundle { get; protected set; }
 
         public override Projection Projection => Projection.Healpix2EquirectangularFast;
 
@@ -63,7 +63,7 @@ namespace Logy.Maps.ReliefMaps.Map2D
         /// <summary>
         /// like a constructor
         /// </summary>
-        public void SetData(Algorithm<T> algorithm, bool jsonNeeded = false)
+        public void InitData(Algorithm<T> algorithm, bool jsonNeeded = false)
         {
             _jsonNeeded = jsonNeeded;
             if (File.Exists(StatsFileName()))
