@@ -36,6 +36,15 @@ namespace Logy.Maps.Geometry
 
         public Bundle<Basin3> CorrectionBundle { get; set; }
 
+        public static double CentrifugalByMatrix(Basin3 b, double a, Line3D axisOrtohonal, out double aTraverse, out double aVertical)
+        {
+            var aOnSurface = axisOrtohonal.Direction * b.Matrix;
+            aTraverse = -a * aOnSurface[1];
+            aVertical = Math.Abs(a * aOnSurface[0]);
+            var aMerid = (b.Vartheta < 0 ? 1 : -1) * a * aOnSurface[2];
+            return aMerid;
+        }
+
         public Bundle<Basin3> LoadCorrection(int k)
         {
             var correctionMap = new OceanMapGravityAxisChange(k);
@@ -46,15 +55,6 @@ namespace Logy.Maps.Geometry
                 throw new ApplicationException("needed correction at " + format);
 
             return Bundle<Basin3>.Deserialize(File.ReadAllText(json), true);
-        }
-
-        public static double CentrifugalByMatrix(Basin3 b, double a, Line3D axisOrtohonal, out double aTraverse, out double aVertical)
-        {
-            var aOnSurface = axisOrtohonal.Direction * b.Matrix;
-            aTraverse = -a * aOnSurface[1];
-            aVertical = Math.Abs(a * aOnSurface[0]);
-            var aMerid = (b.Vartheta < 0 ? 1 : -1) * a * aOnSurface[2];
-            return aMerid;
         }
 
         public double Centrifugal(BasinAbstract basin)

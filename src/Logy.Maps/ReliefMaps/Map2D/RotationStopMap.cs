@@ -15,9 +15,9 @@ namespace Logy.Maps.ReliefMaps.Map2D
     [Category(Slow)]
     public class RotationStopMap<T> : Map2DBase<T> where T : BasinAbstract
     {
-        private bool _jsonNeeded;
-
         public const string FilePrefix = "stats";
+
+        private bool _jsonNeeded;
 
         public RotationStopMap() : this(6)
         {

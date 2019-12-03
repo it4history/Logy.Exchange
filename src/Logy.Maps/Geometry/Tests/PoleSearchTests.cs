@@ -83,9 +83,7 @@ namespace Logy.Maps.Geometry.Tests
 
         public override double? GetAltitude(City basin)
         {
-            var accuracyError = HealpixManager.ThetaPix;
-            if (CurrentPoleDemo)
-                accuracyError *= 2;
+            var accuracyError = HealpixManager.ThetaPix * (CurrentPoleDemo ? 2 : 1);
             var found = new List<City>();
             foreach (var city in _cities)
             {
@@ -124,7 +122,7 @@ namespace Logy.Maps.Geometry.Tests
         {
             Colors.DefaultColor = Color.FromArgb(228, 251, 232);
             base.Draw(bmp, deltaX, basins, yResolution, scale, projection);
-            Map2DBase<HealCoor>.DrawPoliticalMap(bmp, HealpixManager, yResolution, scale);
+            PoliticalMap.Draw(bmp, HealpixManager, yResolution, scale);
             var g = Map2DBase<HealCoor>.GetFont(bmp);
             var font = new Font("Tahoma", K + 1);
             var equirectangular = new Equirectangular(HealpixManager, yResolution);

@@ -109,6 +109,7 @@
     <Compile Include="ReliefMaps\Geoid\Polygon.cs" />
     <Compile Include="ReliefMaps\Geoid\Rectangle.cs" />
     <Compile Include="ReliefMaps\Geoid\Tests\GeoidTests.cs" />
+    <Compile Include="ReliefMaps\Map2D\PoliticalMap.cs" />
     <Compile Include="ReliefMaps\SurfaceType.cs" />
     <Compile Include="ReliefMaps\Map2D\Tests\OptimizationTests.cs" />
     <Compile Include="ReliefMaps\Map2D\RotationStopMap.cs" />

@@ -10,21 +10,22 @@ namespace Logy.Maps.Exchange.Earth2014.Tests
     {
         private readonly Coor _crimeaCenter = new Coor { Y = 44.93, X = 34.099, Precision = 0.00027 };
 
+        public static HealCoor Sevastopol { get; set; } = new HealCoor { Y = 44.6, X = 33.53 };
+
         [Test]
         public void GetAltitude()
         {
             var mangup = new HealCoor { Y = 44.58, X = 33.8, Precision = 0.0166 };
-            var sevastopol = new HealCoor { Y = 44.6, X = 33.53 };
 
             using (var man = new Earth2014Manager(_crimeaCenter, 5))
             {
                 Assert.IsTrue(man.GetAltitude(mangup) > 200 && man.GetAltitude(mangup) < 600);
-                Assert.IsTrue(man.GetAltitude(sevastopol) > 0 && man.GetAltitude(sevastopol) <= 160); //// why 160?
+                Assert.IsTrue(man.GetAltitude(Sevastopol) > 0 && man.GetAltitude(Sevastopol) <= 160); //// why 160?
             }
             using (var man = new Earth2014Manager(_crimeaCenter))
             {
                 Assert.IsTrue(man.GetAltitude(mangup) > 200 && man.GetAltitude(mangup) < 600);
-                Assert.IsTrue(man.GetAltitude(sevastopol) > 0 && man.GetAltitude(sevastopol) < 60);
+                Assert.IsTrue(man.GetAltitude(Sevastopol) > 0 && man.GetAltitude(Sevastopol) < 60);
             }
         }
 

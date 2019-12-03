@@ -1,5 +1,4 @@
 using System.Drawing.Imaging;
-using System.IO;
 using Logy.Maps.Exchange;
 using Logy.Maps.Geometry;
 using Logy.Maps.Projections.Healpix;
@@ -28,7 +27,7 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
             _algo = new ShiftAxis(new OceanData(HealpixManager)
             {
                 IntegrationEndless = false,
-                // MetricType = MetricType.MeanEdge
+                /// MetricType = MetricType.MeanEdge
                 /*
                 Visual = (basin, moved) =>
                 {
@@ -48,7 +47,7 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
                 {
                     X = newX,
                     Y = newY,
-                    // SiderealDayInSeconds = int.MaxValue,
+                    /// SiderealDayInSeconds = int.MaxValue,
                     Gravity = new Gravity { X = newX, Y = newY }
                 }
             };
@@ -87,7 +86,7 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
         {
             InitData(_algo, true);
 
-            var parentMan = new HealpixManager(K-1);
+            var parentMan = new HealpixManager(K - 1);
             var parentBasins = _algo.DesiredDatum.LoadCorrection(parentMan.K).Basins[parentMan.K];
             for (var p = 0; p < parentBasins.Length; p++)
                 foreach (var kidP in parentMan.GetCenter(p).GetKids(HealpixManager))
