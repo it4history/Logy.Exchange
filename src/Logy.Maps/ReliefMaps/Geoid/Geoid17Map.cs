@@ -1,5 +1,4 @@
 ﻿using System.Drawing.Imaging;
-using System.IO;
 using Logy.Maps.Exchange;
 using Logy.Maps.ReliefMaps.Map2D;
 using Logy.Maps.ReliefMaps.World.Ocean;
@@ -53,7 +52,7 @@ namespace Logy.Maps.ReliefMaps.Geoid
                     // d.InitialBasins = rectangle.Subset(reliefAxis17.HealpixManager);
                 }*/);
             var data = bundle.Algorithm.DataAbstract;
-            data.DoFrame(); /// ? data.CalcAltitudes();
+            data.DoFrame(); // CalcAltitudes() not enough
 
             _data = new ComplexData(this, data) { Rectangle = rectangle };
             _data.CalcArrows();

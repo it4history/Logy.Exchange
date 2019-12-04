@@ -1,9 +1,7 @@
 #if DEBUG
 using System;
 using System.Drawing.Imaging;
-using System.IO;
 using Logy.Maps.Exchange;
-using Logy.Maps.Geometry;
 using NUnit.Framework;
 
 namespace Logy.Maps.ReliefMaps.World.Ocean
@@ -14,6 +12,14 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
         {
         }
 
+        public static Func<Basin3, double, double> Visual { get; set; } = (basin, moved) =>
+                Math.Sqrt(((basin.Delta_g_meridian * basin.Delta_g_meridian)
+                           + (basin.Delta_g_traverse * basin.Delta_g_traverse)) * 1000);
+            /*              basin.RadiusOfEllipse - Ellipsoid.MeanRadius;
+                            Math.Sqrt(basin.GHpure * basin.GHpure + basin.GHpureTraverse * basin.GHpureTraverse) * 1000;
+                            basin.Delta_g_traverse * 1000;
+                            basin.GHpureTraverse * 1000;
+                            moved;*/
         /// <summary>
         /// for convertion to gif
         /// </summary>
@@ -22,25 +28,15 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
         [Test]
         public void Parameters()
         {
-            Func<Basin3, double, double> parametersVisual = (basin, moved) =>
-            {
-                return Math.Sqrt(((basin.Delta_g_meridian * basin.Delta_g_meridian)
-                                 + (basin.Delta_g_traverse * basin.Delta_g_traverse)) * 1000);
-                /*                return basin.RadiusOfEllipse - Ellipsoid.MeanRadius;
-                                return Math.Sqrt(basin.GHpure * basin.GHpure + basin.GHpureTraverse * basin.GHpureTraverse) * 1000;
-                                return basin.Delta_g_traverse * 1000;
-                                return basin.GHpureTraverse * 1000;
-                                return moved;*/
-            };
             var data = new OceanData(HealpixManager)
             {
                 // WithRelief = true,
-                Visual = parametersVisual
+                Visual = Visual
             };
 
             InitData(new ShiftAxis(data) { Geoisostasy = true });
 
-            ShiftAxis(1); /// produces 2 files
+            ShiftAxis(Data.Frame + 1); /// produces 1 file
 
             /*var map = new ReliefAxis17Geoisostasy(K);
 

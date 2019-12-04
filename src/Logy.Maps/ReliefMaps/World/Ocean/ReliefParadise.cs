@@ -1,14 +1,16 @@
-﻿using System.IO;
+﻿using System.Linq;
 using Logy.Maps.Exchange;
 using Logy.Maps.Geometry;
+using Logy.Maps.ReliefMaps.Basemap;
 using Logy.Maps.ReliefMaps.Geoid;
-using Logy.Maps.ReliefMaps.Map2D;
 using NUnit.Framework;
 
 namespace Logy.Maps.ReliefMaps.World.Ocean
 {
     public class ReliefParadise : ReliefMap
     {
+        private ShiftAxis _mainAlgorithm;
+
         public ReliefParadise() : base(6) 
         {
         }
@@ -17,10 +19,9 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
         {
         }
 
-        [Test]
-        public void StrahovOldest()
+        public override void SetUp()
         {
-            var algorithm = new ShiftAxis(new OceanData(HealpixManager)
+            _mainAlgorithm = new ShiftAxis(new OceanData(HealpixManager)
             {
                 WithRelief = true,
             })
@@ -28,38 +29,107 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
                 Geoisostasy = true,
                 DesiredDatum = new Datum { X = -172, Y = 17 }
             };
-            InitData(algorithm, true);
 
-            ShiftAxisBalanced(6000);
+            base.SetUp();
+        }
+
+        /// <summary>
+        /// 8m noises at k6
+        /// </summary>
+        [Test]
+        public void OceanTest()
+        {
+            Subdir = "ocean";
+
+            _mainAlgorithm.Data.WithRelief = false;
+            InitData(_mainAlgorithm, true);
+
+            ShiftAxisBalanced(100);
         }
 
         [Test]
-        public void Axis17South()
+        public void StrahovOldest()
         {
-            var algorithm = new ShiftAxis(new OceanData(HealpixManager)
-            {
-                WithRelief = true,
-            })
-            {
-                Geoisostasy = true,
-                DesiredDatum = new Datum { X = -172, Y = -17 }
-            };
-            InitData(algorithm, true);
+            InitDataWithJson(null, _mainAlgorithm);
+            /// Data.Water.Fluidity = .7;
 
-            ShiftAxisBalanced(6000);
+            ShiftAxisBalanced(10000);
         }
 
         [Test]
-        public void RelativePaleogeoid()
+        public void FasterSpin()
         {
+            Subdir = "fasterSpin";
             InitDataWithJson();
 
-            //            Geoid.Geoid.Obtain(Data);
-            Data.CalcAltitudes();
+            var algorithm = (ShiftAxis)Bundle.Algorithm;
+            var datum = algorithm.Poles.Values.Last();
+            datum.SiderealDayInSeconds *= .7;
+            algorithm.SetGeoisostasyDatum();
+
+            ShiftAxis(8000);
+        }
+
+        [Test]
+        public void Fluidity()
+        {
+            Subdir = "fluidity.7";
+            InitDataWithJson();
+            Data.Water.Fluidity = .7;
+            ShiftAxis(Data.Frame + 1);
+        }
+
+        [Test]
+        public void Parameters()
+        {
+            Subdir = "pars";
+            InitDataWithJson();
+            ((BasinDataAbstract<Basin3>)Data).Visual = ReliefAxis17Parameters.Visual;
+            ShiftAxis(Data.Frame + 1);
+        }
+
+        /// <summary>
+        /// why north is now high on map
+        /// </summary>
+        [Test]
+        public void StrahovSouthTest()
+        {
+            Subdir = "south";
+
+            _mainAlgorithm.DesiredDatum.Y = -17;
+            InitDataWithJson(null, _mainAlgorithm);
+
+            ShiftAxisBalanced(3000);
+        }
+
+        [Test]
+        public void CheckEddies()
+        {
+            Subdir = "eddies";
+            InitDataWithJson();
+
+            Data.DoFrame(); // CalcAltitudes() not enough
+
+            var data = new ComplexData(this, Data);
+            data.CalcArrows();
+
             Data.SetColorLists();
-            Data.Draw(Bmp, 0, null, YResolution, Scale, Projection);
-            //PoliticalMap.Draw(Bmp, HealpixManager, YResolution, Scale);
-            SaveBitmap(Data.Frame + 1);
+            Draw();
+            data.DrawEddies(Bmp, Data.PixMan.Pixels, YResolution, Scale);
+
+            SaveBitmap(Data.Frame);
+        }
+
+        [Test]
+        public void GeoidObtained()
+        {
+            Subdir = "geoid";
+            InitDataWithJson();
+
+            Geoid.Geoid.Obtain(Data); 
+
+            Data.SetColorLists();
+            Draw();
         }
     }
 }

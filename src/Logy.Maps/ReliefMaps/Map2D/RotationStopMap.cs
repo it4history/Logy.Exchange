@@ -2,6 +2,7 @@ using System;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
+using System.Linq;
 using Logy.Maps.Exchange;
 using Logy.Maps.Projections;
 using Logy.Maps.ReliefMaps.Basemap;
@@ -60,15 +61,40 @@ namespace Logy.Maps.ReliefMaps.Map2D
         /// </summary>
         protected override ImageFormat ImageFormat => ImageFormat.Png;
 
+        public static string FindJson(string dir)
+        {
+            var json = Directory.GetFiles(dir, RotationStopMap<BasinAbstract>.FilePrefix + "*.json")
+                .LastOrDefault();
+            if (json == null)
+                throw new ApplicationException("needed json at " + dir);
+
+            return json;
+        }
+
+        /// <summary>
+        /// to start with json
+        /// </summary>
+        /// <param name="json2loadFrame">null to load latest json</param>
+        /// <param name="algorithm">null to get algo from json</param>
+        public void InitDataWithJson(int? json2loadFrame = null, Algorithm<T> algorithm = null)
+        {
+            InitData(
+                algorithm,
+                true,
+                json2loadFrame == null ? RotationStopMap<Basin3>.FindJson(Dir) : StatsFileName(json2loadFrame));
+        }
+
         /// <summary>
         /// like a constructor
         /// </summary>
-        public void InitData(Algorithm<T> algorithm, bool jsonNeeded = false)
+        public void InitData(Algorithm<T> algorithm, bool jsonNeeded = false, string jsonfileToLoad = null)
         {
             _jsonNeeded = jsonNeeded;
-            if (File.Exists(StatsFileName()))
+            if (jsonfileToLoad == null)
+                jsonfileToLoad = StatsFileName();
+            if (File.Exists(jsonfileToLoad))
             {
-                Bundle = Bundle<T>.DeserializeFile(StatsFileName());
+                Bundle = Bundle<T>.DeserializeFile(jsonfileToLoad);
                 var dataInJson = Bundle.Algorithm.DataAbstract;
                 if (K != dataInJson.K)
                     throw new ApplicationException($"map needs K {K}");
@@ -90,12 +116,7 @@ namespace Logy.Maps.ReliefMaps.Map2D
                 Bundle = new Bundle<T>(algorithm);
             }
         }
-
-        public void InitDataWithJson()
-        {
-            InitData(null);
-        }
-
+        
         public string StatsFileName(int? frame = null)
         {
             return Path.Combine(Dir, $"{FilePrefix}{FrameToString(frame)}.json");
@@ -202,10 +223,11 @@ namespace Logy.Maps.ReliefMaps.Map2D
         private void SaveJson(int? frame = null)
         {
             Bundle.Algorithm.Diff = Data.RecheckOcean();
-            using (var file = File.CreateText(StatsFileName(frame)))
-            {
-                new JsonSerializer().Serialize(file, Bundle);
-            }
+            if (!frame.HasValue || !Bundle.Deserialized.ContainsKey(frame.Value))
+                using (var file = File.CreateText(StatsFileName(frame)))
+                {
+                    new JsonSerializer().Serialize(file, Bundle);
+                }
         }
     }
 }

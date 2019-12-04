@@ -10,15 +10,36 @@ namespace Logy.Maps.ReliefMaps.Geoid.Tests
         [Test]
         public void NormalDatumUnderSolidAndOtherPolygons()
         {
-            var data = new GeoidData(new HealpixManager(5))
+            var data = new GeoidData(new HealpixManager(0))
             {
                 WithRelief = true,
-                Accuracy = 1
+                Accuracy = 5
             };
             data.Init();
 
+            var basins = data.PixMan.Pixels;
+            basins[0].FillNewGeoid(data);
+            Assert.AreEqual(SurfaceType.WorldOcean, basins[0].Polygon.SurfaceType);
+
+            basins[1].FillNewGeoid(data);
+            Assert.AreEqual(SurfaceType.Solid, basins[1].Polygon.SurfaceType);
+            Assert.AreEqual(basins[0].RadiusGeoid, basins[1].RadiusGeoid);
+
+            basins[2].FillNewGeoid(data);
+            Assert.AreEqual(SurfaceType.WorldOcean, basins[2].Polygon.SurfaceType);
+            Assert.AreEqual(basins[1].RadiusGeoid, basins[2].RadiusGeoid);
+
+            basins[3].FillNewGeoid(data);
+            Assert.AreEqual(SurfaceType.WorldOcean, basins[3].Polygon.SurfaceType);
+            Assert.AreEqual(basins[2].Polygon, basins[3].Polygon);
+            Assert.AreEqual(basins[0].Polygon, basins[3].Polygon);
+
+            //Polygon
+            //GeoidSurface
+            //RadiusGeoid
+
             Geoid.Obtain(data);
-            foreach (var basin in data.PixMan.Pixels)
+            foreach (var basin in basins)
             {
                 for (var from = 0; from < 4; from++)
                 {

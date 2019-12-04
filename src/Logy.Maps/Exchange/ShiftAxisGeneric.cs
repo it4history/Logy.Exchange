@@ -40,7 +40,7 @@ namespace Logy.Maps.Exchange
                   json might be serialized in other moment
                   with other Hoq, Radius and therefore other Delta_g, Q3, S_q, 
                   so SetDatum() will not be accurate if Delta_g depends on Hoq via a Basin3.Q3 in EllipsoidAcceleration.Centrifugal() */
-            SetDatum(Poles.Values.Last());
+            SetDatum(Poles.Values.Last()); /// SetGeoisostasyDatum called manually
 
             base.OnDeserialize();
         }
@@ -48,12 +48,14 @@ namespace Logy.Maps.Exchange
         /// <summary>
         /// used when json loaded and calc continueted not from 0 frame
         /// </summary>
-        public void SetGeoisostasyDatum(ShiftAxis algo)
+        public void SetGeoisostasyDatum(ShiftAxisGeneric<T> algo = null)
         {
+            if (algo == null)
+                algo = this;
             var lastPoleFrame = algo.Poles.Keys.Last();
             var datum = algo.Poles[lastPoleFrame];
             datum.CorrectionBundle = datum.LoadCorrection(DataAbstract.K);
-            SetDatum(datum, lastPoleFrame); 
+            SetDatum(datum, lastPoleFrame);
         }
 
         public void SetDatum(Datum datum, int? frame = null)

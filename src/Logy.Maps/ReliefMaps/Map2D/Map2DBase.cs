@@ -55,7 +55,7 @@ namespace Logy.Maps.ReliefMaps.Map2D
         public int Top => HealpixManager.Nside * YResolution * Scale;
 
         /// <summary>
-        /// used during Data setting, bmp saving, teardown
+        /// used during Data setting, InitData(...), bmp saving, teardown
         /// </summary>
         public string Subdir { get; set; }
         public string Dir => _dir ?? (_dir = string.Format(

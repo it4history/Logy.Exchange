@@ -116,7 +116,7 @@ namespace Logy.Maps.ReliefMaps.Basemap
                     case MetricType.Middle:
                         var toBasin = basin.Neighbors[to];
                         basin.MetricRays[(int)to] =
-                            new Ray3D(Basin3.O3, basin.RadiusRay.Direction + toBasin.RadiusRay.Direction);
+                            new Ray3D(BasinAbstract.O3, basin.RadiusRay.Direction + toBasin.RadiusRay.Direction);
                         break;
                     case MetricType.MeanEdge:
                         basin.MetricRays[(int)to] = meanBoundary;
@@ -128,7 +128,7 @@ namespace Logy.Maps.ReliefMaps.Basemap
                         var intersection = basin.S_geiod.IntersectionWith(basin.Neighbors[to].S_geiod)
                             .IntersectionWith(HealpixManager.Neighbors.Boundary(basin, to));
                         if (intersection.HasValue) /* why always true? */
-                            basin.MetricRays[(int)to] = new Ray3D(Basin3.O3, intersection.Value.ToVector3D());
+                            basin.MetricRays[(int)to] = new Ray3D(BasinAbstract.O3, intersection.Value.ToVector3D());
                         else
                             basin.MetricRays[(int)to] = meanBoundary;
                         break;

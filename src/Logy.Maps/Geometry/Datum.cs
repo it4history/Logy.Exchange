@@ -49,12 +49,7 @@ namespace Logy.Maps.Geometry
         {
             var correctionMap = new OceanMapGravityAxisChange(k);
             var format = $"{correctionMap.Dir}{correctionMap.SubdirByDatum(this)}";
-            var json = Directory.GetFiles(format, RotationStopMap<BasinAbstract>.FilePrefix + "*.json")
-                .FirstOrDefault();
-            if (json == null)
-                throw new ApplicationException("needed correction at " + format);
-
-            return Bundle<Basin3>.DeserializeFile(json, true);
+            return Bundle<Basin3>.DeserializeFile(RotationStopMap<Basin3>.FindJson(format), true);
         }
 
         public double Centrifugal(BasinAbstract basin)

@@ -65,23 +65,5 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
             PoliticalMap.Draw(Bmp, HealpixManager, YResolution, Scale);
             SaveBitmap(Data.Frame + 1);
         }
-
-        [Test]
-        public void CheckEddies()
-        {
-            Subdir = "checkEddies";
-
-            Bundle = Bundle<Basin3>.DeserializeFile(StatsFileName(3674));
-
-            Data.DoFrames(
-                (frame) =>
-                {
-                    Draw();
-                    SaveBitmap(frame);
-                    return 1;
-                }, 
-                Data.Frame + 3);
-            Draw();
-        }
     }
 }

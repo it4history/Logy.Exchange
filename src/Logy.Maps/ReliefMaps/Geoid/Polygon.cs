@@ -15,6 +15,9 @@ namespace Logy.Maps.ReliefMaps.Geoid
             SurfaceType = surfaceType;
         }
 
+        /// <summary>
+        /// neighbor basin
+        /// </summary>
         public T From { get; }
 
         public T First { get; }

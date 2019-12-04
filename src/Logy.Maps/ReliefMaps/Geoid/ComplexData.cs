@@ -17,8 +17,9 @@ namespace Logy.Maps.ReliefMaps.Geoid
         /// </summary>
         private readonly SortedList<double, List<Current>> _arrows = new SortedList<double, List<Current>>();
 
-        private WaterMoving<Basin3> _data;
+        private readonly WaterMoving<Basin3> _data;
 
+        /// <param name="data">should DoFrame() or Geoid.Obtain called before</param>
         public ComplexData(Map2DBase<Basin3> map, WaterMoving<Basin3> data) : base(map, data.PixMan.Pixels)
         {
             ColorsMiddle = 0;
@@ -63,7 +64,7 @@ namespace Logy.Maps.ReliefMaps.Geoid
                         /// check of currents heights = maxHeight;
                     }
                     var count = 500;
-                    if (heights.HasValue)
+                    if (heights.HasValue && heights > 0)
                     {
                         var heightsAbs = // heights.Value; 
                          Math.Abs(heights.Value);
