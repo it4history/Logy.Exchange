@@ -54,7 +54,7 @@ namespace Logy.Maps.Geometry
             if (json == null)
                 throw new ApplicationException("needed correction at " + format);
 
-            return Bundle<Basin3>.Deserialize(File.ReadAllText(json), true);
+            return Bundle<Basin3>.DeserializeFile(json, true);
         }
 
         public double Centrifugal(BasinAbstract basin)

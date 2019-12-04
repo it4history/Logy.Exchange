@@ -122,6 +122,7 @@
     <Compile Include="ReliefMaps\World\Ocean\OceanMapGravityAxisChange.cs" />
     <Compile Include="ReliefMaps\World\Ocean\ReliefAxis17Geoisostasy.cs" />
     <Compile Include="ReliefMaps\World\Ocean\ReliefAxis17Parameters.cs" />
+    <Compile Include="ReliefMaps\World\Ocean\ReliefParadise.cs" />
     <Compile Include="ReliefMaps\World\Percentage.cs" />
     <Compile Include="ReliefMaps\World\Data\PercentageData.cs" />
     <Compile Include="ReliefMaps\Basemap\BasinDataAbstract.cs" />

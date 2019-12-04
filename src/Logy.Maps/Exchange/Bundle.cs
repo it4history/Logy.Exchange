@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Runtime.Serialization;
 using Logy.Maps.ReliefMaps.Basemap;
 using Logy.Maps.ReliefMaps.Water;
@@ -41,7 +42,18 @@ namespace Logy.Maps.Exchange
         /// </summary>
         public Dictionary<int, T[]> Basins { get; } = new Dictionary<int, T[]>();
 
-        public static Bundle<T> Deserialize(string json, bool ignoreNewBasins = false/*, Action<WaterMoving<T>> dataChange = null*/)
+        /// <summary>
+        /// key - frame, value - filename
+        /// </summary>
+        public Dictionary<int, string> Deserialized { get; set; } = new Dictionary<int, string>();
+
+        public static Bundle<T> DeserializeFile(string name, bool ignoreNewBasins = false)
+        {
+            return Deserialize(File.ReadAllText(name), ignoreNewBasins, name);
+        }
+
+        public static Bundle<T> Deserialize(string json, bool ignoreNewBasins = false, string filename = null
+            /*, Action<WaterMoving<T>> dataChange = null*/)
         {
             var bundle = JsonConvert.DeserializeObject<Bundle<T>>(json);
             for (var i = 0; i < bundle.Algorithms.Count; i++)
@@ -51,6 +63,7 @@ namespace Logy.Maps.Exchange
                     algorithmInJson.ToString(),
                     Type.GetType(algorithmInJson["Name"].ToString()));
             }
+            bundle.Deserialized.Add(bundle.Algorithm.DataAbstract.Frame, filename);
 
             if (!ignoreNewBasins)
             {

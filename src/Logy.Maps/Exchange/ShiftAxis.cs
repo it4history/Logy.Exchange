@@ -34,7 +34,8 @@ namespace Logy.Maps.Exchange
 
         public override void OnDeserialize()
         {
-            /*if (Geoisostasy)
+            /* commented because of ReliefAxis17Geoisostasy.AxisChange smoothing
+            if (Geoisostasy)
             {
                 var datum = Poles.Values.Last();
                 datum.CorrectionBundle = datum.LoadCorrection(Data.K);

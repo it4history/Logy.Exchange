@@ -46,8 +46,7 @@ namespace Logy.Maps.ReliefMaps.Geoid
         public void Eddies(ReliefMap map)
         {
             var rectangle = new Rectangle<Basin3>(-98, 57, -82, 67);
-            var bundle = Bundle<Basin3>.Deserialize(
-                File.ReadAllText(map.StatsFileName(4000)) // 3789 for Subdir = "MeanEdge/fluidity0.7 from2761Middle"
+            var bundle = Bundle<Basin3>.DeserializeFile(map.StatsFileName(4000) // 3789 for Subdir = "MeanEdge/fluidity0.7 from2761Middle"
                 /*, false, 
                 d =>
                 {
@@ -65,8 +64,7 @@ namespace Logy.Maps.ReliefMaps.Geoid
         public void Relative()
         {
             var reliefAxis17 = new ReliefAxis17();
-            var bundle = Bundle<Basin3>.Deserialize(
-                File.ReadAllText(reliefAxis17.StatsFileName()));
+            var bundle = Bundle<Basin3>.DeserializeFile(reliefAxis17.StatsFileName());
 
             Geoid.Obtain(bundle.Algorithm.DataAbstract);
         }
@@ -78,8 +76,7 @@ namespace Logy.Maps.ReliefMaps.Geoid
         public void RelativePaleogeoid()
         {
             var reliefAxis17 = new ReliefAxis17();
-            var bundle = Bundle<Basin3>.Deserialize(
-                File.ReadAllText(reliefAxis17.StatsFileName()));
+            var bundle = Bundle<Basin3>.DeserializeFile(reliefAxis17.StatsFileName());
             /* var data = new GeoidData(HealpixManager)
             {
                 WithRelief = true,

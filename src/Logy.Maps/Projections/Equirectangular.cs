@@ -53,9 +53,14 @@ namespace Logy.Maps.Projections
 
         public Point2 Offset(Coor coor)
         {
+            return Offset(coor.X, coor.Y);
+        }
+
+        public Point2 Offset(double x, double y)
+        {
             return new Point2(
-                (int)Math.Round(X(coor.X), MidpointRounding.AwayFromZero),
-                (int)Math.Round(Y(coor.Y), MidpointRounding.AwayFromZero));
+                (int)Math.Round(X(x), MidpointRounding.AwayFromZero),
+                (int)Math.Round(Y(y), MidpointRounding.AwayFromZero));
         }
 
         public Point2 OffsetDouble(Coor coor, int scale)

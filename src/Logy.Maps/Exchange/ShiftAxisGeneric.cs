@@ -6,6 +6,7 @@ using Logy.Maps.Coloring;
 using Logy.Maps.Geometry;
 using Logy.Maps.ReliefMaps.Basemap;
 using Logy.Maps.ReliefMaps.Water;
+using Logy.Maps.ReliefMaps.World.Ocean;
 using MathNet.Spatial.Euclidean;
 
 namespace Logy.Maps.Exchange
@@ -42,6 +43,17 @@ namespace Logy.Maps.Exchange
             SetDatum(Poles.Values.Last());
 
             base.OnDeserialize();
+        }
+
+        /// <summary>
+        /// used when json loaded and calc continueted not from 0 frame
+        /// </summary>
+        public void SetGeoisostasyDatum(ShiftAxis algo)
+        {
+            var lastPoleFrame = algo.Poles.Keys.Last();
+            var datum = algo.Poles[lastPoleFrame];
+            datum.CorrectionBundle = datum.LoadCorrection(DataAbstract.K);
+            SetDatum(datum, lastPoleFrame); 
         }
 
         public void SetDatum(Datum datum, int? frame = null)
@@ -101,7 +113,7 @@ namespace Logy.Maps.Exchange
 
             if (frame.HasValue)
             {
-                Poles.Add(frame.Value, datum);
+                Poles[frame.Value] = datum;
             }
         }
 

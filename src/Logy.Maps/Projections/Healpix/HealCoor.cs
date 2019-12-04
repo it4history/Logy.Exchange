@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Runtime.Serialization;
 using AppConfiguration;
 using Logy.Maps.Geometry;

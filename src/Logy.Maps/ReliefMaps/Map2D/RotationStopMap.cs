@@ -68,22 +68,32 @@ namespace Logy.Maps.ReliefMaps.Map2D
             _jsonNeeded = jsonNeeded;
             if (File.Exists(StatsFileName()))
             {
-                Bundle = Bundle<T>.Deserialize(File.ReadAllText(StatsFileName()));
+                Bundle = Bundle<T>.DeserializeFile(StatsFileName());
                 var dataInJson = Bundle.Algorithm.DataAbstract;
                 if (K != dataInJson.K)
                     throw new ApplicationException($"map needs K {K}");
-                var dataInCode = algorithm.DataAbstract;
+
+                var dataInCode = algorithm?.DataAbstract;
                 if (dataInCode != null)
                 {
                     if (dataInCode.WithRelief != dataInJson.WithRelief)
                         throw new ApplicationException("data WithRelief mismatch");
                 }
+
+                var algo = Bundle.Algorithm as ShiftAxis;
+                if (algo != null && algo.Geoisostasy)
+                    algo.SetGeoisostasyDatum(algo);
             }
             else
             {
                 algorithm.DataAbstract.Init();
                 Bundle = new Bundle<T>(algorithm);
             }
+        }
+
+        public void InitDataWithJson()
+        {
+            InitData(null);
         }
 
         public string StatsFileName(int? frame = null)

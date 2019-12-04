@@ -152,6 +152,7 @@ namespace Logy.Maps.ReliefMaps.Basemap
             return hOQ;
         }
 
+        /// <param name="deltaX">from 0 to 4 * HealpixManager.Nside, deltaY to YResolution * HealpixManager.Nside</param>
         public virtual void Draw(
             Bitmap bmp, 
             double deltaX = 0, 
@@ -168,7 +169,11 @@ namespace Logy.Maps.ReliefMaps.Basemap
                 foreach (var pixel in basins)
                 {
                     var healCoor = (HealCoor)pixel;
-                    var point = equirectangular.Offset(healCoor);
+                    /*var phi1 = 97d;
+                    //healCoor.X *= Math.Cos((phi1 / 180) * Math.PI) * 180;
+                    healCoor.Y -= phi1;
+                    healCoor.Normalize<HealCoor>();*/
+                    var point = equirectangular.Offset(healCoor.X, healCoor.Y);
                     Colors.SetPixelOnBmp(
                         healCoor.Altitude,
                         bmp,
