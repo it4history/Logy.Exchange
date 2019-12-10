@@ -33,7 +33,7 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
                 {
                     return basin.Delta_g_traverse * 1000;
                     return basin.Delta_g_meridian * 1000;
-                    return basin.RadiusOfEllipse - Earth2014Manager.Radius2Add;
+                    return basin.RadiusOfGeoid - Earth2014Manager.Radius2Add;
                     return Math.Sqrt(basin.Delta_g_meridian * basin.Delta_g_meridian
                                      + basin.Delta_g_traverse * basin.Delta_g_traverse) * 1000;
                     return basin.GHpure * 1000;

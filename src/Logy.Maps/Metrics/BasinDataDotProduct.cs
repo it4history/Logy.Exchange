@@ -82,7 +82,7 @@ namespace Logy.Maps.Metrics
                 if (WithRelief)
                 {
                     int waterHeight;
-                    var heightOQ = GetHeights(basin, (int)basin.RadiusOfEllipse, out waterHeight);
+                    var heightOQ = GetHeights(basin, (int)basin.RadiusOfGeoid, out waterHeight);
                     basin.Hoq = heightOQ;
                     if (waterHeight > 0)
                     {

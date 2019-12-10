@@ -53,7 +53,7 @@ namespace Logy.Maps.ReliefMaps.Geoid.Tests
 
                 Assert.AreEqual(
                     basin.RadiusGeoid,
-                    basin.RadiusOfEllipse,
+                    basin.RadiusOfGeoid,
                     data.Water.Threshhold * (data.K < 3 ? 2.1 : 1));
             }
         }

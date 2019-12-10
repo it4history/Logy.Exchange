@@ -75,7 +75,7 @@ namespace Logy.Maps.Geometry
             if (Axis == Basin3.Oz)
             {
                 // this is 3) method http://hist.tk/ory/Способ_расчета_центробежного_ускорения, use b.Q3 for 2)
-                return CentrifugalSimple(basin.RadiusOfEllipse, basin.Varphi, basin.Theta, out a, out aVertical);
+                return CentrifugalSimple(basin.RadiusOfGeoid, basin.Varphi, basin.Theta, out a, out aVertical);
             }
 
             var b = (Basin3)basin;

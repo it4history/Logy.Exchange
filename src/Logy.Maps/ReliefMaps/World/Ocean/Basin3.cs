@@ -8,7 +8,6 @@ using Logy.Maps.ReliefMaps.Basemap;
 using Logy.Maps.ReliefMaps.Geoid;
 using Logy.Maps.ReliefMaps.Water;
 using Logy.MwAgent.Sphere;
-using MathNet.Numerics.LinearAlgebra;
 using MathNet.Spatial.Euclidean;
 using MathNet.Spatial.Units;
 
@@ -48,15 +47,15 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
             }
         }
 
-        public override double RadiusOfEllipse
+        public override double RadiusOfGeoid
         {
             get
             {
-                return base.RadiusOfEllipse;
+                return base.RadiusOfGeoid;
             }
             set
             {
-                base.RadiusOfEllipse = value;
+                base.RadiusOfGeoid = value;
                 _actualQ3 = false;
                 _s_q = null;
             }

@@ -232,7 +232,7 @@ namespace Logy.Maps.ReliefMaps.Water
 
         public double RecheckOcean()
         {
-            // todo ошибка округений возможно возникает из-за измененния RadiusOfEllipse 
+            // todo ошибка округений возможно возникает из-за измененния RadiusOfGeoid 
             var newOceanVolume = GetOceanVolume();
             var diff = newOceanVolume - _oceanVolume;
             Console.WriteLine("initial ocean: {0:.##}; increased on: {1}", _oceanVolume, diff);

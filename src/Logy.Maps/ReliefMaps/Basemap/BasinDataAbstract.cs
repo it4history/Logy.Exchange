@@ -44,7 +44,7 @@ namespace Logy.Maps.ReliefMaps.Basemap
                 if (reliefFromDb && WithRelief)
                 {
                     int waterHeight;
-                    var hOQ = GetHeights(basin, (int)basin.RadiusOfEllipse, out waterHeight);
+                    var hOQ = GetHeights(basin, (int)basin.RadiusOfGeoid, out waterHeight);
                     basin.Hoq = hOQ;
                     if (waterHeight > 0)
                     {
@@ -68,7 +68,7 @@ namespace Logy.Maps.ReliefMaps.Basemap
                     /* !uncomment if needed!
                     if (reliefFromDb && WithRelief)
                     {
-                        var diff = Earth2014Manager.Radius2Add - basin.RadiusOfEllipse;
+                        var diff = Earth2014Manager.Radius2Add - basin.RadiusOfGeoid;
                         basin.Depth += diff;
                         basin.Hoq -= diff;
                     }//*/

@@ -114,8 +114,8 @@ namespace Logy.Maps.ReliefMaps.Geoid
 
             // var jsonBasin = _jsonPixels[basin.P];
             // return jsonBasin.Polygon.SurfaceType == SurfaceType.Lake ? 1 : 0;
-            /*(jsonBasin.RadiusGeoid - jsonBasin.RadiusOfEllipse);
-            //return jsonBasin.HasWater() ? jsonBasin.Radius - basin.RadiusOfEllipse : (double?)null;*/
+            /*(jsonBasin.RadiusGeoid - jsonBasin.RadiusOfGeoid);
+            //return jsonBasin.HasWater() ? jsonBasin.Radius - basin.RadiusOfGeoid : (double?)null;*/
         }
 
         public override void Draw(

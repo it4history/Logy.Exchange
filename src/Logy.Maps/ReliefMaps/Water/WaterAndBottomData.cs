@@ -23,7 +23,7 @@ namespace Logy.Maps.ReliefMaps.Water
                     var coor = HealpixManager.GetCenter<HealCoor>(p);
 
                     int waterHeight;
-                    surfaceHeightAll += GetHeights(coor, (int)basin.RadiusOfEllipse, out waterHeight);
+                    surfaceHeightAll += GetHeights(coor, (int)basin.RadiusOfGeoid, out waterHeight);
                     waterHeightAll += waterHeight;
                 }
 

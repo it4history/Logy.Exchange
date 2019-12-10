@@ -155,7 +155,7 @@ namespace Logy.Maps.Exchange
                                 vartheta, 
                                 BasinAbstract.GoodDeflection(vartheta, delta_gq));
                             if (datum.CorrectionBundle != null)
-                                basin.RadiusOfEllipse += datum.CorrectionBundle.Basins[DataAbstract.K][basin.P].Hoq;
+                                basin.RadiusOfGeoid += datum.CorrectionBundle.Basins[DataAbstract.K][basin.P].Hoq;
 
                             // GHpure projections
                             /*was

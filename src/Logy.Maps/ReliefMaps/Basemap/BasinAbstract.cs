@@ -56,14 +56,14 @@ namespace Logy.Maps.ReliefMaps.Basemap
         /// http://hist.tk/ory/Сферический_датум#радиус
         /// r
         /// </summary>
-        public double Radius => Hoq + RadiusOfEllipse;
+        public double Radius => Hoq + RadiusOfGeoid;
 
         /// <summary>
         /// geoid surface set by a mathematical formula
         /// 
         /// good to set it in InitROfEllipse(...)
         /// </summary>
-        public virtual double RadiusOfEllipse
+        public virtual double RadiusOfGeoid
         {
             get;
             set;
@@ -95,7 +95,7 @@ namespace Logy.Maps.ReliefMaps.Basemap
         {
             get
             {
-                var radius = RadiusOfEllipse;
+                var radius = RadiusOfGeoid;
                 var x = radius * BetaSin;
                 return new Point3D(
                     LambdaMinusPi2Sin * x,
@@ -127,7 +127,7 @@ namespace Logy.Maps.ReliefMaps.Basemap
 
         /// <summary>
         /// angle, directed to equator of Oz (or opposite?)
-        /// it approximates geoid surface to sphere with RadiusOfEllipse radius 
+        /// it approximates geoid surface to sphere with RadiusOfGeoid radius 
         /// </summary>
         public virtual double Delta_g_meridian
         {
@@ -218,10 +218,10 @@ namespace Logy.Maps.ReliefMaps.Basemap
         /// <param name="newR">null for spheric Earth</param>
         public void InitROfEllipse(HealpixManager man, double? newR = null)
         {
-            RadiusOfEllipse = newR ?? Earth2014Manager.Radius2Add;
+            RadiusOfGeoid = newR ?? Earth2014Manager.Radius2Add;
             RadiusSpheric = newR == null;
 
-            Area = RadiusOfEllipse * RadiusOfEllipse * man.OmegaPix;
+            Area = RadiusOfGeoid * RadiusOfGeoid * man.OmegaPix;
             RingArea = Area * PixelsCountInRing;
         }
 
@@ -264,7 +264,7 @@ namespace Logy.Maps.ReliefMaps.Basemap
 
             double a, aVertical;
             /// this is 3) method http://hist.tk/ory/Способ_расчета_центробежного_ускорения, use b.Q3 for 2)
-            var aMeridian = Datum.Normal.CentrifugalSimple(RadiusOfEllipse, varphi, theta, out a, out aVertical);
+            var aMeridian = Datum.Normal.CentrifugalSimple(RadiusOfGeoid, varphi, theta, out a, out aVertical);
             /// vertical to ellipsoid surface
             var aVert = Math.Abs(a * Math.Sin(vartheta));
             /// horizontal to ellipsoid surface

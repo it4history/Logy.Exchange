@@ -15,7 +15,7 @@ namespace Logy.Maps.ReliefMaps.Meridian
         {
             base.OnInit(man);
             var northRingPixel = man.GetCenter(Math.Max(1, P - PixelInRing));
-            _lengthQn2 = (Beta.Value - northRingPixel.Beta.Value) * RadiusOfEllipse / 2;
+            _lengthQn2 = (Beta.Value - northRingPixel.Beta.Value) * RadiusOfGeoid / 2;
         }
 
         public override double Intersect(BasinAbstract otherBasin)
