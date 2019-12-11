@@ -91,6 +91,8 @@
     <Compile Include="Geometry\Tests\DatumTests.cs" />
     <Compile Include="Geometry\Tests\MathNetPoint3DTests.cs" />
     <Compile Include="Metrics\Tests\OceanDataTests.cs" />
+    <Compile Include="Projections\Healpix\Dem\Tests\HealDemManagerTests.cs" />
+    <Compile Include="Projections\Healpix\Dem\HealDemManager.cs" />
     <Compile Include="Projections\Healpix\Equation.cs" />
     <Compile Include="Projections\Healpix\HealpixFormattor.cs" />
     <Compile Include="Projections\Healpix\EquationType.cs" />

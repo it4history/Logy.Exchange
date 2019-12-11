@@ -1,6 +1,4 @@
 ﻿using System;
-using System.IO;
-using System.Linq;
 using System.Runtime.Serialization;
 using Logy.Maps.Exchange;
 using Logy.Maps.Metrics;
@@ -27,6 +25,9 @@ namespace Logy.Maps.Geometry
         [DataMember]
         public double SiderealDayInSeconds { get; set; } = NormalSiderealDay;
 
+        /// <summary>
+        /// should be balanced with RadiusOfGeoid, for example, according to geoisostasy
+        /// </summary>
         [DataMember]
         public Gravity Gravity { get; set; }
         [DataMember]

@@ -10,14 +10,12 @@ namespace Logy.Maps.Geometry
 {
     public class Pole : Coor
     {
-        private UnitVector3D _axis;
-
         public Pole()
         {
             Calc();
         }
 
-        public UnitVector3D Axis => _axis;
+        public UnitVector3D Axis { get; private set; }
 
         public Matrix<double> Matrix { get; private set; }
 
@@ -63,8 +61,8 @@ namespace Logy.Maps.Geometry
 
         private void Calc()
         {
-            _axis = Utils3D.Cartesian(this);
-            Matrix = Matrix3D.RotationTo(BasinAbstract.Oz, _axis);
+            Axis = Utils3D.Cartesian(this);
+            Matrix = Matrix3D.RotationTo(BasinAbstract.Oz, Axis);
         }
     }
 }
