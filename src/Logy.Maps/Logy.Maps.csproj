@@ -66,6 +66,8 @@
     <Compile Include="..\..\ProductAssemblyInfo.cs">
       <Link>Properties\ProductAssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="Coloring\ColorWheel.cs" />
+    <Compile Include="Coloring\Tests\ColorWheelTests.cs" />
     <Compile Include="Exchange\Algorithm.cs" />
     <Compile Include="Exchange\Bundle.cs" />
     <Compile Include="Exchange\Earth2014\Earth2014Manager.cs" />
@@ -91,6 +93,9 @@
     <Compile Include="Geometry\Tests\DatumTests.cs" />
     <Compile Include="Geometry\Tests\MathNetPoint3DTests.cs" />
     <Compile Include="Metrics\Tests\OceanDataTests.cs" />
+    <Compile Include="Projections\Healpix\Dem\BasinDem.cs" />
+    <Compile Include="Projections\Healpix\Dem\BasinDemGeoid.cs" />
+    <Compile Include="Projections\Healpix\Dem\HealDem.cs" />
     <Compile Include="Projections\Healpix\Dem\Tests\HealDemManagerTests.cs" />
     <Compile Include="Projections\Healpix\Dem\HealDemManager.cs" />
     <Compile Include="Projections\Healpix\Equation.cs" />
@@ -111,6 +116,7 @@
     <Compile Include="ReliefMaps\Geoid\Polygon.cs" />
     <Compile Include="ReliefMaps\Geoid\Rectangle.cs" />
     <Compile Include="ReliefMaps\Geoid\Tests\GeoidTests.cs" />
+    <Compile Include="ReliefMaps\Map2D\LegendType.cs" />
     <Compile Include="ReliefMaps\Map2D\PoliticalMap.cs" />
     <Compile Include="ReliefMaps\SurfaceType.cs" />
     <Compile Include="ReliefMaps\Map2D\Tests\OptimizationTests.cs" />
@@ -123,6 +129,7 @@
     <Compile Include="ReliefMaps\World\Ocean\GeometricDistortion.cs" />
     <Compile Include="ReliefMaps\World\Ocean\OceanMapGravityAxisChange.cs" />
     <Compile Include="ReliefMaps\World\Ocean\ReliefAxis17Geoisostasy.cs" />
+    <Compile Include="ReliefMaps\World\Ocean\ReliefAxis17Geoisostasy_Angles.cs" />
     <Compile Include="ReliefMaps\World\Ocean\ReliefAxis17Parameters.cs" />
     <Compile Include="ReliefMaps\World\Ocean\ReliefParadise.cs" />
     <Compile Include="ReliefMaps\World\Percentage.cs" />

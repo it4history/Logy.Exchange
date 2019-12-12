@@ -8,9 +8,8 @@ namespace Logy.Maps.ReliefMaps.World
 {
     public class Percentage : Map2DBase<HealCoor>
     {
-        public Percentage()
+        public Percentage() : base(6, LegendType.None)
         {
-            LegendNeeded = false;
         }
 
         public override Projection Projection => Projection.Healpix2Equirectangular;

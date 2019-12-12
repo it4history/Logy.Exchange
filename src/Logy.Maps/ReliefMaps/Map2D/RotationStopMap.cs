@@ -23,7 +23,7 @@ namespace Logy.Maps.ReliefMaps.Map2D
         public RotationStopMap() : this(6)
         {
         }
-        public RotationStopMap(int k) : base(k)
+        public RotationStopMap(int k, LegendType legendType = LegendType.Horizontal) : base(k, legendType)
         {
         }
 
@@ -46,8 +46,9 @@ namespace Logy.Maps.ReliefMaps.Map2D
             {
                 if (Bundle == null)
                 {
+                    /* danger
                     if (Directory.Exists(Dir))
-                        Array.ForEach(Directory.GetFiles(Dir), File.Delete);
+                        Array.ForEach(Directory.GetFiles(Dir), File.Delete); */
                     value.Init();
                     Bundle = new Bundle<T>(value);
                 }
@@ -97,7 +98,7 @@ namespace Logy.Maps.ReliefMaps.Map2D
                 Bundle = Bundle<T>.DeserializeFile(jsonfileToLoad);
                 var dataInJson = Bundle.Algorithm.DataAbstract;
                 if (K != dataInJson.K)
-                    throw new ApplicationException($"map needs K {K}");
+                    throw new ApplicationException($"datum {jsonfileToLoad} needs K {K}");
 
                 var dataInCode = algorithm?.DataAbstract;
                 if (dataInCode != null)

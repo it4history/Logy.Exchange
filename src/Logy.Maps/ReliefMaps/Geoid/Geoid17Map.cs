@@ -12,7 +12,7 @@ namespace Logy.Maps.ReliefMaps.Geoid
 
         public Geoid17Map() : base(5)
         {
-            // LegendNeeded = false;
+            // LegendType = false;
         }
 
         public override Projection Projection => Projection.Healpix2EquirectangularFast;

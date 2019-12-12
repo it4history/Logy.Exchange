@@ -9,7 +9,7 @@ namespace Logy.Maps.ReliefMaps.World
     {
         public override Projection Projection => Projection.Equirectangular;
 
-        protected override bool IsGrey => true;
+        public override bool IsGrey => true;
 
         protected override ImageFormat ImageFormat => ImageFormat.Gif;
 

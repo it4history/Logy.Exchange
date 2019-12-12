@@ -26,7 +26,7 @@ namespace Logy.Maps.Projections.Healpix.Dem
         {
             if (k < _levels.Count - 1)
             {
-                var kidsMan = _levels.Count - 1 - k;
+                var kidsMan = 1 << (_levels.Count - 1 - k - 1);
                 var kids = _levels[k].GetCenter(p).GetKids(_levels[k + 1]);
                 Call(k + 1, kids[0], x, y);
                 Call(k + 1, kids[1], x + kidsMan, y);

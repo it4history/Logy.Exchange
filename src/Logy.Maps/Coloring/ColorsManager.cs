@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using Logy.Maps.ReliefMaps.Basemap;
+using Logy.Maps.ReliefMaps.Map2D;
 using Logy.MwAgent.Sphere;
 
 namespace Logy.Maps.Coloring
@@ -11,13 +13,14 @@ namespace Logy.Maps.Coloring
         private readonly double? _middleSet;
         private SortedList<int, Color3> _above = Gyr1;
         private SortedList<int, Color3> _under = Water;
+        private readonly Map _map;
 
-        public ColorsManager(double min, double max, double? middle = null, bool isGrey = false)
+        public ColorsManager(double min, double max, double? middle = null, Map map = null)
         {
             Min = min;
             Max = max;
             _middleSet = middle;
-            IsGrey = isGrey;
+            _map = map;
         }
 
         public static Color3 Red { get; set; } = new Color3(Color.Red);
@@ -70,7 +73,7 @@ namespace Logy.Maps.Coloring
 
         public double NormalKoef => 255 / (Max - Min);
 
-        public bool IsGrey { get; }
+        public bool IsGrey => _map?.IsGrey ?? false;
         public Color DefaultColor { get; set; } = Land;
 
         /// <param name="nearestIndex">may be in next ring and may be == maxIndex</param>
@@ -167,17 +170,24 @@ namespace Logy.Maps.Coloring
             //normal = (255 / (float)2) * (normal + new Vector3(1, 1, 1));*/
 
             var color = DefaultColor;
-            if (IsGrey)
+            if (height.HasValue)
             {
-                if (height.HasValue)
+                var heightValue = height.Value;
+                if (IsGrey)
                 {
-                    var grey = (int)((height.Value - Min) * NormalKoef);
+                    var grey = (int)((heightValue - Min) * NormalKoef);
                     color = Color.FromArgb(grey, grey, grey);
                 }
-            }
-            else
-            {
-                if (height.HasValue) color = (Color)Get(height.Value);
+                else
+                {
+                    if (_map?.LegendType == LegendType.Hue)
+                    {
+                        var angle = ColorWheel.GetAngle(heightValue);
+                        color = ColorWheel.HSVtoRGB(angle, (heightValue / Max) * 255);
+                    }
+                    else
+                        color = (Color)Get(heightValue);
+                }
             }
 
             SetPixelOnBmp(color, bmp, x, y, scale);

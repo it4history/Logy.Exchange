@@ -5,16 +5,12 @@ using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 using System.IO;
-using GeoJSON.Net.Feature;
-using GeoJSON.Net.Geometry;
 using Logy.Maps.Coloring;
-using Logy.Maps.Exchange.Naturalearth;
 using Logy.Maps.Projections;
 using Logy.Maps.Projections.Healpix;
 using Logy.Maps.ReliefMaps.Basemap;
 using Logy.MwAgent.DotNetWikiBot;
 using Logy.MwAgent.Sphere;
-using Newtonsoft.Json;
 using NUnit.Framework;
 
 namespace Logy.Maps.ReliefMaps.Map2D
@@ -26,10 +22,8 @@ namespace Logy.Maps.ReliefMaps.Map2D
 
         private string _dir;
 
-        protected Map2DBase(int k = 6) : base(k)
+        protected Map2DBase(int k = 6, LegendType legendType = LegendType.Horizontal) : base(k, legendType)
         {
-            LegendNeeded = true;
-
             if (k < 7)
             {
                 Scale = (7 - k) * 3;
@@ -59,7 +53,7 @@ namespace Logy.Maps.ReliefMaps.Map2D
         /// </summary>
         public string Subdir { get; set; }
         public string Dir => _dir ?? (_dir = string.Format(
-                                 "{2}{3}maps{3}{1}_lines{0}{3}{4}",
+                                 "{2}{3}datums{3}{1}_lines{0}{3}{4}",
                                  YResolution * HealpixManager.Nside,
                                  GetType().Name,
                                  Directory.GetCurrentDirectory(),
@@ -70,8 +64,6 @@ namespace Logy.Maps.ReliefMaps.Map2D
         public virtual SortedList<int, Color3> ColorsAbove => ColorsManager.Gyr1;
 
         public virtual SortedList<int, Color3> ColorsUnder => ColorsManager.Water;
-
-        protected virtual bool IsGrey => false;
 
         /// <summary>
         /// not for png
@@ -85,11 +77,11 @@ namespace Logy.Maps.ReliefMaps.Map2D
 
         protected virtual DataForMap2D<T> MapData => null;
 
-        protected bool LegendNeeded { get; set; }
+        private LegendType LegendToDraw => IsGrey ? LegendType.None : LegendType;
 
-        private bool LegendToDraw => !IsGrey && LegendNeeded;
-
-        private int LegendHeight => K > 7 ? (K - 6) * 20 : 20;
+        private int LegendHeight => LegendToDraw == LegendType.None
+            ? 0
+            : (LegendToDraw == LegendType.Hue ? 40 : K > 7 ? (K - 6) * 20 : 20);
 
         public static void OpenPicture(string name)
         {
@@ -137,7 +129,7 @@ namespace Logy.Maps.ReliefMaps.Map2D
         {
             var bmp = new Bitmap(
                 4 * HealpixManager.Nside * Scale,
-                (YResolution * HealpixManager.Nside * Scale) + (LegendToDraw ? LegendHeight : 0));
+                (YResolution * HealpixManager.Nside * Scale) + LegendHeight);
             if (ImageFormat != ImageFormat.Png)
             {
                 var g = GetFont(bmp);
@@ -179,43 +171,50 @@ namespace Logy.Maps.ReliefMaps.Map2D
 
         protected void DrawLegend(DataEarth data, Bitmap bmp)
         {
-            if (!LegendToDraw)
-                return;
-
             var left = HealpixManager.Nside * Scale;
-            const int Upbottomedge = 3;
             int? left0 = null;
             int? left0end = null;
-            for (var y = 0; y < LegendHeight; y++)
+            switch (LegendToDraw)
             {
-                for (var x = 0; x < 4 * HealpixManager.Nside * Scale; x++)
-                {
-                    var c = ImageFormat == ImageFormat.Png ? Color.Transparent : Color.White;
-                    if (x >= left && x < 3 * HealpixManager.Nside * Scale && y > Upbottomedge &&
-                        y < LegendHeight - Upbottomedge)
+                case LegendType.None:
+                    return;
+                case LegendType.Hue:
+                    ColorWheel.Draw(bmp, LegendHeight, new PointF(left, Top));
+                    break;
+                case LegendType.Horizontal:
+                    const int Upbottomedge = 3;
+                    for (var y = 0; y < LegendHeight; y++)
                     {
-                        var value = data.Colors.Min +
-                                    ((x - left) / (2d * HealpixManager.Nside * Scale) *
-                                    (data.Colors.Max - data.Colors.Min));
-                        var upbottomedge0 = Upbottomedge + ((K - 7) * 3);
-                        if (y > upbottomedge0 + 2 && y < LegendHeight - upbottomedge0 - 1 &&
-                            Math.Abs(value - data.Colors.Middle) < (data.Colors.Max - data.Colors.Min) / 50d)
+                        for (var x = 0; x < 4 * HealpixManager.Nside * Scale; x++)
                         {
-                            if (left0.HasValue)
-                                left0end = x;
-                            else
-                                left0 = x;
+                            var c = ImageFormat == ImageFormat.Png ? Color.Transparent : Color.White;
+                            if (x >= left && x < 3 * HealpixManager.Nside * Scale && y > Upbottomedge &&
+                                y < LegendHeight - Upbottomedge)
+                            {
+                                var value = data.Colors.Min +
+                                            ((x - left) / (2d * HealpixManager.Nside * Scale) *
+                                             (data.Colors.Max - data.Colors.Min));
+                                var upbottomedge0 = Upbottomedge + ((K - 7) * 3);
+                                if (y > upbottomedge0 + 2 && y < LegendHeight - upbottomedge0 - 1 &&
+                                    Math.Abs(value - data.Colors.Middle) < (data.Colors.Max - data.Colors.Min) / 50d)
+                                {
+                                    if (left0.HasValue)
+                                        left0end = x;
+                                    else
+                                        left0 = x;
+                                }
+                                else
+                                    c = (Color)data.Colors.Get(value);
+                            }
+                            bmp.SetPixel(x, Top + y, c);
                         }
-                        else
-                            c = (Color)data.Colors.Get(value);
                     }
-                    bmp.SetPixel(x, Top + y, c);
-                }
+                    break;
             }
-
             var g = GetFont(bmp);
             var font = new Font("Tahoma", 8 + (K > 7 ? (K - 7) * 8 : 0));
-            var smin = data.Colors.Min.ToString("0.#");
+            var format = "0.#" + (Math.Abs(data.Colors.Max) < 1 ? "##" : null);
+            var smin = data.Colors.Min.ToString(format);
             var measure = g.MeasureString(smin, font);
             var stringTop = Top + 3 + ((LegendHeight - 3 - measure.Height) / 2);
             var layoutRectangle = new RectangleF(
@@ -223,17 +222,20 @@ namespace Logy.Maps.ReliefMaps.Map2D
                 stringTop,
                 left,
                 Top + LegendHeight);
-            g.DrawString(smin, font, Brushes.Black, layoutRectangle);
+            if (LegendType != LegendType.Hue)
+            {
+                g.DrawString(smin, font, Brushes.Black, layoutRectangle);
+            }
 
-            var smax = data.Colors.Max.ToString("0.#");
+            var smax = data.Colors.Max.ToString(format);
             layoutRectangle = new RectangleF(
-                left + (2 * HealpixManager.Nside * Scale) + 10,
+                left + (LegendType == LegendType.Hue ? LegendHeight : (2 * HealpixManager.Nside * Scale) + 10),
                 stringTop,
                 left + (3 * HealpixManager.Nside * Scale),
                 Top + LegendHeight);
-            g.DrawString(smax + data.Dimension, font, Brushes.Black, layoutRectangle);
+            g.DrawString($"max: {smax} {data.Dimension}", font, Brushes.Black, layoutRectangle);
 
-            var middle = data.Colors.Middle.ToString("0.#");
+            var middle = data.Colors.Middle.ToString(format);
             if (left0.HasValue && middle != smin && middle != smax)
             {
                 var measure0 = g.MeasureString(middle, font);
@@ -254,9 +256,9 @@ namespace Logy.Maps.ReliefMaps.Map2D
             var filename = string.Format(
                 "{1}{0}{4}{3}.{2}",
                 frame,
-                colors.IsGrey ? "grey" : null,
+                colors != null && colors.IsGrey ? "grey" : null,
                 ImageFormat.ToString().ToLower(),
-                LegendToDraw ? null : "_nolegend",
+                LegendToDraw == LegendType.None ? "_nolegend" : null,
                 Projection == Projection.Equirectangular ? "_noHEALPix" : null);
             return Path.Combine(Dir, filename);
         }

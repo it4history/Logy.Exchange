@@ -108,7 +108,7 @@ namespace Logy.Maps.ReliefMaps.Basemap
         /// <summary>
         /// also sets Colors
         /// </summary>
-        public ColorsManager InitAltitudes(T[] basins, bool isGrey = false)
+        public ColorsManager InitAltitudes(T[] basins, Map map = null)
         {
             double? min = MinDefault, max = MaxDefault;
             foreach (var basin in basins)
@@ -122,7 +122,7 @@ namespace Logy.Maps.ReliefMaps.Basemap
                     CheckMaxMin(altitude.Value, ref min, ref max);
                 }
             }
-            Colors = new ColorsManager(min.Value, max.Value, ColorsMiddle, isGrey);
+            Colors = new ColorsManager(min.Value, max.Value, ColorsMiddle, map);
             return Colors;
         }
         #endregion
@@ -174,6 +174,7 @@ namespace Logy.Maps.ReliefMaps.Basemap
                     healCoor.Y -= phi1;
                     healCoor.Normalize<HealCoor>();*/
                     var point = equirectangular.Offset(healCoor.X, healCoor.Y);
+
                     Colors.SetPixelOnBmp(
                         healCoor.Altitude,
                         bmp,
@@ -208,6 +209,9 @@ namespace Logy.Maps.ReliefMaps.Basemap
             }
         }
 
+        /// <summary>
+        /// not for LegentType.Hue
+        /// </summary>
         public void SetColorLists()
         {
             Colors.SetColorLists(

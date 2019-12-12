@@ -39,9 +39,8 @@ namespace Logy.Maps.Geometry.Tests
 
     public class PoleSearchByLatitude : Map2DBase<City>
     {
-        public PoleSearchByLatitude() : base(8)
+        public PoleSearchByLatitude() : base(8, LegendType.None)
         {
-            LegendNeeded = false;
             YResolution = 3;
         }
 

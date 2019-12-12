@@ -126,7 +126,7 @@ namespace Logy.Maps.ReliefMaps.Basemap
         #endregion
 
         /// <summary>
-        /// angle, directed to equator of Oz (or opposite?)
+        /// angle, directed to poles of Oz and water goes to equator
         /// it approximates geoid surface to sphere with RadiusOfGeoid radius 
         /// </summary>
         public virtual double Delta_g_meridian

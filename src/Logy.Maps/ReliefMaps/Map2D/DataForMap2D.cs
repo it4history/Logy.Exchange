@@ -11,7 +11,7 @@ namespace Logy.Maps.ReliefMaps.Map2D
     public abstract class DataForMap2D<T> : DataEarth2014<T> where T : HealCoor
     {
         /// <summary>
-        /// bad design
+        /// bad design, partly fixed in ColorsManager constructor via InitAltitudes()
         /// </summary>
         protected readonly Map2DBase<T> Map;
 
@@ -75,7 +75,7 @@ namespace Logy.Maps.ReliefMaps.Map2D
                 case Projection.Healpix:
                 case Projection.Healpix2EquirectangularFast:
                 case Projection.Healpix2Equirectangular: /*mean min, nax will be calculated later  */
-                    colorsManager = InitAltitudes(PixMan.Pixels, isGrey);
+                    colorsManager = InitAltitudes(PixMan.Pixels, Map);
                     break;
                 case Projection.Equirectangular: /*min and max may not be precalculated*/
                     double? min = MinDefault, max = MaxDefault;
@@ -87,7 +87,7 @@ namespace Logy.Maps.ReliefMaps.Map2D
                                     typeof(HealCoor),
                                     Equirectangular.CoorFromXY(pixel, Map.YResolution, HealpixManager)))
                             .ToArray();
-                        colorsManager = InitAltitudes(pix, isGrey);
+                        colorsManager = InitAltitudes(pix, Map);
                     }
                     break;
             }

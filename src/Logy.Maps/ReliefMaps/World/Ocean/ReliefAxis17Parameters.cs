@@ -12,9 +12,11 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
         {
         }
 
-        public static Func<Basin3, double, double> Visual { get; set; } = (basin, moved) =>
-                Math.Sqrt(((basin.Delta_g_meridian * basin.Delta_g_meridian)
-                           + (basin.Delta_g_traverse * basin.Delta_g_traverse)) * 1000);
+        public static Func<Basin3, double, double?> Visual { get; set; } = (basin, moved) =>
+            !basin.HasWater()
+                ? (double?)null
+                : Math.Sqrt(((basin.Delta_g_meridian * basin.Delta_g_meridian)
+                             + (basin.Delta_g_traverse * basin.Delta_g_traverse)) * 1000);
             /*              basin.RadiusOfGeoid - Ellipsoid.MeanRadius;
                             Math.Sqrt(basin.GHpure * basin.GHpure + basin.GHpureTraverse * basin.GHpureTraverse) * 1000;
                             basin.Delta_g_traverse * 1000;
