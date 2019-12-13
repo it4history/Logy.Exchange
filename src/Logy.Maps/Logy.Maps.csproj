@@ -129,7 +129,7 @@
     <Compile Include="ReliefMaps\World\Ocean\GeometricDistortion.cs" />
     <Compile Include="ReliefMaps\World\Ocean\OceanMapGravityAxisChange.cs" />
     <Compile Include="ReliefMaps\World\Ocean\ReliefAxis17Geoisostasy.cs" />
-    <Compile Include="ReliefMaps\World\Ocean\ReliefAxis17Geoisostasy_Angles.cs" />
+    <Compile Include="ReliefMaps\World\Ocean\ReliefAxis17GeoisostasyAngles.cs" />
     <Compile Include="ReliefMaps\World\Ocean\ReliefAxis17Parameters.cs" />
     <Compile Include="ReliefMaps\World\Ocean\ReliefParadise.cs" />
     <Compile Include="ReliefMaps\World\Percentage.cs" />

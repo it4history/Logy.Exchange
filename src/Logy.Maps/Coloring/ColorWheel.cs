@@ -15,7 +15,7 @@ namespace Logy.Maps.Coloring
             if (satupation == 0)
                 return Color.FromArgb(v, v, v);
 
-            hue += 60 + 127; hue %= 256;
+            hue += 60; hue %= 256;
 
             var maxV = v;
             var chroma = (satupation / 255d) * maxV;

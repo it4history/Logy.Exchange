@@ -42,7 +42,9 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
                 var gradModul = (Math.Sqrt(meridian * meridian + traverse * traverse)
                                  / Math.PI) * 180;
 
-                return ColorWheel.SetAngle(meridian, traverse, gradModul);
+                // sign '-' because calculated not angle from old water to current water
+                // but from old land to current land
+                return ColorWheel.SetAngle(-meridian, -traverse, gradModul);
             };
 
             Data.Dimension = "degree";
