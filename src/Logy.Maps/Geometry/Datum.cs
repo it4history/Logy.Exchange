@@ -46,13 +46,6 @@ namespace Logy.Maps.Geometry
             return aMerid;
         }
 
-        public Bundle<Basin3> LoadCorrection(int k)
-        {
-            var correctionMap = new OceanMapGravityAxisChange(k);
-            var format = $"{correctionMap.Dir}{correctionMap.SubdirByDatum(this)}";
-            return Bundle<Basin3>.DeserializeFile(RotationStopMap<Basin3>.FindJson(format), true);
-        }
-
         public double Centrifugal(BasinAbstract basin)
         {
             double a, aTraverse, aVertical;

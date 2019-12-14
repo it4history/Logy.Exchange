@@ -55,7 +55,7 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
             Subdir = SubdirByDatum(_algo.DesiredDatum);
         }
 
-        public string SubdirByDatum(Datum datum)
+        public string SubdirByDatum(Pole datum)
         {
             return $@"x{datum.X}_y{datum.Y}" + "GravityShift";
         }
@@ -87,7 +87,7 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
             InitData(_algo, true);
 
             var parentMan = new HealpixManager(K - 1);
-            var parentBasins = _algo.DesiredDatum.LoadCorrection(parentMan.K).Basins[parentMan.K];
+            var parentBasins = _algo.DesiredDatum.Gravity.LoadCorrection(parentMan.K).Basins[parentMan.K];
             for (var p = 0; p < parentBasins.Length; p++)
                 foreach (var kidP in parentMan.GetCenter(p).GetKids(HealpixManager))
                     Data.PixMan.Pixels[kidP].Hoq = parentBasins[p].Hoq;

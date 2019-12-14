@@ -32,16 +32,16 @@ namespace Logy.Maps.Exchange
         /// </summary>
         public bool Geoisostasy { get; set; }
 
+        /* commented because of ReliefAxis17Geoisostasy.AxisChange smoothing
         public override void OnDeserialize()
         {
-            /* commented because of ReliefAxis17Geoisostasy.AxisChange smoothing
             if (Geoisostasy)
             {
                 var datum = Poles.Values.Last();
                 datum.CorrectionBundle = datum.LoadCorrection(Data.K);
-            }*/
+            }
             base.OnDeserialize();
-        }
+        }*/
 
         public void Shift(
             int framesCount, 
@@ -87,7 +87,7 @@ namespace Logy.Maps.Exchange
                             };
                             poleShift++;
 
-                            datum.CorrectionBundle = datum.LoadCorrection(Data.K);
+                            datum.CorrectionBundle = datum.Gravity.LoadCorrection(Data.K);
                         }
                         SetDatum(datum, frame + 1); /// will influence water on next DoFrame()
                     }

@@ -18,6 +18,8 @@ namespace Logy.Maps.ReliefMaps.Water
         private bool? _isDynamicScale;
         private double _oceanVolume;
 
+        public static double MaxOceanVolume = 1340;
+
         protected WaterMoving() { }
         protected WaterMoving(
             HealpixManager man,
@@ -68,8 +70,8 @@ namespace Logy.Maps.ReliefMaps.Water
         public int Frame { get; set; } = -1;
         public int Time { get; set; }
         public int TimeStep { get; set; } = 1;
-        public double? Max { get; set; }
         public double? Min { get; set; }
+        public double? Max { get; set; }
 
         /// <param name="reliefFromDb">if true then Depth, Hoq are got from db, it is slow</param>
         public virtual void Init(bool reliefFromDb = true, Datum datum = null)
@@ -226,7 +228,7 @@ namespace Logy.Maps.ReliefMaps.Water
             if (K > 1 /* for MetricType.Middle and > 3 for others */)
             {
                 Assert.GreaterOrEqual(_oceanVolume, 1329);
-                Assert.LessOrEqual(_oceanVolume, 1340);
+                Assert.LessOrEqual(_oceanVolume, MaxOceanVolume);
             }
         }
 

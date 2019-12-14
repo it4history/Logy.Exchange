@@ -1,6 +1,9 @@
 ﻿using System.Runtime.Serialization;
+using Logy.Maps.Exchange;
 using Logy.Maps.Projections.Healpix;
 using Logy.Maps.ReliefMaps.Basemap;
+using Logy.Maps.ReliefMaps.Map2D;
+using Logy.Maps.ReliefMaps.World.Ocean;
 using Logy.MwAgent.Sphere;
 using MathNet.Numerics.LinearAlgebra;
 using MathNet.Spatial.Euclidean;
@@ -58,6 +61,13 @@ namespace Logy.Maps.Geometry
         #endregion
 
         public HealCoor PoleBasin { get; set; }
+
+        public Bundle<Basin3> LoadCorrection(int k)
+        {
+            var correctionMap = new OceanMapGravityAxisChange(k);
+            var format = $"{correctionMap.Dir}{correctionMap.SubdirByDatum(this)}";
+            return Bundle<Basin3>.DeserializeFile(RotationStopMap<Basin3>.FindJson(format), true);
+        }
 
         private void Calc()
         {

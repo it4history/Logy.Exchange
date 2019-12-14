@@ -64,7 +64,7 @@ namespace Logy.Maps.ReliefMaps.Map2D
 
         public static string FindJson(string dir)
         {
-            var json = Directory.GetFiles(dir, RotationStopMap<BasinAbstract>.FilePrefix + "*.json")
+            var json = Directory.GetFiles(dir, "*" + RotationStopMap<BasinAbstract>.FilePrefix + "*.json")
                 .LastOrDefault();
             if (json == null)
                 throw new ApplicationException("needed json at " + dir);

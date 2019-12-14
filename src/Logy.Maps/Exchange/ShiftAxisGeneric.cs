@@ -54,7 +54,7 @@ namespace Logy.Maps.Exchange
                 algo = this;
             var lastPoleFrame = algo.Poles.Keys.Last();
             var datum = algo.Poles[lastPoleFrame];
-            datum.CorrectionBundle = datum.LoadCorrection(DataAbstract.K);
+            datum.CorrectionBundle = datum.Gravity.LoadCorrection(DataAbstract.K);
             SetDatum(datum, lastPoleFrame);
         }
 

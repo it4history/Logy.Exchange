@@ -3,6 +3,7 @@ using Logy.Maps.Exchange;
 using Logy.Maps.Geometry;
 using Logy.Maps.ReliefMaps.Basemap;
 using Logy.Maps.ReliefMaps.Geoid;
+using Logy.Maps.ReliefMaps.Water;
 using NUnit.Framework;
 
 namespace Logy.Maps.ReliefMaps.World.Ocean
@@ -57,20 +58,6 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
         }
 
         [Test]
-        public void FasterSpin()
-        {
-            Subdir = "fasterSpin";
-            InitDataWithJson();
-
-            var algorithm = (ShiftAxis)Bundle.Algorithm;
-            var datum = algorithm.Poles.Values.Last();
-            datum.SiderealDayInSeconds *= .7;
-            algorithm.SetGeoisostasyDatum();
-
-            ShiftAxis(8000);
-        }
-
-        [Test]
         public void Fluidity()
         {
             Subdir = "fluidity.7";
@@ -89,7 +76,7 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
         }
 
         /// <summary>
-        /// why north is now high on map
+        /// why north is so high on map?
         /// </summary>
         [Test]
         public void StrahovSouthTest()
@@ -118,6 +105,36 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
             data.DrawEddies(Bmp, Data.PixMan.Pixels, YResolution, Scale);
 
             SaveBitmap(Data.Frame);
+        }
+
+        [Test]
+        public void AddWater()
+        {
+            Subdir = "addWater";
+            InitDataWithJson();
+
+            foreach (var basin in Data.PixMan.Pixels)
+            {
+                basin.Hoq += 1500;
+            }
+
+            ShiftAxis(10000);
+        }
+
+        [Test]
+        public void FasterSpin()
+        {
+            // 760 for 1500, 512 for 1000
+            WaterMoving<Basin3>.MaxOceanVolume += 760;
+            Subdir = "fasterSpin" + 1500;
+            InitDataWithJson();
+
+            var algorithm = (ShiftAxis)Bundle.Algorithm;
+            var datum = algorithm.Poles.Values.Last();
+            datum.SiderealDayInSeconds *= .7;
+            algorithm.SetGeoisostasyDatum();
+
+            ShiftAxis(10000);
         }
 
         [Test]

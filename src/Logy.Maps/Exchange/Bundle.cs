@@ -109,13 +109,14 @@ namespace Logy.Maps.Exchange
                     }
                 }
 
-                data.CheckOcean();
-
                 // needed to allow serialization of latest data.PixMan.Pixels to new json
                 if (!ignoreNewBasins)
                     bundle.Basins[data.HealpixManager.K] = data.PixMan.Pixels; 
 
                 bundle.Algorithm.OnDeserialize();
+
+                data.CheckOcean();
+
                 /*
                 set colors in Data.CalcAltitudes();
                 if (data.Min != null && data.Max != null)
