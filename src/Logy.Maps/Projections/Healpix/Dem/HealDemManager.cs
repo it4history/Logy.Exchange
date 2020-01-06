@@ -5,7 +5,7 @@ namespace Logy.Maps.Projections.Healpix.Dem
 {
     public class HealDemManager
     {
-        private readonly List<HealpixManager> _levels= new List<HealpixManager>();
+        private readonly List<HealpixManager> _levels = new List<HealpixManager>();
         private int[,] _dem;
 
         public HealDemManager(int kidsK)

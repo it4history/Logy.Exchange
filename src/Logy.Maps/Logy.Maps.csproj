@@ -124,6 +124,7 @@
     <Compile Include="ReliefMaps\Basemap\BasinAbstract.cs" />
     <Compile Include="ReliefMaps\Meridian\MeridianAbstract.cs" />
     <Compile Include="ReliefMaps\Meridian\ReliefMap.cs" />
+    <Compile Include="ReliefMaps\World\Ararat.cs" />
     <Compile Include="ReliefMaps\World\Earth2014Correction.cs" />
     <Compile Include="ReliefMaps\World\Earth2014CorrectionData.cs" />
     <Compile Include="ReliefMaps\World\Ocean\GeometricDistortion.cs" />

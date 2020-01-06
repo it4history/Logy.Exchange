@@ -15,7 +15,8 @@ namespace Logy.Maps.Coloring
             if (satupation == 0)
                 return Color.FromArgb(v, v, v);
 
-            hue += 60; hue %= 256;
+            hue += 256 / 4;
+            hue %= 256;
 
             var maxV = v;
             var chroma = (satupation / 255d) * maxV;
@@ -67,9 +68,9 @@ namespace Logy.Maps.Coloring
                     r = maxV * (2 - tempH);
                 }
             }
-            r = (r / maxV) * (maxV - minV) + minV;
-            g = (g / maxV) * (maxV - minV) + minV;
-            b = (b / maxV) * (maxV - minV) + minV;
+            r = ((r / maxV) * (maxV - minV)) + minV;
+            g = ((g / maxV) * (maxV - minV)) + minV;
+            b = ((b / maxV) * (maxV - minV)) + minV;
 
             return Color.FromArgb((int)r, (int)g, (int)b);
         }
@@ -80,8 +81,8 @@ namespace Logy.Maps.Coloring
             for (var angle = .0; angle < Math.PI * 2; angle += .01)
             for (int bright = width / 30; bright < maxBright; bright++)
             {
-                var x = width / 2 - Math.Cos(angle) * bright;
-                var y = width / 2 - Math.Sin(angle) * bright;
+                var x = (width / 2) - (Math.Cos(angle) * bright);
+                var y = (width / 2) - (Math.Sin(angle) * bright);
                 bmp.SetPixel(
                     (int)(x + leftTop.X),
                     (int)(y + leftTop.Y),
@@ -96,7 +97,7 @@ namespace Logy.Maps.Coloring
         public static double GetAngle(double value)
         {
             var module = (int)(value * 1000);
-            return ((value - module / 1000d) / 360) * 255 * 1000000;
+            return ((value - (module / 1000d)) / 360) * 255 * 1000000;
         }
 
         /// <summary>
@@ -115,8 +116,8 @@ namespace Logy.Maps.Coloring
                 if (angleRad < 0)
                     angleRad += Math.PI * 2;
             }
-            var mBig = (int)(module * 1000);
-            return (mBig / 1000d) + (angleRad / Math.PI) * 180 * 0.000001;
+            var moduleBig = (int)(module * 1000);
+            return (moduleBig / 1000d) + ((angleRad / Math.PI) * 180 * 0.000001);
         }
     }
 }

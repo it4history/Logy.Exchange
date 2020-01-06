@@ -10,10 +10,10 @@ namespace Logy.Maps.Coloring
 {
     public class ColorsManager
     {
+        private readonly Map _map;
         private readonly double? _middleSet;
         private SortedList<int, Color3> _above = Gyr1;
         private SortedList<int, Color3> _under = Water;
-        private readonly Map _map;
 
         public ColorsManager(double min, double max, double? middle = null, Map map = null)
         {

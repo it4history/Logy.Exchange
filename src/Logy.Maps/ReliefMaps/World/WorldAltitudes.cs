@@ -6,7 +6,11 @@ namespace Logy.Maps.ReliefMaps.World
 {
     public class WorldAltitudes : Map2DBase<HealCoor>
     {
-        public WorldAltitudes() : base(8)
+        public WorldAltitudes() : this(8)
+        {
+        }
+
+        public WorldAltitudes(int k) : base(k)
         {
             Frames = 1;
         }

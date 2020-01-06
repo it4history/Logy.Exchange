@@ -7,6 +7,11 @@ namespace Logy.Maps.ReliefMaps.Basemap
     {
         public readonly HealpixManager HealpixManager;
 
+        /// <summary>
+        /// set in constructor before Bitmap creation
+        /// </summary>
+        public readonly LegendType LegendType;
+
         protected Map(int k, LegendType legendType)
         {
             K = k;
@@ -15,11 +20,6 @@ namespace Logy.Maps.ReliefMaps.Basemap
         }
 
         public virtual bool IsGrey => false;
-
-        /// <summary>
-        /// set in constructor before Bitmap creation
-        /// </summary>
-        public readonly LegendType LegendType;
 
         protected int K { get; }
     }

@@ -1,5 +1,5 @@
 ﻿#if DEBUG
-using Logy.Maps.ReliefMaps.World.Ocean;
+using Logy.Maps.ReliefMaps.Basemap;
 using NUnit.Framework;
 
 namespace Logy.Maps.Geometry.Tests
@@ -10,7 +10,7 @@ namespace Logy.Maps.Geometry.Tests
         [Test]
         public void Radius()
         {
-            Assert.AreEqual(Basin3.Oz, Datum.Normal.Axis);
+            Assert.AreEqual(BasinAbstract.Oz, Datum.Normal.Axis);
             Assert.AreEqual(-180, new Datum().X);
             Assert.AreEqual(90, new Datum().Y);
         }

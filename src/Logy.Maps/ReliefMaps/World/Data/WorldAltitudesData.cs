@@ -10,6 +10,8 @@ namespace Logy.Maps.ReliefMaps.World.Data
             ColorsMiddle = 0;
         }
 
+        public int? AraratP { get; set; }
+
         public override double? GetAltitude(HealCoor basin)
         {
             var altitude = Relief.GetAltitude(basin);
@@ -17,6 +19,9 @@ namespace Logy.Maps.ReliefMaps.World.Data
             {
                 altitude = ReliefBed.GetAltitude(basin);
             }
+
+            if (AraratP.HasValue && basin.P == AraratP)
+                return 10000;
             return altitude;
         }
     }

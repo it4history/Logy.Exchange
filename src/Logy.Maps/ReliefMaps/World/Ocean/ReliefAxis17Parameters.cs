@@ -22,6 +22,7 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
                             basin.Delta_g_traverse * 1000;
                             basin.GHpureTraverse * 1000;
                             moved;*/
+
         /// <summary>
         /// for convertion to gif
         /// </summary>

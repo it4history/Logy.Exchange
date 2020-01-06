@@ -17,6 +17,9 @@ namespace Logy.Maps.Projections.Healpix.Tests
 
             var oldPole = new HealCoor { X = -40, Y = 73 };
             Assert.AreEqual(43, (oldPole.DistanceTo(Earth2014ManagerTests.Sevastopol) / Math.PI) * 180, .5);
+
+            oldPole = new HealCoor { X = -52, Y = 66 };
+            Assert.AreEqual(24, (oldPole.DistanceTo(new HealCoor()) / Math.PI) * 180);
         }
 
         [Test]
@@ -37,7 +40,6 @@ namespace Logy.Maps.Projections.Healpix.Tests
             TestAll(new HealpixManager(3));
             TestAll(new HealpixManager(4));
         }
-
 
         [Test]
         public void GetKids()

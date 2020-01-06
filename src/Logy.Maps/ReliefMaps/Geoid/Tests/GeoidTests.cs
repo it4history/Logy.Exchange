@@ -34,9 +34,9 @@ namespace Logy.Maps.ReliefMaps.Geoid.Tests
             Assert.AreEqual(basins[2].Polygon, basins[3].Polygon);
             Assert.AreEqual(basins[0].Polygon, basins[3].Polygon);
 
-            //Polygon
-            //GeoidSurface
-            //RadiusGeoid
+            // Polygon
+            // GeoidSurface
+            /// RadiusGeoid
 
             Geoid.Obtain(data);
             foreach (var basin in basins)

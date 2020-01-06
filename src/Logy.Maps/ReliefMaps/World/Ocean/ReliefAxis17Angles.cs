@@ -49,12 +49,12 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
                     return null;
 
                 var normalBasin = dataNormalEllipse.PixMan.Pixels[basin.P];
-                var meridian = Math.Sign(basin.Vartheta) * basin.Delta_g_meridian -
-                               Math.Sign(normalBasin.Vartheta) * normalBasin.Delta_g_meridian;
+                var meridian = (Math.Sign(basin.Vartheta) * basin.Delta_g_meridian) -
+                               (Math.Sign(normalBasin.Vartheta) * normalBasin.Delta_g_meridian);
                 var traverse = basin.Delta_g_traverse - normalBasin.Delta_g_traverse;
 
                 // Matrix calc is more accurate but since angle is little then it is good too
-                var gradModul = (Math.Sqrt(meridian * meridian + traverse * traverse)
+                var gradModul = (Math.Sqrt((meridian * meridian) + (traverse * traverse))
                                  / Math.PI) * 180;
 
                 // sign '-' because calculated not angle from old water to current water

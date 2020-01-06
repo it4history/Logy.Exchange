@@ -18,8 +18,6 @@ namespace Logy.Maps.ReliefMaps.Water
         private bool? _isDynamicScale;
         private double _oceanVolume;
 
-        public static double MaxOceanVolume = 1340;
-
         protected WaterMoving() { }
         protected WaterMoving(
             HealpixManager man,
@@ -30,6 +28,8 @@ namespace Logy.Maps.ReliefMaps.Water
         {
             K = man.K;
         }
+
+        public static double MaxOceanVolume { get; set; } = 1340;
 
         public bool WithRelief { get; set; }
 
