@@ -10,7 +10,7 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
     {
         private ShiftAxis _algo;
 
-        public OceanMapGravityAxisChange() : this(6)
+        public OceanMapGravityAxisChange() : this(9)
         {
         }
         public OceanMapGravityAxisChange(int k) : base(k)
@@ -22,8 +22,8 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
         public override void SetUp()
         {
             base.SetUp();
-            var newY = -17; // 73, 0, 45, 30, 60
-            var newX = -172; // -40, 0
+            var newY = Datum.Strahov48.Y; // 73, 0, 45, 30, 60
+            var newX = Datum.Strahov48.X; // -40, 0
             _algo = new ShiftAxis(new OceanData(HealpixManager)
             {
                 IntegrationEndless = false,

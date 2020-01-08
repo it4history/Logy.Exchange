@@ -102,6 +102,7 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
                         // if algo.Geoisostasy then on frame 5, 31, 91 there will be litosphere gravity change
                         case 7:
                         case 6:
+                        case 5:
                             var secondShift = 4 * (algo.Geoisostasy ? 2 : 1);
                             var cycle = 60;
                             return frame <= secondShift ? secondShift : cycle; // cycle must be > secondShift*2

@@ -3,7 +3,6 @@ using System.Runtime.Serialization;
 using Logy.Maps.Exchange;
 using Logy.Maps.Metrics;
 using Logy.Maps.ReliefMaps.Basemap;
-using Logy.Maps.ReliefMaps.Map2D;
 using Logy.Maps.ReliefMaps.World.Ocean;
 using MathNet.Spatial.Euclidean;
 using NUnit.Framework;
@@ -18,6 +17,16 @@ namespace Logy.Maps.Geometry
         public const double NormalSiderealDay = 86164.100637;
 
         public static Datum Normal { get; } = new Datum(); // X == -180, Y == 90
+
+        /// <summary>
+        /// Carboniferous
+        /// </summary>
+        public static Datum Strahov52 { get; } = new Datum { X = -172, Y = 17 };
+
+        /// <summary>
+        /// Devonian
+        /// </summary>
+        public static Datum Strahov48 { get; } = new Datum { X = -170, Y = 43 };
 
         /// <summary>
         /// Period of rotation(sidereal day) in seconds

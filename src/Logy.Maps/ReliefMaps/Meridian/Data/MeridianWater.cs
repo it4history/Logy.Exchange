@@ -57,7 +57,7 @@ namespace Logy.Maps.ReliefMaps.Meridian.Data
 
             /* trying to accelerate Intersect()
             if (Math.Abs(basin.Vartheta) > .2)
-                return (basin.Beta - northBasin.Beta) * basin.rOfEllipse;
+                return (basin.Beta - northBasin.Beta) * basin.RadiusOfGeoid;
             return null;*/
 
             Water.Move(basin, northBasin, NeighborVert.North);

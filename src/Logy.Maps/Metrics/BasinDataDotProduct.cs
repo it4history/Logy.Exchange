@@ -305,7 +305,7 @@ namespace Logy.Maps.Metrics
         {
             if (Spheric)
             {
-                basin.InitROfEllipse(HealpixManager); /// Ellipsoid.MeanRadius
+                basin.InitROfGeoid(HealpixManager); /// Ellipsoid.MeanRadius
                 basin.Delta_g_meridian = basin.Delta_g_traverse = 0;
             }
         }

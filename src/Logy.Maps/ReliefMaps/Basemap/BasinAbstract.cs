@@ -61,7 +61,7 @@ namespace Logy.Maps.ReliefMaps.Basemap
         /// <summary>
         /// geoid surface set by a mathematical formula
         /// 
-        /// good to set it in InitROfEllipse(...)
+        /// good to set it in InitROfGeoid(...)
         /// </summary>
         public virtual double RadiusOfGeoid
         {
@@ -148,7 +148,7 @@ namespace Logy.Maps.ReliefMaps.Basemap
         #region water
         /// <summary>
         /// directed up
-        /// relative to rOfEllipse 
+        /// relative to RadiusOfGeoid 
         /// may include geoidUndulation
         /// </summary>
         [DataMember]
@@ -161,7 +161,7 @@ namespace Logy.Maps.ReliefMaps.Basemap
 
         /// <summary>
         /// directed down
-        /// relative to rOfEllipse 
+        /// relative to RadiusOfGeoid, so underwater is positive
         /// null, if not limited in depth 
         /// if hOQ is less than -Depth.Value then this is underground water hydroconnected with ground
         /// 
@@ -216,7 +216,7 @@ namespace Logy.Maps.ReliefMaps.Basemap
         }
 
         /// <param name="newR">null for spheric Earth</param>
-        public void InitROfEllipse(HealpixManager man, double? newR = null)
+        public void InitROfGeoid(HealpixManager man, double? newR = null)
         {
             RadiusOfGeoid = newR ?? Earth2014Manager.Radius2Add;
             RadiusSpheric = newR == null;
@@ -249,14 +249,14 @@ namespace Logy.Maps.ReliefMaps.Basemap
 
             Vartheta = Ellipsoid.CalcVarTheta(Math.Tan(Theta));
             var goodDeflectionAngle = GoodDeflection(Vartheta, Delta_gq);
-            GHpure = CalcGpureAndInitROfEllipse(man, Varphi, Theta, Vartheta, goodDeflectionAngle); /// needs Vartheta
+            GHpure = CalcGpureAndInitROfGeoid(man, Varphi, Theta, Vartheta, goodDeflectionAngle); /// needs Vartheta
 
             Delta_g_meridian = goodDeflectionAngle;
         }
 
-        public double CalcGpureAndInitROfEllipse(HealpixManager man, double varphi, double theta, double vartheta, double goodDeflectionAngle)
+        public double CalcGpureAndInitROfGeoid(HealpixManager man, double varphi, double theta, double vartheta, double goodDeflectionAngle)
         {
-            InitROfEllipse(man, Ellipsoid.Radius(varphi));
+            InitROfGeoid(man, Ellipsoid.Radius(varphi));
 
             // vertical to ellipsoid surface
             var g = EllipsoidAcceleration.GravitationalSomigliana(varphi);

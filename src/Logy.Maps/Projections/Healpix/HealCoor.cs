@@ -92,6 +92,12 @@ namespace Logy.Maps.Projections.Healpix
         /// </summary>
         public Plane S_sphere { get; private set; }
 
+        /// <summary>
+        /// calcualted by GetParent or GetKids
+        /// may be not immediate parent but some arbitrary recursion
+        /// </summary>
+        public int ParentP { get; set; }
+
         /* data in spherical geocoordinates!!!
 5 arc-min grids contain 2,160 x 4,320 data points, are 18 MB in size and extend from
 -90+5/120 deg to  +90-5/120 deg in latitude direction, and from

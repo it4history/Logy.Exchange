@@ -10,17 +10,15 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
 {
     public class ReliefParadise : ReliefMap
     {
-        private ShiftAxis _mainAlgorithm;
+        private const int DayHours = 16;
+        private const double WaterAddMeter = 1000; // 500, 1500
+        protected ShiftAxis _mainAlgorithm;
 
-        public ReliefParadise() : base(6) 
+        public ReliefParadise() : this(6) 
         {
         }
 
         public ReliefParadise(int k) : base(k)
-        {
-        }
-
-        public override void SetUp()
         {
             _mainAlgorithm = new ShiftAxis(new OceanData(HealpixManager)
             {
@@ -28,14 +26,12 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
             })
             {
                 Geoisostasy = true,
-                DesiredDatum = new Datum { X = -172, Y = 17 }
+                DesiredDatum = Datum.Strahov52
             };
-
-            base.SetUp();
         }
 
         /// <summary>
-        /// 8m noises at k6
+        /// 8m noises at k6, 11m at k5
         /// </summary>
         [Test]
         public void OceanTest()
@@ -46,15 +42,17 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
             InitData(_mainAlgorithm, true);
 
             ShiftAxisBalanced(100);
+            _mainAlgorithm.Data.WithRelief = true; // _mainAlgorithm shared with other tests
         }
 
         [Test]
-        public void StrahovOldest()
+        public void Strahov()
         {
+//            InitData(_mainAlgorithm, true);
             InitDataWithJson(null, _mainAlgorithm);
             /// Data.Water.Fluidity = .7;
 
-            ShiftAxisBalanced(10000);
+            ShiftAxisBalanced(K == 5 ? 1500 : 10000);
         }
 
         [Test]
@@ -83,7 +81,7 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
         {
             Subdir = "south";
 
-            _mainAlgorithm.DesiredDatum.Y = -17;
+            _mainAlgorithm.DesiredDatum.Y = -Datum.Strahov52.Y;
             InitDataWithJson(null, _mainAlgorithm);
 
             ShiftAxisBalanced(3000);
@@ -110,12 +108,12 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
         [Test]
         public void AddWater()
         {
-            Subdir = "addWater";
+            Subdir = "addWater" + WaterAddMeter;
             InitDataWithJson();
 
             foreach (var basin in Data.PixMan.Pixels)
             {
-                basin.Hoq += 1500;
+                basin.Hoq += WaterAddMeter;
             }
 
             ShiftAxis(10000);
@@ -125,13 +123,13 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
         public void FasterSpin()
         {
             // 760 for 1500, 512 for 1000
-            WaterMoving<Basin3>.MaxOceanVolume += 760;
-            Subdir = "fasterSpin" + 1500;
+            WaterMoving<Basin3>.MaxOceanVolume += 512;
+            Subdir = $"fasterSpin{DayHours}_{WaterAddMeter}";
             InitDataWithJson();
 
             var algorithm = (ShiftAxis)Bundle.Algorithm;
             var datum = algorithm.Poles.Values.Last();
-            datum.SiderealDayInSeconds *= .7;
+            datum.SiderealDayInSeconds = DayHours * 3600; 
             algorithm.SetGeoisostasyDatum();
 
             ShiftAxis(10000);

@@ -30,7 +30,7 @@ namespace Logy.Maps.ReliefMaps.Water
         }
 
         public static double MaxOceanVolume { get; set; } = 1340;
-
+        
         public bool WithRelief { get; set; }
 
         public bool Spheric { get; set; }

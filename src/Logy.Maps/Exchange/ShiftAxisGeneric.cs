@@ -6,7 +6,6 @@ using Logy.Maps.Coloring;
 using Logy.Maps.Geometry;
 using Logy.Maps.ReliefMaps.Basemap;
 using Logy.Maps.ReliefMaps.Water;
-using Logy.Maps.ReliefMaps.World.Ocean;
 using MathNet.Spatial.Euclidean;
 
 namespace Logy.Maps.Exchange
@@ -48,13 +47,13 @@ namespace Logy.Maps.Exchange
         /// <summary>
         /// used when json loaded and calc continueted not from 0 frame
         /// </summary>
-        public void SetGeoisostasyDatum(ShiftAxisGeneric<T> algo = null)
+        public void SetGeoisostasyDatum(ShiftAxisGeneric<T> algo = null, int? correctionK = null)
         {
             if (algo == null)
                 algo = this;
             var lastPoleFrame = algo.Poles.Keys.Last();
             var datum = algo.Poles[lastPoleFrame];
-            datum.CorrectionBundle = datum.Gravity.LoadCorrection(DataAbstract.K);
+            datum.CorrectionBundle = datum.Gravity.LoadCorrection(correctionK ?? algo.DataAbstract.K);
             SetDatum(datum, lastPoleFrame);
         }
 
@@ -148,14 +147,19 @@ namespace Logy.Maps.Exchange
 
                             var vartheta = Ellipsoid.CalcVarTheta(Math.Tan(theta));
                             var delta_gq = theta - vartheta;
-                            var gh = basin.CalcGpureAndInitROfEllipse(
+                            var gh = basin.CalcGpureAndInitROfGeoid(
                                 DataAbstract.HealpixManager,
                                 varphi, 
                                 theta, 
                                 vartheta, 
                                 BasinAbstract.GoodDeflection(vartheta, delta_gq));
-                            if (datum.CorrectionBundle != null)
-                                basin.RadiusOfGeoid += datum.CorrectionBundle.Basins[DataAbstract.K][basin.P].Hoq;
+                            var correction = datum.CorrectionBundle;
+                            if (correction != null)
+                            {
+                                basin.RadiusOfGeoid += correction.Basins[correction.Algorithm.DataAbstract.K]
+                                    [correction.Algorithm.DataAbstract.K == DataAbstract.K ? basin.P : basin.ParentP]
+                                    .Hoq;
+                            }
 
                             // GHpure projections
                             /*was

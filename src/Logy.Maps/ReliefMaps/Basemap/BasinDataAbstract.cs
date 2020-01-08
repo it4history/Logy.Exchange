@@ -72,12 +72,12 @@ namespace Logy.Maps.ReliefMaps.Basemap
                         basin.Depth += diff;
                         basin.Hoq -= diff;
                     }//*/
-                    basin.InitROfEllipse(HealpixManager);
+                    basin.InitROfGeoid(HealpixManager);
                     basin.Delta_g_meridian = basin.Delta_g_traverse = 0;
                 }
             }
 
-            if (reliefFromDb && WithRelief)
+            if (reliefFromDb && WithRelief && PixMan.Pixels.Length == HealpixManager.Npix)
             {
                 CheckOcean();
             }

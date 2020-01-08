@@ -115,6 +115,8 @@ namespace Logy.Maps.Exchange
 
                 bundle.Algorithm.OnDeserialize();
 
+                if (bundle.Algorithm.Diff > 0)
+                    WaterMoving<Basin3>.MaxOceanVolume += bundle.Algorithm.Diff;
                 data.CheckOcean();
 
                 /*

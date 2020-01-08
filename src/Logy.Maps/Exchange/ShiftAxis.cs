@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Runtime.Serialization;
 using Logy.Maps.Geometry;
+using Logy.Maps.ReliefMaps.Basemap;
 using Logy.Maps.ReliefMaps.World.Ocean;
 
 namespace Logy.Maps.Exchange
@@ -12,7 +13,7 @@ namespace Logy.Maps.Exchange
         {
         }
 
-        public ShiftAxis(OceanData dataInited) : base(dataInited)
+        public ShiftAxis(BasinDataAbstract<Basin3> dataInited) : base(dataInited)
         {
         }
 
@@ -21,9 +22,9 @@ namespace Logy.Maps.Exchange
 
         public bool Slow { get; set; }
 
-        public OceanData Data
+        public BasinDataAbstract<Basin3> /*was OceanData*/ Data
         {
-            get { return (OceanData)DataAbstract; }
+            get { return (BasinDataAbstract<Basin3>)DataAbstract; }
             set { DataAbstract = value; }
         }
 
