@@ -1,4 +1,4 @@
-using System;
+п»їusing System;
 using System.Linq;
 using Logy.Maps.Coloring;
 using Logy.Maps.Exchange;
@@ -9,7 +9,7 @@ using NUnit.Framework;
 namespace Logy.Maps.ReliefMaps.World.Ocean
 {
     /// <summary>
-    /// http://hist.tk/ory/Пизанская_башня_и_ускорение_свободного_падения
+    /// http://hist.tk/ory/РџРёР·Р°РЅСЃРєР°СЏ_Р±Р°С€РЅСЏ_Рё_СѓСЃРєРѕСЂРµРЅРёРµ_СЃРІРѕР±РѕРґРЅРѕРіРѕ_РїР°РґРµРЅРёСЏ
     /// </summary>
     public class ReliefAxis17Angles : RotationStopMap<Basin3>
     {
@@ -37,10 +37,11 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
             dataNormalEllipse.Init();
 
             Bundle = Bundle<Basin3>.DeserializeFile(FindJson(new ReliefAxis17Geoisostasy(K).Dir));
-            var algo = Bundle.Algorithm as ShiftAxis;
+            var algo = (ShiftAxis)Bundle.Algorithm;
+            var newPole = algo.FromLastPole;
             if (centrifugalNormal)
-                algo.Poles.Values.Last().Y = 90;
-            algo.SetGeoisostasyDatum(algo);
+                newPole.Y = 90;
+            algo.SetGeoisostasyDatum(newPole);
 
             var data = (BasinDataAbstract<Basin3>)Data;
             data.Visual = (basin, moved) =>
@@ -53,11 +54,11 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
                                (Math.Sign(normalBasin.Vartheta) * normalBasin.Delta_g_meridian);
                 var traverse = basin.Delta_g_traverse - normalBasin.Delta_g_traverse;
 
-                // Matrix calc is more accurate but since angle is little then it is good too
+                // Matrix calc is more accurate but since angle is small then here is good too
                 var gradModul = (Math.Sqrt((meridian * meridian) + (traverse * traverse))
                                  / Math.PI) * 180;
 
-                // sign '-' because calculated not angle from old water to current water
+                // sign '-' because angle is calculated not from old water to current water
                 // but from old land to current land
                 return ColorWheel.SetAngle(-meridian, -traverse, gradModul);
             };
@@ -69,7 +70,7 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
 
             Data.InitAltitudes(Data.PixMan.Pixels, this);
             Draw();
-            PoliticalMap.Draw(Bmp, HealpixManager, YResolution, Scale);
+            Map2D.PoliticalMap.Draw(Bmp, HealpixManager, YResolution, Scale);
             SaveBitmap(Data.Frame);
         }
     }

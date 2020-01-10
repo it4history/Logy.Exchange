@@ -128,6 +128,7 @@
     <Compile Include="Projections\Healpix\Dem\DemData.cs" />
     <Compile Include="ReliefMaps\World\Earth2014Correction.cs" />
     <Compile Include="ReliefMaps\World\Earth2014CorrectionData.cs" />
+    <Compile Include="ReliefMaps\World\From17\ReliefToNormal.cs" />
     <Compile Include="ReliefMaps\World\Ocean\GeometricDistortion.cs" />
     <Compile Include="ReliefMaps\World\Ocean\OceanMapGravityAxisChange.cs" />
     <Compile Include="ReliefMaps\World\Ocean\ReliefAxis17Geoisostasy.cs" />

@@ -18,8 +18,6 @@ namespace Logy.Maps.ReliefMaps.Map2D
     {
         public const string FilePrefix = "stats";
 
-        private bool _jsonNeeded;
-
         public RotationStopMap() : this(6)
         {
         }
@@ -62,6 +60,10 @@ namespace Logy.Maps.ReliefMaps.Map2D
         /// </summary>
         protected override ImageFormat ImageFormat => ImageFormat.Png;
 
+        protected bool JsonNeeded { private get; set; }
+
+        protected bool WithPoliticalMap { get; set; }
+
         public static string FindJson(string dir)
         {
             var json = Directory.GetFiles(dir, "*" + RotationStopMap<BasinAbstract>.FilePrefix + "*.json")
@@ -90,7 +92,7 @@ namespace Logy.Maps.ReliefMaps.Map2D
         /// </summary>
         public void InitData(Algorithm<T> algorithm, bool jsonNeeded = false, string jsonfileToLoad = null)
         {
-            _jsonNeeded = jsonNeeded;
+            JsonNeeded = jsonNeeded;
             if (jsonfileToLoad == null)
                 jsonfileToLoad = StatsFileName();
             if (File.Exists(jsonfileToLoad))
@@ -142,7 +144,7 @@ namespace Logy.Maps.ReliefMaps.Map2D
                     Data.IsRunning = false;
                     Data.RunningTask.Wait();
                 }
-                if (_jsonNeeded)
+                if (JsonNeeded)
                 {
                     SaveJson(Data.Frame);
                 }
@@ -169,7 +171,7 @@ namespace Logy.Maps.ReliefMaps.Map2D
             return frame.HasValue ? $"{frame:00000}" : null;
         }
 
-        protected void SaveBitmap(int frame)
+        protected void SaveBitmap(int frame, string suffix = null)
         {
             if (K > 3)
             {
@@ -181,7 +183,7 @@ namespace Logy.Maps.ReliefMaps.Map2D
                 if (algorithm != null)
                     foreach (var pair in algorithm.Poles)
                     {
-                        if (pair.Value.Axis != Basin3.Oz && frame >= pair.Key)
+                        if (pair.Value.Axis != BasinAbstract.Oz && frame >= pair.Key)
                         {
                             var line = (int)Math.Max(0, point.X + pair.Key);
 
@@ -194,7 +196,7 @@ namespace Logy.Maps.ReliefMaps.Map2D
                         }
                     }
             }
-            SaveBitmap(Bmp, Data.Colors, FrameToString(frame));
+            SaveBitmap(Bmp, Data.Colors, FrameToString(frame) + suffix);
         }
 
         protected void ShiftAxis(
@@ -209,9 +211,11 @@ namespace Logy.Maps.ReliefMaps.Map2D
                 delegate(int frame)
                 {
                     Draw();
+                    if (WithPoliticalMap)
+                        PoliticalMap.Draw(Bmp, HealpixManager, YResolution, Scale);
                     SaveBitmap(algorithm.DataAbstract.Frame);
                     var time = algorithm.DataAbstract.Time;
-                    if (_jsonNeeded && time > lastTimeOfSaveJson + 5000)
+                    if (JsonNeeded && time > lastTimeOfSaveJson + 5000)
                     {
                         SaveJson(frame);
                         lastTimeOfSaveJson = time;
@@ -219,6 +223,15 @@ namespace Logy.Maps.ReliefMaps.Map2D
                 },
                 slowFrames,
                 timeStepByFrame);
+        }
+
+        protected void DrawPoliticalMap()
+        {
+            Data.CalcAltitudes(false); // Data.InitAltitudes(Data.PixMan.Pixels, this);
+            Data.SetColorLists();
+            Draw();
+            PoliticalMap.Draw(Bmp, HealpixManager, YResolution, Scale);
+            SaveBitmap(Data.Frame, "political");
         }
 
         private void SaveJson(int? frame = null)

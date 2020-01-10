@@ -22,7 +22,7 @@ namespace Logy.Maps.Projections.Healpix.Dem
             base.Init(reliefFromDb, datum);
             foreach (var basin in PixMan.Pixels)
             {
-                var tbi = ReliefBed.GetAltitude(basin);;
+                var tbi = ReliefBed.GetAltitude(basin);
                 var mask = (MaskType)Relief.GetAltitude(basin);
                 switch (mask)
                 {

@@ -60,6 +60,7 @@ namespace Logy.Maps.ReliefMaps.Basemap
 
         /// <summary>
         /// geoid surface set by a mathematical formula
+        /// change of RadiusOfGeoid is analog to up-down move of crust
         /// 
         /// good to set it in InitROfGeoid(...)
         /// </summary>

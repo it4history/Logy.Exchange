@@ -15,7 +15,7 @@ namespace Logy.Maps.Projections.Healpix.Dem
         {
             Hoq = basin3.Hoq;
             Depth = basin3.Depth.Value;
-            BasinDemGeoid = new BasinDemGeoid(
+            Geoid = new BasinDemGeoid(
                 basin3.RadiusRay.Direction.ScaleBy(basin3.RadiusOfGeoid),
                 basin3.S_q);
         }
@@ -27,6 +27,6 @@ namespace Logy.Maps.Projections.Healpix.Dem
         public double Depth { get; set; }
 
         [DataMember]
-        public BasinDemGeoid BasinDemGeoid { get; set; }
+        public BasinDemGeoid Geoid { get; set; }
     }
 }

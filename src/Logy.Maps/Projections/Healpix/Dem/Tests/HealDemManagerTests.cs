@@ -59,8 +59,7 @@ namespace Logy.Maps.Projections.Healpix.Dem.Tests
             var dem = new HealDemManager(11, 5).CalcDem(Ararat.P);
             Assert.AreEqual(
                 64 * 64,
-                dem.Length
-            );
+                dem.Length);
         }
     }
 }

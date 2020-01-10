@@ -71,7 +71,7 @@ namespace Logy.Maps.ReliefMaps.Basemap
         public T[] InitialBasins { private get; set; }
 
         [IgnoreDataMember]
-        public Action<HealCoor, Bitmap, Point2, int> AdditionalDraw { get; set; }
+        public Action<HealCoor, Bitmap, Point2, int> PoleDraw { get; set; }
 
         /// <summary>
         /// value that treated as splitter for colors
@@ -204,7 +204,7 @@ namespace Logy.Maps.ReliefMaps.Basemap
                     previousPoint = point;
                     previousCoor = healCoor;
 
-                    AdditionalDraw?.Invoke(healCoor, bmp, point, scale);
+                    PoleDraw?.Invoke(healCoor, bmp, point, scale);
                 }
             }
         }

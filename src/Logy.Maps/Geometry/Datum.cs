@@ -16,6 +16,26 @@ namespace Logy.Maps.Geometry
     {
         public const double NormalSiderealDay = 86164.100637;
 
+        private bool _gravityNeedsRecalculation;
+
+        public Datum()
+        {
+        }
+
+        public Datum(Datum datum)
+        {
+            X = datum.X;
+            Y = datum.Y;
+            SiderealDayInSeconds = datum.SiderealDayInSeconds;
+            Gravity = datum.Gravity == null
+                ? null
+                : new Gravity
+                {
+                    X = datum.Gravity.X,
+                    Y = datum.Gravity.Y,
+                };
+        }
+
         public static Datum Normal { get; } = new Datum(); // X == -180, Y == 90
 
         /// <summary>
@@ -27,6 +47,12 @@ namespace Logy.Maps.Geometry
         /// Devonian
         /// </summary>
         public static Datum Strahov48 { get; } = new Datum { X = -170, Y = 43 };
+
+        public bool GravityNeedsRecalculation
+        {
+            get { return _gravityNeedsRecalculation || (Gravity != null && Gravity.Axis != BasinAbstract.Oz); }
+            set { _gravityNeedsRecalculation = value; }
+        }
 
         /// <summary>
         /// Period of rotation(sidereal day) in seconds
@@ -41,8 +67,6 @@ namespace Logy.Maps.Geometry
         public Gravity Gravity { get; set; }
         [DataMember]
         public bool GravityFirstUse { get; set; }
-
-        public bool GravityNormal => Gravity == null || Gravity.Axis == BasinAbstract.Oz;
 
         public Bundle<Basin3> CorrectionBundle { get; set; }
 

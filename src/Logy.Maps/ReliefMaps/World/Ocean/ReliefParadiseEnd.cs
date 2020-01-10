@@ -7,7 +7,7 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
     {
         public ReliefParadiseEnd() : base(5)
         {
-            _mainAlgorithm = new ShiftAxis(new OceanData(HealpixManager)
+            MainAlgorithm = new ShiftAxis(new OceanData(HealpixManager)
             {
                 WithRelief = true,
             })

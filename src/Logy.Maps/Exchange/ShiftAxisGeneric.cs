@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using System.Runtime.Serialization;
 using Logy.Maps.Coloring;
 using Logy.Maps.Geometry;
 using Logy.Maps.ReliefMaps.Basemap;
@@ -21,10 +22,13 @@ namespace Logy.Maps.Exchange
         {
         }
 
+        [IgnoreDataMember]
+        public Datum FromLastPole => new Datum(Poles.Values.Last());
+
         /// <summary>
-        /// key - frame when pole used
+        /// key - frame when pole used, public for serialization
         /// </summary>
-        public Dictionary<int, Datum> Poles { get; set; } = new Dictionary<int, Datum>
+        public Dictionary<int, Datum> Poles { get; } = new Dictionary<int, Datum>
         {
             {
                 -1, Datum.Normal
@@ -39,7 +43,7 @@ namespace Logy.Maps.Exchange
                   json might be serialized in other moment
                   with other Hoq, Radius and therefore other Delta_g, Q3, S_q, 
                   so SetDatum() will not be accurate if Delta_g depends on Hoq via a Basin3.Q3 in EllipsoidAcceleration.Centrifugal() */
-            SetDatum(Poles.Values.Last()); /// SetGeoisostasyDatum called manually
+            SetDatum(Poles.Values.Last()); /// here deserialized object (not FromLastPole); and SetGeoisostasyDatum should be called manually
 
             base.OnDeserialize();
         }
@@ -53,8 +57,19 @@ namespace Logy.Maps.Exchange
                 algo = this;
             var lastPoleFrame = algo.Poles.Keys.Last();
             var datum = algo.Poles[lastPoleFrame];
-            datum.CorrectionBundle = datum.Gravity.LoadCorrection(correctionK ?? algo.DataAbstract.K);
-            SetDatum(datum, lastPoleFrame);
+            SetGeoisostasyDatum(datum, lastPoleFrame, correctionK ?? algo.DataAbstract.K);
+        }
+        public void SetGeoisostasyDatum(Datum datum, int? frame = null, int? correctionK = null)
+        {
+            if (datum.Gravity == null)
+            {
+                // possible that datum.Gravity was != null before
+                datum.GravityNeedsRecalculation = true;
+            }
+            else
+                datum.CorrectionBundle = datum.Gravity.LoadCorrection(correctionK ?? DataAbstract.K);
+
+            SetDatum(datum, frame ?? DataAbstract.Frame);
         }
 
         public void SetDatum(Datum datum, int? frame = null)
@@ -73,7 +88,7 @@ namespace Logy.Maps.Exchange
                         }
                     }
 
-                DataAbstract.AdditionalDraw += (healCoor, bmp, point, scale) =>
+                DataAbstract.PoleDraw = (healCoor, bmp, point, scale) =>
                 {
                     if (datum.PoleBasin != null)
                     {
@@ -114,7 +129,7 @@ namespace Logy.Maps.Exchange
 
             if (frame.HasValue)
             {
-                Poles[frame.Value] = datum;
+                Poles[frame.Value] = datum; /// SetGeoisostasyDatum may rewrite datum.CorrectionBundle
             }
         }
 
@@ -130,13 +145,15 @@ namespace Logy.Maps.Exchange
             {
                 datum.SiderealDayInSeconds += koef;
                 if (DataAbstract?.PixMan != null)
+                {
+                    var gravityAxis = datum.Gravity == null ? BasinAbstract.Oz : datum.Gravity.Axis;
                     foreach (var basin in DataAbstract.PixMan.Pixels)
                     {
                         if (DataAbstract.SamePolesAndEquatorGravitation)
                             basin.GHpure = 0; /// what about GVpure?
-                        else if (!datum.GravityNormal)
+                        else if (datum.GravityNeedsRecalculation)
                         {
-                            var varphi = Ellipsoid.VarphiPaleo(basin, datum.Gravity.Axis);
+                            var varphi = Ellipsoid.VarphiPaleo(basin, gravityAxis);
 
                             /*
                             var beta = (Math.PI / 2) - varphi;
@@ -149,9 +166,9 @@ namespace Logy.Maps.Exchange
                             var delta_gq = theta - vartheta;
                             var gh = basin.CalcGpureAndInitROfGeoid(
                                 DataAbstract.HealpixManager,
-                                varphi, 
-                                theta, 
-                                vartheta, 
+                                varphi,
+                                theta,
+                                vartheta,
                                 BasinAbstract.GoodDeflection(vartheta, delta_gq));
                             var correction = datum.CorrectionBundle;
                             if (correction != null)
@@ -167,18 +184,20 @@ namespace Logy.Maps.Exchange
                                 new Plane(Matrixes.ToCartesian(new Coor(0, 180/Math.PI* varphi)));
 
                             var oz_sphere = Basin3.Oz.ProjectOn(basinSphere).Direction;
-                            var axis_sphere = datum.Gravity.Axis.ProjectOn(basinSphere).Direction;
+                            var axis_sphere = gravityAxis.ProjectOn(basinSphere).Direction;
                             var angle = oz_sphere.SignedAngleTo(axis_sphere, basinSphere.Normal);
                             var gh_sphere = new Vector3D(0, Math.Sign(vartheta) * gh, 0) * Matrix3D.RotationAroundZAxis(angle);
                             basin.GHpure = Math.Sign(basin.Vartheta) * gh_sphere[1];
                             basin.GHpureTraverse = gh_sphere[0];//*/
 
-                                //*
-                            var axisPlane = new Plane(BasinAbstract.O3, basin.Qgeiod, datum.Gravity.Axis.ToPoint3D());
-                            var axis_sphere = axisPlane.IntersectionWith(basin.S_sphere).Direction;//S_sphere may be sphere without Radius
+                            //*
+                            var axisPlane = new Plane(BasinAbstract.O3, basin.Qgeiod, gravityAxis.ToPoint3D());
+                            var axis_sphere =
+                                axisPlane.IntersectionWith(basin.S_sphere)
+                                    .Direction; //S_sphere may be sphere without Radius
                             /*var correctionAngle = Math.PI / 2 - axis_sphere.AngleTo(basin.RadiusLine).Radians;
                             var ghCorrected = gh / Math.Cos(correctionAngle);*/
-                            if (axis_sphere.DotProduct(datum.Gravity.Axis) < 0)
+                            if (axis_sphere.DotProduct(gravityAxis) < 0)
                                 axis_sphere = axis_sphere.Negate();
                             if (vartheta < 0)
                                 axis_sphere = axis_sphere.Negate();
@@ -188,6 +207,8 @@ namespace Logy.Maps.Exchange
                         }
                         basin.RecalculateDelta_g(datum, false);
                     }
+                    datum.GravityNeedsRecalculation = false;
+                }
                 if (frame.HasValue)
                 {
                     Poles.Add(frame.Value, datum);

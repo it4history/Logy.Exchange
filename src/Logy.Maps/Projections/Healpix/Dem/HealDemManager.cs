@@ -15,7 +15,7 @@ namespace Logy.Maps.Projections.Healpix.Dem
             for (int i = 0; i <= kidsK; i++)
                 _levels.Add(new HealpixManager(i));
             BaseK = baseK;
-            Size = 1 << _levels.Count - baseK - 1;
+            Size = 1 << (_levels.Count - baseK - 1);
             Basins = new Basin3[Size * Size];
         }
 

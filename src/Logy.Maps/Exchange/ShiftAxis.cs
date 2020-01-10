@@ -62,30 +62,23 @@ namespace Logy.Maps.Exchange
                     if (frame == 0
                         || (Slow && poleShift <= poleShiftsCount && slowAnyChange))
                     {
-                        var datum = Poles.Last().Value;
+                        var datum = FromLastPole;
                         var newX = DesiredDatum.X; /// * slowFrame / slowFramesCount
                         var newY = 90 - ((90 - DesiredDatum.Y) * poleShift / poleShiftsCount);
                         var slowCentrifugalChange = frame % slowFrames(frame) == 0;
                         if (!Slow || slowCentrifugalChange)
                         {
-                            datum = new Datum
-                            {
-                                X = newX,
-                                Y = newY,
-                                Gravity = datum.Gravity
-                            };
+                            datum.X = newX;
+                            datum.Y = newY;
                             if (!Geoisostasy)
                                 poleShift++;
                         }
                         if (Geoisostasy && (!Slow || !slowCentrifugalChange))
                         {
-                            datum = new Datum
-                            {
-                                X = datum.X,
-                                Y = datum.Y,
-                                GravityFirstUse = true,
-                                Gravity = new Gravity { X = newX, Y = newY }
-                            };
+                            datum.X = newX;
+                            datum.Y = newY;
+                            datum.GravityFirstUse = true;
+                            datum.Gravity = new Gravity { X = newX, Y = newY };
                             poleShift++;
 
                             datum.CorrectionBundle = datum.Gravity.LoadCorrection(Data.K);
