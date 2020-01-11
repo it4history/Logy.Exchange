@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using System.Runtime.Serialization;
 using Logy.Maps.Geometry;
 using Logy.Maps.ReliefMaps.Basemap;
@@ -18,7 +17,7 @@ namespace Logy.Maps.Exchange
         }
 
         [IgnoreDataMember]
-        public Datum DesiredDatum { get; set; } = new Datum { X = -40, Y = 73 };
+        public Datum DesiredDatum { get; set; } = Datum.Greenland17;
 
         public bool Slow { get; set; }
 

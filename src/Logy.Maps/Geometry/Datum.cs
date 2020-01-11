@@ -48,6 +48,8 @@ namespace Logy.Maps.Geometry
         /// </summary>
         public static Datum Strahov48 { get; } = new Datum { X = -170, Y = 43 };
 
+        public static Datum Greenland17 { get; } = new Datum { X = -40, Y = 73 };
+
         public bool GravityNeedsRecalculation
         {
             get { return _gravityNeedsRecalculation || (Gravity != null && Gravity.Axis != BasinAbstract.Oz); }

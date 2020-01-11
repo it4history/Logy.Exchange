@@ -10,7 +10,7 @@ namespace Logy.Maps.Exchange.Tests
     public class BundleTests
     {
         private static readonly string Expected = "{\"Algorithms\":[{\"Slow\":true," +
-                           "\"Data\":{\"WithRelief\":true,\"Spheric\":false,\"SamePolesAndEquatorGravitation\":false,\"IntegrationEndless\":true,\"MetricType\":0,\"Frame\":-1,\"Time\":0,\"TimeStep\":1,\"Max\":null,\"Min\":null,\"K\":4,\"Accuracy\":5,\"Dimension\":\"m\"}," +
+                           "\"Data\":{\"WithRelief\":true,\"Spheric\":false,\"SamePolesAndEquatorGravitation\":false,\"Water\":{\"Fluidity\":0.5,\"Threshhold\":9.6000000000000014},\"IntegrationEndless\":true,\"MetricType\":0,\"Frame\":-1,\"Time\":0,\"TimeStep\":1,\"Min\":null,\"Max\":null,\"K\":4,\"Accuracy\":5,\"Dimension\":\"m\"}," +
                            "\"Geoisostasy\":false,\"Poles\":{\"-1\":{\"SiderealDayInSeconds\":86164.100637,\"Gravity\":null,\"GravityFirstUse\":false,\"X\":-180.0,\"Y\":90.0}}" +
                            ",\"Name\":\"Logy.Maps.Exchange.ShiftAxis, Logy.Maps, Version=" + Assembly.GetExecutingAssembly().GetName().Version + ", Culture=neutral, PublicKeyToken=null\",\"Diff\":0.0" +
                            "}],\"Basins\":{\"4\":[{\"Hoq\":0.0,\"Depth\":2371.0}]},\"Deserialized\":{}}";
@@ -19,6 +19,7 @@ namespace Logy.Maps.Exchange.Tests
         {
             var data = new OceanData(new HealpixManager(4)) { WithRelief = true };
             data.Init();
+            data.Water.Fluidity = 0.5;
             var bundle = new Bundle<Basin3>(new ShiftAxis(data)
             {
                 Slow = true
@@ -35,7 +36,7 @@ namespace Logy.Maps.Exchange.Tests
         {
             var bundle = Bundle<Basin3>.Deserialize(Expected, true);
 
-            Assert.AreEqual(Put(Expected, -1), bundle.Serialize());
+            Assert.AreEqual(Expected, bundle.Serialize());
             Assert.AreEqual(typeof(ShiftAxis), bundle.Algorithm.GetType());
             Assert.IsTrue(bundle.Algorithm.DataAbstract.WithRelief);
         }
@@ -60,7 +61,7 @@ namespace Logy.Maps.Exchange.Tests
             var jsonLast = bundle.Serialize();
 
             var bundle5 = Bundle<Basin3>.Deserialize(json5);
-            Assert.AreEqual(Put(json5, 5), bundle5.Serialize());
+            Assert.AreEqual(json5, bundle5.Serialize());
             foreach (var basin in bundle.Algorithm.DataAbstract.PixMan.Pixels)
             {
                 var basin5 = bundle.Algorithm.DataAbstract.PixMan.Pixels[basin.P];
@@ -75,11 +76,6 @@ namespace Logy.Maps.Exchange.Tests
 
             // Hoq are rounded differently, bug-ly
             Assert.AreEqual(jsonLast.Substring(0, 1720), restoredAndRun.Substring(0, 1720));
-        }
-
-        private object Put(string expected, int i)
-        {
-            return expected.Substring(0, expected.Length - 2) + $"\"{i}\":null}}}}";
         }
     }
 }

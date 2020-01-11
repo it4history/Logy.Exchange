@@ -8,20 +8,12 @@ namespace Logy.Maps.ReliefMaps.World.From17
 {
     public class ReliefToNormal : RotationStopMap<Basin3>
     {
-        public ReliefToNormal() : base(6)
+        public ReliefToNormal() : this(6)
         {
-            // WithPoliticalMap = true;
         }
 
-        [Test]
-        public void Sharp()
+        public ReliefToNormal(int k) : base(k)
         {
-            var from = 4852; // 4000 start, 4352 (-637m..), 4852 (-510m..)
-            Subdir = "sharp" + from;
-            /// InitDataWithJson(); 
-            Load(from, false);
-
-            Run(30);
         }
 
         [Test]
@@ -32,41 +24,39 @@ namespace Logy.Maps.ReliefMaps.World.From17
             Run(500);
         }
 
-        [Test]
-        public void AddWaterToSibir()
+        protected void Run(int duration)
         {
-            Subdir = "Siberia";
-            Load();
+            // for k6 Threshhold 
+            // .1 was enough till -311.4m.. (6100)
+            // .01 with Fluidity .9 allowed -298m.. 
+            // .024 with Fluidity .95 allowed -205m.. (7236)
+            // .024 with Fluidity 1 allowed -151m.. (8173)
+            // 0 with Fluidity 1 the same -151m..
+            HighFluidity(true);
 
-            // Data.PixMan.Pixels[HealpixManager.GetP(20, 22)].Hoq = 1000;
-            Run(30);
-        }
-
-        private void Run(int duration)
-        {
-            Data.Water.Threshhold = .01; /// for k6 .1 was enough till 6100 (-311.4m..), .01 allowed -298m..
-            Data.Water.Fluidity = .9; /// !
-
+            DrawPoliticalMap();
             ShiftAxis(Data.Frame + duration);
-
-            if (!WithPoliticalMap)
-                DrawPoliticalMap();
+            DrawPoliticalMap();
         }
 
-        private void Load(int? from = null, bool? toNormalDatumWithGeoisostasy = null)
+        protected void Load(object from = null, bool? toNormalDatumWithGeoisostasy = null, Datum datum = null)
         {
             Bundle = Bundle<Basin3>.DeserializeFile(
                 from == null ? FindJson(new ReliefAxis17Geoisostasy(K).Dir) : StatsFileName(from));
+
             var algo = Bundle.Algorithm as ShiftAxis;
 
-            Datum datum;
             if (toNormalDatumWithGeoisostasy.HasValue)
-                datum = toNormalDatumWithGeoisostasy.Value
-                    ? Datum.Normal
-                    : new Datum { Gravity = new Gravity { X = -40, Y = 73 } };
+            {
+                if (datum == null)
+                    datum = Datum.Normal;
+                if (toNormalDatumWithGeoisostasy == false)
+                    datum.Gravity = new Gravity(Datum.Greenland17);
+            }
             else
                 datum = algo.FromLastPole;
             algo.SetGeoisostasyDatum(datum);
+
             JsonNeeded = true;
         }
     }

@@ -40,7 +40,6 @@ namespace Logy.Maps.ReliefMaps.Water
         /// </summary>
         public bool SamePolesAndEquatorGravitation { get; set; }
 
-        [IgnoreDataMember]
         public WaterModel Water { get; set; }
 
         [IgnoreDataMember]
@@ -77,7 +76,13 @@ namespace Logy.Maps.ReliefMaps.Water
         public virtual void Init(bool reliefFromDb = true, Datum datum = null)
         {
             base.Init();
+            var wasDeserialized = Water;
             Water = new WaterModel(HealpixManager);
+            if (wasDeserialized != null)
+            {
+                Water.Fluidity = wasDeserialized.Fluidity;
+                Water.Threshhold = wasDeserialized.Threshhold;
+            }
         }
 
         public void DoFrame(bool isDynamicScale = true)

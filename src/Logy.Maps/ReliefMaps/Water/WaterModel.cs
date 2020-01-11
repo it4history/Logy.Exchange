@@ -1,4 +1,5 @@
 using System;
+using System.Runtime.Serialization;
 using Logy.Maps.Projections.Healpix;
 using Logy.Maps.ReliefMaps.Basemap;
 using Logy.Maps.ReliefMaps.Meridian;
@@ -11,6 +12,13 @@ namespace Logy.Maps.ReliefMaps.Water
         public const double FluidityStable = .4;
 
         protected const double ThreshholdReliability = 2.2;
+
+        /// <summary>
+        /// for deserialization
+        /// </summary>
+        public WaterModel()
+        {
+        }
 
         public WaterModel(HealpixManager man)
         {
@@ -31,9 +39,11 @@ namespace Logy.Maps.ReliefMaps.Water
         /// for k9: 0.05 is bad, .1-.15 strange interference, .23 is NotReliable
         /// .25 is reliable, .3 very reliable
         /// </summary>
-        public double Threshhold { get; internal set; }
+        public double Threshhold { get; set; }
+        [IgnoreDataMember]
         public double ThreshholdNotReliable { get; }
 
+        [IgnoreDataMember]
         public bool IsMeridian { get; set; }
 
         /// <summary>

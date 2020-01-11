@@ -1,4 +1,3 @@
-using System.Drawing.Imaging;
 using Logy.Maps.Exchange;
 using Logy.Maps.Geometry;
 using Logy.Maps.Projections.Healpix;
@@ -10,23 +9,21 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
     {
         private ShiftAxis _algo;
 
-        public OceanMapGravityAxisChange() : this(9)
+        public OceanMapGravityAxisChange() : this(7)
         {
         }
         public OceanMapGravityAxisChange(int k) : base(k)
         {
         }
 
-        protected override ImageFormat ImageFormat => ImageFormat.Tiff;
-
         public override void SetUp()
         {
             base.SetUp();
-            var newY = Datum.Strahov48.Y; // 73, 0, 45, 30, 60
-            var newX = Datum.Strahov48.X; // -40, 0
+            var datum = Datum.Greenland17; // Datum.Strahov48;
+            var newY = datum.Y; // 45, 30, 60
+            var newX = datum.X; // 0
             _algo = new ShiftAxis(new OceanData(HealpixManager)
             {
-                IntegrationEndless = false,
                 /// MetricType = MetricType.MeanEdge
                 /*
                 Visual = (basin, moved) =>
@@ -66,11 +63,11 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
         [Test]
         public void CorrectionCalculated()
         {
-            InitData(_algo, true); 
+            InitDataWithJson(null, _algo); 
 
             _algo.SetDatum(_algo.DesiredDatum, 0);
 
-            _algo.Data.IntegrationEndless = false;
+            HighFluidity();
             Data.DoFrames(
                 (frame) =>
                 {
@@ -85,6 +82,7 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
         public void CorrectionLoadedFromParentResolutionAndCalculated()
         {
             InitData(_algo, true);
+            HighFluidity();
 
             var parentMan = new HealpixManager(K - 1);
             var parentBasins = _algo.DesiredDatum.Gravity.LoadCorrection(parentMan.K).Basins[parentMan.K];
@@ -94,7 +92,6 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
 
             _algo.SetDatum(_algo.DesiredDatum, 0);
 
-            _algo.Data.IntegrationEndless = true;
             Data.DoFrames(
                 (frame) =>
                 {

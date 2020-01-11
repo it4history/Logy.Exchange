@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using Logy.Maps.Coloring;
 using Logy.Maps.Exchange;
 using Logy.Maps.ReliefMaps.Basemap;

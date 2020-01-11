@@ -1,6 +1,8 @@
 #if DEBUG
 using System;
 using Logy.Maps.Exchange.Earth2014.Tests;
+using Logy.Maps.Geometry;
+using Logy.MwAgent.Sphere;
 using NUnit.Framework;
 
 namespace Logy.Maps.Projections.Healpix.Tests
@@ -15,11 +17,12 @@ namespace Logy.Maps.Projections.Healpix.Tests
             Assert.AreEqual(0, coor.DistanceTo(new HealCoor { X = 0, Y = 0 }));
             Assert.AreEqual(Math.PI / 2, coor.DistanceTo(new HealCoor { X = 90, Y = 0 }));
 
-            var oldPole = new HealCoor { X = -40, Y = 73 };
+            var oldPole = (Coor)Datum.Greenland17;
+            //new HealCoor { X = -40, Y = 73 };
             Assert.AreEqual(43, (oldPole.DistanceTo(Earth2014ManagerTests.Sevastopol) / Math.PI) * 180, .5);
 
-            oldPole = new HealCoor { X = -52, Y = 66 };
-            Assert.AreEqual(24, (oldPole.DistanceTo(new HealCoor()) / Math.PI) * 180);
+            oldPole = new Coor(-52, 66);
+            Assert.AreEqual(24, (oldPole.DistanceTo(new Coor()) / Math.PI) * 180);
         }
 
         [Test]

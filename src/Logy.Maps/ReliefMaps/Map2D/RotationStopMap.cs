@@ -66,16 +66,13 @@ namespace Logy.Maps.ReliefMaps.Map2D
 
         public static string FindJson(string dir)
         {
-            var json = Directory.GetFiles(dir, "*" + RotationStopMap<BasinAbstract>.FilePrefix + "*.json")
+            return Directory.GetFiles(dir, "*" + RotationStopMap<BasinAbstract>.FilePrefix + "*.json")
                 .LastOrDefault();
-            if (json == null)
-                throw new ApplicationException("needed json at " + dir);
-
-            return json;
+            /// throw new ApplicationException("needed json at " + dir);
         }
 
         /// <summary>
-        /// to start with json
+        /// to start with json, if json absent then start from frame 0
         /// </summary>
         /// <param name="json2loadFrame">null to load latest json</param>
         /// <param name="algorithm">null to get algo from json</param>
@@ -119,10 +116,14 @@ namespace Logy.Maps.ReliefMaps.Map2D
                 Bundle = new Bundle<T>(algorithm);
             }
         }
-        
+
         public string StatsFileName(int? frame = null)
         {
-            return Path.Combine(Dir, $"{FilePrefix}{FrameToString(frame)}.json");
+            return StatsFileName(FrameToString(frame));
+        }
+        public string StatsFileName(object frame)
+        {
+            return Path.Combine(Dir, $"{FilePrefix}{frame}.json");
         }
 
         [SetUp]
@@ -223,6 +224,12 @@ namespace Logy.Maps.ReliefMaps.Map2D
                 },
                 slowFrames,
                 timeStepByFrame);
+        }
+
+        protected void HighFluidity(bool risky = false)
+        {
+            Data.Water.Fluidity = risky ? 1 : .95;
+            Data.Water.Threshhold *= risky ? .01 : .1; /// for k6 standard Threshhold is 2.4m
         }
 
         protected void DrawPoliticalMap()

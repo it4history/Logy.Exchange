@@ -63,7 +63,8 @@ namespace Logy.Maps.Exchange
                     algorithmInJson.ToString(),
                     Type.GetType(algorithmInJson["Name"].ToString()));
             }
-            bundle.Deserialized.Add(bundle.Algorithm.DataAbstract.Frame, filename);
+            if (filename != null)
+                bundle.Deserialized.Add(bundle.Algorithm.DataAbstract.Frame, filename);
 
             if (!ignoreNewBasins)
             {
@@ -117,7 +118,8 @@ namespace Logy.Maps.Exchange
 
                 if (bundle.Algorithm.Diff > 0)
                     WaterMoving<Basin3>.MaxOceanVolume += bundle.Algorithm.Diff;
-                data.CheckOcean();
+                if (bundle.Algorithm.Diff != 0)
+                    data.CheckOcean();
 
                 /*
                 set colors in Data.CalcAltitudes();

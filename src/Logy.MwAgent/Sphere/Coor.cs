@@ -101,18 +101,11 @@ namespace Logy.MwAgent.Sphere
         /// <summary>
         /// Pi/2 .. -Pi/2; Pi/2 is North pole
         /// </summary>
-        public double Phi
-        {
-            get
-            {
-                return (Math.PI * .5) - Beta.Value;
-            }
-        }
+        public double Phi => (Math.PI * .5) - Beta.Value;
 
         public double? Precision { get; set; }
 
         #region operators
-
         public static Coor operator +(Coor a, Coor b)
         {
             return new Coor(a.X + b.X, a.Y + b.Y).Normalize<Coor>();
@@ -129,5 +122,25 @@ namespace Logy.MwAgent.Sphere
             return new Coor(a.X * b.X, a.Y * b.Y);
         }
         #endregion
+
+        /// <returns>angle in radians</returns>
+        public double DistanceTo(Coor coor)
+        {
+            var φ1 = Phi;
+            var φ2 = coor.Phi;
+            var deltaφ = Phi - coor.Phi;
+            var deltaλ = Lambda.Value - coor.Lambda.Value;
+
+            // haversine formula1 
+            var a = (Math.Sin(deltaφ / 2) * Math.Sin(deltaφ / 2)) +
+                    (Math.Cos(φ1) * Math.Cos(φ2) *
+                     Math.Sin(deltaλ / 2) * Math.Sin(deltaλ / 2));
+            var c = 2 * Math.Atan2(Math.Sqrt(a), Math.Sqrt(1 - a));
+            return c; // */
+
+            /* Spherical Law of Cosines
+            var d = Math.Acos(Math.Sin(φ1) * Math.Sin(φ2) + Math.Cos(φ1) * Math.Cos(φ2) * Math.Cos(deltaλ));
+            return d; //*/
+        }
     }
 }
