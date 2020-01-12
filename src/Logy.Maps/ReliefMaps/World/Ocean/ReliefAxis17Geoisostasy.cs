@@ -11,7 +11,7 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
     /// </summary>
     public class ReliefAxis17Geoisostasy : ReliefMap
     {
-        public ReliefAxis17Geoisostasy() : base(7) // till 9
+        public ReliefAxis17Geoisostasy() : base(8) // till 9
         {
         }
 
@@ -77,7 +77,7 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
         {
             InitDataWithJson();
             HighFluidity();
-            ShiftAxis(8200);
+            ShiftAxis(10000);
 
             DrawPoliticalMap();
         }
