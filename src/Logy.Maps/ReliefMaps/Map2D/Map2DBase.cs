@@ -41,7 +41,7 @@ namespace Logy.Maps.ReliefMaps.Map2D
         public virtual Projection Projection => Projection.Healpix;
 
         /// <summary>
-        /// practical values 2, 3, 4
+        /// practical values 2-5
         /// </summary>
         public int YResolution { get; set; } = 3;
         public int Scale { get; set; } = 1;

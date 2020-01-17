@@ -18,7 +18,6 @@ namespace Logy.Maps.Projections.Healpix.Tests
             Assert.AreEqual(Math.PI / 2, coor.DistanceTo(new HealCoor { X = 90, Y = 0 }));
 
             var oldPole = (Coor)Datum.Greenland17;
-            //new HealCoor { X = -40, Y = 73 };
             Assert.AreEqual(43, (oldPole.DistanceTo(Earth2014ManagerTests.Sevastopol) / Math.PI) * 180, .5);
 
             oldPole = new Coor(-52, 66);
@@ -70,6 +69,7 @@ namespace Logy.Maps.Projections.Healpix.Tests
             Assert.AreEqual(new[] { 15, 28, 29, 44 }, man.GetCenter(6).GetKids(kidsMan));
             Assert.AreEqual(new[] { 18, 32, 33, 48 }, man.GetCenter(8).GetKids(kidsMan));
 
+            Assert.AreEqual(new[] { 43, 59, 60, 75 }, man.GetCenter(13).GetKids(kidsMan));
             Assert.AreEqual(new[] { 45, 61, 62, 77 }, man.GetCenter(14).GetKids(kidsMan));
             Assert.AreEqual(new[] { 47, 63, 64, 79 }, man.GetCenter(15).GetKids(kidsMan));
             Assert.AreEqual(new[] { 78, 94, 95, 110 }, man.GetCenter(23).GetKids(kidsMan));
@@ -78,6 +78,39 @@ namespace Logy.Maps.Projections.Healpix.Tests
             Assert.AreEqual(new[] { 111, 127, 128, 143 }, man.GetCenter(31).GetKids(kidsMan));
 
             Assert.AreEqual(new[] { 169, 180, 181, 188 }, man.GetCenter(44).GetKids(kidsMan));
+
+            man = new HealpixManager(5);
+            kidsMan = new HealpixManager(6);
+            var kids = man.GetCenter(2159).GetKids(kidsMan);
+            foreach (var kid in kids)
+            {
+                Console.WriteLine(kidsMan.GetCenter(kid));
+            }
+            Assert.AreEqual(new[] { 8415, 8671, 8672, 8927 }, kids);
+
+            kids = man.GetCenter(2288).GetKids(kidsMan);
+            Assert.AreEqual(new[] { 8928, 9184, 9185, 9440 }, kids);
+
+            kids = man.GetCenter(2287).GetKids(kidsMan);
+            Assert.AreEqual(new[] { 8926, 9182, 9183, 9438 }, kids);
+        }
+
+        [Test]
+        public void GetKids_all()
+        {
+            for (var k = 0; k <= 6; k++)
+            {
+                var man = new HealpixManager(k);
+                var kidsMan = new HealpixManager(man.K + 1);
+                for (var p = 0; p < man.Npix; p++)
+                {
+                    var parent = man.GetCenter(p);
+                    foreach (var kidP in parent.GetKids(kidsMan))
+                    {
+                        Assert.Greater(man.ThetaPix, kidsMan.GetCenter(kidP).DistanceTo(parent));
+                    }
+                }
+            }
         }
 
         public void GetParent()

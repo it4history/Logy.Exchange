@@ -117,12 +117,10 @@ namespace Logy.Maps.ReliefMaps.Map2D
             }
         }
 
-        public string StatsFileName(int? frame = null)
+        public string StatsFileName(object frame = null)
         {
-            return StatsFileName(FrameToString(frame));
-        }
-        public string StatsFileName(object frame)
-        {
+            if (frame is int)
+                frame = FrameToString((int)frame);
             return Path.Combine(Dir, $"{FilePrefix}{frame}.json");
         }
 

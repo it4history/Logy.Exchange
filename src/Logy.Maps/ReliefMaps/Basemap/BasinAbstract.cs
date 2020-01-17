@@ -148,7 +148,7 @@ namespace Logy.Maps.ReliefMaps.Basemap
 
         #region water
         /// <summary>
-        /// directed up
+        /// directed up, meters
         /// relative to RadiusOfGeoid 
         /// may include geoidUndulation
         /// </summary>
@@ -161,7 +161,7 @@ namespace Logy.Maps.ReliefMaps.Basemap
         }
 
         /// <summary>
-        /// directed down
+        /// directed down, meters
         /// relative to RadiusOfGeoid, so underwater is positive
         /// null, if not limited in depth 
         /// if hOQ is less than -Depth.Value then this is underground water hydroconnected with ground

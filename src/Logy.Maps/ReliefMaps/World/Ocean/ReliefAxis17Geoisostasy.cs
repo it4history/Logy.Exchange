@@ -1,3 +1,4 @@
+using System.Drawing.Imaging;
 using Logy.Maps.Exchange;
 using NUnit.Framework;
 
@@ -11,13 +12,16 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
     /// </summary>
     public class ReliefAxis17Geoisostasy : ReliefMap
     {
-        public ReliefAxis17Geoisostasy() : base(8) // till 9
+        public ReliefAxis17Geoisostasy() : this(9) // till 9
         {
         }
 
         public ReliefAxis17Geoisostasy(int k) : base(k)
         {
+            // YResolution = 4;
         }
+
+        // protected override ImageFormat ImageFormat => ImageFormat.Bmp;
 
         public void SetAlgorithm()
         {
@@ -69,7 +73,7 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
             HighFluidity();
 
             // todo problem with CorrectionBundle workarounded by fast shift and later MoreAccurate()
-            ShiftAxis(10);
+            ShiftAxis(10060);
         }
 
         [Test]
@@ -77,7 +81,7 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
         {
             InitDataWithJson();
             HighFluidity();
-            ShiftAxis(10000);
+            ShiftAxis(10100);
 
             DrawPoliticalMap();
         }

@@ -126,6 +126,8 @@
     <Compile Include="ReliefMaps\Meridian\ReliefMap.cs" />
     <Compile Include="ReliefMaps\World\Ararat.cs" />
     <Compile Include="Projections\Healpix\Dem\DemData.cs" />
+    <Compile Include="Projections\Healpix\KidsData.cs" />
+    <Compile Include="Projections\Healpix\Kids.cs" />
     <Compile Include="ReliefMaps\World\Earth2014Correction.cs" />
     <Compile Include="ReliefMaps\World\Earth2014CorrectionData.cs" />
     <Compile Include="ReliefMaps\World\From17\ReliefToNormal.cs" />

@@ -14,11 +14,20 @@ namespace Logy.Maps.ReliefMaps.World.From17
         {
             Subdir = "plusHvalin";
             Load(8200);
-            // InitDataWithJson();
-
-            // k6 GetP(22, 20)
+            /// InitDataWithJson();
             Data.PixMan.Pixels[HealpixManager.GetP(90, 110)].Hoq = 30000; // near 78000 cub km
             Run(100); // 20, 40, 90 with adding each time
+        }
+
+        [Test]
+        public void PlusWaterToHvalinOverflow3()
+        {
+            Subdir = "3 adding";
+            Load(8290);
+
+            // k6 GetP(22, 20)
+            // Data.PixMan.Pixels[HealpixManager.GetP(90, 110)].Hoq = 30000; // near 78000 cub km
+            Run(200); // 20, 40, 90 with adding each time, 200
         }
 
         [Test]
@@ -28,6 +37,7 @@ namespace Logy.Maps.ReliefMaps.World.From17
             // for k7 start 8200 (-1118m..), 8300plusHvalin
             var from = "08300plusHvalin";
             Subdir = "sharp" + from;
+            
             // InitDataWithJson(); // 
             Load(from, false, new Datum { X = -40, Y = 80 });
 
