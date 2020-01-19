@@ -83,6 +83,8 @@
     <Compile Include="Exchange\ShiftAxis.cs" />
     <Compile Include="Geometry\Gravity.cs" />
     <Compile Include="Geometry\Pole.cs" />
+    <Compile Include="Geometry\WanderMaps\City.cs" />
+    <Compile Include="Geometry\WanderMaps\PoleSearchData.cs" />
     <Compile Include="Geometry\Tests\PoleSearchTests.cs" />
     <Compile Include="Geometry\Tests\Utils3DTests.cs" />
     <Compile Include="Geometry\Utils3D.cs" />
@@ -92,6 +94,7 @@
     <Compile Include="Geometry\Tests\MatrixesTests.cs" />
     <Compile Include="Geometry\Tests\DatumTests.cs" />
     <Compile Include="Geometry\Tests\MathNetPoint3DTests.cs" />
+    <Compile Include="Geometry\WanderMaps\PoleSearch1823.cs" />
     <Compile Include="Metrics\Tests\OceanDataTests.cs" />
     <Compile Include="Projections\Healpix\Dem\BasinDem.cs" />
     <Compile Include="Projections\Healpix\Dem\BasinDemGeoid.cs" />
