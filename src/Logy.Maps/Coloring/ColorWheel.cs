@@ -5,6 +5,8 @@ namespace Logy.Maps.Coloring
 {
     public class ColorWheel
     {
+        public const double ModuleAccuracy = .005;
+
         /// <param name="hue">from 0 to 255, 0 - red north, 63 - green east</param>
         /// <param name="satupation">from 0 to 255, 0 is grey</param>
         /// <param name="v">maximum brightness, 255 is most</param>
@@ -101,9 +103,12 @@ namespace Logy.Maps.Coloring
         }
 
         /// <summary>
-        /// it is coding angle
+        /// angle coding 
+        /// 0 - north
+        /// Pi/2 - east
         /// </summary>
-        /// <returns>in gedrees * 0.000001</returns>
+        /// <param name="meridian">in radian</param>
+        /// <returns>module and angle in gedrees * 0.000001</returns>
         public static double SetAngle(double meridian, double traverse, double module = 0)
         {
             double angleRad;

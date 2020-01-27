@@ -22,6 +22,8 @@ namespace Logy.Maps.Coloring.Tests
         [Test]
         public void SetAngle()
         {
+            Assert.AreEqual(.00027, ColorWheel.SetAngle(0, 0), ColorWheel.ModuleAccuracy);
+
             Assert.AreEqual(0, ColorWheel.SetAngle(1, 0));
             Assert.AreEqual(90, ColorWheel.SetAngle(0, 1) * 1000000, .0001);
             Assert.AreEqual(180, ColorWheel.SetAngle(-1, 0) * 1000000, .0001);

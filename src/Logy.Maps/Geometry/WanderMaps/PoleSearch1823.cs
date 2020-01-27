@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Drawing.Imaging;
 using Logy.Maps.ReliefMaps.Map2D;
 
 namespace Logy.Maps.Geometry.WanderMaps
@@ -29,8 +28,6 @@ namespace Logy.Maps.Geometry.WanderMaps
         {
             YResolution = 3;
         }
-
-        protected override ImageFormat ImageFormat => ImageFormat.Tiff;
 
         protected override DataForMap2D<City> MapData => new PoleSearch1823Data(this);
     }

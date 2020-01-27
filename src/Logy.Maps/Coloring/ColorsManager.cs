@@ -183,7 +183,9 @@ namespace Logy.Maps.Coloring
                     if (_map?.LegendType == LegendType.Hue)
                     {
                         var angle = ColorWheel.GetAngle(heightValue);
-                        color = ColorWheel.HSVtoRGB(angle, (heightValue / Max) * 255);
+                        color = ColorWheel.HSVtoRGB(
+                            angle, 
+                            (heightValue / (Math.Max(ColorWheel.ModuleAccuracy, Max))) * 255);
                     }
                     else
                         color = (Color)Get(heightValue);
