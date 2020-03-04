@@ -8,6 +8,9 @@ namespace Logy.Maps.Projections.Healpix.Dem
     public class HealDemManager
     {
         private readonly List<HealpixManager> _levels = new List<HealpixManager>();
+        /// <summary>
+        /// p indices
+        /// </summary>
         private int[,] _dem;
 
         public HealDemManager(int kidsK, int baseK = 0)
@@ -20,6 +23,10 @@ namespace Logy.Maps.Projections.Healpix.Dem
         }
 
         public HealpixManager KidsMan => _levels.Last();
+
+        /// <summary>
+        /// _dem equivalent
+        /// </summary>
         public Basin3[] Basins { get; }
         private int BaseK { get; }
         private int Size { get; }

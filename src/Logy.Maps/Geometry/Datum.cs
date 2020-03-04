@@ -39,12 +39,12 @@ namespace Logy.Maps.Geometry
         public static Datum Normal { get; } = new Datum(); // X == -180, Y == 90
 
         /// <summary>
-        /// Carboniferous
+        /// Devonian, paradise
         /// </summary>
         public static Datum Strahov52 { get; } = new Datum { X = -172, Y = 17 };
 
         /// <summary>
-        /// Devonian
+        /// Carboniferous, Noah flood end
         /// </summary>
         public static Datum Strahov48 { get; } = new Datum { X = -170, Y = 43 };
 

@@ -148,6 +148,7 @@ namespace Logy.Maps.ReliefMaps.Basemap
 
         #region water
         /// <summary>
+        /// http://hist.tk/ory/Тазик#высота
         /// directed up, meters
         /// relative to RadiusOfGeoid 
         /// may include geoidUndulation
