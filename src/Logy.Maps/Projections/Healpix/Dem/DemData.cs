@@ -10,6 +10,7 @@ namespace Logy.Maps.Projections.Healpix.Dem
     {
         public DemData(HealpixManager man, Basin3[] basins) : base(man, basins)
         {
+            Accuracy = 1;
         }
 
         public override ReliefType ReliefType => ReliefType.Mask;

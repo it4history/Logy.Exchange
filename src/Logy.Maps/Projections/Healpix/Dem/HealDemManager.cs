@@ -2,6 +2,7 @@
 using System.Linq;
 using Logy.Maps.ReliefMaps.Water;
 using Logy.Maps.ReliefMaps.World.Ocean;
+using MathNet.Spatial.Euclidean;
 
 namespace Logy.Maps.Projections.Healpix.Dem
 {
@@ -10,41 +11,63 @@ namespace Logy.Maps.Projections.Healpix.Dem
         private readonly List<HealpixManager> _levels = new List<HealpixManager>();
         /// <summary>
         /// p indices
+        /// filled in CalcDem()
         /// </summary>
         private int[,] _dem;
 
-        public HealDemManager(int kidsK, int baseK = 0)
+        /// <param name="parentK">0 means for all Earth</param>
+        public HealDemManager(int kidsK, int parentK = 0)
         {
             for (int i = 0; i <= kidsK; i++)
                 _levels.Add(new HealpixManager(i));
-            BaseK = baseK;
-            Size = 1 << (_levels.Count - baseK - 1);
-            Basins = new Basin3[Size * Size];
+            ParentK = parentK;
+            Size = 1 << (_levels.Count - parentK - 1);
         }
 
         public HealpixManager KidsMan => _levels.Last();
 
         /// <summary>
         /// _dem equivalent
+        /// filled in CalcDem()
         /// </summary>
-        public Basin3[] Basins { get; }
-        private int BaseK { get; }
+        public Basin3[] Basins { get; private set; }
+        private int ParentK { get; }
         private int Size { get; }
+        private int Half => Size / 2;
 
-        /// <param name="baseCell">P of basin from BaseK to calculate kids of</param>
+        /// <param name="parentCell">P of basin from ParentK to calculate kids of</param>
         /// <param name="parentPK">K for what to calculate ParentP, used for CorrectionBundle</param>
         /// <returns></returns>
-        public int[,] CalcDem(int baseCell, int? parentPK = null)
+        public int[,] CalcDem(int parentCell, int? parentPK = null)
         {
             _dem = new int[Size, Size];
-            Call(BaseK, baseCell, 0, 0, parentPK ?? _levels.Count - 2, null);
+            Basins = new Basin3[Size * Size];
+            Call(ParentK, parentCell, 0, 0, parentPK ?? _levels.Count - 2, null);
             return _dem;
         }
 
-        public BasinDem[] GetDem(WaterMoving<Basin3> data)
+        public BasinDem[] GetDem(WaterMoving<Basin3> data, bool withCurvature = false)
         {
+            var center = withCurvature ? GetCurvatureCenter(data) : (Plane?) null;
             int p = 0;
-            return Basins.Select(b => new BasinDem(data.PixMan.Pixels[p++])).ToArray();
+            var result = Basins.Select(b => new BasinDem(data.PixMan.Pixels[p++], center)).ToArray();
+            return result;
+        }
+
+        internal Plane GetCurvatureCenter(WaterMoving<Basin3> data)
+        {
+            var center = new[]
+            {
+                (Half - 1) * (Size + 1),
+                (Half - 1) * (Size + 1) + 1,
+                Half * (Size + 1) - 1,
+                Half * (Size + 1)
+            };
+            var centerQ = center.Select(p => data.PixMan.Pixels[p].Q3.ToVector3D())
+                              .Aggregate((q, qNext) => q + qNext) / 4;
+            var centerNormal = center.Select(p => data.PixMan.Pixels[p].Normal.Value)
+                .Aggregate((q, qNext) => (q + qNext).Normalize());
+            return new Plane(centerQ.ToPoint3D(), centerNormal);
         }
 
         private void Call(int k, int p, int x, int y, int parentPK, int? parentP)
