@@ -7,14 +7,15 @@ namespace Logy.Maps.Projections.Healpix.Dem
     [DataContract(Namespace = UrlsManager.Namespace)]
     public class BasinDemGeoid
     {
-        public BasinDemGeoid(Vector3D radius, UnitVector3D normal)
+        public BasinDemGeoid(Vector3D radius, Plane s_q)
         {
             X = radius.X;
             Y = radius.Y;
             Z = radius.Z;
-            NormX = normal.X;
-            NormY = normal.Y;
-            NormZ = normal.Z;
+            A = s_q.A;
+            B = s_q.B;
+            C = s_q.C;
+            D = s_q.D;
         }
 
         [DataMember]
@@ -25,10 +26,12 @@ namespace Logy.Maps.Projections.Healpix.Dem
         public double Z { get; set; }
 
         [DataMember]
-        public double NormX { get; set; }
+        public double A { get; set; }
         [DataMember]
-        public double NormY { get; set; }
+        public double B { get; set; }
         [DataMember]
-        public double NormZ { get; set; }
+        public double C { get; set; }
+        [DataMember]
+        public double D { get; set; }
     }
 }

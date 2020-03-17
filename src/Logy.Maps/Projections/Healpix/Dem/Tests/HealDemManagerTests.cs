@@ -11,26 +11,26 @@ namespace Logy.Maps.Projections.Healpix.Dem.Tests
         [Test]
         public void CalcDem()
         {
-            Assert.AreEqual(new[,] {{1, 6}, {7, 14}}, new HealDemManager(1).CalcDem(1));
-            Assert.AreEqual(new[,] {{2, 8}, {9, 16}}, new HealDemManager(1).CalcDem(2));
+            Assert.AreEqual(new[,] {{6, 1}, {14, 7}}, new HealDemManager(1).CalcDem(1));
+            Assert.AreEqual(new[,] {{8, 2}, {16, 9}}, new HealDemManager(1).CalcDem(2));
 
             Assert.AreEqual(
                 new[,]
                 {
-                    {1, 6, 15, 28},
-                    {7, 16, 29, 44},
-                    {17, 30, 45, 61},
-                    {31, 46, 62, 77}
+                    {28, 15, 6, 1},
+                    {44, 29, 16, 7},
+                    {61, 45, 30, 17},
+                    {77, 62, 46, 31}
                 },
                 new HealDemManager(2).CalcDem(1));
 
             Assert.AreEqual(
                 new[,]
                 {
-                    {47, 63, 78, 94},
-                    {64, 79, 95, 110},
-                    {80, 96, 111, 127},
-                    {97, 112, 128, 143}
+                    {94, 78, 63, 47},
+                    {110, 95, 79, 64},
+                    {127, 111, 96, 80},
+                    {143, 128, 112, 97}
                 },
                 new HealDemManager(2).CalcDem(5));
         }
@@ -46,12 +46,12 @@ namespace Logy.Maps.Projections.Healpix.Dem.Tests
             }
 
             man.CalcDem(1, 1);
-            Assert.AreEqual(1, man.Basins[0].ParentP);
-            Assert.AreEqual(6, man.Basins[2].ParentP);
-            Assert.AreEqual(1, man.Basins[4].ParentP);
-            Assert.AreEqual(6, man.Basins[6].ParentP);
-            Assert.AreEqual(7, man.Basins[8].ParentP);
-            Assert.AreEqual(14, man.Basins[10].ParentP);
+            Assert.AreEqual(6, man.Basins[0].ParentP);
+            Assert.AreEqual(1, man.Basins[2].ParentP);
+            Assert.AreEqual(6, man.Basins[4].ParentP);
+            Assert.AreEqual(1, man.Basins[6].ParentP);
+            Assert.AreEqual(14, man.Basins[8].ParentP);
+            Assert.AreEqual(7, man.Basins[10].ParentP);
         }
 
         [Test]
@@ -73,7 +73,9 @@ namespace Logy.Maps.Projections.Healpix.Dem.Tests
             var kidsData = new DemData(man.KidsMan, man.Basins);
             kidsData.Init();
             Assert.AreEqual(
-                new Plane(0.571, 0.5452, 0.6137, -6243679.19051).ToString(),
+                new Plane(0.5716, 0.495, 0.6544, -6252278.4642)
+//                new Plane(0.571, 0.5452, 0.6137, -6243679.19051)
+                    .ToString(),
                 man.GetCurvatureCenter(kidsData).ToString());
         }
     }

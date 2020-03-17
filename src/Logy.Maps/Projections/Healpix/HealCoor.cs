@@ -176,6 +176,7 @@ Each grid file contains 10,800 x 21,600 = 233,280,000 records */
             return parentMan.GetP(parentRing, parentPixelInRing);
         }
 
+        /// <returns>order http://logy.gq/lw/HEALPix#for_DEM</returns>
         public int[] GetKids(HealpixManager kidsMan)
         {
             var kidsRing = Ring * 2;

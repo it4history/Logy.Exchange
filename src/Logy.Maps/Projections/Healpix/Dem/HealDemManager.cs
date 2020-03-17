@@ -10,7 +10,8 @@ namespace Logy.Maps.Projections.Healpix.Dem
     {
         private readonly List<HealpixManager> _levels = new List<HealpixManager>();
         /// <summary>
-        /// p indices
+        /// p indices 
+        /// v - row from NE to SW, u - column from SE to NW
         /// filled in CalcDem()
         /// </summary>
         private int[,] _dem;
@@ -70,7 +71,7 @@ namespace Logy.Maps.Projections.Healpix.Dem
             return new Plane(centerQ.ToPoint3D(), centerNormal);
         }
 
-        private void Call(int k, int p, int x, int y, int parentPK, int? parentP)
+        private void Call(int k, int p, int u, int v, int parentPK, int? parentP)
         {
             if (k < _levels.Count - 1)
             {
@@ -78,19 +79,21 @@ namespace Logy.Maps.Projections.Healpix.Dem
                 var kids = _levels[k].GetCenter(p).GetKids(_levels[k + 1]);
 
                 var someParent = k == parentPK ? p : parentP;
-                Call(k + 1, kids[0], x, y, parentPK, someParent);
-                Call(k + 1, kids[1], x + kidsShift, y, parentPK, someParent);
-                Call(k + 1, kids[2], x, y + kidsShift, parentPK, someParent);
-                Call(k + 1, kids[3], x + kidsShift, y + kidsShift, parentPK, someParent);
+
+                // order http://logy.gq/lw/HEALPix#for_DEM is strangely no 1 0 3 2
+                Call(k + 1, kids[0], u + kidsShift, v, parentPK, someParent);
+                Call(k + 1, kids[1], u, v, parentPK, someParent);
+                Call(k + 1, kids[2], u + kidsShift, v + kidsShift, parentPK, someParent);
+                Call(k + 1, kids[3], u, v + kidsShift, parentPK, someParent);
             }
             else
             {
-                _dem[y, x] = p;
+                _dem[v, u] = p;
 
                 // because HealpixManager.GetParent is not implemented and to accelerate
                 var basin = _levels[k].GetCenter<Basin3>(p);
                 basin.ParentP = parentP.Value;
-                Basins[(y * Size) + x] = basin; // ApplyBasin3(data.PixMan.Pixels[p]);
+                Basins[(v * Size) + u] = basin; // ApplyBasin3(data.PixMan.Pixels[p]);
             }
         }
     }

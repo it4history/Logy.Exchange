@@ -101,6 +101,8 @@ namespace Logy.Maps.ReliefMaps.Water
 
                         // water out source basin
                         basin.WaterIn(-volumeFromBasin, to);
+
+                        //todo water out and water in must be same
                         return volumeFromBasin;
                     }
                 }

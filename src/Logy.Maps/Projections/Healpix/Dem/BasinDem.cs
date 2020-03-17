@@ -18,7 +18,7 @@ namespace Logy.Maps.Projections.Healpix.Dem
             Depth = basin3.Depth.Value;
             Geoid = new BasinDemGeoid(
                 basin3.RadiusRay.Direction.ScaleBy(basin3.RadiusOfGeoid),
-                basin3.Normal.Value);
+                basin3.S_q);
             if (center != null)
             {
                 Curvature = new Line3D(
