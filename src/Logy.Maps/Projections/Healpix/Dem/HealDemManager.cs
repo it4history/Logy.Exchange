@@ -80,7 +80,7 @@ namespace Logy.Maps.Projections.Healpix.Dem
 
                 var someParent = k == parentPK ? p : parentP;
 
-                // order http://logy.gq/lw/HEALPix#for_DEM is strangely no 1 0 3 2
+                // kids array order http://logy.gq/lw/HEALPix#for_DEM is strangely no 1 0 3 2
                 Call(k + 1, kids[0], u + kidsShift, v, parentPK, someParent);
                 Call(k + 1, kids[1], u, v, parentPK, someParent);
                 Call(k + 1, kids[2], u + kidsShift, v + kidsShift, parentPK, someParent);

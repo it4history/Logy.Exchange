@@ -27,6 +27,8 @@ namespace Logy.Maps.ReliefMaps.Water
             ThreshholdNotReliable = 7.4 * pow;
         }
 
+        //todo seems that in Fluidity range depends on metric: in RadiusIntersection max is 0.5 and in Middle max is 1.0
+        //
         // when Fluidity greater then water is more liquid
         // if > 1 then water is autoliquied
         // if == 0 then water is solid

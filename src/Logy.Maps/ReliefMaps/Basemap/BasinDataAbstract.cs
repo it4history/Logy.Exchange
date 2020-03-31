@@ -171,6 +171,9 @@ namespace Logy.Maps.ReliefMaps.Basemap
         public override double? GetAltitude(T basin)
         {
             var moved = 0d;
+
+            // 'if (basin.HasWater())' is normal 
+            // because water will go in empty basin from neighbor - neighbor will calculate
             if (basin.HasWater())
             {
                 var movedVolume = 0d;
