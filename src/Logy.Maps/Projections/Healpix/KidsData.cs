@@ -20,11 +20,11 @@ namespace Logy.Maps.Projections.Healpix
                 var parentP = parentsMan.GetP(ring, fromPixelInRing);
                 _kids.Add(
                     parentP,
-                    parentsMan.GetCenter(parentP).GetKids(HealpixManager).Select(kidP => HealpixManager.GetCenter(kidP)).ToArray());
+                    parentsMan.GetCenter(parentP).GetKids(parentsMan, HealpixManager).Select(kidP => HealpixManager.GetCenter(kidP)).ToArray());
                 parentP = parentsMan.GetP(ring, fromPixelInRing + 1);
                 _kids.Add(
                     -parentP,
-                    parentsMan.GetCenter(parentP).GetKids(HealpixManager).Select(kidP => HealpixManager.GetCenter(kidP)).ToArray());
+                    parentsMan.GetCenter(parentP).GetKids(parentsMan, HealpixManager).Select(kidP => HealpixManager.GetCenter(kidP)).ToArray());
             }
         }
 

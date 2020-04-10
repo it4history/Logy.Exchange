@@ -39,6 +39,7 @@ namespace Logy.Maps.Projections.Healpix.Tests
         public void GetP_2()
         {
             var man = new HealpixManager(2);
+            Assert.AreEqual(17, man.GetP(3, 6));
             Assert.AreEqual(31, man.GetP(4, 8));
             Assert.AreEqual(47, man.GetP(5, 8));
             Assert.AreEqual(63, man.GetP(6, 8));

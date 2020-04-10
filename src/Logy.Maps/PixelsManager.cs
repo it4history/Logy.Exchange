@@ -31,6 +31,7 @@ namespace Logy.Maps
         }
 
         public T[] Pixels { get; }
+        public bool Full => Pixels.Length == HealpixManager.Npix;
 
         public double GetMeanAltitude(KeyValuePair<int, double>[] deltas)
         {

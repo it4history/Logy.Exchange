@@ -3,6 +3,7 @@ using System.Globalization;
 using System.Runtime.Serialization;
 using AppConfiguration;
 using Logy.Maps.Geometry;
+using Logy.Maps.ReliefMaps.World.Ocean;
 using Logy.MwAgent.Sphere;
 using MathNet.Spatial.Euclidean;
 using Newtonsoft.Json;
@@ -25,6 +26,12 @@ namespace Logy.Maps.Projections.Healpix
         /// </summary>
         public HealCoor(double x, double y) : base(new Point2(x, y))
         {
+        }
+
+        public HealCoor(Basin3 original) : base(original)
+        {
+            Ring = original.Ring;
+            PixelInRing = original.PixelInRing;
         }
 
         public HealCoor(Point2 original) : base(original)
@@ -51,14 +58,17 @@ namespace Logy.Maps.Projections.Healpix
         /// <summary>
         /// from 1 to HealpixManager.RingsCount
         /// </summary>
+        [DataMember]
         public int Ring { get; set; }
 
         /// <summary>
         /// from 1
         /// </summary>
+        [DataMember]
         public int PixelInRing { get; set; }
 
         #region cached in OnInit
+
         /// <summary>
         /// null if on equator bell
         /// </summary>
@@ -68,6 +78,7 @@ namespace Logy.Maps.Projections.Healpix
         /// cached from HealpixManager.PixelsCountInRing in OnInit
         /// </summary>
         public int PixelsCountInRing { get; set; }
+
         #endregion
 
         public int EastInRing => (PixelInRing == 1 ? P + PixelsCountInRing : P) - 1;
@@ -79,14 +90,22 @@ namespace Logy.Maps.Projections.Healpix
         /// from -180 to 180, 180 corresponds to East on the right
         /// </summary>
         [JsonIgnore]
-        public override double X { get { return base.X; } set { base.X = value; } }
+        public override double X
+        {
+            get { return base.X; }
+            set { base.X = value; }
+        }
 
         /// <summary>
         /// Latitude
         /// from -90 to 90, 90 corresponds to North pole
         /// </summary>
         [JsonIgnore]
-        public override double Y { get { return base.Y; } set { base.Y = value; } }
+        public override double Y
+        {
+            get { return base.Y; }
+            set { base.Y = value; }
+        }
 
         /// <summary>
         /// related to Matrix, with Normal like RadiusLine
@@ -144,7 +163,7 @@ Each grid file contains 10,800 x 21,600 = 233,280,000 records */
 
         public override string ToString()
         {
-            var nfi = new NumberFormatInfo { NumberDecimalSeparator = "." };
+            var nfi = new NumberFormatInfo {NumberDecimalSeparator = "."};
             return string.Format(
                 "{0}, #{1} in {2} ring; {3:0.00000000000},{4:0.00000000000}",
                 P,
@@ -176,56 +195,66 @@ Each grid file contains 10,800 x 21,600 = 233,280,000 records */
             return parentMan.GetP(parentRing, parentPixelInRing);
         }
 
-        /// <returns>order http://logy.gq/lw/HEALPix#for_DEM</returns>
-        public int[] GetKids(HealpixManager kidsMan)
+        /// <returns>order 0
+        ///               2 1
+        ///                3</returns>
+        public int[] GetKids(HealpixManager parentMan, HealpixManager kidsMan)
         {
-            var kidsRing = Ring * 2;
-            var kidsPixel = PixelInRing * 2;
-            var ringFromEquator = Math.Abs((2 * kidsMan.Nside) - kidsRing);
-            var koef = (ringFromEquator > 0 || kidsMan.K == 1) ? -1 : 0;
-            var koefUp = 0;
-            var koefDown = 0;
-            var koefMiddle = 0;
-            if (NorthCap == null && ringFromEquator > 0 && kidsMan.K > 2)
+            if (NorthCap == false)
             {
-                var wildSign = kidsRing + (kidsMan.Nside / 2) > kidsMan.RingsCount / 2 ? 0 : 1;
-
-                if ((ringFromEquator / 2) % 2 == 0)
+                var sym = Symmetric(parentMan);
+                var kids = sym.GetKids(parentMan, kidsMan);
+                return new[]
                 {
-                    koefUp = -wildSign;
-                    koefMiddle = -1;
-                }
-                else
-                    koefDown = wildSign;
+                    kidsMan.GetCenter(kids[3]).Symmetric(kidsMan).P,
+                    kidsMan.GetCenter(kids[2]).Symmetric(kidsMan).P,
+                    kidsMan.GetCenter(kids[1]).Symmetric(kidsMan).P,
+                    kidsMan.GetCenter(kids[0]).Symmetric(kidsMan).P
+                };
             }
 
+            // this correct for left, right kids, for up
+            var kidsRing = Ring * 2;
+
+            int upPixelInRing;
+            if (NorthCap == true)
+            {
+                var prop = PixelsCountInRing / 4;
+
+                // from 0
+                var polarCapSector = (PixelInRing - 1) / prop;
+                var propKid = kidsMan.PixelsCountInRing(kidsRing - 1) / 4;
+                upPixelInRing = polarCapSector * propKid + ((PixelInRing - 1) % prop + 1) * 2 - 1;
+            }
+            else // equator belt
+            {
+                var ringFromEquator = Math.Abs((2 * kidsMan.Nside) - kidsRing);
+                var parentRingFromEquator = ringFromEquator / 2;
+                upPixelInRing = PixelInRing * 2
+                                + (parentMan.K > 0 && parentRingFromEquator % 2 == 0 ? -1 : 0);
+            }
+            var up = kidsMan.GetP(kidsRing - 1, upPixelInRing);
+            var coor = kidsMan.GetCenter(up);
+            var neighbors = new NeighborManager(kidsMan);
+            var left = neighbors.SouthWest(coor);
+            var right = neighbors.SouthEast(coor);
+            var down = neighbors.SouthWest(kidsMan.GetCenter(right));
+
+            if (X != -180 &&
+                (kidsMan.GetCenter(left).X > X ||
+                 kidsMan.GetCenter(right).X < X))
+            {
+                // error
+            }
+            if ( // Math.Abs(kidsMan.GetCenter(NorthCap == false ? up : down).X - X) > .000001 || 
+                kidsMan.GetCenter(left).Y != Y || kidsMan.GetCenter(right).Y != Y)
+            {
+                // error
+            }
             return new[]
             {
-                kidsMan.GetP(
-                    kidsRing - 1,
-                    kidsPixel + SpecialPixelInRing(kidsMan, kidsRing - 1) + koefUp),
-                kidsMan.GetP(
-                    kidsRing, 
-                    kidsPixel + koefMiddle - 1 - (kidsMan.Northcap(kidsRing).HasValue ? 0 : koef)),
-                kidsMan.GetP(
-                    kidsRing,
-                    kidsPixel + koefMiddle - (kidsMan.Northcap(kidsRing).HasValue ? 0 : koef)),
-                kidsMan.GetP(
-                    kidsRing + 1,
-                    kidsPixel + SpecialPixelInRing(kidsMan, kidsRing + 1, false) + koefDown),
+                up, right, left, down
             };
-        }
-
-        private int SpecialPixelInRing(HealpixManager kidsMan, int kidsRing, bool up = true)
-        {
-            var polarCapSector = (PixelInRing - 1) / (PixelsCountInRing / 4);
-            var ringFromEquator = Math.Abs((2 * kidsMan.Nside) - kidsRing);
-            var equatorEdge = ringFromEquator >= kidsMan.Nside / 2 ? (-1) : 0;
-            var inRing = kidsMan.Northcap(kidsRing).HasValue ? polarCapSector : equatorEdge;
-
-            if (kidsRing > kidsMan.RingsCount / 2)
-                up ^= true;
-            return up ? -1 - inRing : inRing;
         }
     }
 }

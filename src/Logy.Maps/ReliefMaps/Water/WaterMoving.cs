@@ -230,7 +230,7 @@ namespace Logy.Maps.ReliefMaps.Water
         public void CheckOcean()
         {
             _oceanVolume = GetOceanVolume();
-            if (K > 1 /* for MetricType.Middle and > 3 for others */)
+            if (K > 3 /* sometimes for MetricType.Middle > 1 */)
             {
                 Assert.GreaterOrEqual(_oceanVolume, 1329);
                 Assert.LessOrEqual(_oceanVolume, MaxOceanVolume);

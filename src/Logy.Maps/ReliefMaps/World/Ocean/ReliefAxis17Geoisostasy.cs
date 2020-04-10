@@ -56,7 +56,7 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
             {
                 var parentBasin = bundle.Basins[parentK][p];
                 var volumeForKid = parentBasin.WaterHeight;
-                foreach (var kidP in parent.HealpixManager.GetCenter(p).GetKids(HealpixManager))
+                foreach (var kidP in parent.HealpixManager.GetCenter(p).GetKids(parent.HealpixManager, HealpixManager))
                 {
                     Data.PixMan.Pixels[kidP].Hoq = volumeForKid - Data.PixMan.Pixels[kidP].Depth.Value;
                 }

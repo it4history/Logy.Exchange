@@ -40,18 +40,19 @@ namespace Logy.Maps.Projections.Healpix.Dem.Tests
         {
             var man = new HealDemManager(2);
             man.CalcDem(1, 0);
-            foreach (var basin in man.Basins)
+            foreach (var basin in man.GetNewBasins())
             {
                 Assert.AreEqual(1, basin.ParentP);
             }
 
             man.CalcDem(1, 1);
-            Assert.AreEqual(6, man.Basins[0].ParentP);
-            Assert.AreEqual(1, man.Basins[2].ParentP);
-            Assert.AreEqual(6, man.Basins[4].ParentP);
-            Assert.AreEqual(1, man.Basins[6].ParentP);
-            Assert.AreEqual(14, man.Basins[8].ParentP);
-            Assert.AreEqual(7, man.Basins[10].ParentP);
+            var basins = man.GetNewBasins();
+            Assert.AreEqual(6, basins[0].ParentP);
+            Assert.AreEqual(1, basins[2].ParentP);
+            Assert.AreEqual(6, basins[4].ParentP);
+            Assert.AreEqual(1, basins[6].ParentP);
+            Assert.AreEqual(14, basins[8].ParentP);
+            Assert.AreEqual(7, basins[10].ParentP);
         }
 
         [Test]
@@ -70,11 +71,11 @@ namespace Logy.Maps.Projections.Healpix.Dem.Tests
             var man = new HealDemManager(2);
             man.CalcDem(1);
 
-            var kidsData = new DemData(man.KidsMan, man.Basins);
+            var kidsData = new DemData(man.KidsMan, man.GetNewBasins());
             kidsData.Init();
             Assert.AreEqual(
                 new Plane(0.5716, 0.495, 0.6544, -6252278.4642)
-//                new Plane(0.571, 0.5452, 0.6137, -6243679.19051)
+                //for other order in _dem for u      new Plane(0.571, 0.5452, 0.6137, -6243679.1905)
                     .ToString(),
                 man.GetCurvatureCenter(kidsData).ToString());
         }

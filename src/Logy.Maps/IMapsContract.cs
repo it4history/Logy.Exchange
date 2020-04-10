@@ -23,19 +23,20 @@ namespace Logy.Maps
         List<HealCoor> Earth(string to, string locale);
 
         [OperationContract]
-        [WebInvoke(Method = "GET", UriTemplate = "Healpix{k}", ResponseFormat = WebMessageFormat.Json)]
-        List<HealCoor> Healpix(string k);
+        [WebInvoke(Method = "GET", UriTemplate = "Healpix/{k}/{parameterInAltitude=null}", ResponseFormat = WebMessageFormat.Json)]
+        List<HealCoor> Healpix(string k, string parameterInAltitude);
 
         /// <summary>
         /// returns Dem for datum
         /// </summary>
-        /// <param name="datum">name from http://logy.gq/lw/Category:Datums</param>
-        /// <param name="k">resolution</param>
+        /// <param name="datum">name from http://logy.gq/lw/Category:Datums
+        /// or from Logy.Maps.Geometry.Datum static properties</param>
+        /// <param name="k">kids resolution</param>
         /// <param name="parentK">to filter datum by parent pixels</param>
         /// <param name="parentP">P of parent basin or list of P separated by commas</param>
         /// <returns></returns>
         [OperationContract]
-        [WebInvoke(Method = "GET", UriTemplate = "Dem_{datum}_{k}_{parentK}_{parentP}", ResponseFormat = WebMessageFormat.Json)]
+        [WebInvoke(Method = "GET", UriTemplate = "Dem/{datum}/{k}/{parentK=null}/{parentP=null}", ResponseFormat = WebMessageFormat.Json)]
         HealDem Dem(string datum, string k, string parentK, string parentP);
     }
 }

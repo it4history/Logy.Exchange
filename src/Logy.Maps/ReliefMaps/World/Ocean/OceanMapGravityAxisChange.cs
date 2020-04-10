@@ -87,7 +87,7 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
             var parentMan = new HealpixManager(K - 1);
             var parentBasins = _algo.DesiredDatum.Gravity.LoadCorrection(parentMan.K).Basins[parentMan.K];
             for (var p = 0; p < parentBasins.Length; p++)
-                foreach (var kidP in parentMan.GetCenter(p).GetKids(HealpixManager))
+                foreach (var kidP in parentMan.GetCenter(p).GetKids(parentMan, HealpixManager))
                     Data.PixMan.Pixels[kidP].Hoq = parentBasins[p].Hoq;
 
             _algo.SetDatum(_algo.DesiredDatum, 0);

@@ -77,7 +77,7 @@ namespace Logy.Maps.ReliefMaps.Basemap
                 }
             }
 
-            if (reliefFromDb && WithRelief && PixMan.Pixels.Length == HealpixManager.Npix)
+            if (reliefFromDb && WithRelief && PixMan.Full)
             {
                 CheckOcean();
             }

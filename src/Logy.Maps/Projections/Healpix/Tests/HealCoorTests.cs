@@ -48,50 +48,51 @@ namespace Logy.Maps.Projections.Healpix.Tests
         {
             var man = new HealpixManager(0);
             var kidsMan = new HealpixManager(1);
-            Assert.AreEqual(new[] { 0, 4, 5, 12 }, man.GetCenter(0).GetKids(kidsMan));
-            Assert.AreEqual(new[] { 1, 6, 7, 14 }, man.GetCenter(1).GetKids(kidsMan));
-            Assert.AreEqual(new[] { 2, 8, 9, 16 }, man.GetCenter(2).GetKids(kidsMan));
-            Assert.AreEqual(new[] { 3, 10, 11, 18 }, man.GetCenter(3).GetKids(kidsMan));
-            Assert.AreEqual(new[] { 13, 21, 22, 29 }, man.GetCenter(4).GetKids(kidsMan));
-            Assert.AreEqual(new[] { 15, 23, 24, 31 }, man.GetCenter(5).GetKids(kidsMan));
-            Assert.AreEqual(new[] { 17, 25, 26, 33 }, man.GetCenter(6).GetKids(kidsMan));
-            Assert.AreEqual(new[] { 28, 36, 37, 44 }, man.GetCenter(8).GetKids(kidsMan));
-            Assert.AreEqual(new[] { 34, 42, 43, 47 }, man.GetCenter(11).GetKids(kidsMan));
+            Assert.AreEqual(new[] { 0, 4, 5, 12 }, man.GetCenter(0).GetKids(man, kidsMan));
+            Assert.AreEqual(new[] { 1, 6, 7, 14 }, man.GetCenter(1).GetKids(man, kidsMan));
+            Assert.AreEqual(new[] { 2, 8, 9, 16 }, man.GetCenter(2).GetKids(man, kidsMan));
+            Assert.AreEqual(new[] { 3, 10, 11, 18 }, man.GetCenter(3).GetKids(man, kidsMan));
+            Assert.AreEqual(new[] { 13, 21, 22, 29 }, man.GetCenter(4).GetKids(man, kidsMan));
+            Assert.AreEqual(new[] { 15, 23, 24, 31 }, man.GetCenter(5).GetKids(man, kidsMan));
+            Assert.AreEqual(new[] { 17, 25, 26, 33 }, man.GetCenter(6).GetKids(man, kidsMan));
+            Assert.AreEqual(new[] { 28, 36, 37, 44 }, man.GetCenter(8).GetKids(man, kidsMan));
+            Assert.AreEqual(new[] { 34, 42, 43, 47 }, man.GetCenter(11).GetKids(man, kidsMan));
 
             man = new HealpixManager(1);
             kidsMan = new HealpixManager(2);
-            Assert.AreEqual(new[] { 0, 4, 5, 13 }, man.GetCenter(0).GetKids(kidsMan));
-            Assert.AreEqual(new[] { 1, 6, 7, 16 }, man.GetCenter(1).GetKids(kidsMan));
-            Assert.AreEqual(new[] { 2, 8, 9, 19 }, man.GetCenter(2).GetKids(kidsMan));
-            Assert.AreEqual(new[] { 3, 10, 11, 22 }, man.GetCenter(3).GetKids(kidsMan));
-            Assert.AreEqual(new[] { 12, 24, 25, 40 }, man.GetCenter(4).GetKids(kidsMan));
-            Assert.AreEqual(new[] { 14, 26, 27, 42 }, man.GetCenter(5).GetKids(kidsMan));
-            Assert.AreEqual(new[] { 15, 28, 29, 44 }, man.GetCenter(6).GetKids(kidsMan));
-            Assert.AreEqual(new[] { 18, 32, 33, 48 }, man.GetCenter(8).GetKids(kidsMan));
+            Assert.AreEqual(new[] { 0, 4, 5, 13 }, man.GetCenter(0).GetKids(man, kidsMan));
+            Assert.AreEqual(new[] { 1, 6, 7, 16 }, man.GetCenter(1).GetKids(man, kidsMan));
+            Assert.AreEqual(new[] { 2, 8, 9, 19 }, man.GetCenter(2).GetKids(man, kidsMan));
+            Assert.AreEqual(new[] { 3, 10, 11, 22 }, man.GetCenter(3).GetKids(man, kidsMan));
+            Assert.AreEqual(new[] { 12, 24, 25, 40 }, man.GetCenter(4).GetKids(man, kidsMan));
+            Assert.AreEqual(new[] { 14, 26, 27, 42 }, man.GetCenter(5).GetKids(man, kidsMan));
+            Assert.AreEqual(new[] { 15, 28, 29, 44 }, man.GetCenter(6).GetKids(man, kidsMan));
+            Assert.AreEqual(new[] { 17, 30, 31, 46 }, man.GetCenter(7).GetKids(man, kidsMan));
+            Assert.AreEqual(new[] { 18, 32, 33, 48 }, man.GetCenter(8).GetKids(man, kidsMan));
 
-            Assert.AreEqual(new[] { 43, 59, 60, 75 }, man.GetCenter(13).GetKids(kidsMan));
-            Assert.AreEqual(new[] { 45, 61, 62, 77 }, man.GetCenter(14).GetKids(kidsMan));
-            Assert.AreEqual(new[] { 47, 63, 64, 79 }, man.GetCenter(15).GetKids(kidsMan));
-            Assert.AreEqual(new[] { 78, 94, 95, 110 }, man.GetCenter(23).GetKids(kidsMan));
-            Assert.AreEqual(new[] { 80, 96, 97, 112 }, man.GetCenter(24).GetKids(kidsMan));
-            Assert.AreEqual(new[] { 109, 125, 126, 141 }, man.GetCenter(30).GetKids(kidsMan));
-            Assert.AreEqual(new[] { 111, 127, 128, 143 }, man.GetCenter(31).GetKids(kidsMan));
+            Assert.AreEqual(new[] { 43, 59, 60, 75 }, man.GetCenter(13).GetKids(man, kidsMan));
+            Assert.AreEqual(new[] { 45, 61, 62, 77 }, man.GetCenter(14).GetKids(man, kidsMan));
+            Assert.AreEqual(new[] { 47, 63, 64, 79 }, man.GetCenter(15).GetKids(man, kidsMan));
+            Assert.AreEqual(new[] { 78, 94, 95, 110 }, man.GetCenter(23).GetKids(man, kidsMan));
+            Assert.AreEqual(new[] { 80, 96, 97, 112 }, man.GetCenter(24).GetKids(man, kidsMan));
+            Assert.AreEqual(new[] { 109, 125, 126, 141 }, man.GetCenter(30).GetKids(man, kidsMan));
+            Assert.AreEqual(new[] { 111, 127, 128, 143 }, man.GetCenter(31).GetKids(man, kidsMan));
 
-            Assert.AreEqual(new[] { 169, 180, 181, 188 }, man.GetCenter(44).GetKids(kidsMan));
+            Assert.AreEqual(new[] { 169, 180, 181, 188 }, man.GetCenter(44).GetKids(man, kidsMan));
 
             man = new HealpixManager(5);
             kidsMan = new HealpixManager(6);
-            var kids = man.GetCenter(2159).GetKids(kidsMan);
+            var kids = man.GetCenter(2159).GetKids(man, kidsMan);
             foreach (var kid in kids)
             {
                 Console.WriteLine(kidsMan.GetCenter(kid));
             }
             Assert.AreEqual(new[] { 8415, 8671, 8672, 8927 }, kids);
 
-            kids = man.GetCenter(2288).GetKids(kidsMan);
+            kids = man.GetCenter(2288).GetKids(man, kidsMan);
             Assert.AreEqual(new[] { 8928, 9184, 9185, 9440 }, kids);
 
-            kids = man.GetCenter(2287).GetKids(kidsMan);
+            kids = man.GetCenter(2287).GetKids(man, kidsMan);
             Assert.AreEqual(new[] { 8926, 9182, 9183, 9438 }, kids);
         }
 
@@ -105,7 +106,7 @@ namespace Logy.Maps.Projections.Healpix.Tests
                 for (var p = 0; p < man.Npix; p++)
                 {
                     var parent = man.GetCenter(p);
-                    foreach (var kidP in parent.GetKids(kidsMan))
+                    foreach (var kidP in parent.GetKids(man, kidsMan))
                     {
                         Assert.Greater(man.ThetaPix, kidsMan.GetCenter(kidP).DistanceTo(parent));
                     }
@@ -113,6 +114,7 @@ namespace Logy.Maps.Projections.Healpix.Tests
             }
         }
 
+        //[Test]
         public void GetParent()
         {
             var man = new HealpixManager(1);
