@@ -5,7 +5,7 @@ using NUnit.Framework;
 namespace Logy.Maps.ReliefMaps.World.Ocean
 {
     /// <summary>
-    /// http://hist.tk/ory/Карта_сдвига_полюса_с_учётом_геоизостазии
+    /// http://hist.tk/ory/Сдвиг_полюса_с_учётом_геоизостазии
     /// 
     /// for performance better to run AxisChange() at k6 till 4000, then MoreAccurate(), 
     ///  and afterwards Smoothing() with k7-9 and finally MoreAccurate()

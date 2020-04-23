@@ -1,5 +1,6 @@
 using Logy.Maps.Exchange;
 using Logy.Maps.Geometry;
+using Logy.Maps.Metrics;
 using Logy.Maps.Projections.Healpix;
 using NUnit.Framework;
 
@@ -24,7 +25,7 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
             var newX = datum.X; // 0
             _algo = new ShiftAxis(new OceanData(HealpixManager)
             {
-                /// MetricType = MetricType.MeanEdge
+                MetricType = MetricType.RadiusIntersection
                 /*
                 Visual = (basin, moved) =>
                 {

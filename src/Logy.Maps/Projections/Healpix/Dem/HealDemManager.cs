@@ -11,7 +11,7 @@ namespace Logy.Maps.Projections.Healpix.Dem
     {
         private readonly List<HealpixManager> _levels = new List<HealpixManager>();
         /// <summary>
-        /// p indices and ParentP (because HealpixManager.GetParent is not implemented)
+        /// p indices and ParentP (because HealpixManager.GetParent is not implemented yet)
         /// v - row from NE to SW, u - column from SE to NW 
         /// !!! attention !!! u is ordered from right to left
         /// filled in CalcDem()

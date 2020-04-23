@@ -9,7 +9,7 @@ namespace Logy.Maps.ReliefMaps.Water
     public class WaterModel
     {
         public const double Koef = .25;
-        public const double FluidityStable = .4;
+        public const double FluidityStable = .4; // for MetricType.RadiusIntersection
 
         protected const double ThreshholdReliability = 2.2;
 

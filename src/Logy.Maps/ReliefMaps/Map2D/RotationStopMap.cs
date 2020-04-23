@@ -4,6 +4,7 @@ using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using Logy.Maps.Exchange;
+using Logy.Maps.Metrics;
 using Logy.Maps.Projections;
 using Logy.Maps.ReliefMaps.Basemap;
 using Logy.Maps.ReliefMaps.Water;
@@ -227,6 +228,9 @@ namespace Logy.Maps.ReliefMaps.Map2D
         protected void HighFluidity(bool risky = false)
         {
             Data.Water.Fluidity = risky ? 1 : .95;
+            if (Data.MetricType == MetricType.RadiusIntersection)
+                Data.Water.Fluidity *= .5;
+
             Data.Water.Threshhold *= risky ? .01 : .1; /// for k6 standard Threshhold is 2.4m
         }
 
