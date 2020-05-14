@@ -58,13 +58,13 @@ namespace Logy.Maps.Projections.Healpix
         /// <summary>
         /// from 1 to HealpixManager.RingsCount
         /// </summary>
-        [DataMember]
+        //[DataMember] needed for MwService.Healpix
         public int Ring { get; set; }
 
         /// <summary>
         /// from 1
         /// </summary>
-        [DataMember]
+        //[DataMember] needed for MwService.Healpix 
         public int PixelInRing { get; set; }
 
         #region cached in OnInit

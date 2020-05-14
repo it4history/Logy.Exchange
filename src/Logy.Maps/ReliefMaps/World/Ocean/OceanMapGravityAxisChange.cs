@@ -10,7 +10,7 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
     {
         private ShiftAxis _algo;
 
-        public OceanMapGravityAxisChange() : this(7)
+        public OceanMapGravityAxisChange() : this(5)
         {
         }
         public OceanMapGravityAxisChange(int k) : base(k)
@@ -25,7 +25,7 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
             var newX = datum.X; // 0
             _algo = new ShiftAxis(new OceanData(HealpixManager)
             {
-                MetricType = MetricType.RadiusIntersection
+                // MetricType = MetricType.RadiusIntersection
                 /*
                 Visual = (basin, moved) =>
                 {

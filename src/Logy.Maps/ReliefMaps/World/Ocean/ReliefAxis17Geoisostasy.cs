@@ -1,5 +1,6 @@
 using System.Drawing.Imaging;
 using Logy.Maps.Exchange;
+using Logy.Maps.Metrics;
 using NUnit.Framework;
 
 namespace Logy.Maps.ReliefMaps.World.Ocean
@@ -12,7 +13,7 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
     /// </summary>
     public class ReliefAxis17Geoisostasy : ReliefMap
     {
-        public ReliefAxis17Geoisostasy() : this(9) // till 9
+        public ReliefAxis17Geoisostasy() : this(6) // till 9
         {
         }
 
@@ -27,6 +28,7 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
         {
             var algorithm = new ShiftAxis(new OceanData(HealpixManager)
                 {
+
                     WithRelief = true,
                 })
                 { Geoisostasy = true };
@@ -36,7 +38,8 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
         [Test]
         public void AxisChange()
         {
-            SetAlgorithm();
+            InitDataWithJson(); // from beginning SetAlgorithm();
+            //Data.MetricType = MetricType.RadiusIntersection; HighFluidity(true);
 
             ShiftAxisBalanced(10000);
         }
