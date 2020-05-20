@@ -85,6 +85,7 @@ namespace Logy.Maps.ReliefMaps.Basemap
         public UnitVector3D RadiusLine => new Line3D(O3, Qgeiod).Direction;
 
         /// <summary>
+        /// transposed rotation matrix 
         /// what about S_sphere ?
         /// </summary>
         public Matrix<double> Matrix { get; set; }
@@ -229,10 +230,14 @@ namespace Logy.Maps.ReliefMaps.Basemap
 
         public override void OnInit(HealpixManager man)
         {
-            // todo why angle with opposite sign?
+            /*Matrix = Matrix3D.RotationAroundYAxis(new Angle(Phi, AngleUnit.Radians))
+                     * Matrix3D.RotationAroundZAxis(new Angle(-Lambda.Value, AngleUnit.Radians));//*/
+
+            // angles with opposite sign because Matrix3D.RotationAroundXAxis needs counterclockwise direction
             var rotation = Matrix3D.RotationAroundYAxis(new Angle(-Phi, AngleUnit.Radians))
                            * Matrix3D.RotationAroundZAxis(new Angle(Lambda.Value, AngleUnit.Radians));
-            Matrix = rotation.Transpose();
+            Matrix = rotation;//.Transpose();//*/
+
             base.OnInit(man);
             LambdaSin = Math.Sin(Lambda.Value);
             LambdaMinusPi2Sin = Math.Sin(Lambda.Value - (Math.PI / 2));

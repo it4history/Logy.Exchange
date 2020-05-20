@@ -142,7 +142,7 @@ Each grid file contains 10,800 x 21,600 = 233,280,000 records */
         {
             PixelsCountInRing = man.PixelsCountInRing(Ring);
             NorthCap = man.Northcap(Ring);
-            S_sphere = new Plane(Matrixes.ToCartesian(this));
+            S_sphere = new Plane(Utils3D.Cartesian(this));
         }
 
         public HealCoor Symmetric(HealpixManager man)

@@ -1,6 +1,5 @@
 using System.Drawing.Imaging;
 using Logy.Maps.Exchange;
-using Logy.Maps.Metrics;
 using NUnit.Framework;
 
 namespace Logy.Maps.ReliefMaps.World.Ocean
@@ -13,7 +12,7 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
     /// </summary>
     public class ReliefAxis17Geoisostasy : ReliefMap
     {
-        public ReliefAxis17Geoisostasy() : this(6) // till 9
+        public ReliefAxis17Geoisostasy() : this(5) // till 9
         {
         }
 
@@ -22,13 +21,10 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
             // YResolution = 4;
         }
 
-        // protected override ImageFormat ImageFormat => ImageFormat.Bmp;
-
         public void SetAlgorithm()
         {
             var algorithm = new ShiftAxis(new OceanData(HealpixManager)
                 {
-
                     WithRelief = true,
                 })
                 { Geoisostasy = true };
@@ -38,42 +34,17 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
         [Test]
         public void AxisChange()
         {
-            InitDataWithJson(); // from beginning SetAlgorithm();
-            //Data.MetricType = MetricType.RadiusIntersection; HighFluidity(true);
+            SetAlgorithm();
 
             ShiftAxisBalanced(10000);
         }
 
-        /// <summary>
-        /// smoothing from previously calculated json at lower resolution 6
-        /// </summary>
         [Test]
-        public void Smoothing()
+        public void SmoothingTest()
         {
             SetAlgorithm();
 
-            var parentK = K - 1;
-            var parent = new ReliefAxis17Geoisostasy(parentK);
-            var bundle = Bundle<Basin3>.DeserializeFile(FindJson(parent.Dir));
-            for (var p = 0; p < bundle.Basins[parentK].Length; p++)
-            {
-                var parentBasin = bundle.Basins[parentK][p];
-                var volumeForKid = parentBasin.WaterHeight;
-                foreach (var kidP in parent.HealpixManager.GetCenter(p).GetKids(parent.HealpixManager, HealpixManager))
-                {
-                    Data.PixMan.Pixels[kidP].Hoq = volumeForKid - Data.PixMan.Pixels[kidP].Depth.Value;
-                }
-            }
-            Bundle.Deserialized = bundle.Deserialized;
-            var parentAlgo = (ShiftAxis)bundle.Algorithm;
-            Data.Frame = parentAlgo.DataAbstract.Frame;
-            Data.Time = parentAlgo.DataAbstract.Time;
-
-            /// let TimeStep be 1 at beginning
-
-            var algorithm = (ShiftAxis)Bundle.Algorithm;
-            algorithm.SetGeoisostasyDatum(parentAlgo); 
-            HighFluidity();
+            Smoothing();
 
             // todo problem with CorrectionBundle workarounded by fast shift and later MoreAccurate()
             ShiftAxis(10060);

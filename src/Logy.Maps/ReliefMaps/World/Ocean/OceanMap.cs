@@ -10,7 +10,7 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
 {
     public class OceanMap : RotationStopMap<Basin3>
     {
-        public OceanMap() : this(6)
+        public OceanMap() : this(5)
         {
         }
         public OceanMap(int k) : base(k)
@@ -20,7 +20,7 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
         [Test]
         public void Water_HighBasin()
         {
-            var algorithm = new ShiftAxis(new OceanData(HealpixManager, -20d /*, 200d*/));
+            var algorithm = new ShiftAxis(new OceanData(HealpixManager/*, -20d /*, 200d*/));
             InitData(algorithm);
 
             var h = 500d;
@@ -56,7 +56,7 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
             var basin = Data.PixMan.Pixels[p];
             algorithm.SetDatum(new Datum { PoleBasin = basin });
 
-            basin.Delta_g_meridian = -.2;
+            basin.Delta_g_traverse = -.2;
 
             p = HealpixManager.GetP(HealpixManager.Nside * 2, HealpixManager.Nside * 2);
             Data.PixMan.Pixels[p].Delta_g_meridian = .2;
@@ -86,14 +86,15 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
             {
                 // SamePolesAndEquatorGravitation = true,
                 // NoIntegrationFinish = true,
-                Visual = (basin, moved) => (basin.GVpure * 1000) - 9822
-                /// basin.r - Earth2014Manager.Radius2Add
+                // Visual = (basin, moved) => basin.Delta_g_meridian
+                // (basin.GVpure * 1000) - 9822
+                // basin.RadiusOfGeoid - Earth2014Manager.Radius2Add
             };
             InitData(new ShiftAxis(data)
             {
-                // DesiredDatum = new Datum { X = 0, Y = 45 /* 90 */ },
+                DesiredDatum = Datum.Greenland17, // on 100frame: 2006..1947m and for issues/3: 1730..1563m 
             });
-            ShiftAxis(); 
+            ShiftAxis(100); 
         }
 
         [Test]

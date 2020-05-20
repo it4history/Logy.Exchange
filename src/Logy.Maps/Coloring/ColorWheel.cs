@@ -107,7 +107,8 @@ namespace Logy.Maps.Coloring
         /// 0 - north
         /// Pi/2 - east
         /// </summary>
-        /// <param name="meridian">in radian</param>
+        /// <param name="meridian">positive for North, in radians</param>
+        /// <param name="traverse">positive for East, in radians</param>
         /// <returns>module and angle in gedrees * 0.000001</returns>
         public static double SetAngle(double meridian, double traverse, double module = 0)
         {

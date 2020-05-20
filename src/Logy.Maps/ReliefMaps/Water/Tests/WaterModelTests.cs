@@ -46,6 +46,8 @@ namespace Logy.Maps.ReliefMaps.Water.Tests
             Assert.AreEqual(.4625, new WaterModel(new HealpixManager(8)).ThreshholdNotReliable);
             Assert.AreEqual(.23125, new WaterModel(new HealpixManager(9)).ThreshholdNotReliable);
 
+            Assert.AreEqual(4.8, new WaterModel(new HealpixManager(5)).Threshhold, .01);
+            Assert.AreEqual(1.2, new WaterModel(new HealpixManager(7)).Threshhold, .01);
             Assert.AreEqual(.3, new WaterModel(new HealpixManager(9)).Threshhold, .01);
         }
 

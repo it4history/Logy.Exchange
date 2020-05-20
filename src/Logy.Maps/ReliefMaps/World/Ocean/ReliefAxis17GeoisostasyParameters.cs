@@ -2,26 +2,28 @@
 using System;
 using System.Drawing.Imaging;
 using Logy.Maps.Exchange;
+using Logy.Maps.Geometry;
 using NUnit.Framework;
 
 namespace Logy.Maps.ReliefMaps.World.Ocean
 {
-    public class ReliefAxis17Parameters : OceanMap
+    public class ReliefAxis17GeoisostasyParameters : OceanMap
     {
-        public ReliefAxis17Parameters() : base(5)
+        public ReliefAxis17GeoisostasyParameters() : base(5)
         {
         }
 
         public static Func<Basin3, double, double?> Visual { get; set; } = (basin, moved) =>
             !basin.HasWater()
-                ? (double?)null
-                : Math.Sqrt(((basin.Delta_g_meridian * basin.Delta_g_meridian)
-                             + (basin.Delta_g_traverse * basin.Delta_g_traverse)) * 1000);
-            /*              basin.RadiusOfGeoid - Ellipsoid.MeanRadius;
-                            Math.Sqrt(basin.GHpure * basin.GHpure + basin.GHpureTraverse * basin.GHpureTraverse) * 1000;
-                            basin.Delta_g_traverse * 1000;
-                            basin.GHpureTraverse * 1000;
-                            moved;*/
+                ? (double?) null
+                :
+               Math.Sqrt(((basin.Delta_g_meridian * basin.Delta_g_meridian)
+                + (basin.Delta_g_traverse * basin.Delta_g_traverse)) * 1000); //*/
+               //basin.RadiusOfGeoid - Ellipsoid.MeanRadius;
+               //Math.Sqrt(basin.GHpure * basin.GHpure + basin.GHpureTraverse * basin.GHpureTraverse) * 1000;
+               //basin.Delta_g_traverse * 1000;
+               //basin.GHpureTraverse * 1000;
+               //moved;*/
 
         /// <summary>
         /// for convertion to gif
@@ -39,7 +41,7 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
 
             InitData(new ShiftAxis(data) { Geoisostasy = true });
 
-            ShiftAxis(Data.Frame + 1); /// produces 1 file
+            ShiftAxis(1); /// produces 2 files: before and after shift
 
             /*var map = new ReliefAxis17Geoisostasy(K);
 

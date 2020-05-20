@@ -171,12 +171,13 @@ namespace Logy.Maps.Exchange
                                 vartheta,
                                 BasinAbstract.GoodDeflection(vartheta, delta_gq));
                             var correction = datum.CorrectionBundle;
+                            /* it was mistake of issues/3
                             if (correction != null)
                             {
                                 basin.RadiusOfGeoid += correction.Basins[correction.Algorithm.DataAbstract.K]
                                     [correction.Algorithm.DataAbstract.K == DataAbstract.K ? basin.P : basin.ParentP]
                                     .Hoq;
-                            }
+                            }//*/
 
                             // GHpure projections
                             /*was
@@ -201,7 +202,7 @@ namespace Logy.Maps.Exchange
                                 axis_sphere = axis_sphere.Negate();
                             if (vartheta < 0)
                                 axis_sphere = axis_sphere.Negate();
-                            var gh_sphere = axis_sphere.ScaleBy(gh) * basin.Matrix;
+                            var gh_sphere = axis_sphere.ScaleBy(gh) * basin.Matrix.Transpose(); /* not rotation, but change of reference frame */
                             basin.GHpure = Math.Sign(basin.Vartheta) * gh_sphere[2];
                             basin.GHpureTraverse = gh_sphere[1]; //*/
                         }

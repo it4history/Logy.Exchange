@@ -90,8 +90,6 @@
     <Compile Include="Geometry\Utils3D.cs" />
     <Compile Include="Geometry\Datum.cs" />
     <Compile Include="Coloring\Color3.cs" />
-    <Compile Include="Geometry\Matrixes.cs" />
-    <Compile Include="Geometry\Tests\MatrixesTests.cs" />
     <Compile Include="Geometry\Tests\DatumTests.cs" />
     <Compile Include="Geometry\Tests\MathNetPoint3DTests.cs" />
     <Compile Include="Geometry\WanderMaps\PoleSearch1823.cs" />
@@ -136,10 +134,11 @@
     <Compile Include="ReliefMaps\World\From17\ReliefToNormal.cs" />
     <Compile Include="ReliefMaps\World\From17\ReliefToNormalWander.cs" />
     <Compile Include="ReliefMaps\World\Ocean\GeometricDistortion.cs" />
+    <Compile Include="ReliefMaps\World\Ocean\ImpulseBasin.cs" />
     <Compile Include="ReliefMaps\World\Ocean\OceanMapGravityAxisChange.cs" />
     <Compile Include="ReliefMaps\World\Ocean\ReliefAxis17Geoisostasy.cs" />
     <Compile Include="ReliefMaps\World\Ocean\ReliefAxis17Angles.cs" />
-    <Compile Include="ReliefMaps\World\Ocean\ReliefAxis17Parameters.cs" />
+    <Compile Include="ReliefMaps\World\Ocean\ReliefAxis17GeoisostasyParameters.cs" />
     <Compile Include="ReliefMaps\World\Ocean\ReliefParadise.cs" />
     <Compile Include="ReliefMaps\World\Ocean\ReliefParadiseEnd.cs" />
     <Compile Include="ReliefMaps\World\Percentage.cs" />

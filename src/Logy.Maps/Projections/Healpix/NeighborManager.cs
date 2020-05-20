@@ -1,5 +1,6 @@
 ﻿using System;
 using Logy.Maps.Geometry;
+using Logy.Maps.ReliefMaps.Basemap;
 using Logy.Maps.ReliefMaps.World.Ocean;
 using MathNet.Spatial.Euclidean;
 
@@ -145,7 +146,7 @@ namespace Logy.Maps.Projections.Healpix
                     result = sameRingCoor;
                     break;
             }
-            return new Ray3D(Basin3.O3, Matrixes.ToCartesian(result));
+            return new Ray3D(BasinAbstract.O3, Utils3D.Cartesian(result));
         }
 
         public double BoundaryLength(HealCoor basin, Direction to)
@@ -194,8 +195,8 @@ namespace Logy.Maps.Projections.Healpix
             HealCoor sameRingCoor;
             return new[]
             {
-                Matrixes.ToCartesian(BoundaryRays(basin, to, out sameRingCoor)),
-                Matrixes.ToCartesian(sameRingCoor)
+                Utils3D.Cartesian(BoundaryRays(basin, to, out sameRingCoor)),
+                Utils3D.Cartesian(sameRingCoor)
             };
         }
         #endregion

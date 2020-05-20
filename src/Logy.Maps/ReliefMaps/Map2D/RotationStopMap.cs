@@ -72,10 +72,7 @@ namespace Logy.Maps.ReliefMaps.Map2D
             /// throw new ApplicationException("needed json at " + dir);
         }
 
-        /// <summary>
-        /// to start with json, if json absent then start from frame 0
-        /// </summary>
-        /// <param name="json2loadFrame">null to load latest json</param>
+        /// <param name="json2loadFrame">null to load latest json, 0 to start new</param>
         /// <param name="algorithm">null to get algo from json</param>
         public void InitDataWithJson(int? json2loadFrame = null, Algorithm<T> algorithm = null)
         {
@@ -225,6 +222,10 @@ namespace Logy.Maps.ReliefMaps.Map2D
                 timeStepByFrame);
         }
 
+        /// <summary>
+        /// makes http://hist.tk/ory/Искажение_начала_перетекания visible
+        /// </summary>
+        /// <param name="risky"></param>
         protected void HighFluidity(bool risky = false)
         {
             Data.Water.Fluidity = risky ? 1 : .95;

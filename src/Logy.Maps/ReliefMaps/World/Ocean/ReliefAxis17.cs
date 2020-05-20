@@ -10,8 +10,17 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
     /// </summary>
     public class ReliefAxis17 : ReliefMap
     {
-        public ReliefAxis17(int k = 7) : base(k)
+        public ReliefAxis17() : this(7)
         {
+        }
+
+        public ReliefAxis17(int k) : base(k)
+        {
+        }
+
+        public ShiftAxis GetAlgorithm()
+        {
+            return new ShiftAxis(new OceanData(HealpixManager) { WithRelief = true });
         }
 
         [Test]
@@ -23,12 +32,10 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
                 ? null
                 : $"fluidity{fluidity} from2761{metricType}";
 
-            var data = new OceanData(HealpixManager)
-            {
-                WithRelief = true,
-                MetricType = metricType,
-            };
-            InitData(new ShiftAxis(data) { Slow = true }, true);
+            var algo = GetAlgorithm();
+            algo.Data.MetricType = metricType;
+            algo.Slow = true;
+            InitData(algo, true);
 
             Data.Water.Fluidity = fluidity;
 
@@ -41,14 +48,19 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
         [Test]
         public void AxisChange_Sharp()
         {
-            Data = new OceanData(HealpixManager
-                /*, -6000d, null
-                , -1000d, 5000d, true*/)
-            {
-                WithRelief = true,
-            };
+            InitDataWithJson(null, GetAlgorithm());
 
-            ShiftAxis();
+            ShiftAxis(1000);
+        }
+
+        [Test]
+        public void SmoothingTest()
+        {
+            InitData(GetAlgorithm(), true);
+
+            Smoothing();
+
+            ShiftAxis(1100);
         }
     }
 }

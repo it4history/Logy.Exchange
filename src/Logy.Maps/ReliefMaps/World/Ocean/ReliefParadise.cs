@@ -69,7 +69,7 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
         {
             Subdir = "pars";
             InitDataWithJson();
-            ((BasinDataAbstract<Basin3>)Data).Visual = ReliefAxis17Parameters.Visual;
+            ((BasinDataAbstract<Basin3>)Data).Visual = ReliefAxis17GeoisostasyParameters.Visual;
             ShiftAxis(Data.Frame + 1);
         }
 

@@ -1,3 +1,4 @@
+using System;
 using Logy.Maps.Exchange;
 using NUnit.Framework;
 
@@ -33,7 +34,7 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
                     SaveBitmap(frame);
                     return 1;
                 },
-                600);
+                10);
         }
 
         [Test]
@@ -117,6 +118,37 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
                     }
                     return 15;
                 });
+        }
+
+        /// <summary>
+        /// smoothing from previously calculated json at lower resolution 6
+        /// </summary>
+        protected void Smoothing()
+        {
+            // json of parentK is needed and Data with Bundle  must be set (they receive new basins)
+
+            var parentK = K - 1;
+            var parent = (ReliefMap)Activator.CreateInstance(GetType(), parentK);
+            var bundle = Bundle<Basin3>.DeserializeFile(FindJson(parent.Dir));
+            for (var p = 0; p < bundle.Basins[parentK].Length; p++)
+            {
+                var parentBasin = bundle.Basins[parentK][p];
+                var volumeForKid = parentBasin.WaterHeight;
+                foreach (var kidP in parent.HealpixManager.GetCenter(p).GetKids(parent.HealpixManager, HealpixManager))
+                {
+                    Data.PixMan.Pixels[kidP].Hoq = volumeForKid - Data.PixMan.Pixels[kidP].Depth.Value;
+                }
+            }
+            Bundle.Deserialized = bundle.Deserialized;
+            var parentAlgo = (ShiftAxis)bundle.Algorithm;
+            Data.Frame = parentAlgo.DataAbstract.Frame;
+            Data.Time = parentAlgo.DataAbstract.Time;
+
+            /// let TimeStep be 1 at beginning
+
+            var algorithm = (ShiftAxis)Bundle.Algorithm;
+            algorithm.SetGeoisostasyDatum(parentAlgo);
+//?            HighFluidity();
         }
     }
 }

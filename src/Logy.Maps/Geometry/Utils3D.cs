@@ -2,6 +2,7 @@
 using Logy.Maps.ReliefMaps.Basemap;
 using Logy.MwAgent.Sphere;
 using MathNet.Spatial.Euclidean;
+using MathNet.Spatial.Units;
 
 namespace Logy.Maps.Geometry
 {
@@ -11,9 +12,18 @@ namespace Logy.Maps.Geometry
 
         public static UnitVector3D Cartesian(Coor coor)
         {
-            return Matrixes.ToCartesian(coor);
+            if (coor.Y == 90)
+                return BasinAbstract.Oz;
 
-            /* analogy
+            return RotateBySphericCoor(coor.Phi, -coor.Lambda.Value);
+
+            /* analogy:
+            new Point3D(
+            LambdaMinusPi2Sin* qb.X,
+            LambdaSin* qb.X,
+            qb.Y); */
+
+            /* analogy:
             return coor.Y == 90
                 ? Basin3.Oz
                 : Basin3.Oz
@@ -38,6 +48,18 @@ namespace Logy.Maps.Geometry
                 coor.Y = 90 - ray.AngleTo(BasinAbstract.Oz).Degrees;
             }
             return coor.Normalize<T>();
+        }
+
+        public static UnitVector3D RotateBySphericCoor(double zenith, double azimuth)
+        {
+            var normal = BasinAbstract.OxMinus;
+
+            normal = normal.Rotate(
+                new UnitVector3D(0, 1, 0),
+                new Angle(zenith, AngleUnit.Radians));
+            return normal.Rotate(
+                new UnitVector3D(0, 0, 1),
+                new Angle(azimuth, AngleUnit.Radians));
         }
     }
 }

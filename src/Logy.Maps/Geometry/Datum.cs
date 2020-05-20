@@ -74,7 +74,7 @@ namespace Logy.Maps.Geometry
 
         public static double CentrifugalByMatrix(Basin3 b, double a, Line3D axisOrtohonal, out double aTraverse, out double aVertical)
         {
-            var aOnSurface = axisOrtohonal.Direction * b.Matrix;
+            var aOnSurface = axisOrtohonal.Direction * b.Matrix.Transpose(); /* not rotation, but change of reference frame */
             aTraverse = -a * aOnSurface[1];
             aVertical = Math.Abs(a * aOnSurface[0]);
             var aMerid = (b.Vartheta < 0 ? 1 : -1) * a * aOnSurface[2];

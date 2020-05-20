@@ -14,7 +14,7 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
     {
         private BasinDataAbstract<Basin3> _shiftTo;
 
-        public ReliefAxis17Angles() : base(7, LegendType.Hue)
+        public ReliefAxis17Angles() : base(6, LegendType.Hue)
         {
         }
 
@@ -33,7 +33,8 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
         }
 
         /// <summary>
-        /// angles from Datum.Greenland17 to Greenland17 itself but with normal centrifugal axis 
+        /// angles from Datum.Greenland17 to itself but with normal centrifugal axis 
+        /// http://hist.tk/ory/file:ReliefAxis17RadicalAngles.png
         /// </summary>
         [Test]
         public void Angles_ShiftFlood1()
@@ -62,17 +63,19 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
                     return null;
 
                 var basinTo = _shiftTo.PixMan.Pixels[basin.P];
-                var meridian = (Math.Sign(basin.Vartheta) * basin.Delta_g_meridian) -
-                               (Math.Sign(basinTo.Vartheta) * basinTo.Delta_g_meridian);
-                var traverse = basin.Delta_g_traverse - basinTo.Delta_g_traverse;
+                // means: how more water became to flow North after shift
+                var meridianToNorth = -
+                                ((Math.Sign(basinTo.Vartheta) * basin.Delta_g_meridian) -
+                               (Math.Sign(basin.Vartheta) * basinTo.Delta_g_meridian));
+
+                // means: how more water became to flow East after shift
+                var traverse = basinTo.Delta_g_traverse - basin.Delta_g_traverse;
 
                 // Matrix calc is more accurate but since angle is small then the formula here is good too
-                var gradModul = (Math.Sqrt((meridian * meridian) + (traverse * traverse))
+                var gradModul = (Math.Sqrt((meridianToNorth * meridianToNorth) + (traverse * traverse))
                                  / Math.PI) * 180;
 
-                // sign '-' because angle is calculated not from old water to current water
-                // but from old land to current land
-                return ColorWheel.SetAngle(-meridian, -traverse, gradModul);
+                return ColorWheel.SetAngle(meridianToNorth, traverse, gradModul);
             };
 
             Data.Dimension = "degree";

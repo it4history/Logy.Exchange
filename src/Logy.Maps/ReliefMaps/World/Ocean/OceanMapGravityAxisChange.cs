@@ -20,12 +20,13 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
         public override void SetUp()
         {
             base.SetUp();
-            var datum = Datum.Greenland17; // Datum.Strahov48;
-            var newY = datum.Y; // 45, 30, 60
-            var newX = datum.X; // 0
+            var datum = Datum.Greenland17; 
+                //Datum.Normal;
+            var newY = datum.Y; 
+            var newX = datum.X; 
             _algo = new ShiftAxis(new OceanData(HealpixManager)
             {
-                // MetricType = MetricType.RadiusIntersection
+                MetricType = MetricType.Middle
                 /*
                 Visual = (basin, moved) =>
                 {
@@ -64,11 +65,11 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
         [Test]
         public void CorrectionCalculated()
         {
-            InitDataWithJson(null, _algo); 
+            InitDataWithJson(0, _algo); 
 
             _algo.SetDatum(_algo.DesiredDatum, 0);
 
-            HighFluidity();
+            HighFluidity(true);
             Data.DoFrames(
                 (frame) =>
                 {
@@ -83,7 +84,7 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
         public void CorrectionLoadedFromParentResolutionAndCalculated()
         {
             InitData(_algo, true);
-            HighFluidity();
+            HighFluidity(true);
 
             var parentMan = new HealpixManager(K - 1);
             var parentBasins = _algo.DesiredDatum.Gravity.LoadCorrection(parentMan.K).Basins[parentMan.K];
