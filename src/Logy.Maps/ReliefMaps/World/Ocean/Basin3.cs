@@ -92,15 +92,14 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
             {
                 if (_normal == null)
                 {
-                    var normal = OxMinus; 
-
-                    // the Matrixes.ToCartesian() analog in radians
-                    normal = normal.Rotate(
-                        new UnitVector3D(0, 1, 0),
-                        new Angle((Math.Sign(Vartheta) * Delta_g_meridian) + Phi, AngleUnit.Radians));
-                    _normal = normal.Rotate(
-                        new UnitVector3D(0, 0, 1),
-                        new Angle(-Delta_g_traverse - Lambda.Value, AngleUnit.Radians));
+                    _normal = new UnitVector3D(Utils3D.RotateBySphericCoor(
+                                     (Math.Sign(Vartheta) * Delta_g_meridian),
+                                     -Delta_g_traverse)
+                                 * Matrix);
+                    /* error https://github.com/it4history/Logy.Exchange/issues/3 was here:
+                        _normal = Utils3D.RotateBySphericCoor(
+                            (Math.Sign(Vartheta) * Delta_g_meridian) + Phi,
+                            -Delta_g_traverse - Lambda.Value); //*/
                 }
                 return _normal.Value;
             }
@@ -178,8 +177,10 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
         public double[] HtoBase { get; set; }
 
         /// <summary>
-        /// angle, directed to East
-        /// relative to sphere
+        /// Spherical coordinate system
+        /// 
+        /// water goes to East if positive
+        /// -Pi to West .. Pi to East
         /// </summary>
         public double Delta_g_traverse
         {
@@ -193,6 +194,11 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
                 Normal = null;
             }
         }
+        /// <summary>
+        /// Spherical coordinate system
+        /// in North and South hemispheres water goes to equator if positive
+        /// -Pi/2 to North or South .. Pi/2 to equator
+        /// </summary>
         public override double Delta_g_meridian
         {
             get
@@ -300,18 +306,18 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
 
         public override void RecalculateDelta_g(Datum datum = null, bool revert = true)
         {
-            Delta_g_traverse = RecalculateDelta_gCorrectIfDelta_g_traverseZero(datum, false);
-            ///return;
+            /// Delta_g_traverse = RecalculateDelta_gCorrectIfDelta_g_traverseZero(datum, false); return;
 
             double a;
             double aTraverse;
             double aVertical;
             var aMeridian = datum.Centrifugal(this, out a, out aTraverse, out aVertical);
 
+            // fundamental plane is zOy
             var vector = new Vector3D(
-                GVpure - aVertical,
-                GHpureTraverse + aTraverse,
-                /* Math.Sign(Vartheta) * */ GHpure + aMeridian);
+                GVpure - aVertical, /*x*/
+                GHpureTraverse + aTraverse, /*y*/
+                /* Math.Sign(Vartheta) * */ GHpure + aMeridian /*z*/);
             var coor = Utils3D.FromCartesian<Coor>(vector.Normalize());
             Delta_g_meridian = /// Math.Sign(Vartheta) * // Math.PI * .5
                 coor.Phi;
