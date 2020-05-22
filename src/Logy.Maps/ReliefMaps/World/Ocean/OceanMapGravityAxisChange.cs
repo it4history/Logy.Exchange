@@ -10,7 +10,7 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
     {
         private ShiftAxis _algo;
 
-        public OceanMapGravityAxisChange() : this(5)
+        public OceanMapGravityAxisChange() : this(7)
         {
         }
         public OceanMapGravityAxisChange(int k) : base(k)
@@ -21,7 +21,6 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
         {
             base.SetUp();
             var datum = Datum.Greenland17; 
-                //Datum.Normal;
             var newY = datum.Y; 
             var newX = datum.X; 
             _algo = new ShiftAxis(new OceanData(HealpixManager)
@@ -65,19 +64,19 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
         [Test]
         public void CorrectionCalculated()
         {
-            InitDataWithJson(0, _algo); 
+            InitDataWithJson(null, _algo); 
 
             _algo.SetDatum(_algo.DesiredDatum, 0);
 
             HighFluidity(true);
             Data.DoFrames(
-                (frame) =>
+                (frame) => 
                 {
                     Draw();
                     SaveBitmap(frame);
                     return 100;
                 },
-                1000);
+                40);
         }
 
         [Test]
@@ -87,7 +86,8 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
             HighFluidity(true);
 
             var parentMan = new HealpixManager(K - 1);
-            var parentBasins = _algo.DesiredDatum.Gravity.LoadCorrection(parentMan.K).Basins[parentMan.K];
+            var parentBundle = _algo.DesiredDatum.Gravity.LoadCorrection(parentMan.K);
+            var parentBasins = parentBundle.Basins[parentMan.K];
             for (var p = 0; p < parentBasins.Length; p++)
                 foreach (var kidP in parentMan.GetCenter(p).GetKids(parentMan, HealpixManager))
                     Data.PixMan.Pixels[kidP].Hoq = parentBasins[p].Hoq;
@@ -99,9 +99,9 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
                 {
                     Draw();
                     SaveBitmap(frame);
-                    return 10;
+                    return 100;
                 },
-                10);
+                parentBundle.Algorithm.DataAbstract.Frame + 10);
         }
     }
 }

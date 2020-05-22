@@ -1,5 +1,4 @@
-﻿#if DEBUG
-using Logy.Maps.Exchange;
+﻿using Logy.Maps.Exchange;
 using Logy.Maps.Geometry;
 using Logy.Maps.Metrics.Tests;
 using Logy.Maps.Projections.Healpix;
@@ -20,8 +19,11 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
         [Test]
         public void Water_HighBasin()
         {
+            Subdir = "HighBasin";
             var algorithm = new ShiftAxis(new OceanData(HealpixManager/*, -20d /*, 200d*/));
-            InitData(algorithm);
+            InitDataWithJson(0, algorithm);
+            HighFluidity();
+            Data.Water.Threshhold *= .25;
 
             var h = 500d;
             var p = HealpixManager.GetP(HealpixManager.Nside + 5, HealpixManager.Nside * 2);
@@ -40,7 +42,7 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
                     SaveBitmap(frame);
                     return 1; /// 240 for k8, 150 for k7, 100 for k6
                 },
-                20);
+                K == 5 ? 20 : 100);
         }
 
         /// <summary>
@@ -172,4 +174,3 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
         }
     }
 }
-#endif

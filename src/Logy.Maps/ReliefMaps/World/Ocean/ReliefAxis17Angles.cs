@@ -12,8 +12,6 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
     /// </summary>
     public class ReliefAxis17Angles : RotationStopMap<Basin3>
     {
-        private BasinDataAbstract<Basin3> _shiftTo;
-
         public ReliefAxis17Angles() : base(6, LegendType.Hue)
         {
         }
@@ -22,34 +20,34 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
 
         /// <summary>
         /// angles from Datum.Greenland17 to Datum.Normal
+        /// http://hist.tk/ory/file:ReliefAxis17GeoisostasyAngles.png
         /// </summary>
         [Test]
         public void Angles_Geoisostasy()
         {
-            _shiftTo = new BasinDataAbstract<Basin3>(HealpixManager);
-            _shiftTo.Init();
+            var shiftTo = new BasinDataAbstract<Basin3>(HealpixManager);
+            shiftTo.Init();
 
-            Angles();
+            Angles(shiftTo);
         }
 
         /// <summary>
-        /// angles from Datum.Greenland17 to itself but with normal centrifugal axis 
+        /// angles from Datum.Greenland17 to itself but with centrifugal axis of Datum.Normal
         /// http://hist.tk/ory/file:ReliefAxis17RadicalAngles.png
         /// </summary>
         [Test]
-        public void Angles_ShiftFlood1()
+        public void Angles_Sharp()
         {
-            var shiftTo = Bundle<Basin3>.DeserializeFile(FindJson(new ReliefAxis17Geoisostasy(K).Dir));
-            var algo = (ShiftAxis)shiftTo.Algorithm;
+            var shiftToBundle = Bundle<Basin3>.DeserializeFile(FindJson(new ReliefAxis17Geoisostasy(K).Dir));
+            var algo = (ShiftAxis)shiftToBundle.Algorithm;
             var newPole = algo.FromLastPole;
             newPole.Y = 90;
             algo.SetGeoisostasyDatum(newPole);
-            _shiftTo = algo.Data;
 
-            Angles();
+            Angles(algo.Data);
         }
 
-        private void Angles()
+        private void Angles(BasinDataAbstract<Basin3> shiftTo)
         {
             Bundle = Bundle<Basin3>.DeserializeFile(FindJson(new ReliefAxis17Geoisostasy(K).Dir));
             var algo = (ShiftAxis)Bundle.Algorithm;
@@ -59,16 +57,15 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
             var data = (BasinDataAbstract<Basin3>)Data;
             data.Visual = (basin, moved) =>
             {
-                if (basin.HasWater())
-                    return null;
+                if (basin.HasWater()) return null;
 
-                var basinTo = _shiftTo.PixMan.Pixels[basin.P];
-                // means: how more water became to flow North after shift
+                var basinTo = shiftTo.PixMan.Pixels[basin.P];
+                // means: how more water flows North after shift
                 var meridianToNorth = -
-                                ((Math.Sign(basinTo.Vartheta) * basin.Delta_g_meridian) -
-                               (Math.Sign(basin.Vartheta) * basinTo.Delta_g_meridian));
+                ((Math.Sign(basinTo.Vartheta) * basinTo.Delta_g_meridian) -
+                 (Math.Sign(basin.Vartheta) * basin.Delta_g_meridian));
 
-                // means: how more water became to flow East after shift
+                // means: how more water flows East after shift
                 var traverse = basinTo.Delta_g_traverse - basin.Delta_g_traverse;
 
                 // Matrix calc is more accurate but since angle is small then the formula here is good too

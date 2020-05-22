@@ -37,6 +37,9 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
                 10);
         }
 
+        /// <summary>
+        /// http://hist.tk/ory/Карта_Земли,_вращение_которой_остановилось
+        /// </summary>
         [Test]
         public void RotationStopped()
         {
@@ -50,6 +53,7 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
                 {
                     WithRelief = true,
                     SamePolesAndEquatorGravitation = true,
+                    // Spheric = true,
                     IntegrationEndless = true,
                     /// Visual = basin => basin.Depth.Value
                     /// Visual = basin => basin.r - Earth2014Manager.Radius2Add //*/
@@ -58,18 +62,20 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
 
             // 1000 does nothing when !SamePolesAndEquatorGravitation 
             if (Data.SamePolesAndEquatorGravitation)
-                algorithm.ChangeRotation(-1 - HealpixManager.Nside, -2000);
+                algorithm.ChangeRotation(
+                    -1 - HealpixManager.Nside, 
+                    algorithm.Data.Spheric ? double.MaxValue : - 2000);
 
             var changeFrames = 15;
 
-            var framesCount = 1000; /// 40 for k5
+            var framesCount = K == 5 ? 150 : 1000;
             Data.DoFrames(
                 delegate(int frame)
                 {
                     if (frame % changeFrames == 0)
                     {
                         double koef;
-                        if (frame == framesCount / 1.5)
+                        if (frame > framesCount * .6)
                             koef = double.MaxValue;
                         else if ((frame / changeFrames) % 3 == 3 - 1)
                             koef = 10000;
@@ -122,6 +128,7 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
 
         /// <summary>
         /// smoothing from previously calculated json at lower resolution 6
+        /// similar to OceanMapGravityAxisChange.CorrectionLoadedFromParentResolutionAndCalculated()
         /// </summary>
         protected void Smoothing()
         {

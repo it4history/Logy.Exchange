@@ -228,11 +228,14 @@ namespace Logy.Maps.ReliefMaps.Map2D
         /// <param name="risky"></param>
         protected void HighFluidity(bool risky = false)
         {
-            Data.Water.Fluidity = risky ? 1 : .95;
+            // for k6 standard Threshhold was 2.4m
+            Data.Water.Threshhold *= risky ? .001 : .25; // 0 works too, but I am not ready yet
+            if (risky)
+            {
+                Data.Water.Fluidity = 1;
+            }
             if (Data.MetricType == MetricType.RadiusIntersection)
                 Data.Water.Fluidity *= .5;
-
-            Data.Water.Threshhold *= risky ? .01 : .1; /// for k6 standard Threshhold is 2.4m
         }
 
         protected void DrawPoliticalMap()

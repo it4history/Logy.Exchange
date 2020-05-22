@@ -135,7 +135,7 @@ namespace Logy.Maps.Exchange
 
         public void ChangeRotation(int? frame, double koef = double.MaxValue)
         {
-            ChangeRotation(new Datum(), frame, koef);
+            ChangeRotation(FromLastPole ?? new Datum(), frame, koef);
         }
 
         private void ChangeRotation(Datum datum, int? frame = null, double koef = double.MaxValue)
@@ -150,7 +150,10 @@ namespace Logy.Maps.Exchange
                     foreach (var basin in DataAbstract.PixMan.Pixels)
                     {
                         if (DataAbstract.SamePolesAndEquatorGravitation)
+                        {
                             basin.GHpure = 0; /// what about GVpure?
+                            basin.GHpureTraverse = 0;
+                        }
                         else if (datum.GravityNeedsRecalculation)
                         {
                             var varphi = Ellipsoid.VarphiPaleo(basin, gravityAxis);
@@ -171,7 +174,6 @@ namespace Logy.Maps.Exchange
                                 vartheta,
                                 BasinAbstract.GoodDeflection(vartheta, delta_gq));
                             var correction = datum.CorrectionBundle;
-                            /* it was mistake of issues/3
                             if (correction != null)
                             {
                                 basin.RadiusOfGeoid += correction.Basins[correction.Algorithm.DataAbstract.K]
@@ -202,7 +204,9 @@ namespace Logy.Maps.Exchange
                                 axis_sphere = axis_sphere.Negate();
                             if (vartheta < 0)
                                 axis_sphere = axis_sphere.Negate();
-                            var gh_sphere = axis_sphere.ScaleBy(gh) * basin.Matrix.Transpose(); /* not rotation, but change of reference frame */
+                            var gh_sphere =
+                                axis_sphere.ScaleBy(gh) *
+                                basin.Matrix.Transpose(); /* not rotation, but change of reference frame */
                             basin.GHpure = Math.Sign(basin.Vartheta) * gh_sphere[2];
                             basin.GHpureTraverse = gh_sphere[1]; //*/
                         }

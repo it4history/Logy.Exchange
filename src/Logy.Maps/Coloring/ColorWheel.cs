@@ -7,7 +7,7 @@ namespace Logy.Maps.Coloring
     {
         public const double ModuleAccuracy = .005;
 
-        /// <param name="hue">from 0 to 255, 0 - red north, 63 - green east</param>
+        /// <param name="hue">from 0 to 255</param>
         /// <param name="satupation">from 0 to 255, 0 is grey</param>
         /// <param name="v">maximum brightness, 255 is most</param>
         public static Color HSVtoRGB(double hue, double satupation = 0, int v = 255)
@@ -17,7 +17,7 @@ namespace Logy.Maps.Coloring
             if (satupation == 0)
                 return Color.FromArgb(v, v, v);
 
-            hue += 256 / 4;
+            hue += 256 / 2; // to make hue 0 - aqua, 63 - violet 
             hue %= 256;
 
             var maxV = v;
@@ -80,11 +80,11 @@ namespace Logy.Maps.Coloring
         public static void Draw(Bitmap bmp, int width, PointF leftTop = new PointF())
         {
             var maxBright = width / 2d;
-            for (var angle = .0; angle < Math.PI * 2; angle += .01)
+            for (var angle = 0d; angle < Math.PI * 2; angle += .01)
             for (int bright = width / 30; bright < maxBright; bright++)
             {
-                var x = (width / 2) - (Math.Cos(angle) * bright);
-                var y = (width / 2) - (Math.Sin(angle) * bright);
+                var x = (width / 2) + (Math.Sin(angle) * bright);
+                var y = (width / 2) - (Math.Cos(angle) * bright);
                 bmp.SetPixel(
                     (int)(x + leftTop.X),
                     (int)(y + leftTop.Y),

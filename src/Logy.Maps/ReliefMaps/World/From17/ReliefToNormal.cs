@@ -16,10 +16,15 @@ namespace Logy.Maps.ReliefMaps.World.From17
         {
         }
 
+        /// <summary>
+        /// if to shift pole from Greenland to normal with geoisostasy achieved then no water move will be
+        /// http://hist.tk/ory/Исправление_ошибки_карты_сдвига_полюса
+        /// </summary>
         [Test]
         public void Geoisostasy()
         {
-            InitDataWithJson(); /// Load(null, true)
+            Load(null, true);
+            //InitDataWithJson(); 
 
             Run(500);
         }
@@ -39,7 +44,7 @@ namespace Logy.Maps.ReliefMaps.World.From17
             DrawPoliticalMap();
         }
 
-        protected void Load(object from = null, bool? toNormalDatumWithGeoisostasy = null, Datum datum = null)
+        protected void Load(object from = null, bool? toNormalDatumWithGeoisostasy = null, Datum datumCentrifugal = null)
         {
             Bundle = Bundle<Basin3>.DeserializeFile(
                 from == null ? FindJson(new ReliefAxis17Geoisostasy(K).Dir) : StatsFileName(from));
@@ -48,14 +53,14 @@ namespace Logy.Maps.ReliefMaps.World.From17
 
             if (toNormalDatumWithGeoisostasy.HasValue)
             {
-                if (datum == null)
-                    datum = Datum.Normal;
+                if (datumCentrifugal == null)
+                    datumCentrifugal = Datum.Normal;
                 if (toNormalDatumWithGeoisostasy == false)
-                    datum.Gravity = new Gravity(Datum.Greenland17);
+                    datumCentrifugal.Gravity = new Gravity(Datum.Greenland17);
             }
             else
-                datum = algo.FromLastPole;
-            algo.SetGeoisostasyDatum(datum);
+                datumCentrifugal = algo.FromLastPole;
+            algo.SetGeoisostasyDatum(datumCentrifugal);
 
             JsonNeeded = true;
         }
