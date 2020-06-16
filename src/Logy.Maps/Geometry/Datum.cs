@@ -87,6 +87,7 @@ namespace Logy.Maps.Geometry
             return Centrifugal(basin, out a, out aTraverse, out aVertical);
         }
 
+        /// <returns>aMeridian</returns>
         public double CentrifugalSimple(double r, double varphi, double theta, out double a, out double aVertical)
         {
             a = Centrifugal(r * Math.Cos(varphi));

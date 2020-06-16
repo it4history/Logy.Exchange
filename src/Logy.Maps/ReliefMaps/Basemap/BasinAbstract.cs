@@ -85,7 +85,7 @@ namespace Logy.Maps.ReliefMaps.Basemap
         public UnitVector3D RadiusLine => new Line3D(O3, Qgeiod).Direction;
 
         /// <summary>
-        /// transposed rotation matrix 
+        /// rotation matrix for Beta, Lambda
         /// what about S_sphere ?
         /// </summary>
         public Matrix<double> Matrix { get; set; }
@@ -236,7 +236,7 @@ namespace Logy.Maps.ReliefMaps.Basemap
             // angles with opposite sign because Matrix3D.RotationAroundXAxis needs counterclockwise direction
             var rotation = Matrix3D.RotationAroundYAxis(new Angle(-Phi, AngleUnit.Radians))
                            * Matrix3D.RotationAroundZAxis(new Angle(Lambda.Value, AngleUnit.Radians));
-            Matrix = rotation;//.Transpose();//*/
+            Matrix = rotation;
 
             base.OnInit(man);
             LambdaSin = Math.Sin(Lambda.Value);
@@ -261,6 +261,7 @@ namespace Logy.Maps.ReliefMaps.Basemap
             Delta_g_meridian = goodDeflectionAngle;
         }
 
+        /// <returns>GHpure</returns>
         public double CalcGpureAndInitROfGeoid(HealpixManager man, double varphi, double theta, double vartheta, double goodDeflectionAngle)
         {
             InitROfGeoid(man, Ellipsoid.Radius(varphi));

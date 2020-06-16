@@ -6,7 +6,7 @@ using Newtonsoft.Json;
 namespace Logy.MwAgent.Sphere
 {
     /// <summary>
-    /// point on sphere
+    /// point on sphere, Spherical coordinate system
     /// by default X == -180, Y == 90
     /// </summary>
     [DataContract(Namespace = UrlsManager.Namespace)]

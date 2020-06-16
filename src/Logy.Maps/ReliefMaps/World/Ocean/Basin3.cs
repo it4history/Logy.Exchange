@@ -9,7 +9,6 @@ using Logy.Maps.ReliefMaps.Geoid;
 using Logy.Maps.ReliefMaps.Water;
 using Logy.MwAgent.Sphere;
 using MathNet.Spatial.Euclidean;
-using MathNet.Spatial.Units;
 
 namespace Logy.Maps.ReliefMaps.World.Ocean
 {
@@ -86,16 +85,24 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
 
         public Ray3D RadiusRay => new Ray3D(O3, RadiusLine);
 
+        /// <summary>
+        /// x - vertical, y - traverse, z - meridian
+        /// by theory must be opposite to this.Normal
+        /// </summary>
+        private Vector3D ForcesVector { get; set; }
+
         public UnitVector3D? Normal
         {
             get
             {
                 if (_normal == null)
                 {
+                    //_normal = new UnitVector3D(ForcesVector.Normalize() * Matrix); 
+
                     _normal = new UnitVector3D(Utils3D.RotateBySphericCoor(
-                                     (Math.Sign(Vartheta) * Delta_g_meridian),
-                                     -Delta_g_traverse)
-                                 * Matrix);
+                        (Math.Sign(Vartheta) * Delta_g_meridian), 
+                        -Delta_g_traverse) 
+                        * Matrix);
                     /* error https://github.com/it4history/Logy.Exchange/issues/3 was here:
                         _normal = Utils3D.RotateBySphericCoor(
                             (Math.Sign(Vartheta) * Delta_g_meridian) + Phi,
@@ -177,7 +184,7 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
         public double[] HtoBase { get; set; }
 
         /// <summary>
-        /// Spherical coordinate system
+        /// Projection
         /// 
         /// water goes to East if positive
         /// -Pi to West .. Pi to East
@@ -195,7 +202,7 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
             }
         }
         /// <summary>
-        /// Spherical coordinate system
+        /// Projection
         /// in North and South hemispheres water goes to equator if positive
         /// -Pi/2 to North or South .. Pi/2 to equator
         /// </summary>
@@ -314,13 +321,12 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
             var aMeridian = datum.Centrifugal(this, out a, out aTraverse, out aVertical);
 
             // fundamental plane is zOy
-            var vector = new Vector3D(
+            ForcesVector = new Vector3D(
                 GVpure - aVertical, /*x*/
                 GHpureTraverse + aTraverse, /*y*/
-                /* Math.Sign(Vartheta) * */ GHpure + aMeridian /*z*/);
-            var coor = Utils3D.FromCartesian<Coor>(vector.Normalize());
-            Delta_g_meridian = /// Math.Sign(Vartheta) * // Math.PI * .5
-                coor.Phi;
+                /*-Math.Sign(Vartheta) * */ (GHpure + aMeridian) /*z*/);
+            var coor = Utils3D.FromCartesian<Coor>(ForcesVector.Normalize());
+            Delta_g_meridian = coor.Phi;
             Delta_g_traverse = Math.PI - coor.Lambda.Value;
         }
 
