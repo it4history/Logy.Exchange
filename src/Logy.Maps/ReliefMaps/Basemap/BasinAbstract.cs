@@ -284,7 +284,7 @@ namespace Logy.Maps.ReliefMaps.Basemap
             // return gVpure*10000;
             // horizontal to sphere
             // max: .03299
-            // horizontal to sphere
+            // horizontal to sphere, includes centrifugal
             var gHor = (g + aVert) * Math.Sin(goodDeflectionAngle);
 
             // gToCenterByThetaCos = gVpure / Math.Abs(Math.Cos(Theta));
