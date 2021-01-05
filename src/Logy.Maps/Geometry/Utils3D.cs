@@ -10,6 +10,21 @@ namespace Logy.Maps.Geometry
     {
         public static Plane Equator { get; } = new Plane(BasinAbstract.Oz, BasinAbstract.O3);
 
+        public static T FromCartesian<T>(UnitVector3D ray) where T : Coor
+        {
+            var coor = Activator.CreateInstance<T>();
+            if (ray == -BasinAbstract.Oz)
+            {
+                coor.Y = -90;
+            }
+            else if (ray != BasinAbstract.Oz)
+            {
+                coor.X = -180 - ray.ProjectOn(Equator).Direction.SignedAngleTo(BasinAbstract.OxMinus, BasinAbstract.Oz).Degrees;
+                coor.Y = 90 - ray.AngleTo(BasinAbstract.Oz).Degrees;
+            }
+            return coor.Normalize<T>();
+        }
+        
         public static UnitVector3D Cartesian(Coor coor)
         {
             if (coor.Y == 90)
@@ -33,21 +48,6 @@ namespace Logy.Maps.Geometry
                     .ToCartesian(
                         new UnitVector3D(0, 0, 1),
                         new Angle(coor.X, AngleUnit.Degrees)); */
-        }
-
-        public static T FromCartesian<T>(UnitVector3D ray) where T : Coor
-        {
-            var coor = Activator.CreateInstance<T>();
-            if (ray == -BasinAbstract.Oz)
-            {
-                coor.Y = -90;
-            }
-            else if (ray != BasinAbstract.Oz)
-            {
-                coor.X = -180 - ray.ProjectOn(Equator).Direction.SignedAngleTo(BasinAbstract.OxMinus, BasinAbstract.Oz).Degrees;
-                coor.Y = 90 - ray.AngleTo(BasinAbstract.Oz).Degrees;
-            }
-            return coor.Normalize<T>();
         }
 
         public static UnitVector3D RotateBySphericCoor(double zenith, double azimuth)
