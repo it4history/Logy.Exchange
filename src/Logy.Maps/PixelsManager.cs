@@ -13,10 +13,10 @@ namespace Logy.Maps
 
         private const double PrecisionGrad = .01;
 
-        public PixelsManager(HealpixManager healpixManager, T[] pix = null)
+        public PixelsManager(HealpixManager healpixManager, T[] healpixPredefinedPixels = null)
         {
             HealpixManager = healpixManager;
-            if (pix == null)
+            if (healpixPredefinedPixels == null)
             {
                 Pixels = new T[healpixManager.Npix];
                 for (var p = 0; p < healpixManager.Npix; p++)
@@ -26,7 +26,7 @@ namespace Logy.Maps
             }
             else
             {
-                Pixels = pix;
+                Pixels = healpixPredefinedPixels;
             }
         }
 

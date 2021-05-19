@@ -39,6 +39,7 @@ namespace Logy.Maps.ReliefMaps.Map2D
                 case Projection.Healpix2EquirectangularFast:
                     return PixMan.Pixels;
                 case Projection.Healpix2Equirectangular:
+                case Projection.NoHealpix:
                 case Projection.Equirectangular:
                     var height = Map.YResolution * HealpixManager.Nside;
                     var width = 4 * HealpixManager.Nside;
@@ -77,18 +78,21 @@ namespace Logy.Maps.ReliefMaps.Map2D
                 case Projection.Healpix2Equirectangular: /*mean min, nax will be calculated later  */
                     colorsManager = InitAltitudes(PixMan.Pixels, Map);
                     break;
+                case Projection.NoHealpix:
                 case Projection.Equirectangular: /*min and max may not be precalculated*/
                     double? min = MinDefault, max = MaxDefault;
                     if (min == null || max == null)
                     {
                         // slow?
                         var pix = (from pixel in pixels
-                                select (T)Activator.CreateInstance(
-                                    typeof(HealCoor),
-                                    Equirectangular.CoorFromXY(pixel, Map.YResolution, HealpixManager)))
+                                   select (T)Activator.CreateInstance(
+                                       typeof(HealCoor),
+                                       Equirectangular.CoorFromXY(pixel, Map.YResolution, HealpixManager)))
                             .ToArray();
                         colorsManager = InitAltitudes(pix, Map);
                     }
+                    else
+                        colorsManager = Colors = new ColorsManager(min.Value, max.Value, ColorsMiddle, Map);
                     break;
             }
             colorsManager.SetColorLists(Map.ColorsAbove, Map.ColorsUnder);

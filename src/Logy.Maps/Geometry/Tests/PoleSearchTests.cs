@@ -28,6 +28,8 @@ namespace Logy.Maps.Geometry.Tests
 
                 //new City("Москва", 37.62, 55.76, 50),
                 //new City("Питер", 30.32, 59.95, 55),
+                //https://chispa1707.livejournal.com/3479284.html?thread=41651188#t41651188
+                new City("New Castle", -75.5653, 39.6647, 40),
             })
         {
         }
@@ -35,7 +37,7 @@ namespace Logy.Maps.Geometry.Tests
 
     public class PoleSearch1813 : Map2DBase<City>
     {
-        public PoleSearch1813() : base(8, LegendType.None)
+        public PoleSearch1813() : base(7, LegendType.None)
         {
             YResolution = 3;
         }

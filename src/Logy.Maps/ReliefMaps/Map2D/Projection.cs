@@ -18,6 +18,11 @@ namespace Logy.Maps.ReliefMaps.Map2D
         /// <summary>
         /// approximated by 2 neighbor horizontal basins
         /// </summary>
-        Healpix2EquirectangularFast
+        Healpix2EquirectangularFast,
+
+        /// <summary>
+        /// for testing
+        /// </summary>
+        NoHealpix,
     }
 }

@@ -108,7 +108,7 @@ namespace Logy.Maps.ReliefMaps.Map2D
             var data = MapData;
             var pixels = data.Basins();
 
-            data.InitPoints(pixels, IsGrey);
+            data.InitPoints(pixels, IsGrey); // GetAltitude called mainly for Equirectangular... projections to calc min and max of Colors
 
             string fileName = null;
             for (var frame = 0; frame < Frames; frame++)
@@ -148,19 +148,24 @@ namespace Logy.Maps.ReliefMaps.Map2D
                     data.Draw(bmp, 0, pixels, YResolution, Scale, Projection);
                     break;
                 case Projection.Healpix2Equirectangular:
+                case Projection.NoHealpix:
                 case Projection.Equirectangular:
-                    foreach (var pixel in pixels)
+                    foreach (var point in pixels)
                     {
-                        var coor = Equirectangular.CoorFromXY(pixel, YResolution, HealpixManager, frame);
+                        var pixel = point;
                         double? altitude;
                         if (Projection == Projection.Healpix2Equirectangular)
                         {
+                            var coor = Equirectangular.CoorFromXY(pixel, YResolution, HealpixManager, frame);
                             var deltas = data.PixMan.GetDeltas(coor);
                             altitude = data.PixMan.GetMeanAltitude(deltas);
                             data.CheckMaxMin(altitude);
                         }
                         else
+                        {
+                            var coor = Equirectangular.CoorFromXY(pixel, YResolution, HealpixManager, frame);
                             altitude = data.GetAltitude((T)Activator.CreateInstance(typeof(HealCoor), coor));
+                        }
 
                         if (altitude.HasValue)
                             data.Colors.SetPixelOnBmp(altitude.Value, bmp, pixel, Scale);
@@ -169,7 +174,7 @@ namespace Logy.Maps.ReliefMaps.Map2D
             }
         }
 
-        protected void DrawLegend(DataEarth data, Bitmap bmp)
+        protected virtual void DrawLegend(DataEarth data, Bitmap bmp)
         {
             var left = HealpixManager.Nside * Scale;
             int? left0 = null;

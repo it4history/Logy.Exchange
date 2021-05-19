@@ -45,7 +45,7 @@ namespace Logy.Maps.ReliefMaps.Basemap
         }
 
         [IgnoreDataMember]
-        public HealpixManager HealpixManager 
+        public HealpixManager HealpixManager
             => _healpixManager ?? (_healpixManager = new HealpixManager(K));
 
         public int Accuracy { get; set; } = 5;
@@ -145,7 +145,7 @@ namespace Logy.Maps.ReliefMaps.Basemap
             var bed = ReliefBed.GetAltitude(coor);
 
             waterHeight = surface - bed;
-            if (waterHeight > 0) 
+            if (waterHeight > 0)
             {
                 /* lakes in ice are ignored */
             }
@@ -154,11 +154,11 @@ namespace Logy.Maps.ReliefMaps.Basemap
 
         /// <param name="deltaX">from 0 to 4 * HealpixManager.Nside, deltaY to YResolution * HealpixManager.Nside</param>
         public virtual void Draw(
-            Bitmap bmp, 
-            double deltaX = 0, 
-            IEnumerable basins = null, 
-            int yResolution = 2, 
-            int scale = 1, 
+            Bitmap bmp,
+            double deltaX = 0,
+            IEnumerable basins = null,
+            int yResolution = 2,
+            int scale = 1,
             Projection projection = Projection.Healpix)
         {
             if (basins != null && Colors != null)
@@ -240,8 +240,8 @@ namespace Logy.Maps.ReliefMaps.Basemap
             if (Colors != null)
                 Console.WriteLine(
                     "{0:0.#}..{1:0.#}", ////; {2}",
-                    Colors.Min, 
-                    Colors.Max, 
+                    Colors.Min,
+                    Colors.Max,
                     GetType().Name);
         }
 
