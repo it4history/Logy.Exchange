@@ -68,7 +68,7 @@ namespace Logy.MwAgent.Sphere
 
         public double Distance
         {
-            get { return Math.Sqrt(X * X + Y * Y); }
+            get { return Math.Sqrt((X * X) + (Y * Y)); }
         }
         #endregion
 
