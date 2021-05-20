@@ -164,7 +164,7 @@ namespace Logy.Maps.ReliefMaps.Map2D
                         else
                         {
                             var coor = Equirectangular.CoorFromXY(pixel, YResolution, HealpixManager, frame);
-                            altitude = data.GetAltitude((T)Activator.CreateInstance(typeof(HealCoor), coor));
+                            altitude = data.GetAltitude((T)Activator.CreateInstance(typeof(T), coor));
                         }
 
                         if (altitude.HasValue)

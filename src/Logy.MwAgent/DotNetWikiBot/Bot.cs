@@ -1,4 +1,4 @@
-﻿// Logy.MwAgent 
+﻿// Logy.MwAgent
 // based on DotNetWikiBot Framework - designed to make robots for MediaWiki-powered wiki sites
 // Requires Microsoft .NET Framework 4+ or Mono 1.9+.
 // Distributed under the terms of the GNU GPL 2.0 license: http://www.gnu.org/licenses/gpl-2.0.html
@@ -59,7 +59,7 @@ namespace Logy.MwAgent.DotNetWikiBot
         /// internal variable.</summary>
         /// <exclude/>
         private static int _unsafeHttpHeaderParsingUsed = 2;
-       
+
         /// <summary>This constructor is used to initialize Bot object.</summary>
         /// <returns>Returns Bot object.</returns>
         static Bot()
@@ -75,7 +75,7 @@ namespace Logy.MwAgent.DotNetWikiBot
                 {
                     Type type = Type.GetType("Mono.Runtime");
                     string v = string.Empty;
-                    if (type != null) 
+                    if (type != null)
                     {
                         MethodInfo displayName = type.GetMethod("GetDisplayName", BindingFlags.NonPublic | BindingFlags.Static);
                         if (displayName != null)

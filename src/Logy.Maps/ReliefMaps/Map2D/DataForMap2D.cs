@@ -86,7 +86,7 @@ namespace Logy.Maps.ReliefMaps.Map2D
                         // slow?
                         var pix = (from pixel in pixels
                                    select (T)Activator.CreateInstance(
-                                       typeof(HealCoor),
+                                       typeof(T),
                                        Equirectangular.CoorFromXY(pixel, Map.YResolution, HealpixManager)))
                             .ToArray();
                         colorsManager = InitAltitudes(pix, Map);

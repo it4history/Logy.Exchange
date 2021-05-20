@@ -6,6 +6,7 @@ namespace Logy.MwAgent.DotNetWikiBot.Exceptions
     /// <summary>Exception for handling situations when bot operation is disallowed.</summary>
     /// <exclude/>
     [ClassInterface(ClassInterfaceType.AutoDispatch)]
+    [Serializable]
     public class BotDisallowedException : WikiBotException
     {
         /// <exclude/>

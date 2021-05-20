@@ -1,11 +1,10 @@
 ﻿using System;
-using Logy.Maps.Projections.Healpix;
 using Logy.Maps.ReliefMaps.Map2D;
 using Logy.MwAgent.Sphere;
 
 namespace Logy.Maps.Geometry.Isolines
 {
-    public class IsolinesTestData : DataForMap2D<HealCoor>
+    public class IsolinesTestData : DataForMap2D<PointWithLinearField>
     {
         internal const int IsolinesCount = 10;
         private readonly int _pointsCount;
@@ -13,7 +12,7 @@ namespace Logy.Maps.Geometry.Isolines
         private const int BitmapScaleX = 180;
         private const int BitmapScaleY = 90;
         public readonly PointWithLinearField[] Points;
-        public IsolinesTestData(Map2DBase<HealCoor> map, int pointsCount) : base(map, new HealCoor[0])
+        public IsolinesTestData(Map2DBase<PointWithLinearField> map, int pointsCount) : base(map, new PointWithLinearField[0])
         {
             _pointsCount = pointsCount;
 
@@ -49,7 +48,7 @@ namespace Logy.Maps.Geometry.Isolines
             return sumOfIntensity / _pointsCount;
         }
 
-        public bool DrawIsoline(HealCoor basin, double potential, double lowLevel, double highLevel)
+        public bool DrawIsoline(PointWithLinearField basin, double potential, double lowLevel, double highLevel)
         {
             var lineWidth = K <= 7 ? 0.5 : 0.2;
             var count = IsolinesCount + 1;
@@ -66,7 +65,7 @@ namespace Logy.Maps.Geometry.Isolines
             return false;
         }
 
-        public override double? GetAltitude(HealCoor basin)
+        public override double? GetAltitude(PointWithLinearField basin)
         {
             if (Colors == null)
                 return LinearField(basin); // calculating Colors min and max

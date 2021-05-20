@@ -6,6 +6,7 @@ namespace Logy.MwAgent.DotNetWikiBot.Exceptions
     /// <summary>Exceptions for handling wiki edit conflicts.</summary>
     /// <exclude/>
     [ClassInterface(ClassInterfaceType.AutoDispatch)]
+    [Serializable]
     public class EditConflictException : WikiBotException
     {
         /// <exclude/>

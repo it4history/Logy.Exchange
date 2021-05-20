@@ -19,7 +19,7 @@ namespace Logy.MwAgent.DotNetWikiBot.Smw
                 null);
             if (respStr.Contains("<error"))
                 throw new WikiBotException(
-                    string.Format(Bot.Msg("Failed to ask \"{0}\"."), query));
+                    string.Format(Bot.Msg("Failed to a`sk \"{0}\"."), query));
             return respStr;
         }
 

@@ -29,7 +29,7 @@ namespace Logy.MwAgent.Sphere
 
         public Point2(string original)
         {
-            var match = Regex.Match(original, @"(-?[\d\.]+):(-?[\d\.]+)");
+            var match = Regex.Match(original, @"(-?[\d\.]+):(-?[\d\.]+)", RegexOptions.CultureInvariant);
             if (match.Success)
             {
                 X = double.Parse(match.Groups[1].Value);
@@ -64,6 +64,11 @@ namespace Logy.MwAgent.Sphere
         public double Sqrt
         {
             get { return Math.Sqrt(Sum); }
+        }
+
+        public double Distance
+        {
+            get { return Math.Sqrt(X * X + Y * Y); }
         }
         #endregion
 

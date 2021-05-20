@@ -114,7 +114,6 @@ namespace Logy.MwAgent.DotNetWikiBot
         /// But it's better to use simple pageList[i] syntax.</summary>
         /// <param name="page">Page object to set in this PageList.</param>
         /// <param name="index">Zero-based index.</param>
-        /// <returns>Returns the Page object.</returns>
         public void SetPageAtIndex(Page page, int index)
         {
             Pages[index] = page;

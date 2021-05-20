@@ -1311,7 +1311,7 @@ namespace Logy.MwAgent.DotNetWikiBot
         public void SaveToFile()
         {
             string fileTitle = Title;
-            ///Path.GetInvalidFileNameChars();
+            /// Path.GetInvalidFileNameChars();
             fileTitle = fileTitle.Replace("\"", "&#x22;");
             fileTitle = fileTitle.Replace("<", "&#x3c;");
             fileTitle = fileTitle.Replace(">", "&#x3e;");

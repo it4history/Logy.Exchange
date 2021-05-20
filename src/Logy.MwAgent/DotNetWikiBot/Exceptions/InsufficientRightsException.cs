@@ -6,6 +6,7 @@ namespace Logy.MwAgent.DotNetWikiBot.Exceptions
     /// <summary>Exception for handling errors due to insufficient rights.</summary>
     /// <exclude/>
     [ClassInterface(ClassInterfaceType.AutoDispatch)]
+    [Serializable]
     public class InsufficientRightsException : WikiBotException
     {
         /// <exclude/>

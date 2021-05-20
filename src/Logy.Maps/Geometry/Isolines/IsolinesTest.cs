@@ -1,16 +1,13 @@
-#if DEBUG
-using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using Logy.Maps.Projections;
-using Logy.Maps.Projections.Healpix;
 using Logy.Maps.ReliefMaps.Basemap;
 using Logy.Maps.ReliefMaps.Map2D;
 
 namespace Logy.Maps.Geometry.Isolines
 {
-    public class IsolinesTest : Map2DBase<HealCoor>
+    public class IsolinesTest : Map2DBase<PointWithLinearField>
     {
         private readonly int _pointsCount;
 
@@ -27,33 +24,26 @@ namespace Logy.Maps.Geometry.Isolines
 
         public override Projection Projection => Projection.NoHealpix;
 
-        protected override DataForMap2D<HealCoor> MapData => new IsolinesTestData(this, _pointsCount);
+        protected override DataForMap2D<PointWithLinearField> MapData 
+            => new IsolinesTestData(this, _pointsCount);
 
         protected override void DrawLegend(DataEarth data, Bitmap bmp)
         {
-            var g = Graphics.FromImage(bmp);
-            var equirectangular = new Equirectangular(HealpixManager, YResolution);
-            var positions = ((IsolinesTestData)data).Points;
             var points = new List<Point>();
-            foreach (var position in positions)
+            var equirectangular = new Equirectangular(HealpixManager, YResolution);
+            foreach (var position in ((IsolinesTestData)data).Points)
             {
                 var point = equirectangular.OffsetDouble(position, Scale);
                 points.Add(new Point((int)point.X, (int)point.Y));
             }
 
             var convex = new List<Point>(new Grehem().CalcGrehem(points.ToArray()));
-            foreach (var position in convex)
-            {
-                Console.WriteLine(position.ToString());
-            }
-
             convex.Add(convex[0]);
+            var g = Graphics.FromImage(bmp);
             g.DrawLines(new Pen(Color.Gray), convex.Where(p => p.X > 0 || p.Y > 0).ToArray());
-
             g.Flush();
 
             base.DrawLegend(data, bmp);
         }
     }
 }
-#endif
