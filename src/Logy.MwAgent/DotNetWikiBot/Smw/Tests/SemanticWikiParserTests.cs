@@ -67,7 +67,7 @@ namespace Logy.MwAgent.DotNetWikiBot.Smw.Tests
 
         private Site _site;
 
-        [OneTimeSetUp]
+        [TestFixtureSetUp]
         public void FixtureSetUp()
         {
             _site = new Site("http://logy.gq/lw", "te", "test");
