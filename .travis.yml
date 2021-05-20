@@ -5,5 +5,5 @@ install:
   - nuget install NUnit.Runners -Version 2.6.4 -OutputDirectory testrunner
 script:
   - xbuild /p:Configuration=Debug src/Logy.Exchange.sln
-  - travis_wait 250 mono ./src/Logy.ImportExport/bin/Debug/Logy.ImportExport.exe
+  #- travis_wait 250 mono ./src/Logy.ImportExport/bin/Debug/Logy.ImportExport.exe
   - travis_wait 50 mono ./testrunner/NUnit.Runners.2.6.4/tools/nunit-console.exe ./src/Logy.ImportExport/bin/Debug/Logy.ImportExport.exe
