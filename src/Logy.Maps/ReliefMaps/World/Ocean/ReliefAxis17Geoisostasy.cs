@@ -1,4 +1,4 @@
-using System.Drawing.Imaging;
+#if DEBUG
 using Logy.Maps.Exchange;
 using NUnit.Framework;
 
@@ -72,3 +72,4 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
         }
     }
 }
+#endif

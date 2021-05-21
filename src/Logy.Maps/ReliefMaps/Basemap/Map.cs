@@ -5,6 +5,9 @@ namespace Logy.Maps.ReliefMaps.Basemap
 {
     public class Map 
     {
+        public const int BitmapScaleX = 180;
+        public const int BitmapScaleY = 90;
+
         public readonly HealpixManager HealpixManager;
 
         /// <summary>

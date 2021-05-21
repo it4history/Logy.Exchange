@@ -25,7 +25,7 @@ namespace Logy.Maps.ReliefMaps.Map2D
             K = map.HealpixManager.K;
 
             // do not deserialize descendant classes 
-            Init();
+            Init(map);
         }
 
         /// <summary>
@@ -86,7 +86,7 @@ namespace Logy.Maps.ReliefMaps.Map2D
                         // slow?
                         var pix = (from pixel in pixels
                                    select (T)Activator.CreateInstance(
-                                       typeof(T),
+                                       typeof(T/*or HealCoor?*/),
                                        Equirectangular.CoorFromXY(pixel, Map.YResolution, HealpixManager)))
                             .ToArray();
                         colorsManager = InitAltitudes(pix, Map);

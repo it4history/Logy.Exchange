@@ -1,4 +1,5 @@
-﻿using System.Drawing.Imaging;
+﻿#if DEBUG
+using System.Drawing.Imaging;
 using Logy.Maps.Exchange;
 using Logy.Maps.ReliefMaps.Map2D;
 using Logy.Maps.ReliefMaps.World.Ocean;
@@ -90,3 +91,4 @@ namespace Logy.Maps.ReliefMaps.Geoid
         }
     }
 }
+#endif

@@ -23,25 +23,30 @@ namespace Logy.Maps.Geometry.Isolines
         }
 
         public override Projection Projection => Projection.NoHealpix;
+        protected override string FilenameSuffix => $"{_pointsCount}point{(_pointsCount > 1 ? "s" : null)}_{BitmapHeight - LegendHeight}lines";
 
-        protected override DataForMap2D<PointWithLinearField> MapData 
+        protected override DataForMap2D<PointWithLinearField> MapData
             => new IsolinesTestData(this, _pointsCount);
 
         protected override void DrawLegend(DataEarth data, Bitmap bmp)
         {
-            var points = new List<Point>();
-            var equirectangular = new Equirectangular(HealpixManager, YResolution);
-            foreach (var position in ((IsolinesTestData)data).Points)
+            var points = ((IsolinesTestData)data).Points;
+            if (points.Length > 2)
             {
-                var point = equirectangular.OffsetDouble(position, Scale);
-                points.Add(new Point((int)point.X, (int)point.Y));
-            }
+                var resultPoints = new List<Point>();
+                var equirectangular = new Equirectangular(HealpixManager, YResolution);
+                foreach (var position in points)
+                {
+                    var point = equirectangular.OffsetDouble(position, Scale);
+                    resultPoints.Add(new Point((int)point.X, (int)point.Y));
+                }
 
-            var convex = new List<Point>(new Grehem().CalcGrehem(points.ToArray()));
-            convex.Add(convex[0]);
-            var g = Graphics.FromImage(bmp);
-            g.DrawLines(new Pen(Color.Gray), convex.Where(p => p.X > 0 || p.Y > 0).ToArray());
-            g.Flush();
+                var convex = new List<Point>(new Grehem().CalcGrehem(resultPoints.ToArray()));
+                convex.Add(convex[0]);
+                var g = Graphics.FromImage(bmp);
+                g.DrawLines(new Pen(Color.Gray), convex.Where(p => p.X > 0 || p.Y > 0).ToArray());
+                g.Flush();
+            }
 
             base.DrawLegend(data, bmp);
         }

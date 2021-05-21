@@ -98,11 +98,14 @@ namespace Logy.Maps.ReliefMaps.Basemap
         /// <summary>
         /// moved out constructor to enable deserialization
         /// </summary>
-        public void Init()
+        public void Init(Map2DBase<T> map = null)
         {
             PixMan = new PixelsManager<T>(HealpixManager, InitialBasins);
-            Relief = new Earth2014Manager(ReliefType, Accuracy, IsReliefShape, _readAllAtStart);
-            ReliefBed = new Earth2014Manager(ReliefBedType, Accuracy, IsReliefBedShape, _readAllAtStart);
+            if (map?.Projection != Projection.NoHealpix)
+            {
+                Relief = new Earth2014Manager(ReliefType, Accuracy, IsReliefShape, _readAllAtStart);
+                ReliefBed = new Earth2014Manager(ReliefBedType, Accuracy, IsReliefBedShape, _readAllAtStart);
+            }
         }
 
         /// <summary>

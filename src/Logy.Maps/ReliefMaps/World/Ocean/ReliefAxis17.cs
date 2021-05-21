@@ -1,4 +1,5 @@
-﻿using Logy.Maps.Exchange;
+﻿#if DEBUG
+using Logy.Maps.Exchange;
 using Logy.Maps.Metrics;
 using Logy.Maps.ReliefMaps.Water;
 using NUnit.Framework;
@@ -64,3 +65,4 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
         }
     }
 }
+#endif

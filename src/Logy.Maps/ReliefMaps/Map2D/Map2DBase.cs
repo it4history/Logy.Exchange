@@ -79,7 +79,7 @@ namespace Logy.Maps.ReliefMaps.Map2D
 
         private LegendType LegendToDraw => IsGrey ? LegendType.None : LegendType;
 
-        private int LegendHeight => LegendToDraw == LegendType.None
+        protected int LegendHeight => LegendToDraw == LegendType.None
             ? 0
             : (LegendToDraw == LegendType.Hue ? 40 : K > 7 ? (K - 6) * 20 : 20);
 
@@ -125,11 +125,12 @@ namespace Logy.Maps.ReliefMaps.Map2D
             OpenPicture(fileName);
         }
 
+        protected int BitmapHeight =>
+            (YResolution * HealpixManager.Nside * Scale) + LegendHeight;
+
         protected Bitmap CreateBitmap()
         {
-            var bmp = new Bitmap(
-                4 * HealpixManager.Nside * Scale,
-                (YResolution * HealpixManager.Nside * Scale) + LegendHeight);
+            var bmp = new Bitmap(4 * HealpixManager.Nside * Scale, BitmapHeight);
             if (ImageFormat != ImageFormat.Png)
             {
                 var g = GetFont(bmp);
@@ -164,7 +165,7 @@ namespace Logy.Maps.ReliefMaps.Map2D
                         else
                         {
                             var coor = Equirectangular.CoorFromXY(pixel, YResolution, HealpixManager, frame);
-                            altitude = data.GetAltitude((T)Activator.CreateInstance(typeof(T), coor));
+                            altitude = data.GetAltitude((T)Activator.CreateInstance(typeof(T/*or HealCoor?*/), coor));
                         }
 
                         if (altitude.HasValue)
@@ -256,7 +257,9 @@ namespace Logy.Maps.ReliefMaps.Map2D
             g.Flush();
         }
 
-        protected string GetFileName(ColorsManager colors, string frame = null)
+        protected virtual string FilenameSuffix => Projection == Projection.Equirectangular ? "_noHEALPix" : null;
+
+        public string GetFileName(ColorsManager colors, string frame = null)
         {
             var filename = string.Format(
                 "{1}{0}{4}{3}.{2}",
@@ -264,7 +267,7 @@ namespace Logy.Maps.ReliefMaps.Map2D
                 colors != null && colors.IsGrey ? "grey" : null,
                 ImageFormat.ToString().ToLower(),
                 LegendToDraw == LegendType.None ? "_nolegend" : null,
-                Projection == Projection.Equirectangular ? "_noHEALPix" : null);
+                FilenameSuffix);
             return Path.Combine(Dir, filename);
         }
 

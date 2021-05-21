@@ -1,4 +1,5 @@
-﻿using Logy.Maps.Exchange;
+﻿#if DEBUG
+using Logy.Maps.Exchange;
 using Logy.Maps.Geometry;
 using Logy.Maps.Metrics.Tests;
 using Logy.Maps.Projections.Healpix;
@@ -174,3 +175,4 @@ namespace Logy.Maps.ReliefMaps.World.Ocean
         }
     }
 }
+#endif

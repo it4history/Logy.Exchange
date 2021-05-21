@@ -9,10 +9,9 @@ namespace Logy.Maps.Geometry.Isolines
         internal const int IsolinesCount = 10;
         private readonly int _pointsCount;
 
-        private const int BitmapScaleX = 180;
-        private const int BitmapScaleY = 90;
         public readonly PointWithLinearField[] Points;
-        public IsolinesTestData(Map2DBase<PointWithLinearField> map, int pointsCount) : base(map, new PointWithLinearField[0])
+        public IsolinesTestData(Map2DBase<PointWithLinearField> map, int pointsCount)
+            : base(map, new PointWithLinearField[0])
         {
             _pointsCount = pointsCount;
 
@@ -22,7 +21,7 @@ namespace Logy.Maps.Geometry.Isolines
             var rand = new Random();
             for (var i = 0; i < _pointsCount; i++)
             {
-                Points[i] = new PointWithLinearField((rand.NextDouble() * 2 - 1) * BitmapScaleX, (rand.NextDouble() * 2 - 1) * BitmapScaleY)
+                Points[i] = new PointWithLinearField((rand.NextDouble() * 2 - 1) * ReliefMaps.Basemap.Map.BitmapScaleX, (rand.NextDouble() * 2 - 1) * ReliefMaps.Basemap.Map.BitmapScaleY)
                 {
                     Intensity = rand.NextDouble()
                 };
@@ -31,26 +30,25 @@ namespace Logy.Maps.Geometry.Isolines
 
         private double? LinearField(Point2 basin, bool last = false)
         {
-            double maxDistance = Math.Sqrt(BitmapScaleX * BitmapScaleX + BitmapScaleY * BitmapScaleY) / 2;
-
             var sumOfIntensity = 0d;
             foreach (var point in Points)
             {
                 var distance = (point - basin).Distance;
                 if (last)
                 {
-                    if (distance < point.Intensity * 2 + 1)
+                    var dotRadius = point.Intensity * 2 + 1;
+                    if (distance < dotRadius)
                         return null;
                 }
 
-                sumOfIntensity += point.Intensity * Math.Max(1 - distance / maxDistance, 0); // linear
+                sumOfIntensity += point.Linear(distance);
             }
             return sumOfIntensity / _pointsCount;
         }
 
         public bool DrawIsoline(PointWithLinearField basin, double potential, double lowLevel, double highLevel)
         {
-            var lineWidth = K <= 7 ? 0.5 : 0.2;
+            var lineWidth = 0.1 * Math.Pow(2, 10 - K);
             var count = IsolinesCount + 1;
             double range = (highLevel - lowLevel) / count;
             for (var i = 0; i < count; i++)
