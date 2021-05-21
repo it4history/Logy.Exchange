@@ -41,10 +41,11 @@ namespace Logy.Maps.Geometry.Isolines
                     resultPoints.Add(new Point((int)point.X, (int)point.Y));
                 }
 
-                var convex = new List<Point>(new Grehem().CalcGrehem(resultPoints.ToArray()));
+                var convex = new List<Point>(new Grehem().CalcGrehem(resultPoints.ToArray())
+                        .Where(p => p.X > 0 || p.Y > 0));
                 convex.Add(convex[0]);
                 var g = Graphics.FromImage(bmp);
-                g.DrawLines(new Pen(Color.Gray), convex.Where(p => p.X > 0 || p.Y > 0).ToArray());
+                g.DrawLines(new Pen(Color.Gray), convex.ToArray());
                 g.Flush();
             }
 
